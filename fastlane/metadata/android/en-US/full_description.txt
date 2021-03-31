@@ -1,4 +1,4 @@
-# Exif Thumbnail Adder
+Search for pictures (JPEG) on your device and add a thumbnail in the EXIF tag if they don't have one yet.
 
 This is an application for android devices that will search for pictures (JPEG) on your device and __add a thumbnail__ in the EXIF tag if they don't have one yet.
 
@@ -50,22 +50,4 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 
 
 ## Licence
-GPL-3.0 (see "COPYING" file)
-
-
-## To create screenshots
-`./gradlew assembleDebug assembleAndroidTest`  
-`fastlane screengrab --use_timestamp_suffix false --clear_previous_screenshots -q "en-US,fr-FR"`
-
-
-## Development / Building from source
-This project has been developed in "Android Studio", you may use that to build the app yourself.
-
-
-### To compile with pixymeta-android library
-1. create file './enable-pixymeta-android.gradle' and add this line  
-`include ':library:pixymeta-android'`
-1. create file './app/enable-pixymeta-android.gradle' and add this line  
-`dependencies { pixymetaImplementation project(path: ':library:pixymeta-android') }`
-1. place the src directory of pixymeta-android that you can find here https://github.com/dragon66/pixymeta-android into `library/pixymeta-android`. It must be dated >= 2021-03-27 and >= commit 15a6f25d891593e5c6f85e542a55150b2947e7f5
-1. select the build variant having flavor 'pixymeta'
+GPL-3.0 (see "LICENSE" file)
