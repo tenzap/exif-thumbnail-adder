@@ -1,0 +1,94 @@
+plugins {
+    id 'com.android.application'
+}
+
+apply from: 'get-version.gradle'
+
+android {
+
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.exifthumbnailadder.app"
+        minSdkVersion 26
+        targetSdkVersion 30
+        //versionCode finalVersionCode
+        //versionName finalVersionName
+        versionCode 2
+        versionName "0.9.0"
+
+        file("../version_last_tag.txt").text = "version: " + lastTagVersionName + "+" + lastTagVersionCode
+        //file("../version_head.txt").text = "version: " + finalVersionName + "+" + finalVersionCode
+
+        // Add version to APK name
+        setProperty("archivesBaseName", "exifthumbnailadder-$versionName")
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            packagingOptions {
+                //exclude 'doc/**'        // coming from pixymeta-android.jar
+                //exclude 'changelog.txt' // coming from pixymeta-android.jar
+            }
+        }
+        debug {
+            //minifyEnabled true
+            //shrinkResources true
+
+            aaptOptions {
+                //ignoreAssetsPattern '!**/doc:!**/changelog.txt'
+            }
+            packagingOptions {
+                //exclude 'doc/**'        // coming from pixymeta-android.jar
+                //exclude 'changelog.txt' // coming from pixymeta-android.jar
+            }
+        }
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+        standard {
+            // Without pixymeta-android
+            isDefault.set(true)
+        }
+        pixymeta {
+            // With pixymeta-android library
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.navigation:navigation-fragment:2.3.4'
+    implementation 'androidx.navigation:navigation-ui:2.3.4'
+    implementation 'androidx.exifinterface:exifinterface:1.3.2'
+    implementation 'androidx.wear:wear:1.1.0'
+    implementation 'androidx.documentfile:documentfile:1.0.1'
+    implementation 'androidx.preference:preference:1.1.1'
+    implementation project(path: ':library:Android-Exif-Extended')
+    //implementation files('libs/*.jar')
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    compileOnly 'com.google.android.wearable:wearable:2.8.1'
+
+}
+
+if (new File("enable-pixymeta-android.gradle").exists()) {
+    apply from: 'enable-pixymeta-android.gradle'
+}

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    tools:context=".WorkingDirPermActivity"
+>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20px"
+                android:text="You don't have the permission to write to the WorkingDirectory or it doesn't exist.\n
+\n
+To save the backup of your pictures and store some temporary files, this application uses a directory at the root of the volumes carrying the pictures you want to process.\n
+By default it is named 'ThumbAdder' (this can be changed in the settings).\n
+For this to work, the directory has to exist and it must be permitted to read &amp; write. This can be achieved only if you give the application the permission. The button bellow will help you to do this easily.\n
+\n
+Once you click the button some screens will appear and ask you to give access. All you have to do is confirm every step.\n
+    1. You are asked to confirm the directory name and the folder where it is created (keep default value)\n
+    2. You give permanent read &amp; write access to the working directory.\n
+\n
+\n
+You only have to confirm every screen.\n
+The required values are already set for you.\n
+\n
+Once permissions are set you are redirected to the main screen, and you can start again.\n"
+
+
+                />
+            <!--"You don't have the permission to write to the WorkingDirectory or it doesn't exist.\n
+        \n
+        To save the backup of your pictures and store some temporary files, this application uses a directory at the root of the volumes carrying the pictures you want to process.\n
+        By default it is named 'ThumbAdder'.\n
+        For this to work, the directory has to exist and it must be permitted to read &amp; write. This can be achieved only if you give the application the permission. The button bellow will help you to do this easily.\n
+        \n
+        Once you click the button some screens will appear and ask you to give access. All you have to do is confirm every step.\n
+        1. In the first step, you give the app the right to access temporarily the root of the storage volume (this permission is not kept, it is just for step 2)\n
+        2. Then you are asked to confirm the name and location of where the directory will be created.\n
+        3. Finally, you give permanent read &amp; write access to the working directory.\n
+        \n
+        \n
+        You only have to confirm every screen.\n
+        The required values are already set automatically.\n
+        \n
+        Once permissions are set this screen will not appear anymore, you are redirected to the main screen, and you can start again.\n"
+        -->
+
+            <Button
+                android:id="@+id/button_checkPermissions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:onClick="checkWorkingDirPermissions"
+                android:text="Create Dir &amp; set permissions" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

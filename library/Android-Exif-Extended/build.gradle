@@ -1,0 +1,28 @@
+apply plugin: 'com.android.library'
+
+group GROUP
+version VERSION_NAME
+
+android {
+    compileSdkVersion Integer.parseInt(ANDROID_BUILD_SDK_VERSION)
+    buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
+
+    defaultConfig {
+        minSdkVersion 9
+        targetSdkVersion Integer.parseInt(ANDROID_BUILD_TARGET_SDK_VERSION)
+        versionCode 1
+        versionName version
+    }
+    buildTypes {
+        release {
+            //runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+}
+
+//dependencies {
+//    api fileTree(dir: 'libs', include: ['*.jar'])
+//}
+
+//apply from: '../gradle-mvn-push.gradle'

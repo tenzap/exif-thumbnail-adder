@@ -1,0 +1,116 @@
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+buildscript {
+    dependencies {
+        //classpath 'org.ajoberstar:grgit:1.4.+'
+    }
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+apply from: 'git-version.gradle'
+
+def getDate () {
+    // https://stackoverflow.com/a/19184323/15401262
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMdd')
+    return formattedDate
+}
+
+def getDateTime () {
+    // https://stackoverflow.com/a/19184323/15401262
+    def date = new Date()
+    def formattedDate = date.format('yyyyMMdd-HHmmss')
+    return formattedDate
+}
+
+def versionCodeAsDate() {
+    return Integer.parseInt(getDate())
+}
+
+def versionCodeAsDateTime() {
+    return getDateTime()
+}
+
+def fallbackVersionNumber() {
+    // set fallback versionNumber in case getting version from git doesn't work
+    if (file("../version_last_tag.txt").exists()) {
+        try {
+            String mydata = file("../version_last_tag.txt").text.toString()
+            Pattern pattern = Pattern.compile('version: (.+)\\+(.+)');
+            Matcher matcher = pattern.matcher(mydata);
+            //if (matcher.find()) System.out.println(matcher.group(1))
+            return matcher.group(1) + "-exotic-" + versionCodeAsDateTime()
+        } catch (Exception e) {
+            e.printStackTrace()
+        }
+    } else {
+        return 'missingGitTag' + "-" + versionCodeAsDateTime()
+    }
+}
+
+def fallbackVersionCode() {
+    // set fallback versionCode in case getting version from git doesn't work
+    if (file("../version_last_tag.txt").exists()) {
+        try {
+            String mydata = file("../version_last_tag.txt").text.toString()
+            Pattern pattern = Pattern.compile('version: (.+)\\+(.+)');
+            Matcher matcher = pattern.matcher(mydata);
+            //if (matcher.find()) System.out.println(matcher.group(2));
+            return Integer.parseInt(matcher.group(2))
+        } catch (Exception e) {
+            e.printStackTrace()
+        }
+    } else {
+        return 1
+    }
+}
+
+def finalVersionCode() {
+    if (readVersionCode() == 0) {
+        return fallbackVersionCode()
+    } else {
+        return readVersionCode()
+    }
+}
+
+def finalVersionName() {
+    if (readVersionName().startsWith("null")) {
+        return fallbackVersionNumber()
+    } else {
+        return readVersionName()
+    }
+}
+
+def lastTagVersionCode() {
+    if (readLastTagVersionCode() == 0) {
+        return fallbackVersionCode()
+    } else {
+        return readLastTagVersionCode()
+    }
+}
+
+def lastTagVersionName () {
+    if (readLastTagVersionName().startsWith("null")) {
+        return fallbackVersionNumber()
+    } else {
+        return readLastTagVersionName()
+    }
+}
+
+ext {
+    // The lines below don't work if there is no git repo initialized
+    //git = org.ajoberstar.grgit.Grgit.open()
+    //gitVersionCode = git.tag.list().size()
+    //gitVersionName = "${git.describe()}"
+
+    finalVersionCode = finalVersionCode()
+    finalVersionName = finalVersionName()
+    lastTagVersionCode = lastTagVersionCode()
+    lastTagVersionName = lastTagVersionName()
+}

@@ -1,0 +1,12 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="exif_library_entries">
+        <item>Android-Exif-Extended</item>
+        <item>pixymeta-android</item>
+    </string-array>
+
+    <string-array name="exif_library_values">
+        <item>exiflib_android-exif-extended</item>
+        <item>exiflib_pixymeta</item>
+    </string-array>
+</resources>

@@ -1,0 +1,124 @@
+/**
+ * Copyright 2016 Avinash Ananth Narayan R
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+// Adapted from: https://gist.github.com/Avinash-Bhat/12fc59b3d96cb427e5e9
+
+buildscript {
+    dependencies {
+        //noinspection GradleDynamicVersion
+        classpath "org.eclipse.jgit:org.eclipse.jgit:4.1.1.+"
+    }
+    repositories {
+        jcenter()
+    }
+}
+
+import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.revwalk.RevWalk
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+
+import static org.eclipse.jgit.lib.Constants.MASTER
+
+def noGit = false
+def gitRepo
+def git
+try {
+    git = Git.open(new File(rootProject.projectDir.toString()));
+    gitRepo = git.getRepository()
+    /*gitRepo = new FileRepositoryBuilder()
+            .readEnvironment()
+            .findGitDir()
+            .build()
+    git = Git.wrap(gitRepo)*/
+} catch (ignore) {
+    println("WARN: No git repository.")
+    noGit = true;
+}
+
+ext.readVersionCode = {
+    //Equivalent to 'git' 'rev-list' '--first-parent' '--count' 'master'
+    // = Total nb of commits
+    def count = 0
+    if (noGit) {
+        count = 0
+    } else {
+        def walk = new RevWalk(gitRepo)
+        def masterRef = gitRepo.getRef(MASTER)
+        if (masterRef == null) {
+            return 0;
+        }
+        def head = walk.parseCommit(masterRef.getObjectId())
+        try {
+            while (head != null) {
+                count++
+                def parents = head.getParents()
+                if (parents != null && parents.length > 0) {
+                    head = walk.parseCommit(parents[0])
+                } else {
+                    head = null
+                }
+            }
+            walk.dispose()
+        } finally {
+            walk.close()
+        }
+    }
+    //println("using version code: $count")
+    return count
+}
+
+ext.readVersionName = {
+    //Equivalent to 'git' 'describe' '--tags' '--dirty'
+    def version;
+    try {
+        if (noGit) {
+            return "null"
+        }
+        def tag = git.describe().setLong(false).call()
+        def clean = git.status().call().isClean()
+        version = tag + (clean ? '' : '-dirty')
+    } catch (ignore) {
+        version = "null"
+    }
+    //println("using version name: $version")
+    return version
+}
+
+ext.readLastTagVersionCode = {
+    def tag = readLastTagVersionName()
+    try {
+        def code = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'rev-list', '--first-parent', '--count', tag.toString()
+            standardOutput = code
+        }
+        return code.toString().trim().toInteger()
+    } catch (ignored) {
+        return 0
+    }
+}
+
+ext.readLastTagVersionName = {
+    try {
+        def code = new ByteArrayOutputStream()
+        exec {
+            commandLine 'git', 'describe', '--tags', '--abbrev=0'
+            standardOutput = code
+        }
+        return code.toString().trim()
+    } catch (ignored) {
+        return "null"
+    }
+}

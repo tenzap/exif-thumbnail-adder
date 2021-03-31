@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10sp"
+    >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="List of directories to process"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/textview_dir_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No directory selected. Go to Settings to select." />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+            <Button
+                android:id="@+id/button_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Settings"
+                android:visibility="visible"
+               />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/block_allFilesAccess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+        <TextView
+            android:id="@+id/textview_allFilesAccess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFA500"
+            android:text="'All files access' permissions is not granted on your device. You can still use this app normally but please understand that time and date of your files will be set to current time. This does not affect the time/date stored in the EXIF tags of your pictures. You may give permission in settings." />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <Button
+        android:id="@+id/button_addThumbs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start processing"
+        android:layout_gravity="center_horizontal"
+        />
+    <Button
+        android:id="@+id/button_stopProcess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/textview_log_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Processing Log"
+        android:textStyle="bold" />
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_gravity="bottom">
+        <TextView
+            android:id="@+id/textview_log"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hello_first_fragment"
+            />
+    </ScrollView>
+
+</LinearLayout>
