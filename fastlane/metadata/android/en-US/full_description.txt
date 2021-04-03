@@ -24,7 +24,7 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
     - Rotation of the thumbnail
     - Backup of original pictures
     - Replace picture inplace or write new picture to another directory
-    - Choose the exif library for adding thumbnails (Android-Exif-Extended or pixymeta-android). Please note that at the time of writing this, pixymeta-android is licensed under EPL-1.0 which is not compatible with GPL. You may compile yourself a variant having pixymeta-android. See below for more info.
+    - Choose the exif library for adding thumbnails (Android-Exif-Extended or pixymeta-android). Please note that at the time of writing this, pixymeta-android is licensed under EPL-1.0 which is not compatible with GPL. You may compile yourself a variant having pixymeta-android. See README file for more info.
 
 
 ## Installation
@@ -49,5 +49,5 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
     - Implement another backend and/or fix https://github.com/dragon66/pixymeta-android/issues/10
 
 
-## Licence
+## License
 GPL-3.0 (see "LICENSE" file)

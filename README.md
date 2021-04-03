@@ -55,7 +55,7 @@ GPL-3.0 (see "COPYING" file)
 
 ## To create screenshots
 `./gradlew assembleDebug assembleAndroidTest`  
-`fastlane screengrab --use_timestamp_suffix false --clear_previous_screenshots -q "en-US,fr-FR"`
+`fastlane screengrab --use_timestamp_suffix false --clear_previous_screenshots -q "en-US,fr-FR" --reinstall_app`
 
 
 ## Development / Building from source

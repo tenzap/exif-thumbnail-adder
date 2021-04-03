@@ -47,7 +47,7 @@
 
     <!-- First Fragment -->
     <string name="frag1_text_list_of_dirs_to_process">Liste des répertoires à traiter</string>
-    <string name="frag1_text_no_dir_selected">Pas de répertoire sélectionne. Allez dans les paramètres pour en sélectionner.</string>
+    <string name="frag1_text_no_dir_selected">Pas de répertoire sélectionné. Allez dans les paramètres pour en sélectionner.</string>
     <string name="frag1_text_all_files_access_permissions_is_not_granted">La permission \'Accès à tous les fichiers\'
         n\'est pas accordée sur votre appareil. Vous pouvez tout de même utiliser l\'appli mais les date et heure de
         fichier seront l\'heure actuelle. Ceci n\'affecte pas les date/heure stockées dans les données EXIF de vos
