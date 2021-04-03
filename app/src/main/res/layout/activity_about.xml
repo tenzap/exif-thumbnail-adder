@@ -22,7 +22,7 @@
                 android:id="@+id/textView_about_title"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="About"
+                android:text="@string/about_about_title"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display3" />
 
             <View

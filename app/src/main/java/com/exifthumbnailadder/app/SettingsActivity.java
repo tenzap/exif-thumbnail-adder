@@ -178,7 +178,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
             if (intentFailed) {
                 // Some devices don't support this request.
-                Toast.makeText(this.getContext(), R.string.dialog_all_files_access_not_supported, Toast.LENGTH_LONG).show();
+                Toast.makeText(this.getContext(), R.string.settings_dialog_all_files_access_not_supported, Toast.LENGTH_LONG).show();
             }
         }
     }

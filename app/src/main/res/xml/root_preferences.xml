@@ -3,10 +3,10 @@
 
     <PreferenceCategory
         app:key="categ_Folders"
-        app:title="Folders">
+        app:title="@string/pref_categ_folders">
         <Preference
             app:key="selectPathButton"
-            app:title="Directories to process"
+            app:title="@string/pref_dirToProcess_title"
             app:widgetLayout="@layout/select_path_button"
             />
         <Preference
@@ -18,76 +18,76 @@
             app:key="working_dir"
             android:selectAllOnFocus="true"
             app:useSimpleSummaryProvider="true"
-            app:dialogMessage="This directory contains the backup of the original pictures and also some temporary files created during process. It is located at the root of each volume (phone, sdcard...).\nFor example with the default value, files would be placed into &lt;SDCARD&gt;/ThumbAdder/DCIM.bak or &lt;PHONE_STORAGE&gt;/ThumbAdder/DCIM.bak"
+            app:dialogMessage="@string/pref_workingDir_dialogMessage"
             app:singleLine="true"
-            app:title="Backup &amp; working directory" />
+            app:title="@string/pref_workingDir_title" />
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:key="settings_allFilesAccess"
-            app:title="All files access (for Android 11+ only)"
-            app:summary="Gives access to all files on your device. This permits to keep the timestamps of the processed files. The timestamps of your pictures stored in EXIF are not altered whichever value this option has." />
+            app:title="@string/pref_allFilesAccess_title"
+            app:summary="@string/pref_allFilesAccess_summary" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Options">
+    <PreferenceCategory app:title="@string/pref_categ_options">
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="rotateThumbnails"
-            app:title="Rotate thumbnails"
-            app:summary="Rotate thumbnails to correspond to the picture. Most apps need the thumbnail to be rotated (eg. Win10 photo import)"/>
+            app:title="@string/pref_rotateThumbnail_title"
+            app:summary="@string/pref_rotateThumbnail_summary"/>
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="backupOriginalPic"
-            app:title="Create backup of original picture"
-            app:summary="Backup location is the working directory (if the backup exists, it is never overwritten)"
+            app:title="@string/pref_backupOriginalPic_title"
+            app:summary="@string/pref_backupOriginalPic_summary"
             />
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="writeThumbnailedToOriginalFolder"
-            app:title="Write to original folder"
-            app:summaryOn="Write the image with the thumbnail to the location of the original picture (ie. replace in place)"
-            app:summaryOff="Write the image with the thumbnail to the working directory (in '&lt;Volume&gt;/ThumbAdder/&lt;orig_dir&gt;.new')"
+            app:title="@string/pref_writeThumbnailedToOriginalFolder_title"
+            app:summaryOn="@string/pref_writeThumbnailedToOriginalFolder_summaryOn"
+            app:summaryOff="@string/pref_writeThumbnailedToOriginalFolder_summaryOff"
         />
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:key="overwriteDestPic"
-            app:title="Overwrite picture in destination"
-            app:summary="Silently override the file in the destination folder if it already exists"
+            app:title="@string/pref_overwriteDestPic_title"
+            app:summary="@string/pref_overwriteDestPic_summary"
             />
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="keepTimeStampOnBackup"
-            app:title="Copy timestamp to backup"
-            app:summary="If 'Write to original folder' is 'off', this option permits to copy the timestamp of the original picture to its copy in the backup directory.\nIf 'Write to original folder' is 'off', the timestamp of the backup is always kept."
+            app:title="@string/pref_keepTimeStampOnBackup_title"
+            app:summary="@string/pref_keepTimeStampOnBackup_summary"
             app:enabled="false"
         />
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="writeTmpToCacheDir"
-            app:summaryOn="Write temporary images created during processing to the cache directory of the application"
-            app:summaryOff="Write temporary images created during processing to the working directory"
-            app:title="Write tmp images to cache dir" />
+            app:summaryOn="@string/pref_writeTmpToCacheDir_summaryOn"
+            app:summaryOff="@string/pref_writeTmpToCacheDir_summaryOff"
+            app:title="@string/pref_writeTmpToCacheDir_title" />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Backend/Library">
+    <PreferenceCategory app:title="@string/pref_categ_backend">
         <ListPreference
             app:defaultValue="exiflib_android-exif-extended"
             app:entries="@array/exif_library_entries"
             app:entryValues="@array/exif_library_values"
             app:key="exif_library"
-            app:title="For writting EXIF thumbnails"
+            app:title="@string/pref_exifLibrary_title"
             app:useSimpleSummaryProvider="true"
             />
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Extra">
+    <PreferenceCategory app:title="@string/pref_categ_extra">
         <EditTextPreference
-            app:defaultValue="copy_of_"
+            app:defaultValue="@string/pref_excludedSecVolPrefix_defaultValue"
             app:key="excluded_sec_vol_prefix"
             android:selectAllOnFocus="true"
             app:useSimpleSummaryProvider="true"
-            app:dialogMessage="It is possible to specify a subdir that should be excluded from processing. This value will prefix the volume id in order to form an excluded dir named '&lt;prefix&gt;&lt;volId&gt;'. For example 'copy_of_XXXX-XXXX'.\nThe volume id of the volume (typically an sdcard) can be found in the list of directories to process in the form of XXXX-XXXX."
+            app:dialogMessage="@string/pref_excludedSecVolPrefix_dialogMessage"
             app:singleLine="true"
-            app:title="Prefix for excluded dir" />
+            app:title="@string/pref_excludedSecVolPrefix_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

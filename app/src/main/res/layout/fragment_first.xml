@@ -8,7 +8,6 @@
     >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -17,7 +16,7 @@
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="List of directories to process"
+            android:text="@string/frag1_text_list_of_dirs_to_process"
             android:textStyle="bold"
             />
 
@@ -25,7 +24,7 @@
             android:id="@+id/textview_dir_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No directory selected. Go to Settings to select." />
+            android:text="@string/frag1_text_no_dir_selected" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,7 +39,7 @@
                 android:id="@+id/button_settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="@string/frag1_button_settings"
                 android:visibility="visible"
                />
 
@@ -49,7 +48,6 @@
     </LinearLayout>
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/block_allFilesAccess"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -65,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFA500"
-            android:text="'All files access' permissions is not granted on your device. You can still use this app normally but please understand that time and date of your files will be set to current time. This does not affect the time/date stored in the EXIF tags of your pictures. You may give permission in settings." />
+            android:text="@string/frag1_text_all_files_access_permissions_is_not_granted" />
 
     </LinearLayout>
 
@@ -79,14 +77,14 @@
         android:id="@+id/button_addThumbs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start processing"
+        android:text="@string/frag1_button_start_processing"
         android:layout_gravity="center_horizontal"
         />
     <Button
         android:id="@+id/button_stopProcess"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop"
+        android:text="@string/frag1_button_stop"
         android:layout_gravity="center_horizontal"
         android:visibility="gone"
         />
@@ -95,7 +93,7 @@
         android:id="@+id/textview_log_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Processing Log"
+        android:text="@string/frag1_text_processing_log"
         android:textStyle="bold" />
     <ScrollView
         android:id="@+id/scrollview"

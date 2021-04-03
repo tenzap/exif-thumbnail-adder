@@ -211,7 +211,7 @@ public class WorkingDirPermActivity extends AppCompatActivity {
             return;
         }
 
-        FirstFragment.log.append(Html.fromHtml("<span style='color:green'><b>WorkingDir permissions set, please retry.</b></span>",1));
+        FirstFragment.log.append(Html.fromHtml("<span style='color:green'><b>"+getString(R.string.working_dir_perm_permissions_set_retry)+"</b></span>",1));
         // Close Activity and go back to the previous one
         finish();
     }

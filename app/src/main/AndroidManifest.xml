@@ -20,11 +20,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ExifThumbnailAdder">
         <activity android:name=".AboutActivity"
-            android:label="About"
+            android:label="@string/title_activity_about"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".WorkingDirPermActivity"
-            android:label="Working dir permissions"
+            android:label="@string/title_activity_working_dir_perm"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".SettingsActivity"

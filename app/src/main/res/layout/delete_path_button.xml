@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="deletePaths"
-            android:text="Remove all directories"
+            android:text="@string/settings_button_remove_all_dirs"
             />
     </LinearLayout>
 

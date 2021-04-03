@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="choosePaths"
-            android:text="Add" />
+            android:text="@string/settings_button_add_dir" />
 
     </LinearLayout>
 

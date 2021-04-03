@@ -57,14 +57,14 @@ public class AboutActivity extends AppCompatActivity {
         SpannableStringBuilder text = new SpannableStringBuilder();
 
         text.append("<p>");
-        text.append("<u><strong>Version:</strong></u> " + version);
+        text.append("<u><strong>"+getString(R.string.about_version)+"</strong></u> " + version);
         text.append("</p><p>");
-        text.append("<u><strong>Project homepage & source code:</strong></u><br><a href='"+homepage_url+"'>"+homepage_url+"</a>");
+        text.append("<u><strong>" + getString(R.string.about_homepage_source) + "</strong></u><br><a href='"+homepage_url+"'>"+homepage_url+"</a>");
         text.append("</p><p>");
         text.append("</p><p>");
-        text.append("<u><strong>License:</strong></u> <a href='http://www.gnu.org/licenses/gpl-3.0.html'>GNU General Public License, version 3</a>");
+        text.append("<u><strong>" + getString(R.string.about_license) + "</strong></u> <a href='http://www.gnu.org/licenses/gpl-3.0.html'>GNU General Public License, version 3</a>");
         text.append("</p><p>");
-        text.append("<u><strong>External libraries</strong></u>");
+        text.append("<u><strong>" + getString(R.string.about_external_libraries) + "</strong></u>");
         text.append("</p>");
         text.append("<ul><li>");
         text.append("<a href='https://github.com/sephiroth74/Android-Exif-Extended'>Android-Exif-Extended</a> Apache License, Version 2.0");

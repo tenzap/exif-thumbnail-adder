@@ -1,39 +1,148 @@
 <resources>
     <string name="app_name">Exif Thumbnail Adder</string>
+
+    <!-- AndroidManifest.xml -->
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_about">About</string>
+    <string name="title_activity_working_dir_perm">Working dir permissions</string>
+
+    <!-- Toolbar action menu labels -->
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
+
+    <!-- About Activity -->
+    <string name="about_about_title">About</string>
     <string name="about_content">About...</string>
+    <string name="about_version">Version</string>
+    <string name="about_homepage_source">Project homepage &amp; source code:</string>
+    <string name="about_license">License:</string>
+    <string name="about_external_libraries">External libraries</string>
+
+    <!-- Working dir perm activity -->
+    <string name="working_dir_perm_permissions_set_retry">WorkingDir permissions set, please retry.</string>
+    <string name="working_dir_button_create_dir_and_set_permissions">Create Dir &amp; set permissions</string>
+    <!--string name="working_dir_text_you_don_t_have_the_permission_to_write"><![CDATA[You don\'t have the permission to write to the WorkingDirectory or it doesn\'t exist.\n \n To save the backup of your pictures and store some temporary files, this application uses a directory at the root of the volumes carrying the pictures you want to process.\n By default it is named \'ThumbAdder\' (this can be changed in the settings).\n For this to work, the directory has to exist and it must be permitted to read & write. This can be achieved only if you give the application the permission. The button bellow will help you to do this easily.\n \n Once you click the button some screens will appear and ask you to give access. All you have to do is confirm every step.\n 1. You are asked to confirm the directory name and the folder where it is created (keep default value)\n 2. You give permanent read & write access to the working directory.\n \n \n You only have to confirm every screen.\n The required values are already set for you.\n \n Once permissions are set you are redirected to the main screen, and you can start again.\n]]></string-->
+    <string name="working_dir_text_you_don_t_have_the_permission_to_write">
+    You don\'t have the permission to write to the WorkingDirectory or it doesn\'t exist.\n
+    \n
+    To save the backup of your pictures and store some temporary files, this application uses a directory
+    at the root of the volumes carrying the pictures you want to process.\n
+    By default it is named \'ThumbAdder\' (this can be changed in the settings).\n
+    For this to work, the directory has to exist and it must be permitted to read &amp; write.
+    This can be achieved only if you give the application the permission.
+    The button bellow will help you to do this easily.\n
+    \n
+    Once you click the button some screens will appear and ask you to give access.
+    All you have to do is confirm every step.\n
+    1. You are asked to confirm the directory name and the folder where it is created
+    (keep default value)\n
+    2. You give permanent read &amp; write access to the working directory.\n
+    \n
+    \n
+    You only have to confirm every screen.\n
+    The required values are already set for you.\n
+    \n
+    Once permissions are set you are redirected to the main screen, and you can start again.\n</string>
+
+    <!--"You don't have the permission to write to the WorkingDirectory or it doesn't exist.\n
+\n
+To save the backup of your pictures and store some temporary files, this application uses a directory at the root of the volumes carrying the pictures you want to process.\n
+By default it is named 'ThumbAdder'.\n
+For this to work, the directory has to exist and it must be permitted to read &amp; write. This can be achieved only if you give the application the permission. The button bellow will help you to do this easily.\n
+\n
+Once you click the button some screens will appear and ask you to give access. All you have to do is confirm every step.\n
+1. In the first step, you give the app the right to access temporarily the root of the storage volume (this permission is not kept, it is just for step 2)\n
+2. Then you are asked to confirm the name and location of where the directory will be created.\n
+3. Finally, you give permanent read &amp; write access to the working directory.\n
+\n
+\n
+You only have to confirm every screen.\n
+The required values are already set automatically.\n
+\n
+Once permissions are set this screen will not appear anymore, you are redirected to the main screen, and you can start again.\n"
+-->
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
     <string name="previous">Previous</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="todo">TODO</string>
-    <string name="title_activity_storage">Choose paths</string>
-    <!--
-    This string is used for square devices and overridden by hello_world in
-    values-round/strings.xml for round devices.
-    -->
-    <string name="hello_world">Hello Square World!</string>
-    <string name="title_activity_settings">Settings</string>
 
-    <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
+    <!-- First Fragment -->
+    <string name="frag1_text_list_of_dirs_to_process">List of directories to process</string>
+    <string name="frag1_text_no_dir_selected">No directory selected. Go to Settings to select.</string>
+    <string name="frag1_text_all_files_access_permissions_is_not_granted">\'All files access\' permissions is not granted on your device. You can still use this app normally but please understand that time and date of your files will be set to current time. This does not affect the time/date stored in the EXIF tags of your pictures. You may give permission in settings.</string>
+    <string name="frag1_button_settings">Settings</string>
+    <string name="frag1_button_start_processing">Start processing</string>
+    <string name="frag1_button_stop">Stop</string>
+    <string name="frag1_text_processing_log">Processing Log</string>
 
-    <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
+    <string name="frag1_log_skipping_excluded_dir">Skipping excluded dir %1$s in %2$s</string>
+    <string name="frag1_log_copying_attr">Copying attributes...</string>
+    <string name="frag1_log_starting">Starting...\n</string>
+    <string name="frag1_log_stopped_by_user">Stopped by user.</string>
+    <string name="frag1_log_processing_dir">Processing %1$s</string>
+    <string name="frag1_log_processing_path_filename">Processing... Path: %1$s Filename: %2$s</string>
+    <string name="frag1_log_skipping_path_filename">Skipping... Path: %1$s Filename: %2$s</string>
+    <string name="frag1_log_checking_workingdir_perm">Checking working directory permissions...</string>
+    <string name="frag1_log_checking_perm">Checking permissions...</string>
+    <string name="frag1_log_skipping_not_jpeg">Skipping (not JPEG)\n</string>
+    <string name="frag1_log_skipping_empty_file">Skipping (empty file)\n</string>
+    <string name="frag1_log_skipping_has_thumbnail">Skipping (has thumbnail)\n</string>
+    <string name="frag1_log_skipping_bad_image">Skipping (bad image?)\n</string>
+    <string name="frag1_log_skipping_error">Skipping (ERROR): %1$s</string>
+    <string name="frag1_log_file_exists">File already exists: %1$s</string>
+    <string name="frag1_log_finished">\nFinished.</string>
+    <string name="frag1_log_pixymeta_missing">Pixymeta-android library not available in this build. Select another library in settings.</string>
+    <string name="frag1_log_done">\u00A0Done</string>
+    <string name="frag1_log_overwrite_not_allowed">\u00A0Overwriting picture not allowed (see settings). Destination file exists. Skipping.</string>
+    <string name="frag1_log_cannot_move_to_backup">\u00A0Cannot move picture to backup. File exists. Skipping.</string>
+    <string name="frag1_log_ok">\u00A0OK</string>
+    <string name="frag1_log_not_granted">\u00A0Not granted. Please add the directory again in Settings.</string>
+    <string name="frag1_log_ko">\u00A0KO"</string>
+    <string name="frag1_log_could_not_copy_timestamp_and_attr">Could not copy file timestamps &amp; attributes: %1$s</string>
+    <string name="frag1_log_error_moving_doc">ERROR moving document: %1$s</string>
+    <string name="frag1_log_error_copying_doc">ERROR copying document: %1$s</string>
+    <string name="frag1_log_count_files_to_process">%1$d file(s) to process."</string>
+    <string name="frag1_log_error">ERROR: %1$s</string>
 
-    <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <!-- Settings -->
+    <string name="settings_dialog_all_files_access_not_supported">Your device does not support all files access</string>
+    <string name="settings_button_remove_all_dirs">Remove all directories</string>
+    <string name="settings_button_add_dir">Add</string>
 
-    <string name="dialog_all_files_access_not_supported">Your device does not support all files access</string>
+    <string name="pref_categ_folders">Folders</string>
+    <string name="pref_dirToProcess_title">Directories to process</string>
+    <string name="pref_workingDir_title"><![CDATA[Backup & working directory]]></string>
+    <string name="pref_workingDir_dialogMessage"><![CDATA[This directory contains the backup of the original pictures and also some temporary files created during process. It is located at the root of each volume (phone, sdcard...).\nFor example with the default value, files would be placed into <SDCARD>/ThumbAdder/DCIM.bak or <PHONE_STORAGE>/ThumbAdder/DCIM.bak]]></string>
+    <string name="pref_allFilesAccess_title">All files access (for Android 11+ only)</string>
+    <string name="pref_allFilesAccess_summary">Gives access to all files on your device. This permits to keep the timestamps of the processed files. The timestamps of your pictures stored in EXIF are not altered whichever value this option has.</string>
+
+    <string name="pref_categ_options">Options</string>
+    <string name="pref_rotateThumbnail_title">Rotate thumbnails</string>
+    <string name="pref_rotateThumbnail_summary">Rotate thumbnails to correspond to the picture. Most apps need the thumbnail to be rotated (eg. Win10 photo import)</string>
+    <string name="pref_backupOriginalPic_title">Create backup of original picture</string>
+    <string name="pref_backupOriginalPic_summary">Backup location is the working directory (if the backup exists, it is never overwritten)</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_title">Write to original folder</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Write the image with the thumbnail to the location of the original picture (ie. replace in place)</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Write the image with the thumbnail to the working directory (in \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
+    <string name="pref_overwriteDestPic_title">Overwrite picture in destination</string>
+    <string name="pref_overwriteDestPic_summary">Silently override the file in the destination folder if it already exists</string>
+    <string name="pref_keepTimeStampOnBackup_title">Copy timestamp to backup</string>
+    <string name="pref_keepTimeStampOnBackup_summary">If \'Write to original folder\' is \'off\', this option permits to copy the timestamp of the original picture to its copy in the backup directory.\nIf \'Write to original folder\' is \'on\', the timestamp of the backup is always kept.</string>
+    <string name="pref_writeTmpToCacheDir_title">Write tmp images to cache dir</string>
+    <string name="pref_writeTmpToCacheDir_summaryOn">Write temporary images created during processing to the cache directory of the application</string>
+    <string name="pref_writeTmpToCacheDir_summaryOff">Write temporary images created during processing to the working directory</string>
+
+    <string name="pref_categ_backend">Backend/Library</string>
+    <string name="pref_exifLibrary_title">Write EXIF thumbnails with</string>
+
+    <string name="pref_categ_extra">Extra</string>
+    <string name="pref_excludedSecVolPrefix_title">Prefix for excluded dir</string>
+    <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[It is possible to specify a subdir that should be excluded from processing. This value will prefix the volume id in order to form an excluded dir named \'<prefix><volId>\'. For example \'copy_of_XXXX-XXXX\'.\nThe volume id of the volume (typically an sdcard) can be found in the list of directories to process in the form of XXXX-XXXX.]]></string>
+    <string name="pref_excludedSecVolPrefix_defaultValue">copy_of_</string>
+
 </resources>

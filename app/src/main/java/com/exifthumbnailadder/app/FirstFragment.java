@@ -384,7 +384,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 }
                 if (aFile.isDirectory()) {
                     if (aFile.getName().equals(excluded)) {
-                        if (enableLog) Log.i(TAG, "Skipping excluded dir " + excluded + " in " + aFile.getUri().getPath());
+                        if (enableLog) Log.i(TAG, getString(R.string.frag1_log_skipping_excluded_dir, excluded, aFile.getUri().getPath()));
                     } else {
                         //System.out.println("[" + aFile.getName() + "]");
                         listDocFilesToProcess_int(aFile, level + 1, arrayList, excluded);
@@ -528,7 +528,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
     }
 
     private void copyFileAttributes(Path inFilePath, Path outFilePath) throws Exception {
-        if (enableLog) Log.i(TAG, "Copying attributes...");
+        if (enableLog) Log.i(TAG, getString(R.string.frag1_log_copying_attr));
         try {
             BasicFileAttributes inAttrs = Files.readAttributes(inFilePath, BasicFileAttributes.class);
 
@@ -589,7 +589,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         isProcessing = true;
         stopProcessing = false;
         log.clear();
-        updateUiLog("Starting...\n");
+        updateUiLog(getString(R.string.frag1_log_starting));
 
         String[] volumesDir = getVolumesDir();
         String[] mainDirs = {"DCIM", "Pictures"};
@@ -599,10 +599,10 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 String srcPath = volumesDir[j] + "/" + mainDirs[d] + "/";
                 String volumeName = getVolumeName(srcPath);
                 String secStorageVolName = getSecVolumeName(getContext(), true);
-                String secStorageDirName = prefs.getString("excluded_sec_vol_prefix", "copie_de_") + secStorageVolName;
+                String secStorageDirName = prefs.getString("excluded_sec_vol_prefix", getString(R.string.pref_excludedSecVolPrefix_defaultValue)) + secStorageVolName;
                 String excludedPath = volumesDir[j] + "/" + mainDirs[d] + "/" + secStorageDirName + "/";
 
-                updateUiLog(Html.fromHtml("<br><u><b>Processing "+ srcPath + "</b></u><br>",1));
+                updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, srcPath) + "</b></u><br>",1));
 
                 // Get mounted path of the volume holding this folder
                 String volumeRootPath = getVolumeRootPath(srcPath);
@@ -626,7 +626,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 //if (enableLog) Log.i(TAG, "Array of filesInDir: " + filesInDir.toString());
 
                 for (int i = 0; i < filesInDir.length; i++) {
-                    if (enableLog) Log.i(TAG, "Processing... Path: " + filesInDir[i].getPath() + " Filename: " + filesInDir[i].getName());
+                    if (enableLog) Log.i(TAG, getString(R.string.frag1_log_processing_path_filename, filesInDir[i].getPath(), filesInDir[i].getName()));
 
                     // Prepare dir variables
                     String mainDir = ""; // if "mountDir/DCIM/dir1/s2/file.jpg" --> DCIM
@@ -646,13 +646,13 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             filesInDir[i].getName() + "... ");
 
                     if (!isJpegImageFile(filesInDir[i].toString())) {
-                        if (enableLog) Log.i(TAG, "Skipping... Path: " + filesInDir[i].getPath() + " Filename: " + filesInDir[i].getName());
-                        updateUiLog("Skipping (not JPEG)\n");
+                        if (enableLog) Log.i(TAG, getString(R.string.frag1_log_skipping_path_filename, filesInDir[i].getPath() , filesInDir[i].getName()));
+                        updateUiLog(getString(R.string.frag1_log_skipping_not_jpeg));
                         continue;
                     }
 
                     if(filesInDir[i].length() == 0) {
-                        updateUiLog("Skipping (empty file)\n");
+                        updateUiLog(getString(R.string.frag1_log_skipping_empty_file));
                         continue;
                     }
 
@@ -675,11 +675,11 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         srcImgExifInterface = null;
 
                         if (srcImgHasThumbnail) {
-                            updateUiLog("Skipping (has thumbnail)\n");
+                            updateUiLog(getString(R.string.frag1_log_skipping_has_thumbnail));
                             continue;
                         }
                     } catch (Exception e) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>Skipping (ERROR): " + e.getMessage()+ "</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                         e.printStackTrace();
                         continue;
                     }
@@ -700,7 +700,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                 break;
                             case "exiflib_pixymeta":
                                 if (!PixymetaInterface.hasPixymetaLib()) {
-                                    updateUiLog(Html.fromHtml("<br><br><span style='color:red'>Pixymeta-android library not available in this build. Select another library in settings.</span><br>", 1));
+                                    updateUiLog(Html.fromHtml("<br><br><span style='color:red'>" + getString(R.string.frag1_log_pixymeta_missing) + "</span><br>", 1));
                                     return;
                                 }
                                 PixymetaInterface.writeThumbnailWithPixymeta(srcImgIs, newImgOs, thumbnail);
@@ -711,11 +711,11 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         srcImgIs.close();
                         newImgOs.close();
                     } catch (BadOriginalImageException e) {
-                        updateUiLog("Skipping (bad image?)\n");
+                        updateUiLog(getString(R.string.frag1_log_skipping_bad_image));
                         e.printStackTrace();
                         continue;
                     } catch (Exception e) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>Skipping (ERROR): " + e.getMessage()+ "</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                         e.printStackTrace();
                         continue;
                     }
@@ -748,10 +748,10 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         outputStream.close();
                         if (enableLog) Log.i(TAG, "Write to DONE: " + outputFilename);
                     } catch (FileNotFoundException e) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>Skipping (ERROR): " + e.getMessage()+ "</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                         e.printStackTrace();
                     } catch (IOException e) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>Skipping (ERROR): " + e.getMessage()+ "</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                         e.printStackTrace();
                     }
 
@@ -759,7 +759,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                     try {
                         copyFileAttributes(filesInDir[i].toPath(), new File(outputFilename).toPath());
                     } catch (Exception e) {
-                        updateUiLog(Html.fromHtml("<span style='color:#FFA500'>Could not copy file timestamps & attributes: " + e.getMessage() + "</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                         e.printStackTrace();
                     }
 
@@ -774,7 +774,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             try {
                                 Files.copy(from, to, REPLACE_EXISTING, COPY_ATTRIBUTES);
                             } catch (Exception e) {
-                                updateUiLog(Html.fromHtml("<span style='color:red'>ERROR in copying document: " + e.getMessage() + "</span><br>", 1));
+                                updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
                                 e.printStackTrace();
                                 continue;
                             }
@@ -783,7 +783,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                 try {
                                     Files.move(from, to, ATOMIC_MOVE);
                                 } catch (Exception e) {
-                                    updateUiLog(Html.fromHtml("<span style='color:red'>ERROR in copying document: " + e.getMessage() + "</span><br>", 1));
+                                    updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
                                     e.printStackTrace();
                                     continue;
                                 }
@@ -801,16 +801,16 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                     try {
                         Files.move(from, to, REPLACE_EXISTING, ATOMIC_MOVE);
                     } catch (Exception e) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>ERROR in moving document: " + e.getMessage()+ "</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_moving_doc, e.getMessage()) + "</span><br>", 1));
                         e.printStackTrace();
                         continue;
                     }
 
-                    updateUiLog(Html.fromHtml("<span style='color:green'> Done</span><br>",1));
+                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_done)+"</span><br>",1));
                 }
             }
         }
-        updateUiLog("\nFinished.");
+        updateUiLog(getString(R.string.frag1_log_finished));
 
         setIsProcessFalse(view);
     }
@@ -824,21 +824,21 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
             @Override
             public void run() {
                 log.clear();
-                updateUiLog("Starting...\n");
+                updateUiLog(getString(R.string.frag1_log_starting));
 
                 {
-                    updateUiLog(Html.fromHtml("Checking working directory permissions...", 1));
+                    updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
                     if (!isWorkingDirPermOk()) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'> KO</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_ko)+"</span><br>", 1));
                         setIsProcessFalse(view);
                         stopProcessing = false;
                         return;
                     }
-                    updateUiLog(Html.fromHtml("<span style='color:green'> OK</span><br>", 1));
+                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
                 }
 
                 String secVolName = getSecVolumeName(getActivity(), true);
-                String secVolDirName = prefs.getString("excluded_sec_vol_prefix", "copy_of_")+secVolName;
+                String secVolDirName = prefs.getString("excluded_sec_vol_prefix", getString(R.string.pref_excludedSecVolPrefix_defaultValue))+secVolName;
 
                 InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
                 Uri[] treeUris = inputDirs.toUriArray();
@@ -847,11 +847,11 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
                 // Iterate on folders containing source images
                 for (int j = 0; j < treeUris.length; j++) {
-                    updateUiLog(Html.fromHtml("<br><u><b>Processing "+ FileUtil.getFullPathFromTreeUri(treeUris[j], getContext()) + "</b></u><br>",1));
+                    updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, FileUtil.getFullPathFromTreeUri(treeUris[j], getContext())) + "</b></u><br>",1));
 
                     {
                         // Check permission... If we don't have permission, continue to next volumeDir
-                        updateUiLog(Html.fromHtml("Checking permissions...", 1));
+                        updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
                         boolean perm_ok = false;
                         String tString = treeUris[j].toString();
                         for (UriPermission perm : persUriPermList) {
@@ -863,23 +863,23 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             }
                         }
                         if (!perm_ok) {
-                            updateUiLog(Html.fromHtml("<span style='color:red'>Not granted. Please add the directory again in Settings.</span><br>", 1));
+                            updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
                             continue;
                         }
-                        updateUiLog(Html.fromHtml("<span style='color:green'> OK</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
 
                     }
 
                     // 1. build list of files to process
                     DocumentFile[] docFilesToProcess = listDocFilesToProcess(treeUris[j], 0, secVolDirName);
-                    updateUiLog(Html.fromHtml(docFilesToProcess.length + " file(s) to process.<br>",1));
+                    updateUiLog(Html.fromHtml(getString(R.string.frag1_log_count_files_to_process, docFilesToProcess.length ) + "<br>",1));
 
                     // 1. Iterate on all files
                     for (int i = 0; i < docFilesToProcess.length; i++) {
                         if (stopProcessing) {
                             setIsProcessFalse(view);
                             stopProcessing = false;
-                            updateUiLog(Html.fromHtml(docFilesToProcess.length + "<br><br>Stopped by user.",1));
+                            updateUiLog(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
                             return;
                         }
 
@@ -895,12 +895,12 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                 docFilesToProcess[i].getName() + "... ");
 
                         if (! docFilesToProcess[i].getType().equals("image/jpeg")) {
-                            updateUiLog("Skipping (not JPEG)\n");
+                            updateUiLog(getString(R.string.frag1_log_skipping_not_jpeg));
                             continue;
                         }
 
                         if (docFilesToProcess[i].length() == 0) {
-                            updateUiLog("Skipping (empty file)\n");
+                            updateUiLog(getString(R.string.frag1_log_skipping_empty_file));
                             continue;
                         }
 
@@ -923,11 +923,11 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             srcImgExifInterface = null;
 
                             if (srcImgHasThumbnail) {
-                                updateUiLog("Skipping (has thumbnail)\n");
+                                updateUiLog(getString(R.string.frag1_log_skipping_has_thumbnail));
                                 continue;
                             }
                         } catch (Exception e) {
-                            updateUiLog(Html.fromHtml("<span style='color:red'>Skipping (ERROR): " + e.getMessage()+ "</span><br>", 1));
+                            updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                             continue;
                         }
@@ -948,7 +948,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                     break;
                                 case "exiflib_pixymeta":
                                     if (!PixymetaInterface.hasPixymetaLib()) {
-                                        updateUiLog(Html.fromHtml("<br><br><span style='color:red'>Pixymeta-android library not available in this build. Select another another library in settings.</span><br>", 1));
+                                        updateUiLog(Html.fromHtml("<br><br><span style='color:red'>" + getString(R.string.frag1_log_pixymeta_missing) + "</span><br>", 1));
                                         return;
                                     }
                                     PixymetaInterface.writeThumbnailWithPixymeta(srcImgIs, newImgOs, thumbnail);
@@ -959,11 +959,11 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             srcImgIs.close();
                             newImgOs.close();
                         } catch (BadOriginalImageException e) {
-                            updateUiLog("Skipping (bad image?)\n");
+                            updateUiLog(getString(R.string.frag1_log_skipping_bad_image));
                             e.printStackTrace();
                             continue;
                         } catch (Exception e) {
-                            updateUiLog(Html.fromHtml("<span style='color:red'>Skipping (ERROR): " + e.getMessage()+ "</span><br>", 1));
+                            updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                             continue;
                         }
@@ -997,7 +997,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             outputStream.close();
                             //if (enableLog) Log.i(TAG, "Write to DONE");
                         } catch (Exception e) {
-                            updateUiLog(Html.fromHtml("<span style='color:red'>Skipping (ERROR): " + e.getMessage()+ "</span><br>", 1));
+                            updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                             continue;
                         }
@@ -1006,10 +1006,10 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         try {
                             copyFileAttributes(docFilesToProcess[i].getUri(), outputTmpFileUri);
                         } catch (CopyAttributesFailedException e) {
-                            updateUiLog(Html.fromHtml("<span style='color:#FFA500'>Could not copy file timestamps & attributes: " + e.getMessage() + "</span><br>", 1));
+                            updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                         } catch (Exception e) {
-                            updateUiLog(Html.fromHtml("<span style='color:red'>ERROR: " + e.getMessage()+ "</span><br>", 1));
+                            updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                             continue;
                         }
@@ -1030,14 +1030,14 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                 try {
                                     originalImage = moveDocument(sourceFile, UriUtil.buildDParentAsUri(sourceFile), targetDir, false);
                                 } catch (DestinationFileExistsException e) {
-                                    updateUiLog(Html.fromHtml("<span style='color:red'> Cannot move picture to backup. File exists. Skipping.</span><br>",1));
+                                    updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_cannot_move_to_backup)+"</span><br>",1));
                                     e.printStackTrace();
                                     continue;
                                 } catch (CopyAttributesFailedException e) {
-                                    updateUiLog(Html.fromHtml("<span style='color:#FFA500'>Could not copy file timestamps & attributes: " + e.getMessage() + "</span><br>", 1));
+                                    updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                                     e.printStackTrace();
                                 } catch (Exception e) {
-                                    updateUiLog(Html.fromHtml("<span style='color:red'>ERROR in moving document: " + e.getMessage()+ "</span><br>", 1));
+                                    updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_moving_doc, e.getMessage()) + "</span><br>", 1));
                                     e.printStackTrace();
                                     continue;
                                 }
@@ -1047,10 +1047,10 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                     copyDocument(sourceFile, targetDir, true,
                                             prefs.getBoolean("keepTimeStampOnBackup", true));
                                 } catch (CopyAttributesFailedException e) {
-                                    updateUiLog(Html.fromHtml("<span style='color:#FFA500'>Could not copy file timestamps & attributes: " + e.getMessage() + "</span><br>", 1));
+                                    updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                                     e.printStackTrace();
                                 } catch (Exception e) {
-                                    updateUiLog(Html.fromHtml("<span style='color:red'>ERROR in copying document: " + e.getMessage()+ "</span><br>", 1));
+                                    updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
                                     e.printStackTrace();
                                     continue;
                                 }
@@ -1070,19 +1070,19 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         try {
                             outputFile = moveDocument(sourceFile, tmpUri, targetDir, replaceExising);
                         } catch (DestinationFileExistsException e) {
-                            updateUiLog(Html.fromHtml("<span style='color:red'> Overwriting picture not allowed (see settings). Destination file exists. Skipping.</span><br>",1));
+                            updateUiLog(Html.fromHtml("<span style='color:red'>"+ getString(R.string.frag1_log_overwrite_not_allowed)+"</span><br>",1));
                             e.printStackTrace();
                             continue;
                         } catch (CopyAttributesFailedException e) {
-                            updateUiLog(Html.fromHtml("<span style='color:#FFA500'>Could not copy file timestamps & attributes: " + e.getMessage() + "</span><br>", 1));
+                            updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                         } catch (Exception e) {
-                            updateUiLog(Html.fromHtml("<span style='color:red'>ERROR in moving document: " + e.getMessage() + "</span><br>", 1));
+                            updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_moving_doc, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                             continue;
                         }
 
-                        updateUiLog(Html.fromHtml("<span style='color:green'> Done</span><br>",1));
+                        updateUiLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_done) + "</span><br>",1));
 
                         //Update the value background thread to UI thread
                         mHandler.post(new Runnable() {
@@ -1093,7 +1093,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         });
                     }
                 }
-                updateUiLog("\nFinished.");
+                updateUiLog(getString(R.string.frag1_log_finished));
 
                 setIsProcessFalse(view);
             }
@@ -1161,7 +1161,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         boolean targetTmpExists = DocumentFile.fromTreeUri(getContext(), targetTmpUri).exists();
 
         if (targetExists && !replaceExisting) {
-            if (enableLog) Log.i(TAG, "File already exists: "+ targetUri.toString());
+            if (enableLog) Log.i(TAG, getString(R.string.frag1_log_file_exists, targetUri.toString()));
             return;
         }
 
@@ -1261,7 +1261,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         boolean targetExists = DocumentFile.fromTreeUri(getContext(), targetUri).exists();
 
         if (targetExists && !replaceExisting) {
-            if (enableLog) Log.i(TAG, "File already exists: " + targetUri.toString());
+            if (enableLog) Log.i(TAG, getString(R.string.frag1_log_file_exists, targetUri.toString()));
             throw new DestinationFileExistsException();
         }
 
@@ -1336,7 +1336,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
         if (inputDirs.size() == 0) {
-            textViewDirList.setText("No directory selected. Go to Settings to select.");
+            textViewDirList.setText(R.string.frag1_text_no_dir_selected);
         } else {
             textViewDirList.setText(inputDirs.toStringForDisplay(getContext()));
         }
