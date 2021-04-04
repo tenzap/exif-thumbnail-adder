@@ -32,7 +32,6 @@ import androidx.documentfile.provider.DocumentFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
 
 public class PathUtil {
@@ -40,7 +39,7 @@ public class PathUtil {
     public static final String SUFFIX_BACKUP = "bak";
     public static final String SUFFIX_DEST = "dest";
 
-    private String storagePath;         // /storage/emulated/0   or   /storage/xxxx-xxxx
+    private final String storagePath;         // /storage/emulated/0   or   /storage/xxxx-xxxx
                                         // or in case of URI: "primary:" or "xxxx-xxxx:"
     private String workingDir;          // ThumbAdder
     private String mainDir;             // First dir at root of volume (eg. DCIM or Pictures)
@@ -55,7 +54,7 @@ public class PathUtil {
 
     private final String d = File.separator;    // "/"
 
-    private HashMap<String, String> suffixes = new HashMap<String, String>();
+    private final HashMap<String, String> suffixes = new HashMap<String, String>();
 
     public PathUtil(String storagePath, String mainDir, String subDir, String volumeName, String secStorageDirName, SharedPreferences prefs) {
         init(prefs, mainDir, subDir, volumeName, secStorageDirName);
@@ -232,7 +231,6 @@ public class PathUtil {
     }
 
     private String getBaseDir(String dirId) {
-        String baseDir;
         String wDir = workingDir;
 
         if (writeThumbnailedToOriginalFolder && dirId.equals(SUFFIX_DEST)) {
@@ -338,16 +336,17 @@ public class PathUtil {
         DocumentFile df = DocumentFile.fromTreeUri(con, uri);
         if (df.exists() && df.isDirectory()) {
             return;
-        } else {
-            if (df.isFile()) {
-                Log.e("MyLog", "destination dir already exists as file.");
-                return;
-            }
-
-            String name = UriUtil.getDName(uri);
-            Uri parentUri = UriUtil.buildDParentAsUri(uri);
-            createDirFor(con, parentUri);
-            DocumentFile.fromTreeUri(con, parentUri).createDirectory(name);
         }
+
+        if (df.isFile()) {
+            Log.e("MyLog", "destination dir already exists as file.");
+            return;
+        }
+
+        String name = UriUtil.getDName(uri);
+        Uri parentUri = UriUtil.buildDParentAsUri(uri);
+        createDirFor(con, parentUri);
+        DocumentFile.fromTreeUri(con, parentUri).createDirectory(name);
+
     }
 }

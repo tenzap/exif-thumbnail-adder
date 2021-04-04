@@ -155,7 +155,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         @TargetApi(30)
         private void requestAllFilesAccessPermission() {
-            Boolean intentFailed = false;
+            boolean intentFailed = false;
             Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
             intent.setData(Uri.parse("package:" + getContext().getPackageName()));
             try {

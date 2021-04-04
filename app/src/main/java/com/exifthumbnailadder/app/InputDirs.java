@@ -33,7 +33,7 @@ import java.util.List;
 
 public class InputDirs implements Serializable {
     private final String TAG = "ETALog";
-    private List<Uri> selectedUris = new ArrayList<Uri>();
+    private final List<Uri> selectedUris = new ArrayList<Uri>();
     JSONArray jsonArray = new JSONArray();
 
     InputDirs(String jsonArrayString) {
