@@ -29,7 +29,7 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 
 ## Installation
 - Prerequisites: minimum android Oreo (android 8, SDK 26). App was tested up to Android 11.
-- Download through F-Droid app https://f-droid.org
+- Download through [F-Droid](https://f-droid.org) app [here](https://f-droid.org/packages/com.exifthumbnailadder.app/)
 - Download the APK from the release page:  https://github.com/tenzap/exif-thumbnail-adder/releases
 
 
