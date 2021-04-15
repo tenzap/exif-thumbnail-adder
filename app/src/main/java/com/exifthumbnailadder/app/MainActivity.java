@@ -40,6 +40,14 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private final String TAG = "ETALog";
 
+    static {
+        try {
+            System.loadLibrary("exif");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
