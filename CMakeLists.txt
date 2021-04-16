@@ -5,3 +5,7 @@ cmake_minimum_required(VERSION 3.4.1)
 add_subdirectory(
         library/libexif-0.6.22
 )
+
+add_subdirectory(
+        library/exif-0.6.22
+)
