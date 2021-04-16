@@ -9,3 +9,7 @@ add_subdirectory(
 add_subdirectory(
         library/exif-0.6.22
 )
+
+add_subdirectory(
+        app/src/main/cpp
+)

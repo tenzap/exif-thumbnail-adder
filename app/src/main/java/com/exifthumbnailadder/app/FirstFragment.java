@@ -932,10 +932,11 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             continue;
                         }
 
+                        Bitmap thumbnail;
                         // a. extract thumbnail & write to output stream
                         try {
                             //if (enableLog) Log.i(TAG, "Creating thumbnail");
-                            Bitmap thumbnail = makeThumbnailRotated(
+                            thumbnail = makeThumbnailRotated(
                                     docFilesToProcess[i],
                                     prefs.getBoolean("rotateThumbnails", true),
                                     srcImgDegrees);
@@ -1000,6 +1001,28 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                             continue;
+                        }
+
+                        if (thumbnail != null) {
+                            if (prefs.getString("exif_library", "exiflib_android-exif-extended").equals("exiflib_libexif")) {
+                                try {
+                                    String outFilepath;
+                                    if ( outputTmpFileUri.getScheme().equals("file")) {
+                                        outFilepath = outputTmpFileUri.getPath();
+                                    } else {
+                                        outFilepath = FileUtil.getFullDocIdPathFromTreeUri(outputTmpFileUri, getContext());
+                                    }
+
+                                    new NativeLibHelper().writeThumbnailWithLibexifThroughFile(
+                                            FileUtil.getFullDocIdPathFromTreeUri(docFilesToProcess[i].getUri(), getContext()),
+                                            outFilepath,
+                                            thumbnail);
+                                } catch (Exception e) {
+                                    updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                    e.printStackTrace();
+                                    continue;
+                                }
+                            }
                         }
 
                         // a. Copy attributes from original file to tmp file

@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     static {
         try {
-            System.loadLibrary("exif");
+            System.loadLibrary("exifThumbnailAdderHelpers");
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -69,6 +69,10 @@ public class AboutActivity extends AppCompatActivity {
         text.append("<a href='https://github.com/sephiroth74/Android-Exif-Extended'>Android-Exif-Extended</a> Apache License, Version 2.0");
         text.append("</li><li>");
         text.append("<a href='https://developer.android.com/jetpack'>Android Jetpack</a> Apache License, Version 2.0");
+        text.append("</li><li>");
+        text.append("<a href='https://libexif.github.io/'>exif-0.6.22</a> GNU Lesser General Public License, version 2.1");
+        text.append("</li><li>");
+        text.append("<a href='https://libexif.github.io/'>libexif-0.6.22</a> GNU Lesser General Public License, version 2.1");
         if (PixymetaInterface.hasPixymetaLib()) {
             text.append("</li><li>");
             text.append("<a href='https://github.com/dragon66/pixymeta-android'>pixymeta-android</a> Eclipse Public License - v 1.0");

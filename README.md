@@ -24,7 +24,10 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
     - Rotation of the thumbnail
     - Backup of original pictures
     - Replace picture inplace or write new picture to another directory
-    - Choose the exif library for adding thumbnails (Android-Exif-Extended or pixymeta-android). Please note that at the time of writing this, pixymeta-android is licensed under EPL-1.0 which is not compatible with GPL. You may compile yourself a variant having pixymeta-android. See below for more info.
+    - Choose the exif library for adding thumbnails. Available libraries are:
+        - Android-Exif-Extended
+        - libexif
+        - pixymeta-android (please note that at the time of writing this, pixymeta-android is licensed under EPL-1.0 which is not compatible with GPL. You may compile yourself a variant having pixymeta-android. See below for more info.)
 
 
 ## Installation
@@ -36,6 +39,7 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 ## Known facts
 - Performance may be slower on SDCards, that may be related to the speed of your SDCard.
 - When choosing Android-Exif-Extended library, all the existing EXIF structure is kept and a new APP1 structure containing the thumbnail is added to the existing one.
+- When choosing libexif, the tags are rewritten. It is like running "exif --create-exif --no-fixup --insert-thumbnail tb.jpg" from the exif command line. In case exif faces some problems (likely bad EXIF data in your picture) they are reported in the app, the processing of the picture is skipped and the original picture remains untouched.
 - When choosing pixymeta-android library, the existing EXIF tags are copied and things a rewritten from scratch. The resulting EXIF values were the same in my testing except the InterOp IFD which was not copied (see https://github.com/dragon66/pixymeta-android/issues/10)
 
 
@@ -46,7 +50,7 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
     - Transform the batch processing into a "Service" so that it doesn't stop when the user leaves the main "Activity"
     - Translation
     - Improve theme/layout
-    - Implement another backend and/or fix https://github.com/dragon66/pixymeta-android/issues/10
+    - Implement another backend (for example [exiv2](https://www.exiv2.org/)) and/or fix https://github.com/dragon66/pixymeta-android/issues/10
 
 
 ## Licence
