@@ -967,6 +967,10 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                             continue;
+                        } catch (AssertionError e) {
+                            updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
+                            e.printStackTrace();
+                            continue;
                         }
 
                         // a. create output dirs
@@ -1310,7 +1314,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
     private void writeThumbnailWithAndroidExifExtended (
             InputStream srcImgIs, OutputStream newImgOs, Uri inputUri, Bitmap thumbnail)
-            throws Exception {
+            throws Exception, AssertionError {
         try {
             // Andoid-Exif-Extended will write twice the APP1 structure to the file,
             // but it seems to copy perfectly
