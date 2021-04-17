@@ -17,6 +17,10 @@ local.properties
 enable-pixymeta-android.gradle
 app/enable-pixymeta-android.gradle
 library/pixymeta-android
+library/exiv2-0.27.3-Source/contrib
+library/exiv2-0.27.3-Source/po
+library/exiv2-0.27.3-Source/test
+library/exiv2-0.27.3-Source/tests
 
 # fastlane specific
 **/fastlane/report.xml
