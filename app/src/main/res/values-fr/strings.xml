@@ -129,5 +129,7 @@
     Par example \'copie_de_XXXX-XXXX\'.\nL\'id du volume (par ex d\'une une carte SD) peut se voir dans la liste des répertoires à traiter
     sour la forme XXXX-XXXX.]]></string>
     <string name="pref_excludedSecVolPrefix_defaultValue">copie_de_</string>
+    <string name="pref_replaceThumbnail_title">Remplace la vignette</string>
+    <string name="pref_replaceThumbnail_summary">Ecrase la vignette existante</string>
 
 </resources>

@@ -674,7 +674,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         srcImgIs.close();
                         srcImgExifInterface = null;
 
-                        if (srcImgHasThumbnail) {
+                        if (srcImgHasThumbnail && !prefs.getBoolean("replaceThumbnail", false)) {
                             updateUiLog(getString(R.string.frag1_log_skipping_has_thumbnail));
                             continue;
                         }
@@ -922,7 +922,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             srcImgIs.close();
                             srcImgExifInterface = null;
 
-                            if (srcImgHasThumbnail) {
+                            if (srcImgHasThumbnail && !prefs.getBoolean("replaceThumbnail", false)) {
                                 updateUiLog(getString(R.string.frag1_log_skipping_has_thumbnail));
                                 continue;
                             }

@@ -124,6 +124,8 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="pref_categ_options">Options</string>
     <string name="pref_rotateThumbnail_title">Rotate thumbnails</string>
     <string name="pref_rotateThumbnail_summary">Rotate thumbnails to correspond to the picture. Most apps need the thumbnail to be rotated (eg. Win10 photo import)</string>
+    <string name="pref_replaceThumbnail_title">Replace thumbnail</string>
+    <string name="pref_replaceThumbnail_summary">Overwrite existing thumbnail</string>
     <string name="pref_backupOriginalPic_title">Create backup of original picture</string>
     <string name="pref_backupOriginalPic_summary">Backup location is the working directory (if the backup exists, it is never overwritten)</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">Write to original folder</string>

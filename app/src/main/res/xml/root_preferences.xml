@@ -35,6 +35,11 @@
             app:title="@string/pref_rotateThumbnail_title"
             app:summary="@string/pref_rotateThumbnail_summary"/>
         <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="replaceThumbnail"
+            app:title="@string/pref_replaceThumbnail_title"
+            app:summary="@string/pref_replaceThumbnail_summary"/>
+        <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="backupOriginalPic"
             app:title="@string/pref_backupOriginalPic_title"
