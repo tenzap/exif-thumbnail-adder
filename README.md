@@ -38,9 +38,16 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 
 ## Known facts
 - Performance may be slower on SDCards, that may be related to the speed of your SDCard.
-- When choosing Android-Exif-Extended library, all the existing EXIF structure is kept and a new APP1 structure containing the thumbnail is added to the existing one.
-- When choosing libexif, the tags are rewritten. It is like running "exif --create-exif --no-fixup --insert-thumbnail tb.jpg" from the exif command line. In case exif faces some problems (likely bad EXIF data in your picture) they are reported in the app, the processing of the picture is skipped and the original picture remains untouched.
-- When choosing pixymeta-android library, the existing EXIF tags are copied and things a rewritten from scratch. The resulting EXIF values were the same in my testing except the InterOp IFD which was not copied (see https://github.com/dragon66/pixymeta-android/issues/10)
+- When choosing Android-Exif-Extended library:
+    - all the existing EXIF structure is kept and a new APP1 structure containing the thumbnail is added to the existing APP1.
+- When choosing libexif:
+    - You might loose [XMP] metadata groups and tags in [Olympus] [Canon] [Composite] group.
+    - The tags supported by libexif and exif structure are rewritten.
+    - It is like running "exif --create-exif --no-fixup --insert-thumbnail tb.jpg" from the exif command line.
+    - In case exif faces some problems (likely bad EXIF data in your picture) they are reported in the app, the processing of the picture is skipped and the original picture remains untouched.
+- When choosing pixymeta-android library:
+    - You might loose XMP metadata, I didn't test it yet.
+    - the existing EXIF tags are copied and things a rewritten from scratch. The resulting EXIF values were the same in my testing except the InterOp IFD which was not copied (see https://github.com/dragon66/pixymeta-android/issues/10)
 
 
 ## Contribute
