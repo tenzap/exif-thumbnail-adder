@@ -40,10 +40,17 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 - Performance may be slower on SDCards, that may be related to the speed of your SDCard.
 - When choosing Android-Exif-Extended library:
     - all the existing EXIF structure is kept and a new APP1 structure containing the thumbnail is added to the existing APP1.
+    - this means that all EXIF tags will be duplicate if checked by exiftool
+    - Any other tags (XMP for example) are kept
+- When choosing exiv2:
+    - Some tags of [Canon] & [Composite] group on Canon pictures might be stripped
+    - XMP is kept
+    - If exiv2 detects some problems (errors) in your files, the file are be skipped (reported error is displayed in the app)
 - When choosing libexif:
-    - You might loose [XMP] metadata groups and tags in [Olympus] [Canon] [Composite] group.
+    - All [XMP] metadata groups and tags get deleted.
+    - Some or all tags of [Olympus] [Canon] [Composite] group get deleted.
     - The tags supported by libexif and exif structure are rewritten.
-    - It is like running "exif --create-exif --no-fixup --insert-thumbnail tb.jpg" from the exif command line.
+    - It is like running "exif --create-exif --insert-thumbnail tb.jpg" from the exif command line.
     - In case exif faces some problems (likely bad EXIF data in your picture) they are reported in the app, the processing of the picture is skipped and the original picture remains untouched.
 - When choosing pixymeta-android library:
     - You might loose XMP metadata, I didn't test it yet.

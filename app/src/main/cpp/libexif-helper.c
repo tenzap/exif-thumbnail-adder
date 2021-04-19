@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #ifdef HAVE_UNISTD_H
 #  include <unistd.h>
@@ -126,7 +127,7 @@ log_func (ExifLog *log, ExifLogCode code, const char *domain,
             put_colorstring (stderr, COL_NORMAL);
 
             char message[2048] = {0, };
-            strncat(message, "error returned by libexif (-1): ", sizeof(message) -1 );
+            strncat(message, "libexif (error -1): ", sizeof(message) -1 );
             char dest[512] = {0, };
             vsprintf(dest, format, args);
             strncat(message, dest, sizeof(message) - strlen(message) -1);
@@ -169,7 +170,7 @@ log_func (ExifLog *log, ExifLogCode code, const char *domain,
              */
             if ((code == EXIF_LOG_CODE_NO_MEMORY) || !arg->debug) {
                 char message[2048] = {0, };
-                strncat(message, "error returned by libexif (EXIF_LOG_CODE_NO_MEMORY): ", sizeof(message) -1 );
+                strncat(message, "libexif (error EXIF_LOG_CODE_NO_MEMORY): ", sizeof(message) -1 );
                 strncat(message, exif_log_code_get_title (code), sizeof(message) - strlen(message) -1);
                 strncat(message, "\n", sizeof(message) - strlen(message) -1);
                 strncat(message, exif_log_code_get_message (code), sizeof(message) - strlen(message) -1);
@@ -220,7 +221,7 @@ LogArg log_arg = {0, 0, 0, NULL};
 // This is mainly copied from main.c of exif-0.6.22
 JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThumbnailWithLibexifThroughFile(
         JNIEnv *env,
-        jobject /* this */,
+        jobject this /* this */,
         jstring jin,
         jstring jout,
         jstring jtb)
@@ -422,9 +423,12 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
     tbFile = (*env)->GetStringUTFChars(env, jtb, NULL);
 
     create_exif = 1;
-    no_fixup = 1;
-    output = outputFile;
-    p.set_thumb = tbFile;
+    no_fixup = 0;
+    output = strdup(outputFile);
+    p.set_thumb = strdup(tbFile);
+    // insert_thumb removes the previous thumb but it doesn't clear
+    // the other tags related to thumb, thus we enable removal here
+    remove_thumb = 1;
 
     log_arg.env = env;
     log_arg.debug = 0;
@@ -504,6 +508,13 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
         }
         if (p.set_thumb) {
             action_insert_thumb (ed, log, p);
+
+            // write tag EXIF_TAG_COMPRESSION for thumb on IFD1 to value "6" (cf exif-tag.c line 244...)
+            // Otherwise it is set to "0" which is not valid for EXIF_TAG_COMPRESSION
+            ExifEntry *entry;
+            entry = init_tag(ed, EXIF_IFD_1, EXIF_TAG_COMPRESSION);
+            exif_set_short(entry->data, exif_data_get_byte_order(ed), 6);
+
             if (!no_fixup)
                 /* Add the mandatory thumbnail tags */
                 exif_data_fix(ed);
@@ -561,7 +572,7 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
 
 JNIEXPORT jbyteArray JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThumbnailWithLibexif(
         JNIEnv *env,
-        jobject /* this */,
+        jobject this /* this */,
         jbyteArray inBa,
         jint inNumBytes,
         jbyteArray outBa,
@@ -604,4 +615,33 @@ jint throwError( JNIEnv *env, char *message )
     }
 
     return (*env)->ThrowNew( env, exClass, message );
+}
+
+// Taken from libexif-0.6.22/contrib/examples/write-exif.c
+static ExifEntry *init_tag(ExifData *exif, ExifIfd ifd, ExifTag tag)
+{
+    ExifEntry *entry;
+    /* Return an existing tag if one exists */
+    if (!((entry = exif_content_get_entry (exif->ifd[ifd], tag)))) {
+        /* Allocate a new entry */
+        entry = exif_entry_new ();
+        assert(entry != NULL); /* catch an out of memory condition */
+        entry->tag = tag; /* tag must be set before calling
+				 exif_content_add_entry */
+
+        /* Attach the ExifEntry to an IFD */
+        exif_content_add_entry (exif->ifd[ifd], entry);
+
+        /* Allocate memory for the entry and fill with default data */
+        exif_entry_initialize (entry, tag);
+
+        /* Ownership of the ExifEntry has now been passed to the IFD.
+         * One must be very careful in accessing a structure after
+         * unref'ing it; in this case, we know "entry" won't be freed
+         * because the reference count was bumped when it was added to
+         * the IFD.
+         */
+        exif_entry_unref(entry);
+    }
+    return entry;
 }
