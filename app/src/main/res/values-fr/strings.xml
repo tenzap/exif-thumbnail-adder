@@ -104,6 +104,8 @@
     <string name="pref_categ_options">Options</string>
     <string name="pref_rotateThumbnail_title">Pivoter la vignette</string>
     <string name="pref_rotateThumbnail_summary">Pivote la vignette pour correspondre à l\'image. La plupart des programmes nécessitent une vignette pivotée (par ex. l\'outil d\'import de photos de Win10)</string>
+    <string name="pref_skipPicsHavingThumbnail_title">Saute les fichiers avec vignette</string>
+    <string name="pref_skipPicsHavingThumbnail_summary">Si le fichier a déjà une vignette ne pas la traiter</string>
     <string name="pref_backupOriginalPic_title">Faire une sauvegarde de l\'image d\'origine</string>
     <string name="pref_backupOriginalPic_summary">La sauvegarde est placée dans le répertoire de travail (si elle existe déjà, elle n\'est jamais écrasée)</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">Ecrire dans le fichier d\'origine</string>
@@ -129,7 +131,5 @@
     Par example \'copie_de_XXXX-XXXX\'.\nL\'id du volume (par ex d\'une une carte SD) peut se voir dans la liste des répertoires à traiter
     sour la forme XXXX-XXXX.]]></string>
     <string name="pref_excludedSecVolPrefix_defaultValue">copie_de_</string>
-    <string name="pref_replaceThumbnail_title">Remplace la vignette</string>
-    <string name="pref_replaceThumbnail_summary">Ecrase la vignette existante</string>
 
 </resources>
