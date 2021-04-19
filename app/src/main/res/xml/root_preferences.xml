@@ -84,6 +84,17 @@
             />
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/pref_categ_exiv2_settings">
+        <ListPreference
+            app:defaultValue="warn"
+            app:entries="@array/exiv2SkipLevel_entries"
+            app:entryValues="@array/exiv2SkipLevel_values"
+            app:key="exiv2SkipOnLogLevel"
+            app:title="@string/pref_exiv2SkipOnLogLevel_title"
+            app:useSimpleSummaryProvider="true"
+            />
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/pref_categ_extra">
         <EditTextPreference
             app:defaultValue="@string/pref_excludedSecVolPrefix_defaultValue"

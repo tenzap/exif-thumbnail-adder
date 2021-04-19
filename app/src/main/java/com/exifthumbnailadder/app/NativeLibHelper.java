@@ -38,6 +38,9 @@ public class NativeLibHelper {
     native int writeThumbnailWithLibexifThroughFile(
             String in, String out, String tb) throws Exception;
 
+    native int writeThumbnailWithExiv2ThroughFile(
+            String out, String tb, int resolution) throws Exception;
+
     public void writeThumbnailWithLibexif (
             InputStream srcImgIs, OutputStream newImgOs, Bitmap thumbnail)
             throws Exception {
@@ -60,6 +63,38 @@ public class NativeLibHelper {
         try {
             int result = writeThumbnailWithLibexifThroughFile(input, output, tbFilename);
             if (result != 0) throw new RuntimeException("libexif return value different from 0: " + result);
+        } catch (Exception e) {
+            //Delete output file which might have been created by libexif despite the exception
+            new File(output).delete();
+            e.printStackTrace();
+            throw e;
+        } finally {
+            tbFile.delete();
+        }
+    }
+
+    public void writeThumbnailWithExiv2ThroughFile (String output, Bitmap thumbnail, String exiv2SkipOnLogLevel)
+            throws Exception {
+        String tbFilename = output+"_tb";
+        File tbFile = new File(tbFilename);
+
+        try {
+            writeBitmapToFile(thumbnail, tbFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+
+        try {
+            int result = writeThumbnailWithExiv2ThroughFile(output, tbFilename, 72);
+            if (result != 0) throw new RuntimeException("exiv2 return value different from 0: " + result);
+        } catch (Exiv2WarnException e) {
+            if (exiv2SkipOnLogLevel.equals("warn")) {
+                //Delete output file which might have been created by libexif despite the exception
+                new File(output).delete();
+            }
+            e.printStackTrace();
+            throw e;
         } catch (Exception e) {
             //Delete output file which might have been created by libexif despite the exception
             new File(output).delete();

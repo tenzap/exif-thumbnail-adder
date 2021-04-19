@@ -125,6 +125,9 @@
     <string name="pref_categ_backend">Bibliothèque</string>
     <string name="pref_exifLibrary_title">Ecrire les vignettes EXIF avec</string>
 
+    <string name="pref_categ_exiv2_settings">Paramètres Exiv2</string>
+    <string name="pref_exiv2SkipOnLogLevel_title">Sauter à partir du niveau d\'erreur exiv2</string>
+
     <string name="pref_categ_extra">Suppléments</string>
     <string name="pref_excludedSecVolPrefix_title">Préfixe du répertoire exclu</string>
     <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[On peut définir un sous répertoire qui doit être exclu

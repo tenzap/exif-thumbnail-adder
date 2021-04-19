@@ -143,6 +143,9 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="pref_categ_backend">Backend/Library</string>
     <string name="pref_exifLibrary_title">Write EXIF thumbnails with</string>
 
+    <string name="pref_categ_exiv2_settings">Exiv2 settings</string>
+    <string name="pref_exiv2SkipOnLogLevel_title">Skip from exiv2 error level</string>
+
     <string name="pref_categ_extra">Extra</string>
     <string name="pref_excludedSecVolPrefix_title">Prefix for excluded dir</string>
     <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[It is possible to specify a subdir that should be excluded from processing. This value will prefix the volume id in order to form an excluded dir named \'<prefix><volId>\'. For example \'copy_of_XXXX-XXXX\'.\nThe volume id of the volume (typically an sdcard) can be found in the list of directories to process in the form of XXXX-XXXX.]]></string>

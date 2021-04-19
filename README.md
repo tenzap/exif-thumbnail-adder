@@ -64,7 +64,7 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
     - Transform the batch processing into a "Service" so that it doesn't stop when the user leaves the main "Activity"
     - Translation
     - Improve theme/layout
-    - Implement another backend (for example [exiv2](https://www.exiv2.org/)) and/or fix https://github.com/dragon66/pixymeta-android/issues/10
+    - Implement other backends and/or fix https://github.com/dragon66/pixymeta-android/issues/10
 
 
 ## Licence

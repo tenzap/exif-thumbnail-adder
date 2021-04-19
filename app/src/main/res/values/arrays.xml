@@ -1,14 +1,27 @@
 <resources>
-    <!-- Reply Preference -->
+    <!-- Settings: ListPreference: exiflib -->
     <string-array name="exif_library_entries">
         <item>Android-Exif-Extended</item>
-        <item>libexif</item>
+        <item>exiv2</item>
+        <item>libexif (⚠️ strips XMP, see README)</item>
         <item>pixymeta-android</item>
     </string-array>
 
     <string-array name="exif_library_values">
         <item>exiflib_android-exif-extended</item>
+        <item>exiflib_exiv2</item>
         <item>exiflib_libexif</item>
         <item>exiflib_pixymeta</item>
+    </string-array>
+
+    <!-- Settings: ListPreference: exiv2SkipOnLogLevel -->
+    <string-array name="exiv2SkipLevel_entries">
+        <item>warn</item>
+        <item>error</item>
+    </string-array>
+
+    <string-array name="exiv2SkipLevel_values">
+        <item>warn</item>
+        <item>error</item>
     </string-array>
 </resources>

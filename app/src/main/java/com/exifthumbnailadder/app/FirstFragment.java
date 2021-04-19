@@ -1013,24 +1013,71 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         }
 
                         if (thumbnail != null) {
-                            if (prefs.getString("exif_library", "exiflib_android-exif-extended").equals("exiflib_libexif")) {
-                                try {
-                                    String outFilepath;
-                                    if ( outputTmpFileUri.getScheme().equals("file")) {
-                                        outFilepath = outputTmpFileUri.getPath();
-                                    } else {
-                                        outFilepath = FileUtil.getFullDocIdPathFromTreeUri(outputTmpFileUri, getContext());
-                                    }
+                            switch (prefs.getString("exif_library", "exiflib_android-exif-extended")) {
+                                case "exiflib_libexif":
+                                    try {
+                                        String outFilepath;
+                                        if ( outputTmpFileUri.getScheme().equals("file")) {
+                                            outFilepath = outputTmpFileUri.getPath();
+                                        } else {
+                                            outFilepath = FileUtil.getFullDocIdPathFromTreeUri(outputTmpFileUri, getContext());
+                                        }
 
-                                    new NativeLibHelper().writeThumbnailWithLibexifThroughFile(
-                                            FileUtil.getFullDocIdPathFromTreeUri(docFilesToProcess[i].getUri(), getContext()),
-                                            outFilepath,
-                                            thumbnail);
-                                } catch (Exception e) {
-                                    updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                                    e.printStackTrace();
-                                    continue;
-                                }
+                                        new NativeLibHelper().writeThumbnailWithLibexifThroughFile(
+                                                FileUtil.getFullDocIdPathFromTreeUri(docFilesToProcess[i].getUri(), getContext()),
+                                                outFilepath,
+                                                thumbnail);
+                                    } catch (Exception e) {
+                                        updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                        e.printStackTrace();
+                                        continue;
+                                    }
+                                    break;
+
+                                case "exiflib_exiv2":
+                                    try {
+                                        String outFilepath;
+                                        if ( outputTmpFileUri.getScheme().equals("file")) {
+                                            outFilepath = outputTmpFileUri.getPath();
+                                        } else {
+                                            outFilepath = FileUtil.getFullDocIdPathFromTreeUri(outputTmpFileUri, getContext());
+                                        }
+
+                                        // copy original picture to location of tmp picture on which exiv2 will operate.
+                                        Uri targetUri = null;
+                                        try {
+                                            targetUri = copyDocument(docFilesToProcess[i].getUri(),
+                                                    tmpUri,
+                                                    true,
+                                                    prefs.getBoolean("keepTimeStampOnBackup", false));
+                                        } catch (CopyAttributesFailedException e) {
+                                            updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
+                                            e.printStackTrace();
+                                        } catch (Exception e) {
+                                            updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
+                                            e.printStackTrace();
+                                            continue;
+                                        }
+
+                                        new NativeLibHelper().writeThumbnailWithExiv2ThroughFile(
+                                                outFilepath,
+                                                thumbnail,
+                                                prefs.getString("exiv2SkipOnLogLevel", "warn"));
+                                    } catch (Exiv2WarnException e) {
+                                        //Delete output file which might have been created by libexif despite the exception
+                                        e.printStackTrace();
+                                        if (prefs.getString("exiv2SkipOnLogLevel", "warn").equals("warn")) {
+                                            updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                            continue;
+                                        } else {
+                                            updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span><br>", 1));
+                                        }
+                                    } catch (Exception e) {
+                                        updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                        e.printStackTrace();
+                                        continue;
+                                    }
+                                    break;
                             }
                         }
 
@@ -1169,7 +1216,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         return outputStream;
     }
 
-    private void copyDocument(Uri sourceUri, Uri targetParentUri, boolean replaceExisting, boolean copyFileAttributes)
+    private Uri copyDocument(Uri sourceUri, Uri targetParentUri, boolean replaceExisting, boolean copyFileAttributes)
         throws Exception {
         // INFO : copy looses timestamp, so we copyAttributes at the end.
         String displayName, targetParentPath;
@@ -1180,21 +1227,34 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
             displayName = UriUtil.getDName(sourceUri);
         }
 
-        targetParentPath = UriUtil.getDocId(targetParentUri);
+        Uri targetUri = null, targetTmpUri = null;
+        boolean targetExists = false, targetTmpExists = false;
+        File targetFile = null, targetTmpFile = null;
+        if (targetParentUri.getScheme().equals("file")) {
+            targetParentPath = targetParentUri.getPath();
+            targetFile = new File(targetParentPath + File.separator + displayName);
+            targetUri = Uri.fromFile(targetFile);
+            targetExists = targetFile.exists();
+            targetTmpFile = new File(targetParentPath + File.separator + displayName + "_tmp");
+            targetTmpUri = Uri.fromFile(targetTmpFile);
+            targetTmpExists = targetTmpFile.exists();
+        } else {
+            targetParentPath = UriUtil.getDocId(targetParentUri);
 
-        Uri targetUri = DocumentsContract.buildDocumentUriUsingTree(
-                targetParentUri,
-                targetParentPath + File.separator + displayName );
-        boolean targetExists = DocumentFile.fromTreeUri(getContext(), targetUri).exists();
+            targetUri = DocumentsContract.buildDocumentUriUsingTree(
+                    targetParentUri,
+                    targetParentPath + File.separator + displayName );
+            targetExists = DocumentFile.fromTreeUri(getContext(), targetUri).exists();
 
-        Uri targetTmpUri = DocumentsContract.buildDocumentUriUsingTree(
-                targetParentUri,
-                targetParentPath + File.separator + displayName + "_tmp" );
-        boolean targetTmpExists = DocumentFile.fromTreeUri(getContext(), targetTmpUri).exists();
+            targetTmpUri = DocumentsContract.buildDocumentUriUsingTree(
+                    targetParentUri,
+                    targetParentPath + File.separator + displayName + "_tmp" );
+            targetTmpExists = DocumentFile.fromTreeUri(getContext(), targetTmpUri).exists();
+        }
 
         if (targetExists && !replaceExisting) {
             if (enableLog) Log.i(TAG, getString(R.string.frag1_log_file_exists, targetUri.toString()));
-            return;
+            return null;
         }
 
         if (!targetTmpExists) {
@@ -1203,7 +1263,11 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 // We don't use the correct filename but another one in the hope that this will
                 // avoid indexing the file while its attributes are not fully copied. hence we don't set mimeType and use
                 // a temporary extension
-                targetTmpUri = DocumentsContract.createDocument(getActivity().getContentResolver(), targetParentUri, "", displayName + "_tmp");
+                if (targetParentUri.getScheme().equals("file")) {
+                    targetTmpFile.createNewFile();
+                } else {
+                    targetTmpUri = DocumentsContract.createDocument(getActivity().getContentResolver(), targetParentUri, "", displayName + "_tmp");
+                }
             } catch (Exception e) {
                 throw e;
                 //e.printStackTrace();
@@ -1224,14 +1288,23 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
             // the file to its correct name.
             if (targetExists) {
                 try {
-                    DocumentsContract.deleteDocument(getActivity().getContentResolver(), targetUri);
+                    if (targetParentUri.getScheme().equals("file")) {
+                        targetFile.delete();
+                    } else {
+                        DocumentsContract.deleteDocument(getActivity().getContentResolver(), targetUri);
+                    }
                 } catch (Exception e) {
                     throw e;
                     //e.printStackTrace();
                 }
             }
-            DocumentsContract.renameDocument(getActivity().getContentResolver(), targetTmpUri, displayName);
+            if (targetParentUri.getScheme().equals("file")) {
+                targetTmpFile.renameTo(targetFile);
+            } else {
+                DocumentsContract.renameDocument(getActivity().getContentResolver(), targetTmpUri, displayName);
+            }
         }
+        return targetUri;
     }
 
     private void copyDocument(Uri sourceUri, Uri targetParentUri, Uri targetUri) throws Exception {
