@@ -66,6 +66,7 @@
     <string name="frag1_log_skipping_path_filename">Saute... Path: %1$s Filename: %2$s</string>
     <string name="frag1_log_checking_workingdir_perm">Vérification des permissions du répertoire de travail...</string>
     <string name="frag1_log_checking_perm">Vérification des permissions...</string>
+    <string name="frag1_log_skipping_file_missing">Saute (fichier manquant)</string>
     <string name="frag1_log_skipping_not_jpeg">Saute (pas JPEG)\n</string>
     <string name="frag1_log_skipping_empty_file">Saute (fichier vide)\n</string>
     <string name="frag1_log_skipping_has_thumbnail">Saute (contient vignette)\n</string>

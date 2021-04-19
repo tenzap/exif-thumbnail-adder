@@ -894,6 +894,11 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                 subPath + (subPath.isEmpty() ? "" : File.separator) +
                                 docFilesToProcess[i].getName() + "... ");
 
+                        if (!docFilesToProcess[i].exists()) {
+                            updateUiLog(getString(R.string.frag1_log_skipping_file_missing));
+                            continue;
+                        }
+
                         if (! docFilesToProcess[i].getType().equals("image/jpeg")) {
                             updateUiLog(getString(R.string.frag1_log_skipping_not_jpeg));
                             continue;

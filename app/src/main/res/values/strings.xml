@@ -89,6 +89,7 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="frag1_log_skipping_path_filename">Skipping... Path: %1$s Filename: %2$s</string>
     <string name="frag1_log_checking_workingdir_perm">Checking working directory permissions...</string>
     <string name="frag1_log_checking_perm">Checking permissions...</string>
+    <string name="frag1_log_skipping_file_missing">Skipping (file missing)</string>
     <string name="frag1_log_skipping_not_jpeg">Skipping (not JPEG)\n</string>
     <string name="frag1_log_skipping_empty_file">Skipping (empty file)\n</string>
     <string name="frag1_log_skipping_has_thumbnail">Skipping (has thumbnail)\n</string>
