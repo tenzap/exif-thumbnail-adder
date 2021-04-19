@@ -14,6 +14,10 @@ add_subdirectory(
         library/expat-2.3.0
 )
 
+# For exiv2:
+#set(CMAKE_CXX_STANDARD 11)             # Uncommenting this line leads to "no stop on breakpoints in C++ code in Android Studio"
+#set(CMAKE_CXX_FLAGS -Wno-deprecated)   # Uncommenting this line leads to "no stop on breakpoints in C++ code in Android Studio"
+
 # Overwrite exiv2 cmake options
 set(EXIV2_BUILD_SAMPLES         OFF CACHE BOOL "Build sample applications"              FORCE)
 set(EXIV2_ENABLE_PNG            OFF CACHE BOOL "Build with png support (requires libz)" FORCE)
