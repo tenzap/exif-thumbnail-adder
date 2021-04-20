@@ -40,13 +40,6 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private final String TAG = "ETALog";
 
-    static {
-        try {
-            System.loadLibrary("exifThumbnailAdderHelpers");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
