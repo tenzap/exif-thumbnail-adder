@@ -22,7 +22,6 @@ package com.exifthumbnailadder.app;
 
 import android.graphics.Bitmap;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -108,10 +107,7 @@ public class NativeLibHelper {
     public void writeBitmapToFile(Bitmap thumbnail, File tbFile) throws Exception {
         tbFile.createNewFile();
 
-        //Convert bitmap to byte array
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bos);
-        byte[] bitmapdata = bos.toByteArray();
+        byte[] bitmapdata = FirstFragment.bitmapToJPEGBytearray(thumbnail);
 
         //write the bytes in file
         FileOutputStream fos = new FileOutputStream(tbFile);

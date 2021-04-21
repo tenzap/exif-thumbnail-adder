@@ -24,7 +24,13 @@ import android.graphics.Bitmap;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import pixy.image.tiff.IFD;
+import pixy.image.tiff.RationalField;
+import pixy.image.tiff.ShortField;
+import pixy.image.tiff.TiffFieldEnum;
+import pixy.image.tiff.TiffTag;
 import pixy.meta.Metadata;
+import pixy.meta.exif.ExifThumbnail;
 import pixy.meta.exif.JpegExif;
 
 public class PixymetaInterface {
@@ -36,8 +42,16 @@ public class PixymetaInterface {
             throws Exception {
         // PixyMeta doesn't copy correctly the IFDInterop
         try {
+            IFD tbIFD = new IFD();
+            ExifThumbnail exifTb = new ExifThumbnail(thumbnail.getWidth(), thumbnail.getHeight(), ExifThumbnail.DATA_TYPE_KJpegRGB, FirstFragment.bitmapToJPEGBytearray(thumbnail), tbIFD);
             JpegExif jpegExif = new JpegExif();
-            jpegExif.setThumbnailImage(thumbnail);
+            jpegExif.setThumbnail(exifTb);
+
+            // set other mandatory tags for IFD1 (compression, resolution, res unit)
+            tbIFD.addField(new ShortField(TiffTag.COMPRESSION.getValue(), new short[]{(short)TiffFieldEnum.Compression.OLD_JPG.getValue()}));
+            tbIFD.addField(new ShortField(TiffTag.RESOLUTION_UNIT.getValue(), new short[]{2}));
+            tbIFD.addField(new RationalField(TiffTag.X_RESOLUTION.getValue(), new int[] {72,1}));
+            tbIFD.addField(new RationalField(TiffTag.Y_RESOLUTION.getValue(), new int[] {72,1}));
 
             Metadata.insertExif(srcImgIs, newImgOs, jpegExif, true);
         } catch (Exception e) {

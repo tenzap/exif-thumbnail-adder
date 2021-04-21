@@ -1507,6 +1507,14 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         });
     }
 
+    public static byte[] bitmapToJPEGBytearray(Bitmap thumbnail) {
+        //Convert bitmap to byte array
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bos);
+        byte[] bitmapdata = bos.toByteArray();
+        return bitmapdata;
+    }
+
     public static class BadOriginalImageException extends Exception {}
     public static class DestinationFileExistsException extends Exception {}
     public static class CopyAttributesFailedException extends Exception {
