@@ -4,12 +4,13 @@
         <item>Android-Exif-Extended</item>
         <item>exiv2</item>
         <item>libexif (⚠️ supprime XMP, voir README)</item>
-        <item>pixymeta-android (⚠ problèmes avec InteropIFD,️ voir README)</item>
+        <item>pixymeta-android (⚠️ problèmes avec InteropIFD,️ voir README)</item>
     </string-array>
 
     <!-- Settings: ListPreference: exiv2SkipOnLogLevel -->
     <string-array name="exiv2SkipLevel_entries">
         <item>Avertissement</item>
         <item>Erreur</item>
+        <item>Ne jamais sauter, même en cas d\'erreur</item>
     </string-array>
 </resources>

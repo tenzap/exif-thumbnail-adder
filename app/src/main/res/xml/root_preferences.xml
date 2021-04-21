@@ -101,6 +101,15 @@
             app:useSimpleSummaryProvider="true"
             />
     </PreferenceCategory>
+    <PreferenceCategory app:title="@string/pref_categ_libexif_settings">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="libexifSkipOnError"
+            app:singleLineTitle="false"
+            app:title="@string/pref_libexifSkipOnError_title"
+            app:summary="@string/pref_libexifSkipOnError_summary"
+            />
+    </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_categ_extra">
         <EditTextPreference

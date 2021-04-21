@@ -95,6 +95,7 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="frag1_log_skipping_has_thumbnail">Skipping (has thumbnail)\n</string>
     <string name="frag1_log_skipping_bad_image">Skipping (bad image?)\n</string>
     <string name="frag1_log_skipping_error">Skipping (ERROR): %1$s</string>
+    <string name="frag1_log_continue_despite_error_as_per_setting">Continue processing as per settings...</string>
     <string name="frag1_log_file_exists">File already exists: %1$s</string>
     <string name="frag1_log_finished">\nFinished.</string>
     <string name="frag1_log_pixymeta_missing">Pixymeta-android library not available in this build. Select another library in settings.</string>
@@ -146,6 +147,10 @@ Once permissions are set this screen will not appear anymore, you are redirected
 
     <string name="pref_categ_exiv2_settings">Exiv2 settings</string>
     <string name="pref_exiv2SkipOnLogLevel_title">Skip from exiv2 error level</string>
+
+    <string name="pref_categ_libexif_settings">libexif settings</string>
+    <string name="pref_libexifSkipOnError_title">Skip in case of libexif error</string>
+    <string name="pref_libexifSkipOnError_summary">Skip picture if libexif reports an error</string>
 
     <string name="pref_categ_extra">Extra</string>
     <string name="pref_excludedSecVolPrefix_title">Prefix for excluded dir</string>

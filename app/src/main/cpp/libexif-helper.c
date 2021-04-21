@@ -131,7 +131,7 @@ log_func (ExifLog *log, ExifLogCode code, const char *domain,
             char dest[512] = {0, };
             vsprintf(dest, format, args);
             strncat(message, dest, sizeof(message) - strlen(message) -1);
-            throwError(arg->env, message);
+            throwLibexifHelperException(arg->env, message);
             return;
             //exit (1);
         case EXIF_LOG_CODE_DEBUG:
@@ -180,7 +180,7 @@ log_func (ExifLog *log, ExifLogCode code, const char *domain,
                 char dest[512] = {0, };
                 vsprintf(dest, format, args);
                 strncat(message, dest, sizeof(message) - strlen(message) -1);
-                throwError(arg->env, message);
+                throwLibexifException(arg->env, message);
                 return;
                 //exit (1);
             }
@@ -638,6 +638,40 @@ jint throwError( JNIEnv *env, char *message )
 
     jclass exClass;
     char *className = "java/lang/RuntimeException" ;
+
+    exClass = (*env)->FindClass( env, className );
+    if ( exClass == NULL ) {
+        return throwNoClassDefError( env, className );
+    }
+
+    return (*env)->ThrowNew( env, exClass, message );
+}
+
+jint throwLibexifException( JNIEnv *env, char *message )
+{
+    if ((*env)->ExceptionCheck(env) == JNI_TRUE) {
+        return 99;
+    }
+
+    jclass exClass;
+    char *className = "com/exifthumbnailadder/app/LibexifException" ;
+
+    exClass = (*env)->FindClass( env, className );
+    if ( exClass == NULL ) {
+        return throwNoClassDefError( env, className );
+    }
+
+    return (*env)->ThrowNew( env, exClass, message );
+}
+
+jint throwLibexifHelperException( JNIEnv *env, char *message )
+{
+    if ((*env)->ExceptionCheck(env) == JNI_TRUE) {
+        return 99;
+    }
+
+    jclass exClass;
+    char *className = "com/exifthumbnailadder/app/LibexifHelperException" ;
 
     exClass = (*env)->FindClass( env, className );
     if ( exClass == NULL ) {

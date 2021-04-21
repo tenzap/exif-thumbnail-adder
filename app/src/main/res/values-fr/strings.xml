@@ -72,6 +72,7 @@
     <string name="frag1_log_skipping_has_thumbnail">Saute (contient vignette)\n</string>
     <string name="frag1_log_skipping_bad_image">Saute (mauvaise image?)\n</string>
     <string name="frag1_log_skipping_error">Saute (ERREUR): %1$s</string>
+    <string name="frag1_log_continue_despite_error_as_per_setting">Continue tel que demandé dans les paramètres...</string>
     <string name="frag1_log_file_exists">Fichier existe déjà : %1$s</string>
     <string name="frag1_log_finished">\nTerminé.</string>
     <string name="frag1_log_pixymeta_missing">La bibliothèque pixymeta-android n\'est pas disponible dans cette version. Sélectionnez en une autre dans les paramètres.</string>
@@ -129,6 +130,11 @@
     <string name="pref_categ_exiv2_settings">Paramètres Exiv2</string>
     <string name="pref_exiv2SkipOnLogLevel_title">Sauter à partir du niveau d\'erreur exiv2</string>
 
+    <string name="pref_categ_libexif_settings">Paramètres <libexif></libexif></string>
+    <string name="pref_libexifSkipOnError_title">Sauter en cas d\'erreur libexif</string>
+    <string name="pref_libexifSkipOnError_summary">Sauter l\'image en cas d\'erreur remontée par libexif</string>
+
+    pref_categ_libexif_settings
     <string name="pref_categ_extra">Suppléments</string>
     <string name="pref_excludedSecVolPrefix_title">Préfixe du répertoire exclu</string>
     <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[On peut définir un sous répertoire qui doit être exclu

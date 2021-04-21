@@ -47,7 +47,7 @@ public class NativeLibHelper {
         // writeThumbnailWithLibexif
     }
 
-    public void writeThumbnailWithLibexifThroughFile (String input, String output, Bitmap thumbnail)
+    public void writeThumbnailWithLibexifThroughFile (String input, String output, Bitmap thumbnail, boolean libexifSkipOnError)
             throws Exception {
         String tbFilename = output+"_tb";
         File tbFile = new File(tbFilename);
@@ -62,6 +62,12 @@ public class NativeLibHelper {
         try {
             int result = writeThumbnailWithLibexifThroughFile(input, output, tbFilename);
             if (result != 0) throw new RuntimeException("libexif return value different from 0: " + result);
+        } catch (LibexifException e) {
+            if (libexifSkipOnError) {
+                //Delete output file which might have been created by libexif despite the exception
+                new File(output).delete();
+            }
+            throw e;
         } catch (Exception e) {
             //Delete output file which might have been created by libexif despite the exception
             new File(output).delete();
@@ -87,17 +93,18 @@ public class NativeLibHelper {
         try {
             int result = writeThumbnailWithExiv2ThroughFile(output, tbFilename, 72);
             if (result != 0) throw new RuntimeException("exiv2 return value different from 0: " + result);
-        } catch (Exiv2WarnException e) {
-            if (exiv2SkipOnLogLevel.equals("warn")) {
-                //Delete output file which might have been created by libexif despite the exception
-                new File(output).delete();
+        } catch (Exiv2ErrorException | Exiv2WarnException e) {
+            switch (exiv2SkipOnLogLevel) {
+                case "warn":
+                case "error":
+                    //Delete output file
+                    new File(output).delete();
+                    break;
             }
-            e.printStackTrace();
             throw e;
         } catch (Exception e) {
-            //Delete output file which might have been created by libexif despite the exception
+            //Delete output file
             new File(output).delete();
-            e.printStackTrace();
             throw e;
         } finally {
             tbFile.delete();

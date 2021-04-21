@@ -33,6 +33,8 @@ static void log_func (
 
 jint throwNoClassDefError( JNIEnv *env, char *message );
 jint throwError( JNIEnv *env, char *message );
+jint throwLibexifException( JNIEnv *env, char *message );
+jint throwLibexifHelperException( JNIEnv *env, char *message );
 
 static ExifEntry *init_tag(ExifData *exif, ExifIfd ifd, ExifTag tag);
 

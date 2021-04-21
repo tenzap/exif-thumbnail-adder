@@ -1031,7 +1031,17 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                         new NativeLibHelper().writeThumbnailWithLibexifThroughFile(
                                                 FileUtil.getFullDocIdPathFromTreeUri(docFilesToProcess[i].getUri(), getContext()),
                                                 outFilepath,
-                                                thumbnail);
+                                                thumbnail,
+                                                prefs.getBoolean("libexifSkipOnError", true));
+                                    } catch (LibexifException e) {
+                                        e.printStackTrace();
+                                        if (prefs.getBoolean("libexifSkipOnError", true)) {
+                                            updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                            continue;
+                                        } else {
+                                            updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
+                                            updateUiLog(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
+                                        }
                                     } catch (Exception e) {
                                         updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                                         e.printStackTrace();
@@ -1068,14 +1078,16 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                                 outFilepath,
                                                 thumbnail,
                                                 prefs.getString("exiv2SkipOnLogLevel", "warn"));
-                                    } catch (Exiv2WarnException e) {
-                                        //Delete output file which might have been created by libexif despite the exception
+                                    } catch (Exiv2ErrorException | Exiv2WarnException e) {
                                         e.printStackTrace();
-                                        if (prefs.getString("exiv2SkipOnLogLevel", "warn").equals("warn")) {
-                                            updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                                            continue;
-                                        } else {
-                                            updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span><br>", 1));
+                                        switch (prefs.getString("exiv2SkipOnLogLevel", "warn")) {
+                                            case "warn":
+                                            case "error":
+                                                updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                                continue;
+                                            case "none":
+                                                updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
+                                                updateUiLog(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
                                         }
                                     } catch (Exception e) {
                                         updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
