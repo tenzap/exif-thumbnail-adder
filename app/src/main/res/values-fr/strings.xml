@@ -73,7 +73,7 @@
     <string name="frag1_log_skipping_bad_image">Saute (mauvaise image?)\n</string>
     <string name="frag1_log_skipping_error">Saute (ERREUR): %1$s</string>
     <string name="frag1_log_file_exists">Fichier existe déjà : %1$s</string>
-    <string name="frag1_log_finished">\nFini.</string>
+    <string name="frag1_log_finished">\nTerminé.</string>
     <string name="frag1_log_pixymeta_missing">La bibliothèque pixymeta-android n\'est pas disponible dans cette version. Sélectionnez en une autre dans les paramètres.</string>
     <string name="frag1_log_done">\u00A0Fait</string>
     <string name="frag1_log_overwrite_not_allowed">\u00A0Ecraser l\'image n\'est pas permis (cf paramètres). Le fichier cible existe. Saute.</string>
@@ -105,16 +105,16 @@
     <string name="pref_categ_options">Options</string>
     <string name="pref_rotateThumbnail_title">Pivoter la vignette</string>
     <string name="pref_rotateThumbnail_summary">Pivote la vignette pour correspondre à l\'image. La plupart des programmes nécessitent une vignette pivotée (par ex. l\'outil d\'import de photos de Win10)</string>
-    <string name="pref_skipPicsHavingThumbnail_title">Saute les fichiers avec vignette</string>
+    <string name="pref_skipPicsHavingThumbnail_title">Sauter les fichiers avec vignette</string>
     <string name="pref_skipPicsHavingThumbnail_summary">Si le fichier a déjà une vignette ne pas la traiter</string>
     <string name="pref_backupOriginalPic_title">Faire une sauvegarde de l\'image d\'origine</string>
-    <string name="pref_backupOriginalPic_summary">La sauvegarde est placée dans le répertoire de travail (si elle existe déjà, elle n\'est jamais écrasée)</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_title">Ecrire dans le fichier d\'origine</string>
+    <string name="pref_backupOriginalPic_summary">La sauvegarde est placée dans le répertoire de travail (si elle existe déjà et que vous choisissez d\'écraser l\'image d\'origine, la sauvegarde n\'est jamais écrasée)</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_title">Ecraser l\'image d\'origine</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ecrit l\'image avec la vignette à l\'endroit du fichier d\'origine (ie. on remplace le fichier d\'origine)</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Ecrit l\'image avec la vignette dans le répertoire de travail (dans \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
-    <string name="pref_overwriteDestPic_title">Ecrase l\'image du répertoire cible</string>
+    <string name="pref_overwriteDestPic_title">Ecraser l\'image du répertoire cible</string>
     <string name="pref_overwriteDestPic_summary">Ecrase silencieusement le fichier du répetoire cible s\'il existe déjà</string>
-    <string name="pref_keepTimeStampOnBackup_title">Copie l\'horodatage sur la sauvegarde</string>
+    <string name="pref_keepTimeStampOnBackup_title">Copier l\'horodatage sur la sauvegarde</string>
     <string name="pref_keepTimeStampOnBackup_summary">Si \'Ecrire dans le fichier d\'origine\' est \'off\',
         cette option permet de copier l\'horodatage du fichier d\'origine sur la copie dans le répertoire de sauvegarde.\n
         Si \'Ecrire dans le fichier d\'origine\' est \'on\', l\'horodatage est toujours conservé.</string>
@@ -124,6 +124,7 @@
 
     <string name="pref_categ_backend">Bibliothèque</string>
     <string name="pref_exifLibrary_title">Ecrire les vignettes EXIF avec</string>
+    <string name="pref_exifLibrary_cannotDisableSkipPicsHavingThumbnail">Impossible de désactiver \'%1$s\' avec Android-Exif-Extended. L\'option a été réactivée.</string>
 
     <string name="pref_categ_exiv2_settings">Paramètres Exiv2</string>
     <string name="pref_exiv2SkipOnLogLevel_title">Sauter à partir du niveau d\'erreur exiv2</string>

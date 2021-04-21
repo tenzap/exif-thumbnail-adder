@@ -90,6 +90,7 @@ public class SettingsActivity extends AppCompatActivity {
             updatePathsSummary();
             setKeepTimeStampOnBackupEnabled();
             setAllFilesAccess();
+            setSkipPicsHavingThumbnail();
 
         }
 
@@ -117,6 +118,23 @@ public class SettingsActivity extends AppCompatActivity {
             }
             if (key.equals("writeThumbnailedToOriginalFolder")) {
                 setKeepTimeStampOnBackupEnabled();
+            }
+            if ( key.equals("exif_library")) {
+                setSkipPicsHavingThumbnail();
+            }
+            if ( key.equals("skipPicsHavingThumbnail")) {
+                setSkipPicsHavingThumbnail();
+            }
+        }
+
+        public void setSkipPicsHavingThumbnail() {
+            if (getPreferenceManager().getSharedPreferences().getString("exif_library", "exiflib_android-exif-extended").equals("exiflib_android-exif-extended")) {
+                if (!getPreferenceManager().getSharedPreferences().getBoolean("skipPicsHavingThumbnail", true)) {
+                    SwitchPreferenceCompat skipPicsHavingThumbnailPref = findPreference("skipPicsHavingThumbnail");
+                    skipPicsHavingThumbnailPref.setChecked(true);
+                    Toast t = Toast.makeText(this.getContext(), getString(R.string.pref_exifLibrary_cannotDisableSkipPicsHavingThumbnail, getString(R.string.pref_skipPicsHavingThumbnail_title)), Toast.LENGTH_LONG);
+                    t.show();
+                }
             }
         }
 

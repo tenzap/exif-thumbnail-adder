@@ -1,0 +1,15 @@
+<resources>
+    <!-- Settings: ListPreference: exiflib -->
+    <string-array name="exif_library_entries">
+        <item>Android-Exif-Extended</item>
+        <item>exiv2</item>
+        <item>libexif (⚠️ supprime XMP, voir README)</item>
+        <item>pixymeta-android (⚠ problèmes avec InteropIFD,️ voir README)</item>
+    </string-array>
+
+    <!-- Settings: ListPreference: exiv2SkipOnLogLevel -->
+    <string-array name="exiv2SkipLevel_entries">
+        <item>Avertissement</item>
+        <item>Erreur</item>
+    </string-array>
+</resources>

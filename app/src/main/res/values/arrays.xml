@@ -4,7 +4,7 @@
         <item>Android-Exif-Extended</item>
         <item>exiv2</item>
         <item>libexif (⚠️ strips XMP, see README)</item>
-        <item>pixymeta-android</item>
+        <item>pixymeta-android (⚠ problems with InteropIFD, see README)</item>
     </string-array>
 
     <string-array name="exif_library_values">
@@ -16,8 +16,8 @@
 
     <!-- Settings: ListPreference: exiv2SkipOnLogLevel -->
     <string-array name="exiv2SkipLevel_entries">
-        <item>warn</item>
-        <item>error</item>
+        <item>Warning</item>
+        <item>Error</item>
     </string-array>
 
     <string-array name="exiv2SkipLevel_values">

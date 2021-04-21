@@ -128,8 +128,8 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="pref_skipPicsHavingThumbnail_title">Skip pictures with thumbnail</string>
     <string name="pref_skipPicsHavingThumbnail_summary">If picture already has a thumbnail, skip processing</string>
     <string name="pref_backupOriginalPic_title">Create backup of original picture</string>
-    <string name="pref_backupOriginalPic_summary">Backup location is the working directory (if the backup exists, it is never overwritten)</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_title">Write to original folder</string>
+    <string name="pref_backupOriginalPic_summary">Backup location is the working directory (if the backup exists and you select to overwrite original file, the backup is never overwritten)</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_title">Overwrite original picture</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Write the image with the thumbnail to the location of the original picture (ie. replace in place)</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Write the image with the thumbnail to the working directory (in \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
     <string name="pref_overwriteDestPic_title">Overwrite picture in destination</string>
@@ -142,6 +142,7 @@ Once permissions are set this screen will not appear anymore, you are redirected
 
     <string name="pref_categ_backend">Backend/Library</string>
     <string name="pref_exifLibrary_title">Write EXIF thumbnails with</string>
+    <string name="pref_exifLibrary_cannotDisableSkipPicsHavingThumbnail">Cannot disable option \'%1$s\' when using Android-Exif-Extended. Turning it back on.</string>
 
     <string name="pref_categ_exiv2_settings">Exiv2 settings</string>
     <string name="pref_exiv2SkipOnLogLevel_title">Skip from exiv2 error level</string>

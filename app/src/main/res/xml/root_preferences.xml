@@ -32,22 +32,26 @@
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="rotateThumbnails"
+            app:singleLineTitle="false"
             app:title="@string/pref_rotateThumbnail_title"
             app:summary="@string/pref_rotateThumbnail_summary"/>
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="skipPicsHavingThumbnail"
+            app:singleLineTitle="false"
             app:title="@string/pref_skipPicsHavingThumbnail_title"
             app:summary="@string/pref_skipPicsHavingThumbnail_summary"/>
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="backupOriginalPic"
+            app:singleLineTitle="false"
             app:title="@string/pref_backupOriginalPic_title"
             app:summary="@string/pref_backupOriginalPic_summary"
             />
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="writeThumbnailedToOriginalFolder"
+            app:singleLineTitle="false"
             app:title="@string/pref_writeThumbnailedToOriginalFolder_title"
             app:summaryOn="@string/pref_writeThumbnailedToOriginalFolder_summaryOn"
             app:summaryOff="@string/pref_writeThumbnailedToOriginalFolder_summaryOff"
@@ -55,12 +59,14 @@
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:key="overwriteDestPic"
+            app:singleLineTitle="false"
             app:title="@string/pref_overwriteDestPic_title"
             app:summary="@string/pref_overwriteDestPic_summary"
             />
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="keepTimeStampOnBackup"
+            app:singleLineTitle="false"
             app:title="@string/pref_keepTimeStampOnBackup_title"
             app:summary="@string/pref_keepTimeStampOnBackup_summary"
             app:enabled="false"
@@ -68,6 +74,7 @@
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="writeTmpToCacheDir"
+            app:singleLineTitle="false"
             app:summaryOn="@string/pref_writeTmpToCacheDir_summaryOn"
             app:summaryOff="@string/pref_writeTmpToCacheDir_summaryOff"
             app:title="@string/pref_writeTmpToCacheDir_title" />
