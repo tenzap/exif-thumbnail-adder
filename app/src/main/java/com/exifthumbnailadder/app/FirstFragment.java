@@ -81,6 +81,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import it.sephiroth.android.library.exif2.IfdId;
+import it.sephiroth.android.library.exif2.Rational;
+
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -1406,6 +1409,12 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
             sInExif.readExif(srcImgIs, it.sephiroth.android.library.exif2.ExifInterface.Options.OPTION_ALL );
             sInExif.setCompressedThumbnail(thumbnail);
+
+            //set other mandatory tags for IFD1 (compression, resolution, res unit)
+            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COMPRESSION,IfdId.TYPE_IFD_1, it.sephiroth.android.library.exif2.ExifInterface.Compression.JPEG));
+            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_RESOLUTION_UNIT,IfdId.TYPE_IFD_1, it.sephiroth.android.library.exif2.ExifInterface.ResolutionUnit.INCHES));
+            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_X_RESOLUTION,IfdId.TYPE_IFD_1, new Rational(72,1)));
+            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_Y_RESOLUTION,IfdId.TYPE_IFD_1, new Rational(72,1)));
 
             // Close & Reopen InputStream, otherwise writeExif will fail with an exception
             // because srcImgIs was already read
