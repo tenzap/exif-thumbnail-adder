@@ -190,14 +190,16 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         }
         int imageWidth = original.getWidth();
         int imageHeight = original.getHeight();
-        int thumbnailWidth = 160;
-        int thumbnailHeight = 120;
-        if (imageWidth < imageHeight) {
-            // Swap thumbnail width and height to keep a relative aspect ratio
-            int temp = thumbnailWidth;
-            thumbnailWidth = thumbnailHeight;
-            thumbnailHeight = temp;
-        }
+
+        float imageRatio = ((float)Math.min(imageWidth, imageHeight) / (float)Math.max(imageWidth, imageHeight));
+        int thumbnailWidth = (imageWidth < imageHeight) ? Math.round(160*imageRatio) : 160 ;
+        int thumbnailHeight = (imageWidth < imageHeight) ? 160 : Math.round(160*imageRatio);
+//        if (imageWidth < imageHeight) {
+//            // Swap thumbnail width and height to keep a relative aspect ratio
+//            int temp = thumbnailWidth;
+//            thumbnailWidth = thumbnailHeight;
+//            thumbnailHeight = temp;
+//        }
         if (imageWidth < thumbnailWidth) thumbnailWidth = imageWidth;
         if (imageHeight < thumbnailHeight) thumbnailHeight = imageHeight;
 
