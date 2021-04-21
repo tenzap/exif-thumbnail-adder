@@ -423,7 +423,7 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
     tbFile = (*env)->GetStringUTFChars(env, jtb, NULL);
 
     create_exif = 1;
-    no_fixup = 0;
+    no_fixup = 1;
     output = strdup(outputFile);
     p.set_thumb = strdup(tbFile);
     // insert_thumb removes the previous thumb but it doesn't clear
@@ -514,6 +514,36 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
             ExifEntry *entry;
             entry = init_tag(ed, EXIF_IFD_1, EXIF_TAG_COMPRESSION);
             exif_set_short(entry->data, exif_data_get_byte_order(ed), 6);
+
+            // Since we don't use "fixup", write the other mandatory tags
+            ExifEntry *entryX, *entryY;
+            ExifRational r;
+            r.numerator = 72;
+            r.denominator = 1;
+            entryX = init_tag(ed, EXIF_IFD_1, EXIF_TAG_X_RESOLUTION);
+            entryY = init_tag(ed, EXIF_IFD_1, EXIF_TAG_Y_RESOLUTION);
+            exif_set_rational(entryX->data, exif_data_get_byte_order(ed), r);
+            exif_set_rational(entryY->data, exif_data_get_byte_order(ed), r);
+
+            // EXIF_TAG_RESOLUTION_UNIT -  2 = inches
+            ExifEntry *entryUnit;
+            entryUnit = init_tag(ed, EXIF_IFD_1, EXIF_TAG_RESOLUTION_UNIT);
+            exif_set_short(entryUnit->data, exif_data_get_byte_order(ed), 2);
+
+//            // In case we would use fixup, we would have to do this:
+//            // Workaround so that THUMBNAIL_OFFSET and THUMBNAIL_LENGTH is not
+//            // twice in the output file which would corrupt it:
+//            // So we save the file and reload it again.
+//            // There is probably a cleaner way to do it.
+//            action_save (ed, log, p, fout);
+//            exif_data_unref (ed);
+//            l = NULL;
+//            ed = NULL;
+//            l = exif_loader_new ();
+//            exif_loader_log (l, log);
+//            exif_loader_write_file (l, output);
+//            ed = exif_loader_get_data(l);
+//            exif_loader_unref (l);
 
             if (!no_fixup)
                 /* Add the mandatory thumbnail tags */
