@@ -24,10 +24,13 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
     - Rotation of the thumbnail
     - Backup of original pictures
     - Replace picture inplace or write new picture to another directory
-    - Choose the exif library for adding thumbnails. Available libraries are:
+    - Choose the exif library for adding thumbnails. See "known facts" section below to see advantages and drawbacks of each library.  
+    Available libraries are:
         - Android-Exif-Extended
+        - exiv2
         - libexif
         - pixymeta-android (please note that at the time of writing this, pixymeta-android is licensed under EPL-1.0 which is not compatible with GPL. You may compile yourself a variant having pixymeta-android. See below for more info.)
+
 
 
 ## Installation
@@ -41,20 +44,23 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 - When choosing Android-Exif-Extended library:
     - all the existing EXIF structure is kept and a new APP1 structure containing the thumbnail is added to the existing APP1.
     - this means that all EXIF tags will be duplicate if checked by exiftool
+    - if you turn option "skip files having thumbnail" off, this will lead to duplicate IFD1 structure (IFD1 contains the thumbnail metadata). So if you choose Android-Exif-Extended, be sure to leave this option "on"
     - Any other tags (XMP for example) are kept
 - When choosing exiv2:
-    - Some tags of [Canon] & [Composite] group on Canon pictures might be stripped
-    - XMP is kept
+    - on some pictures some tags of [Canon] & [Composite] group on Canon pictures might be stripped, [Ducky] group seems removed too
+    - [XMP*] is kept
     - If exiv2 detects some problems (errors) in your files, the file are be skipped (reported error is displayed in the app)
 - When choosing libexif:
-    - All [XMP] metadata groups and tags get deleted.
+    - All [XMP*] metadata groups and tags get deleted.
     - Some or all tags of [Olympus] [Canon] [Composite] group get deleted.
+    - [Ducky] group is kept
     - The tags supported by libexif and exif structure are rewritten.
-    - It is like running "exif --create-exif --insert-thumbnail tb.jpg" from the exif command line.
+    - It is like running "exif --create-exif --remove-thumbnail --no-fixup --insert-thumbnail tb.jpg" from the exif command line.
     - In case exif faces some problems (likely bad EXIF data in your picture) they are reported in the app, the processing of the picture is skipped and the original picture remains untouched.
-- When choosing pixymeta-android library:
-    - You might loose XMP metadata, I didn't test it yet.
-    - the existing EXIF tags are copied and things a rewritten from scratch. The resulting EXIF values were the same in my testing except the InterOp IFD which was not copied (see https://github.com/dragon66/pixymeta-android/issues/10)
+- When choosing pixymeta-android library (**usage is discouraged** until pixymeta bug is fixed):
+    - the existing EXIF tags are copied and things a rewritten from scratch. 
+    - [XMP*] tags are kept
+    - [InteropIFD] directory is not correctly rewritten leading to problems such as "Bad InteropIFD directory" or "IFD1 pointer references previous InteropIFD directory" or "GPS pointer references previous InteropIFD directory". See [pixymeta bug report](https://github.com/dragon66/pixymeta-android/issues/10).
 
 
 ## Contribute
@@ -86,4 +92,5 @@ This project has been developed in "Android Studio", you may use that to build t
 1. create file './app/enable-pixymeta-android.gradle' and add this line  
 `dependencies { pixymetaImplementation project(path: ':library:pixymeta-android') }`
 1. place the src directory of pixymeta-android that you can find here https://github.com/dragon66/pixymeta-android into `library/pixymeta-android`. It must be dated >= 2021-03-27 and >= commit 15a6f25d891593e5c6f85e542a55150b2947e7f5
+1. place build.gradle and AndroidManifest.xml from pixymeta-android into `library/pixymeta-android`
 1. select the build variant having flavor 'pixymeta'
