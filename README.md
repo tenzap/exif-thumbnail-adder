@@ -20,6 +20,7 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 - Works on both SDCards and device internal memory (named primary external storage & secondary external storage in the android technical world)
 - Possibility to exclude one subdirectory from selected directories
 - App can be installed either on internal storage or external storage
+- default option are conservative (creation of backup which can not be overwritten, skip pictures with malformed exif data...) . In the settings, one can chose to process files that have malformed exif data by choosing to skip files if an error is detected or process it anyway
 - Various options
     - Rotation of the thumbnail
     - Backup of original pictures
@@ -47,16 +48,16 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
     - if you turn option "skip files having thumbnail" off, this will lead to duplicate IFD1 structure (IFD1 contains the thumbnail metadata). So if you choose Android-Exif-Extended, be sure to leave this option "on"
     - Any other tags (XMP for example) are kept
 - When choosing exiv2:
-    - on some pictures some tags of [Canon] & [Composite] group on Canon pictures might be stripped, [Ducky] group seems removed too
+    - on some pictures some tags of [Canon] & [Composite] group on Canon pictures might be stripped, [NikonCustom], [Ducky] group seems removed too
     - [XMP*] is kept
-    - If exiv2 detects some problems (errors) in your files, the file are be skipped (reported error is displayed in the app)
+    - If exiv2 detects some problems (errors) in your files, the file are be skipped (reported error is displayed in the app). This setting can be changed in the app configuration
 - When choosing libexif:
     - All [XMP*] metadata groups and tags get deleted.
     - Some or all tags of [Olympus] [Canon] [Composite] group get deleted.
     - [Ducky] group is kept
     - The tags supported by libexif and exif structure are rewritten.
-    - It is like running "exif --create-exif --remove-thumbnail --no-fixup --insert-thumbnail tb.jpg" from the exif command line.
-    - In case exif faces some problems (likely bad EXIF data in your picture) they are reported in the app, the processing of the picture is skipped and the original picture remains untouched.
+    - It is almost like running "exif --create-exif --remove-thumbnail --insert-thumbnail tb.jpg" from the exif command line.
+    - In case exif faces some problems (likely bad EXIF data in your picture) they are reported in the app, the processing of the picture is skipped and the original picture remains untouched. This settings can be changed in the app configuration.
 - When choosing pixymeta-android library (**usage is discouraged** until pixymeta bug is fixed):
     - the existing EXIF tags are copied and things a rewritten from scratch. 
     - [XMP*] tags are kept
