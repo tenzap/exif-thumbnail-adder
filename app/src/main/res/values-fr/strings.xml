@@ -110,9 +110,9 @@
     <string name="pref_skipPicsHavingThumbnail_summary">Si le fichier a déjà une vignette ne pas la traiter</string>
     <string name="pref_backupOriginalPic_title">Faire une sauvegarde de l\'image d\'origine</string>
     <string name="pref_backupOriginalPic_summary">La sauvegarde est placée dans le répertoire de travail (si elle existe déjà et que vous choisissez d\'écraser l\'image d\'origine, la sauvegarde n\'est jamais écrasée)</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_title">Ecraser l\'image d\'origine</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ecrit l\'image avec la vignette à l\'endroit du fichier d\'origine (ie. on remplace le fichier d\'origine)</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Ecrit l\'image avec la vignette dans le répertoire de travail (dans \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
+    <string name="pref_writeThumbnailedToOriginalFolder_title">Ajouter la vignette à l\'image d\'origine</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ajoute la vignette dans les étiquettes EXIF de l\'image d\'origine</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Ajoute la vignette à une copie de l\'image d\'origine dans le répertoire de travail (dans \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
     <string name="pref_overwriteDestPic_title">Ecraser l\'image du répertoire cible</string>
     <string name="pref_overwriteDestPic_summary">Ecrase silencieusement le fichier du répetoire cible s\'il existe déjà</string>
     <string name="pref_keepTimeStampOnBackup_title">Copier l\'horodatage sur la sauvegarde</string>
