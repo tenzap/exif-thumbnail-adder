@@ -251,7 +251,7 @@ public class UriUtil {
         Cursor c = null;
         try {
             c = resolver.query(self, new String[] { column }, null, null, null);
-            if (c.moveToFirst() && !c.isNull(0)) {
+            if (c!= null && c.moveToFirst() && !c.isNull(0)) {
                 return c.getLong(0);
             } else {
                 return defaultValue;
