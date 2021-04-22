@@ -1,6 +1,6 @@
 Search for pictures (JPEG) on your device and add a thumbnail in the EXIF tag if they don't have one yet.
 
-This is an application for android devices that will search for pictures (JPEG) on your device and __add a thumbnail__ in the EXIF tag if they don't have one yet.
+This is an application for android devices that will search for pictures (JPEG) on your device and <b>add a thumbnail</b> in the EXIF tag if they don't have one yet.
 
 It is supposed to work from android Oreo (android 8, SDK 26) and was tested on real device running Android 10 and virtual device running android 11.
 
@@ -20,23 +20,46 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 - Works on both SDCards and device internal memory (named primary external storage & secondary external storage in the android technical world)
 - Possibility to exclude one subdirectory from selected directories
 - App can be installed either on internal storage or external storage
+- Default option are conservative (creation of backup which can not be overwritten, skip pictures with malformed exif data...) . In the settings, one can chose to process files that have malformed exif data by choosing to skip files if an error is detected.
 - Various options
     - Rotation of the thumbnail
     - Backup of original pictures
     - Replace picture inplace or write new picture to another directory
-    - Choose the exif library for adding thumbnails (Android-Exif-Extended or pixymeta-android). Please note that at the time of writing this, pixymeta-android is licensed under EPL-1.0 which is not compatible with GPL. You may compile yourself a variant having pixymeta-android. See README file for more info.
+    - Choose the exif library for adding thumbnails. See "known facts" section below to see advantages and drawbacks of each library.  
+    Available libraries are:
+        - Android-Exif-Extended
+        - exiv2
+        - libexif
+        - pixymeta-android (please note that at the time of writing this, pixymeta-android is licensed under EPL-1.0 which is not compatible with GPL. You may compile yourself a variant having pixymeta-android. See below for more info.)
 
 
 ## Installation
 - Prerequisites: minimum android Oreo (android 8, SDK 26). App was tested up to Android 11.
-- Download through F-Droid app https://f-droid.org
+- Download through F-Droid app https://f-droid.org/packages/com.exifthumbnailadder.app/
 - Download the APK from the release page:  https://github.com/tenzap/exif-thumbnail-adder/releases
 
 
 ## Known facts
 - Performance may be slower on SDCards, that may be related to the speed of your SDCard.
-- When choosing Android-Exif-Extended library, all the existing EXIF structure is kept and a new APP1 structure containing the thumbnail is added to the existing one.
-- When choosing pixymeta-android library, the existing EXIF tags are copied and things a rewritten from scratch. The resulting EXIF values were the same in my testing except the InterOp IFD which was not copied (see https://github.com/dragon66/pixymeta-android/issues/10)
+- When choosing Android-Exif-Extended library:
+    - all the existing EXIF structure is kept and a new APP1 structure containing the thumbnail is added to the existing APP1.
+    - this means that all EXIF tags will be duplicate if checked by exiftool
+    - Any other tags (XMP for example) are kept
+- When choosing exiv2:
+    - on some pictures some tags of [Canon] & [Composite] group on Canon pictures might be stripped, [NikonCustom], [Ducky] group may be removed too
+    - [XMP*] is kept
+    - If exiv2 detects some problems (errors) in your files, the file are be skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
+- When choosing libexif:
+    - All [XMP*] metadata groups and tags get deleted.
+    - Some or all tags of [Olympus] [Canon] [Composite] group get deleted.
+    - [Ducky] group is kept
+    - The tags supported by libexif and exif structure are rewritten.
+    - It is almost like running "exif --create-exif --remove-thumbnail --insert-thumbnail tb.jpg" from the exif command line.
+    - In case exif faces some problems (likely bad EXIF data in your picture) they are reported in the app, the processing of the picture is skipped and the original picture remains untouched. This settings can be changed in the app configuration.
+- When choosing pixymeta-android library (**usage is discouraged** until pixymeta bug is fixed):
+    - the existing EXIF tags are copied and things a rewritten from scratch. 
+    - [XMP*] tags are kept
+    - [InteropIFD] directory is not correctly rewritten leading to problems such as "Bad InteropIFD directory" or "IFD1 pointer references previous InteropIFD directory" or "GPS pointer references previous InteropIFD directory". See pixymeta bug report: https://github.com/dragon66/pixymeta-android/issues/10.
 
 
 ## Contribute
@@ -46,8 +69,8 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
     - Transform the batch processing into a "Service" so that it doesn't stop when the user leaves the main "Activity"
     - Translation
     - Improve theme/layout
-    - Implement another backend and/or fix https://github.com/dragon66/pixymeta-android/issues/10
+    - Implement other backends and/or fix https://github.com/dragon66/pixymeta-android/issues/10
 
 
 ## License
-GPL-3.0 (see "LICENSE" file)
+GPL-3.0 (see "COPYING" file)

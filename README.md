@@ -20,7 +20,7 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 - Works on both SDCards and device internal memory (named primary external storage & secondary external storage in the android technical world)
 - Possibility to exclude one subdirectory from selected directories
 - App can be installed either on internal storage or external storage
-- default option are conservative (creation of backup which can not be overwritten, skip pictures with malformed exif data...) . In the settings, one can chose to process files that have malformed exif data by choosing to skip files if an error is detected or process it anyway
+- Default option are conservative (creation of backup which can not be overwritten, skip pictures with malformed exif data...) . In the settings, one can chose to process files that have malformed exif data by choosing to skip files if an error is detected.
 - Various options
     - Rotation of the thumbnail
     - Backup of original pictures
@@ -31,7 +31,6 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
         - exiv2
         - libexif
         - pixymeta-android (please note that at the time of writing this, pixymeta-android is licensed under EPL-1.0 which is not compatible with GPL. You may compile yourself a variant having pixymeta-android. See below for more info.)
-
 
 
 ## Installation
@@ -45,19 +44,18 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 - When choosing Android-Exif-Extended library:
     - all the existing EXIF structure is kept and a new APP1 structure containing the thumbnail is added to the existing APP1.
     - this means that all EXIF tags will be duplicate if checked by exiftool
-    - if you turn option "skip files having thumbnail" off, this will lead to duplicate IFD1 structure (IFD1 contains the thumbnail metadata). So if you choose Android-Exif-Extended, be sure to leave this option "on"
     - Any other tags (XMP for example) are kept
 - When choosing exiv2:
-    - on some pictures some tags of [Canon] & [Composite] group on Canon pictures might be stripped, [NikonCustom], [Ducky] group seems removed too
+    - on some pictures some tags of [Canon] & [Composite] group on Canon pictures might be stripped, [NikonCustom], [Ducky] group may be removed too
     - [XMP*] is kept
-    - If exiv2 detects some problems (errors) in your files, the file are be skipped (reported error is displayed in the app). This setting can be changed in the app configuration
+    - If exiv2 detects some problems (errors) in your files, the file are be skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
 - When choosing libexif:
     - All [XMP*] metadata groups and tags get deleted.
     - Some or all tags of [Olympus] [Canon] [Composite] group get deleted.
     - [Ducky] group is kept
     - The tags supported by libexif and exif structure are rewritten.
     - It is almost like running "exif --create-exif --remove-thumbnail --insert-thumbnail tb.jpg" from the exif command line.
-    - In case exif faces some problems (likely bad EXIF data in your picture) they are reported in the app, the processing of the picture is skipped and the original picture remains untouched. This settings can be changed in the app configuration.
+    - If libexif detects some problems (errors) in your files, the file are be skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
 - When choosing pixymeta-android library (**usage is discouraged** until pixymeta bug is fixed):
     - the existing EXIF tags are copied and things a rewritten from scratch. 
     - [XMP*] tags are kept
@@ -74,7 +72,7 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
     - Implement other backends and/or fix https://github.com/dragon66/pixymeta-android/issues/10
 
 
-## Licence
+## License
 GPL-3.0 (see "COPYING" file)
 
 
