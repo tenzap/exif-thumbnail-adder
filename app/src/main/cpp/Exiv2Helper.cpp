@@ -41,6 +41,54 @@ int Exiv2Helper::insertThumbnail(
         Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
         assert(image.get() != 0);
         image->readMetadata();
+
+        if (image->exifData().empty()) {
+            // Add minimal mandatory tags if they don't exist yet
+            // This permits to create the ExifIFD without which some programs may not find the
+            // EXIF tags/thumbnail (eg. Android ExifInterface, identify -verbose from imageMagick...)
+            Exiv2::ExifKey key = Exiv2::ExifKey("Exif.Photo.ExifVersion");
+            Exiv2::Value::AutoPtr exifVersion = Exiv2::Value::create(Exiv2::undefined);
+            exifVersion->read("48 50 50 48"); // 0220 -> 2.20
+            Exiv2::ExifData::iterator pos = image->exifData().findKey(key);
+            if (pos == image->exifData().end()) // Tag not found
+                // We add the tag
+                image->exifData().add(Exiv2::ExifKey("Exif.Photo.ExifVersion"), exifVersion.get());
+
+            key = Exiv2::ExifKey("Exif.Photo.ComponentsConfiguration");
+            Exiv2::Value::AutoPtr componentsConfiguration = Exiv2::Value::create(Exiv2::undefined);
+            componentsConfiguration->read("1 2 3 0"); // 1 2 3 0 -> YCbCr
+            pos = image->exifData().findKey(key);
+            if (pos == image->exifData().end()) // Tag not found
+                // We add the tag
+                image->exifData().add(Exiv2::ExifKey("Exif.Photo.ComponentsConfiguration"), componentsConfiguration.get());
+
+            key = Exiv2::ExifKey("Exif.Photo.FlashpixVersion");
+            Exiv2::Value::AutoPtr flashpixVersion = Exiv2::Value::create(Exiv2::undefined);
+            flashpixVersion->read("48 49 48 48"); // 0100 -> 1.00
+            pos = image->exifData().findKey(key);
+            if (pos == image->exifData().end()) // Tag not found
+                // We add the tag
+                image->exifData().add(Exiv2::ExifKey("Exif.Photo.FlashpixVersion"), flashpixVersion.get());
+
+            key = Exiv2::ExifKey("Exif.Photo.ColorSpace");
+            pos = image->exifData().findKey(key);
+            if (pos == image->exifData().end()) // Tag not found
+                // We add the tag
+                image->exifData()["Exif.Photo.ColorSpace"] = 0xffff;
+
+            key = Exiv2::ExifKey("Exif.Photo.PixelXDimension");
+            pos = image->exifData().findKey(key);
+            if (pos == image->exifData().end()) // Tag not found
+                // We add the tag
+                image->exifData()["Exif.Photo.PixelXDimension"] = 0;
+
+            key = Exiv2::ExifKey("Exif.Photo.PixelYDimension");
+            pos = image->exifData().findKey(key);
+            if (pos == image->exifData().end()) // Tag not found
+                // We add the tag
+                image->exifData()["Exif.Photo.PixelYDimension"] = 0;
+        }
+
         Exiv2::ExifThumb exifThumb(image->exifData());
 
         // Erase previous thumbnail tags
