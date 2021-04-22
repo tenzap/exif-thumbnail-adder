@@ -423,7 +423,7 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
     tbFile = (*env)->GetStringUTFChars(env, jtb, NULL);
 
     create_exif = 1;
-    no_fixup = 1;
+    no_fixup = 0;
     output = strdup(outputFile);
     p.set_thumb = strdup(tbFile);
     // insert_thumb removes the previous thumb but it doesn't clear
@@ -483,6 +483,9 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
                 ed = exif_data_new ();
                 exif_data_log (ed, log);
                 exif_data_set_data_type(ed, EXIF_DATA_TYPE_COMPRESSED);
+                // We want to create mandatory fields (mainly in ExifIFD) in case there is no exif tag in the file yet
+                // Otherwise this would lead to files having only IFD1 which may not be seen
+                // by some programs in the case of absence of ExifIFD
                 if (!no_fixup) {
                     /* Add all the mandatory fields */
                     exif_data_fix(ed);
@@ -530,20 +533,20 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
             entryUnit = init_tag(ed, EXIF_IFD_1, EXIF_TAG_RESOLUTION_UNIT);
             exif_set_short(entryUnit->data, exif_data_get_byte_order(ed), 2);
 
-//            // In case we would use fixup, we would have to do this:
-//            // Workaround so that THUMBNAIL_OFFSET and THUMBNAIL_LENGTH is not
-//            // twice in the output file which would corrupt it:
-//            // So we save the file and reload it again.
-//            // There is probably a cleaner way to do it.
-//            action_save (ed, log, p, fout);
-//            exif_data_unref (ed);
-//            l = NULL;
-//            ed = NULL;
-//            l = exif_loader_new ();
-//            exif_loader_log (l, log);
-//            exif_loader_write_file (l, output);
-//            ed = exif_loader_get_data(l);
-//            exif_loader_unref (l);
+            // In case we would use fixup, we would have to do this:
+            // Workaround so that THUMBNAIL_OFFSET and THUMBNAIL_LENGTH is not
+            // twice in the output file which would corrupt it:
+            // So we save the file and reload it again.
+            // There is probably a cleaner way to do it.
+            action_save (ed, log, p, fout);
+            exif_data_unref (ed);
+            l = NULL;
+            ed = NULL;
+            l = exif_loader_new ();
+            exif_loader_log (l, log);
+            exif_loader_write_file (l, output);
+            ed = exif_loader_get_data(l);
+            exif_loader_unref (l);
 
             if (!no_fixup)
                 /* Add the mandatory thumbnail tags */
