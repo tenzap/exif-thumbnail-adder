@@ -699,7 +699,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
                         srcImgIs = new FileInputStream(filesInDir[i]);
 
-                        switch (prefs.getString("exif_library", "exiflib_android-exif-extended")) {
+                        switch (prefs.getString("exif_library", "exiflib_exiv2")) {
                             case "exiflib_android-exif-extended":
                                 writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, Uri.fromFile(filesInDir[i]), thumbnail);
                                 break;
@@ -953,7 +953,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
                             srcImgIs = getActivity().getContentResolver().openInputStream(docFilesToProcess[i].getUri());
 
-                            switch (prefs.getString("exif_library", "exiflib_android-exif-extended")) {
+                            switch (prefs.getString("exif_library", "exiflib_exiv2")) {
                                 case "exiflib_android-exif-extended":
                                     writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, docFilesToProcess[i].getUri(), thumbnail);
                                     break;
@@ -1018,7 +1018,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         }
 
                         if (thumbnail != null) {
-                            switch (prefs.getString("exif_library", "exiflib_android-exif-extended")) {
+                            switch (prefs.getString("exif_library", "exiflib_exiv2")) {
                                 case "exiflib_libexif":
                                     try {
                                         String outFilepath;

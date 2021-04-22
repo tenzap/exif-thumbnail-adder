@@ -128,7 +128,7 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         public void setSkipPicsHavingThumbnail() {
-            if (getPreferenceManager().getSharedPreferences().getString("exif_library", "exiflib_android-exif-extended").equals("exiflib_android-exif-extended")) {
+            if (getPreferenceManager().getSharedPreferences().getString("exif_library", "exiflib_exiv2").equals("exiflib_android-exif-extended")) {
                 if (!getPreferenceManager().getSharedPreferences().getBoolean("skipPicsHavingThumbnail", true)) {
                     SwitchPreferenceCompat skipPicsHavingThumbnailPref = findPreference("skipPicsHavingThumbnail");
                     skipPicsHavingThumbnailPref.setChecked(true);

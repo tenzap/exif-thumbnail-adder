@@ -82,7 +82,7 @@
 
     <PreferenceCategory app:title="@string/pref_categ_backend">
         <ListPreference
-            app:defaultValue="exiflib_android-exif-extended"
+            app:defaultValue="exiflib_exiv2"
             app:entries="@array/exif_library_entries"
             app:entryValues="@array/exif_library_values"
             app:key="exif_library"
