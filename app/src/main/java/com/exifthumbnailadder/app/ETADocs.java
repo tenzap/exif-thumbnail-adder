@@ -35,49 +35,23 @@ public class ETADocs {
 
     Context ctx;
     Object etaDocsRoot;
-    int level;
     String excluded;
 
-    public ETADocs(Context ctx, Object etaDocsRoot, int level, String excluded) {
+    public ETADocs(Context ctx, Object etaDocsRoot, String excluded) {
         this.etaDocsRoot = etaDocsRoot;
-        this.level = level;
         this.excluded = excluded;
         this.ctx = ctx;
     }
 
-    public Object[] getDocsArray() {
+    public Object getDocsSet() {
         if (etaDocsRoot instanceof Uri) {
             DocumentFile baseDf = DocumentFile.fromTreeUri(ctx, (Uri) etaDocsRoot);
-            boolean canRead = baseDf.canRead();
-
-            ArrayList<DocumentFile> fileList = new ArrayList<DocumentFile>();
-            listDocFilesToProcess_int(baseDf, 0, fileList, excluded);
-            DocumentFile[] filesInDir = new DocumentFile[fileList.size()];
-            filesInDir = fileList.toArray(filesInDir);
-            return filesInDir; //DocumentFile[]
+            return docFilesToProcessList(baseDf, 0, excluded); // TreeSet<DocumentFile>
         }
         if (etaDocsRoot instanceof File) {
-            // https://stackoverflow.com/a/27996686
-            //File[] filesInDir = new File(srcPath).listFiles(new MyFilenameFilter(srcPath, true));
-            //File[] filesInDir = listFilesRecursive(new File(srcPath));
-
-            ArrayList<File> fileList = new ArrayList<File>();
-            listDirectoryAsFile((File)etaDocsRoot, 0, fileList, new File(excluded));
-            File[] filesInDir = new File[fileList.size()];
-            filesInDir = fileList.toArray(filesInDir);
-            if (MainApplication.enableLog) Log.i(MainApplication.TAG, "Array of filesInDir: " + filesInDir.toString());
-            return filesInDir; //File[]
+            return filesToProcessList((File)etaDocsRoot, 0, new File(excluded)); // TreeSet<File>
         }
         return null;
-    }
-
-    TreeSet<DocumentFile> getDocsSetOfDf() {
-        TreeSet<DocumentFile> treeSet = new TreeSet<DocumentFile>(new DocumentFileComparator());
-        DocumentFile[] docsArray = (DocumentFile[])getDocsArray();
-        for (int i=0; i<docsArray.length; i++) {
-            treeSet.add(docsArray[i]);
-        }
-        return treeSet;
     }
 
     class DocumentFileComparator implements Comparator<DocumentFile> {
@@ -87,7 +61,15 @@ public class ETADocs {
         }
     }
 
-    private void listDocFilesToProcess_int(DocumentFile df, int level, ArrayList<DocumentFile> arrayList, String excluded) {
+    class FileComparator implements Comparator<File> {
+        @Override
+        public int compare(File e1, File e2) {
+            return e1.getPath().compareTo(e2.getPath());
+        }
+    }
+
+    private TreeSet<DocumentFile> docFilesToProcessList(DocumentFile df, int level, String excluded) {
+        TreeSet<DocumentFile> treeSet = new TreeSet<DocumentFile>(new DocumentFileComparator());
         DocumentFile[] firstLevelFiles = df.listFiles();
         if (firstLevelFiles != null && firstLevelFiles.length > 0) {
             for (DocumentFile aFile : firstLevelFiles) {
@@ -99,17 +81,18 @@ public class ETADocs {
                         if (MainApplication.enableLog) Log.i(MainApplication.TAG, ctx.getString(R.string.frag1_log_skipping_excluded_dir, excluded, aFile.getUri().getPath()));
                     } else {
                         //System.out.println("[" + aFile.getName() + "]");
-                        listDocFilesToProcess_int(aFile, level + 1, arrayList, excluded);
+                        treeSet.addAll(docFilesToProcessList(aFile, level + 1, excluded));
                     }
                 } else {
                     //System.out.println(aFile.getName());
-                    arrayList.add(aFile);
+                    treeSet.add(aFile);
                 }
             }
         }
+        return treeSet;
     }
 
-    public void listDirectory(File dir, int level) {
+    private void listDirectory(File dir, int level) {
         File[] firstLevelFiles = dir.listFiles();
         if (firstLevelFiles != null && firstLevelFiles.length > 0) {
             for (File aFile : firstLevelFiles) {
@@ -126,7 +109,8 @@ public class ETADocs {
         }
     }
 
-    private void listDirectoryAsFile(File dir, int level, ArrayList<File> arrayList, File excluded) {
+    private TreeSet<File> filesToProcessList(File dir, int level, File excluded) {
+        TreeSet<File> treeSet = new TreeSet<File>(new FileComparator());
         File[] firstLevelFiles = dir.listFiles();
         if (firstLevelFiles != null && firstLevelFiles.length > 0) {
             for (File aFile : firstLevelFiles) {
@@ -136,14 +120,15 @@ public class ETADocs {
                     }
                     if (aFile.isDirectory()) {
                         //System.out.println("[" + aFile.getName() + "]");
-                        listDirectoryAsFile(aFile, level + 1, arrayList, excluded);
+                        treeSet.addAll(filesToProcessList(aFile, level + 1, excluded));
                     } else {
                         //System.out.println(aFile.getName());
-                        arrayList.add(aFile);
+                        treeSet.add(aFile);
                     }
                 }
             }
         }
+        return treeSet;
     }
 
 }

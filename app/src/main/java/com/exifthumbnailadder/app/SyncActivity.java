@@ -177,7 +177,8 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
     }
 
     private void doSyncForUri(Uri backupUri, String srcTreeId,  String mainDir, String excludedDir, boolean dryRun ) {
-        TreeSet<DocumentFile> docFilesInBackup = new ETADocs(this, backupUri, 0, excludedDir).getDocsSetOfDf();
+        ETADocs etaDocs = new ETADocs(this, backupUri, excludedDir);
+        TreeSet<DocumentFile> docFilesInBackup = (TreeSet<DocumentFile>)etaDocs.getDocsSet();
 
         updateUiLog("WorkingDir: ");
         updateUiLog(FileUtil.getFullPathFromTreeUri(backupUri, this));
