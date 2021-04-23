@@ -234,69 +234,36 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         return Bitmap.createBitmap(tb_bitmap, 0, 0, tb_bitmap.getWidth(), tb_bitmap.getHeight(), matrix, true);
     }
 
-    private Bitmap makeThumbnail(InputStream srcImgIs) throws BadOriginalImageException {
-        Bitmap tb_bitmap = null;
-        try {
-            tb_bitmap = this.createThumbnail(srcImgIs);
-            srcImgIs.close();
-        } catch (BadOriginalImageException e) {
-            throw e;
-        } catch (Exception e) {
-            // TODO
-            e.printStackTrace();
-        }
-
-        if (tb_bitmap == null) {
-            Log.e(TAG, "bitmap is null... Abnormal");
-            return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-        } else {
-            return tb_bitmap;
-        }
-    }
-
-    private Bitmap makeThumbnailRotated(File name, boolean rotateThumbnail, int degrees) throws Exception, BadOriginalImageException {
-        Bitmap tb_bitmap = null;
-        InputStream srcImgIs = null;
-        try {
-            srcImgIs = new FileInputStream(name);
-            tb_bitmap = makeThumbnail(srcImgIs);
-        } catch (BadOriginalImageException e) {
-            throw e;
-        } catch (FileNotFoundException e) {
-            //TODO
-            e.printStackTrace();
-        }
-
-        if (rotateThumbnail) {
-            tb_bitmap = rotateThumbnail(tb_bitmap, degrees);
-        }
-        if (tb_bitmap != null) {
-            return tb_bitmap;
-        } else {
-            throw new Exception("Empty tb_bitmap");
-        }
-    }
-
-    public Bitmap makeThumbnailRotated(DocumentFile inputDf, boolean rotateThumbnail, int degrees) throws Exception, BadOriginalImageException {
+    private Bitmap makeThumbnailRotated(Object pic, boolean rotateThumbnail, int degrees) throws Exception, BadOriginalImageException {
+        // pic Object should be either DocumentFile or File
         Bitmap tb_bitmap = null;
         InputStream is = null;
         try {
-            is = getActivity().getContentResolver().openInputStream(inputDf.getUri());
-            tb_bitmap = makeThumbnail(is);
+            if (pic instanceof DocumentFile)
+                is = getActivity().getContentResolver().openInputStream(((DocumentFile)pic).getUri());
+            else if (pic instanceof File)
+                is = new FileInputStream((File)pic);
+            else
+                throw new UnsupportedOperationException("unsupported object type in makeThumbnailRotated: "+pic.getClass().toString());
+            tb_bitmap = this.createThumbnail(is);
+            is.close();
         } catch (BadOriginalImageException e) {
             throw e;
         } catch (Exception e) {
-            e.printStackTrace();
             //TODO
+            e.printStackTrace();
+            throw e;
         }
 
-        if (rotateThumbnail) {
+        if (tb_bitmap != null && rotateThumbnail) {
             tb_bitmap = rotateThumbnail(tb_bitmap, degrees);
         }
         if (tb_bitmap != null) {
             return tb_bitmap;
         } else {
-            throw new Exception("Empty tb_bitmap");
+            Log.e(TAG, "Couldn't build thumbnails (bitmap is null... abnormal...)");
+            //return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            throw new Exception("Couldn't build thumbnails (is null)");
         }
     }
 
