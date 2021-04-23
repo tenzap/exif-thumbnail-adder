@@ -84,7 +84,7 @@
         android:id="@+id/button_stopProcess"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/frag1_button_stop"
+        android:text="@string/stop"
         android:layout_gravity="center_horizontal"
         android:visibility="gone"
         />

@@ -37,6 +37,7 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
@@ -211,8 +212,21 @@ public class WorkingDirPermActivity extends AppCompatActivity {
             return;
         }
 
-        FirstFragment.log.append(Html.fromHtml("<span style='color:green'><b>"+getString(R.string.working_dir_perm_permissions_set_retry)+"</b></span>",1));
-        // Close Activity and go back to the previous one
+        Toast t = Toast.makeText(this, getString(R.string.working_dir_perm_permissions_set_retry), Toast.LENGTH_LONG);
+        t.show();
         finish();
+    }
+
+    public static boolean isWorkingDirPermOk(Context ctx) {
+        List<UriPermission> persUriPermList = ctx.getContentResolver().getPersistedUriPermissions();
+        Uri uri = WorkingDirPermActivity
+                .workingDirPermMissing(PreferenceManager.getDefaultSharedPreferences(ctx), persUriPermList, ctx);
+        if (uri == null) {
+            return true;
+        } else {
+            Intent intent = new Intent(ctx, WorkingDirPermActivity.class);
+            ctx.startActivity(intent);
+            return false;
+        }
     }
 }

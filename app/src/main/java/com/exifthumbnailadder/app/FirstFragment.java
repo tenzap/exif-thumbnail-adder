@@ -90,8 +90,8 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class FirstFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private final boolean enableLog = false;
-    private final String TAG = "ETALog";
+    private final boolean enableLog = MainApplication.enableLog;
+    private final String TAG = MainApplication.TAG;
     //private final String THUMB_EXT = ".tmp-thumbAdder";
     private final String THUMB_EXT = "";
 
@@ -157,7 +157,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         textViewLog = (TextView)view.findViewById(R.id.textview_log);
         textViewDirList = (TextView)view.findViewById(R.id.textview_dir_list);
         scrollview = ((ScrollView)  view.findViewById(R.id.scrollview));
-        updateTextViewDirList();
+        FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
 
         LinearLayout ll = (LinearLayout)view.findViewById(R.id.block_allFilesAccess);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -174,7 +174,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if ( key.equals("srcUris")) {
-            updateTextViewDirList();
+            FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
         }
     }
 
@@ -329,76 +329,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 result = false;
             }
             return result;
-        }
-    }
-
-    public void listDirectory(File dir, int level) {
-        File[] firstLevelFiles = dir.listFiles();
-        if (firstLevelFiles != null && firstLevelFiles.length > 0) {
-            for (File aFile : firstLevelFiles) {
-                for (int i = 0; i < level; i++) {
-                    //System.out.print("\t");
-                }
-                if (aFile.isDirectory()) {
-                    //System.out.println("[" + aFile.getName() + "]");
-                    listDirectory(aFile, level + 1);
-                } else {
-                    //System.out.println(aFile.getName());
-                }
-            }
-        }
-    }
-
-    private void listDirectoryAsFile(File dir, int level, ArrayList<File> arrayList, File excluded) {
-        File[] firstLevelFiles = dir.listFiles();
-        if (firstLevelFiles != null && firstLevelFiles.length > 0) {
-            for (File aFile : firstLevelFiles) {
-                if (!aFile.getPath().startsWith(excluded.getPath())) {
-                    for (int i = 0; i < level; i++) {
-                        //System.out.print("\t");
-                    }
-                    if (aFile.isDirectory()) {
-                        //System.out.println("[" + aFile.getName() + "]");
-                        listDirectoryAsFile(aFile, level + 1, arrayList, excluded);
-                    } else {
-                        //System.out.println(aFile.getName());
-                        arrayList.add(aFile);
-                    }
-                }
-            }
-        }
-    }
-
-    private DocumentFile[] listDocFilesToProcess(Uri uri, int level, String excluded) {
-        DocumentFile baseDf = DocumentFile.fromTreeUri(getActivity(), uri);
-        boolean canRead = baseDf.canRead();
-
-        ArrayList<DocumentFile> fileList = new ArrayList<DocumentFile>();
-        listDocFilesToProcess_int(baseDf, 0, fileList, excluded);
-        DocumentFile[] filesInDir= new DocumentFile[fileList.size()];
-        filesInDir = fileList.toArray(filesInDir);
-        return filesInDir;
-    }
-
-    private void listDocFilesToProcess_int(DocumentFile df, int level, ArrayList<DocumentFile> arrayList, String excluded) {
-        DocumentFile[] firstLevelFiles = df.listFiles();
-        if (firstLevelFiles != null && firstLevelFiles.length > 0) {
-            for (DocumentFile aFile : firstLevelFiles) {
-                for (int i = 0; i < level; i++) {
-                    //System.out.print("\t");
-                }
-                if (aFile.isDirectory()) {
-                    if (aFile.getName().equals(excluded)) {
-                        if (enableLog) Log.i(TAG, getString(R.string.frag1_log_skipping_excluded_dir, excluded, aFile.getUri().getPath()));
-                    } else {
-                        //System.out.println("[" + aFile.getName() + "]");
-                        listDocFilesToProcess_int(aFile, level + 1, arrayList, excluded);
-                    }
-                } else {
-                    //System.out.println(aFile.getName());
-                    arrayList.add(aFile);
-                }
-            }
         }
     }
 
@@ -621,14 +551,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                     writablePath = Environment.getExternalStorageDirectory().toString();
                 }
 
-                // https://stackoverflow.com/a/27996686
-                //File[] filesInDir = new File(srcPath).listFiles(new MyFilenameFilter(srcPath, true));
-                //File[] filesInDir = listFilesRecursive(new File(srcPath));
-                ArrayList<File> fileList = new ArrayList<File>();
-                listDirectoryAsFile(new File(srcPath), 0, fileList, new File(excludedPath));
-                File[] filesInDir = new File[fileList.size()];
-                filesInDir = fileList.toArray(filesInDir);
-                //if (enableLog) Log.i(TAG, "Array of filesInDir: " + filesInDir.toString());
+                File [] filesInDir = (File[])new ETADocs(getContext(), new File(srcPath), 0, excludedPath).getDocsArray();
 
                 for (int i = 0; i < filesInDir.length; i++) {
                     if (enableLog) Log.i(TAG, getString(R.string.frag1_log_processing_path_filename, filesInDir[i].getPath(), filesInDir[i].getName()));
@@ -833,7 +756,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
                 {
                     updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
-                    if (!isWorkingDirPermOk()) {
+                    if (!WorkingDirPermActivity.isWorkingDirPermOk(getContext())) {
                         updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_ko)+"</span><br>", 1));
                         setIsProcessFalse(view);
                         stopProcessing = false;
@@ -876,7 +799,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                     }
 
                     // 1. build list of files to process
-                    DocumentFile[] docFilesToProcess = listDocFilesToProcess(treeUris[j], 0, secVolDirName);
+                    DocumentFile [] docFilesToProcess = (DocumentFile[])new ETADocs(getContext(), treeUris[j], 0, secVolDirName).getDocsArray();
                     updateUiLog(Html.fromHtml(getString(R.string.frag1_log_count_files_to_process, docFilesToProcess.length ) + "<br>",1));
 
                     // 1. Iterate on all files
@@ -1448,25 +1371,13 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         startActivity(intent);
     }
 
-    public boolean isWorkingDirPermOk() {
-        List<UriPermission> persUriPermList = getActivity().getContentResolver().getPersistedUriPermissions();
-        Uri uri = WorkingDirPermActivity.workingDirPermMissing(prefs, persUriPermList, getContext());
-        if (uri == null) {
-            return true;
-        } else {
-            Intent intent = new Intent(getContext(), WorkingDirPermActivity.class);
-            startActivity(intent);
-            return false;
-        }
-    }
-
-    public void updateTextViewDirList() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+    public static void updateTextViewDirList(Context ctx, TextView textView) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
         InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
         if (inputDirs.size() == 0) {
-            textViewDirList.setText(R.string.frag1_text_no_dir_selected);
+            textView.setText(R.string.frag1_text_no_dir_selected);
         } else {
-            textViewDirList.setText(inputDirs.toStringForDisplay(getContext()));
+            textView.setText(inputDirs.toStringForDisplay(ctx));
         }
     }
 

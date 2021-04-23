@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SyncActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10sp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/sync_textview_text_desciption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sync_text_description"
+                android:textStyle="bold"
+                />
+
+            <TextView
+                android:id="@+id/sync_textview_dir_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/frag1_text_no_dir_selected" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/sync_divider2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/sync_button_list_files"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="10dp"
+                android:text="@string/sync_button_list_files" />
+
+            <Button
+                android:id="@+id/sync_button_del_files"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="10dp"
+                android:text="@string/sync_button_del_files" />
+
+            <Button
+                android:id="@+id/sync_button_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginHorizontal="10dp"
+                android:text="@string/stop"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/sync_textview_log_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/frag1_text_processing_log"
+            android:textStyle="bold" />
+
+        <ScrollView
+            android:id="@+id/sync_scrollview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:fillViewport="true">
+
+            <TextView
+                android:id="@+id/sync_textview_log"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/sync_log_content" />
+        </ScrollView>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

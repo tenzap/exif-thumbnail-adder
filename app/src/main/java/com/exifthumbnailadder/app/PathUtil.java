@@ -230,6 +230,32 @@ public class PathUtil {
         return outUri;
     }
 
+    public static Uri getSrcDocumentUriFor(Uri contentUri, String mainDir, String sourceFileTreeIdForGetSrcUri) throws Exception {
+        String storagePath =  UriUtil.getDVolId(contentUri) + ":";   // "primary:"
+        String uriAuthority = contentUri.getAuthority();
+
+        String baseDir, fullDir;
+
+        if (storagePath.endsWith(":")) {
+            // This is a URI path (primary:DCIM....)
+            baseDir = storagePath + mainDir;
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+            //baseDir = storagePath + File.separator + mainDir;
+        }
+
+        fullDir = baseDir + File.separator + UriUtil.getDSub(UriUtil.getDDSub(contentUri));
+
+        // Remove trailing "/"
+        fullDir = Paths.get(fullDir).toString();
+
+        Uri treeRootUri = DocumentsContract.buildTreeDocumentUri(uriAuthority, sourceFileTreeIdForGetSrcUri);
+        Uri outUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, fullDir);
+
+        return outUri;
+    }
+
     private String getBaseDir(String dirId) {
         String wDir = workingDir;
 
@@ -349,4 +375,11 @@ public class PathUtil {
         DocumentFile.fromTreeUri(con, parentUri).createDirectory(name);
 
     }
+
+    public static boolean srcUriCorrespondsDerivedUri(Uri srcUri, Uri derivedUri) {
+        String subSrc = UriUtil.getDDSub(srcUri);
+        String subDerived = UriUtil.getDSub((UriUtil.getDDSub(derivedUri)));
+        return subSrc.equals(subDerived);
+    }
+
 }

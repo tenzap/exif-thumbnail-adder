@@ -19,6 +19,7 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 - Processing log
 - Works on both SDCards and device internal memory (named primary external storage & secondary external storage in the android technical world)
 - Possibility to exclude one subdirectory from selected directories
+- Ability to synchronize deleted files in the source directory to the backup and working directory (so that you don't keep in the backup folder pictures you don't have anymore in the source folder)
 - App can be installed either on internal storage or external storage
 - Default option are conservative (creation of backup which can not be overwritten, skip pictures with malformed exif data...) . In the settings, one can chose to process files that have malformed exif data by choosing to skip files if an error is detected.
 - Various options

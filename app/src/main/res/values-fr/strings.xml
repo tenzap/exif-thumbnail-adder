@@ -3,11 +3,13 @@
 
     <!-- AndroidManifest.xml -->
     <string name="title_activity_settings">Paramètres</string>
+    <string name="title_activity_sync">Sync. les suppressions</string>
     <string name="title_activity_about">A propos de</string>
     <string name="title_activity_working_dir_perm">Permissions du répertoire de travail</string>
 
     <!-- Toolbar action menu labels -->
     <string name="action_settings">Paramètres</string>
+    <string name="action_sync">Sync. les suppressions</string>
     <string name="action_about">A propos de</string>
 
     <!-- About Activity -->
@@ -54,7 +56,7 @@
         images. Vous pouvez accorder les permissions dans les paramètres.</string>
     <string name="frag1_button_settings">Paramètres</string>
     <string name="frag1_button_start_processing">Démarrer le traitement</string>
-    <string name="frag1_button_stop">Arrêter</string>
+    <string name="stop">Arrêter</string>
     <string name="frag1_text_processing_log">Journal du traitement</string>
 
     <string name="frag1_log_skipping_excluded_dir">Saute le rép. %1$s dans %2$s</string>
@@ -142,5 +144,13 @@
     Par example \'copie_de_XXXX-XXXX\'.\nL\'id du volume (par ex d\'une une carte SD) peut se voir dans la liste des répertoires à traiter
     sour la forme XXXX-XXXX.]]></string>
     <string name="pref_excludedSecVolPrefix_defaultValue">copie_de_</string>
+
+    <!-- Sync Activity -->
+    <string name="sync_text_description"><![CDATA[Synchronise les suppressions de fichiers du répertoire source vers le répertoire de sauvegarde et de travail]]></string>
+    <string name="sync_log_content" />
+    <string name="sync_button_del_files">Supprimer</string>
+    <string name="sync_button_list_files">Lister</string>
+    <string name="sync_log_failure_to_delete_file">Erreur à la suppression</string>
+    <string name="sync_log_files_to_remove">Fichiers à supprimer (ils ne sont plus dans la source) :</string>
 
 </resources>
