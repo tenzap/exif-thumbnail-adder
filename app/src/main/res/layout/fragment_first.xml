@@ -14,15 +14,14 @@
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/frag1_text_list_of_dirs_to_process"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/textview_dir_list"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/frag1_text_no_dir_selected" />
 
@@ -60,10 +59,10 @@
 
         <TextView
             android:id="@+id/textview_allFilesAccess"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#FFA500"
-            android:text="@string/frag1_text_all_files_access_permissions_is_not_granted" />
+            android:text="@string/frag1_text_all_files_access_permissions_is_not_granted"
+            android:textColor="#FFA500" />
 
     </LinearLayout>
 
@@ -91,22 +90,23 @@
 
     <TextView
         android:id="@+id/textview_log_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/frag1_text_processing_log"
         android:textStyle="bold" />
+
     <ScrollView
         android:id="@+id/scrollview"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:layout_gravity="bottom">
+        android:layout_gravity="bottom"
+        android:fillViewport="true">
+
         <TextView
             android:id="@+id/textview_log"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/hello_first_fragment"
-            />
+            android:text="@string/hello_first_fragment" />
     </ScrollView>
 
 </LinearLayout>
