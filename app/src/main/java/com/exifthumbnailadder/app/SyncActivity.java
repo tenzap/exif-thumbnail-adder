@@ -116,9 +116,6 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                     updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
                 }
 
-                String secVolName = FirstFragment.getSecVolumeName(getApplicationContext(), true);
-                String secVolDirName = prefs.getString("excluded_sec_vol_prefix", getString(R.string.pref_excludedSecVolPrefix_defaultValue))+secVolName;
-
                 InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
                 Uri[] treeUris = inputDirs.toUriArray();
 
@@ -147,25 +144,19 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                         updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
                     }
 
-                    String mainDir = UriUtil.getDD1(treeUris[j]);
-                    String subDir = UriUtil.getDDSubParent(treeUris[j]);
-                    PathUtil pathUtil = new PathUtil(
-                            treeUris[j],
-                            mainDir,
-                            subDir,
-                            UriUtil.getTVolId(treeUris[j]),
-                            secVolDirName,
-                            prefs);
+                    ETADocs etaDocs = new ETADocs(getApplicationContext(), treeUris[j]);
+                    DocumentFile baseDf = DocumentFile.fromTreeUri(getApplicationContext(), treeUris[j]);
+                    ETADoc etaDoc = new ETADoc(baseDf, getApplicationContext(), etaDocs);
 
                     // Process backupUri
-                    Uri backupUri = pathUtil.getBackupUri(getApplicationContext(), false);
-                    doSyncForUri(backupUri, UriUtil.getTreeId(treeUris[j]), mainDir, secVolDirName, dryRun);
+                    Uri backupUri = etaDoc.getBackupUri(false);
+                    doSyncForUri(backupUri, UriUtil.getTreeId(treeUris[j]), etaDoc.getMainDir(), dryRun);
 
                     // Process outputUri
                     if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("writeThumbnailedToOriginalFolder", false)) {
-                        Uri outputUri = pathUtil.getDestUri(getApplicationContext());
+                        Uri outputUri = etaDoc.getDestUri();
                         updateUiLog(Html.fromHtml("<br>",1));
-                        doSyncForUri(outputUri, UriUtil.getTreeId(treeUris[j]), mainDir, secVolDirName, dryRun);
+                        doSyncForUri(outputUri, UriUtil.getTreeId(treeUris[j]), etaDoc.getMainDir(), dryRun);
                     }
                 }
 
@@ -176,8 +167,8 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
         }).start();
     }
 
-    private void doSyncForUri(Uri backupUri, String srcTreeId,  String mainDir, String excludedDir, boolean dryRun ) {
-        ETADocs etaDocs = new ETADocs(this, backupUri, excludedDir);
+    private void doSyncForUri(Uri backupUri, String srcTreeId,  String mainDir, boolean dryRun ) {
+        ETADocs etaDocs = new ETADocs(this, backupUri);
         TreeSet<DocumentFile> docFilesInBackup = (TreeSet<DocumentFile>)etaDocs.getDocsSet();
 
         updateUiLog("WorkingDir: ");

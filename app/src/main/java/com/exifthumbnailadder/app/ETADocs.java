@@ -22,13 +22,21 @@ package com.exifthumbnailadder.app;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
+import android.provider.MediaStore;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.preference.PreferenceManager;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
 import java.util.TreeSet;
 
 public class ETADocs {
@@ -37,10 +45,10 @@ public class ETADocs {
     Object etaDocsRoot;
     String excluded;
 
-    public ETADocs(Context ctx, Object etaDocsRoot, String excluded) {
-        this.etaDocsRoot = etaDocsRoot;
-        this.excluded = excluded;
+    public ETADocs(Context ctx, Object etaDocsRoot) {
         this.ctx = ctx;
+        this.etaDocsRoot = etaDocsRoot;
+        this.excluded = getExcludedPath();
     }
 
     public Object getDocsSet() {
@@ -129,6 +137,132 @@ public class ETADocs {
             }
         }
         return treeSet;
+    }
+
+    public String getVolumeName() {
+        if (etaDocsRoot instanceof File) {
+            // Inspired from
+            // https://cs.android.com/android/platform/superproject/+/android-11.0.0_r1:frameworks/base/core/java/android/os/storage/StorageVolume.java;drc=1639e6b8eeaac34d44b1f1cd0d50a5c051852a65;l=321
+            String volumeName = "";
+
+            StorageManager myStorageManager = (StorageManager) ctx.getSystemService(Context.STORAGE_SERVICE);
+            StorageVolume mySV = myStorageManager.getStorageVolume((File) etaDocsRoot);
+            Class<?> storageVolumeClazz = null;
+
+            if (mySV.isPrimary()) {
+                volumeName = MediaStore.VOLUME_EXTERNAL_PRIMARY;
+            } else {
+                try {
+                    storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
+                    Method getUuid = storageVolumeClazz.getMethod("getUuid");
+                    String mFsUuid = (String) getUuid.invoke(mySV);
+                    volumeName = normalizeUuid(mFsUuid);
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+            return volumeName;
+        } else if (etaDocsRoot instanceof Uri) {
+            return UriUtil.getTVolId((Uri)etaDocsRoot);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    /** {@hide} */
+    public static @Nullable
+    String normalizeUuid(@Nullable String fsUuid) {
+        return fsUuid != null ? fsUuid.toLowerCase(Locale.US) : null;
+    }
+
+    public String getExcludedPath() {
+        if (etaDocsRoot instanceof File) {
+            return ((File) etaDocsRoot).getPath() + File.separator + getSecStorageDirName();
+        } else if (etaDocsRoot instanceof Uri) {
+            return getSecStorageDirName();
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public String getSecStorageDirName() {
+        if (etaDocsRoot instanceof File || etaDocsRoot instanceof Uri) {
+            String excludedPrefix = PreferenceManager.getDefaultSharedPreferences(ctx).getString("excluded_sec_vol_prefix", ctx.getString(R.string.pref_excludedSecVolPrefix_defaultValue));
+            return excludedPrefix + getSecStorageVolName();
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public String getSecStorageVolName() {
+        if (etaDocsRoot instanceof File || etaDocsRoot instanceof Uri) {
+            return getSecVolumeName(true);
+        } else {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    public String getSecVolumeName(boolean normalize) {
+        String volumeName = "";
+        StorageManager myStorageManager = (StorageManager) ctx.getSystemService(Context.STORAGE_SERVICE);
+        List<StorageVolume> mySVs = myStorageManager.getStorageVolumes();
+        Class<?> storageVolumeClazz = null;
+
+        for (StorageVolume mySV : mySVs) {
+            try {
+                if (! mySV.isPrimary()) {
+                    storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
+                    Method getUuid = storageVolumeClazz.getMethod("getUuid");
+                    String mFsUuid = (String) getUuid.invoke(mySV);
+                    if (normalize)
+                        volumeName = normalizeUuid(mFsUuid);
+                    else
+                        volumeName = mFsUuid;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return volumeName;
+    }
+
+    public String getVolumeRootPath() {
+        // Get mounted path of the volume holding this folder
+
+        if (etaDocsRoot instanceof File) {
+            String volumeRootPath = "";
+            // get the path of the root for the volume on which the files/dir are located.
+            // Ex: file/dir = /storage/1507-270B/DCIM.new/  --> volumeRootPath =  /storage/1507-270B
+            // Ex: file/dir = /storage/emulated/0/DCIM      --> volumeRootPath =  /storage/emulated/0
+            StorageManager myStorageManager = (StorageManager) ctx.getSystemService(Context.STORAGE_SERVICE);
+            StorageVolume mySV = myStorageManager.getStorageVolume((File)etaDocsRoot);
+
+            Class<?> storageVolumeClazz = null;
+            try {
+                storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
+                Method getPath = storageVolumeClazz.getMethod("getPath");
+                volumeRootPath = (String) getPath.invoke(mySV);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+            if (MainApplication.enableLog) Log.i(MainApplication.TAG, "volumeRootPath: " + volumeRootPath);
+            return volumeRootPath;
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
 }

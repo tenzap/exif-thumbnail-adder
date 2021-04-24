@@ -30,7 +30,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
@@ -76,9 +75,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.UserPrincipal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -299,34 +296,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         }
     }
 
-    private String getVolumeRootPath(String srcPath) {
-        String volumeRootPath = "";
-        // get the path of the root for the volume on which the files/dir are located.
-        // Ex: file/dir = /storage/1507-270B/DCIM.new/  --> volumeRootPath =  /storage/1507-270B
-        // Ex: file/dir = /storage/emulated/0/DCIM      --> volumeRootPath =  /storage/emulated/0
-        StorageManager myStorageManager = (StorageManager) getActivity().getSystemService(Context.STORAGE_SERVICE);
-        StorageVolume mySV = myStorageManager.getStorageVolume(new File(srcPath));
-
-        Class<?> storageVolumeClazz = null;
-        try {
-            storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
-            Method getPath = storageVolumeClazz.getMethod("getPath");
-            volumeRootPath = (String) getPath.invoke(mySV);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        if (enableLog) Log.i(TAG, "volumeRootPath: " + volumeRootPath);
-        return volumeRootPath;
-
-    }
-
     private String[] getVolumesDir() {
         ArrayList<String> volumesArrayList = new ArrayList<String>();
         String[] volumesArray = new String[volumesArrayList.size()];
@@ -357,66 +326,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         return volumesArray;
     }
 
-    public static String getSecVolumeName(Context con, boolean normalize) {
-        String volumeName = "";
-        StorageManager myStorageManager = (StorageManager) con.getSystemService(Context.STORAGE_SERVICE);
-        List<StorageVolume> mySVs = myStorageManager.getStorageVolumes();
-        Class<?> storageVolumeClazz = null;
-
-        for (StorageVolume mySV : mySVs) {
-            try {
-                if (! mySV.isPrimary()) {
-                    storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
-                    Method getUuid = storageVolumeClazz.getMethod("getUuid");
-                    String mFsUuid = (String) getUuid.invoke(mySV);
-                    if (normalize)
-                        volumeName = normalizeUuid(mFsUuid);
-                    else
-                        volumeName = mFsUuid;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return volumeName;
-    }
-
-
-    /** {@hide} */
-    public static @Nullable
-    String normalizeUuid(@Nullable String fsUuid) {
-        return fsUuid != null ? fsUuid.toLowerCase(Locale.US) : null;
-    }
-
-    public String getVolumeName(String srcPath) {
-        // Inspired from
-        // https://cs.android.com/android/platform/superproject/+/android-11.0.0_r1:frameworks/base/core/java/android/os/storage/StorageVolume.java;drc=1639e6b8eeaac34d44b1f1cd0d50a5c051852a65;l=321
-        String volumeName = "";
-
-        StorageManager myStorageManager = (StorageManager) getActivity().getSystemService(Context.STORAGE_SERVICE);
-        StorageVolume mySV = myStorageManager.getStorageVolume(new File(srcPath));
-        Class<?> storageVolumeClazz = null;
-
-        if (mySV.isPrimary()) {
-            volumeName = MediaStore.VOLUME_EXTERNAL_PRIMARY;
-        } else {
-            try {
-                storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
-                Method getUuid = storageVolumeClazz.getMethod("getUuid");
-                String mFsUuid = (String)getUuid.invoke(mySV);
-                volumeName = normalizeUuid(mFsUuid);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-        return volumeName;
-    }
 
     public static boolean isImageFile(String path) {
         // https://stackoverflow.com/a/30696106
@@ -424,10 +333,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         return mimeType != null && mimeType.startsWith("image");
     }
 
-    public static boolean isJpegImageFile(String path) {
-        String mimeType = URLConnection.guessContentTypeFromName(path);
-        return mimeType != null && mimeType.equals("image/jpeg");
-    }
 
     private void copyFileAttributes(Path inFilePath, Path outFilePath) throws Exception {
         if (enableLog) Log.i(TAG, getString(R.string.frag1_log_copying_attr));
@@ -498,51 +403,28 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
         for (int j = 0; j < volumesDir.length; j++) {
             for (int d = 0; d < mainDirs.length; d++) {
-                String srcPath = volumesDir[j] + "/" + mainDirs[d] + "/";
-                String volumeName = getVolumeName(srcPath);
-                String secStorageVolName = getSecVolumeName(getContext(), true);
-                String secStorageDirName = prefs.getString("excluded_sec_vol_prefix", getString(R.string.pref_excludedSecVolPrefix_defaultValue)) + secStorageVolName;
-                String excludedPath = volumesDir[j] + "/" + mainDirs[d] + "/" + secStorageDirName + "/";
+                String srcPath = volumesDir[j] + File.separator + mainDirs[d] + File.separator;
+
+                final ETADocs etaDocs = new ETADocs(getContext(), new File(srcPath));
+                TreeSet<File> docs = (TreeSet<File>)etaDocs.getDocsSet();
 
                 updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, srcPath) + "</b></u><br>",1));
 
-                // Get mounted path of the volume holding this folder
-                String volumeRootPath = getVolumeRootPath(srcPath);
-
-                // We can only write to primary external, so set writablePath accordingly
-                String writablePath;
-                if (volumeName == MediaStore.VOLUME_EXTERNAL_PRIMARY) {
-                    writablePath = getVolumeRootPath(srcPath);
-                } else {
-                    // Attention "getExternalStorageDirectory" deprecated from API 29,
-                    writablePath = Environment.getExternalStorageDirectory().toString();
-                }
-
-                TreeSet<File> docs = (TreeSet<File>)new ETADocs(getContext(), new File(srcPath), excludedPath).getDocsSet();
-
                 int i = 0;
-                for (File doc : docs) {
+                for (File doc_ : docs) {
                     i++;
+                    ETADoc doc = new ETADoc(doc_, getContext(), etaDocs);
                     if (enableLog) Log.i(TAG, getString(R.string.frag1_log_processing_path_filename, doc.getPath(), doc.getName()));
 
-                    // Prepare dir variables
-                    String mainDir = ""; // if "mountDir/DCIM/dir1/s2/file.jpg" --> DCIM
-                    String subDir = ""; // if "mountDir/DCIM/dir1/s2/file.jpg" --> dir1/s2/file.jpg
-
-                    if (doc.toString().startsWith(volumeRootPath)) {
-                        String tmp = doc.toString().substring(volumeRootPath.length()); // "/DCIM/dir1/s2/file.jpg"
-                        String[] b = tmp.split(File.separator); // [0]: "" ; [1]: "DCIM; [2]: "dir1"...
-                        mainDir = b[1]; // "DCIM"
-                        subDir = String.join(File.separator, Arrays.copyOfRange(b, 2, b.length - 1)); // "dir1/s2"
-                    }
-                    if (enableLog) Log.i(TAG, "mainDir: " + mainDir);
+                    String subDir = doc.getSubDir(); // if "mountDir/DCIM/dir1/s2/file.jpg" --> dir1/s2/file.jpg
+                    if (enableLog) Log.i(TAG, "mainDir: " + doc.getMainDir());
                     if (enableLog) Log.i(TAG, "subDir: " + subDir);
 
                     updateUiLog("⋅ [" + (i+1) + "/" + docs.size() + "] " +
                             subDir + (subDir.isEmpty() ? "" : File.separator) +
                             doc.getName() + "... ");
 
-                    if (!isJpegImageFile(doc.toString())) {
+                    if (!doc.isJpeg()) {
                         if (enableLog) Log.i(TAG, getString(R.string.frag1_log_skipping_path_filename, doc.getPath() , doc.getName()));
                         updateUiLog(getString(R.string.frag1_log_skipping_not_jpeg));
                         continue;
@@ -562,7 +444,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                     int srcImgDegrees = 0;
 
                     try {
-                        srcImgIs = new FileInputStream(doc);
+                        srcImgIs = doc.fileInputStream();
                         srcImgExifInterface = new ExifInterface(srcImgIs);
                         if (srcImgExifInterface != null) {
                             srcImgHasThumbnail = srcImgExifInterface.hasThumbnail();
@@ -585,15 +467,15 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                     try {
                         //if (enableLog) Log.i(TAG, "Creating thumbnail");
                         Bitmap thumbnail = makeThumbnailRotated(
-                                doc,
+                                doc.getFile(),
                                 prefs.getBoolean("rotateThumbnails", true),
                                 srcImgDegrees);
 
-                        srcImgIs = new FileInputStream(doc);
+                        srcImgIs = doc.fileInputStream();
 
                         switch (prefs.getString("exif_library", "exiflib_exiv2")) {
                             case "exiflib_android-exif-extended":
-                                writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, Uri.fromFile(doc), thumbnail);
+                                writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, doc.getUri(), thumbnail);
                                 break;
                             case "exiflib_pixymeta":
                                 if (!PixymetaInterface.hasPixymetaLib()) {
@@ -618,16 +500,9 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                     }
 
                     // Create folders where files are written
-                    PathUtil pathUtil = new PathUtil(
-                            writablePath,
-                            mainDir,
-                            subDir,
-                            volumeName,
-                            secStorageDirName,
-                            prefs);
-                    String tmpPath = pathUtil.getTmpDir(getActivity(), true);
-                    String backupPath = pathUtil.getBackupDir(true);
-                    String outputPath = pathUtil.getDestDir();
+                    String tmpPath = doc.getTmpDir(true);
+                    String backupPath = doc.getBackupDir(true);
+                    String outputPath = doc.getDestDir();
 
                     PathUtil.createDirFor(tmpPath);
                     PathUtil.createDirFor(backupPath);
@@ -676,7 +551,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                 continue;
                             }
                         } else {
-                            if (volumeName == MediaStore.VOLUME_EXTERNAL_PRIMARY) {
+                            if (etaDocs.getVolumeName() == MediaStore.VOLUME_EXTERNAL_PRIMARY) {
                                 try {
                                     Files.move(from, to, ATOMIC_MOVE);
                                 } catch (Exception e) {
@@ -734,9 +609,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                     updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
                 }
 
-                String secVolName = getSecVolumeName(getActivity(), true);
-                String secVolDirName = prefs.getString("excluded_sec_vol_prefix", getString(R.string.pref_excludedSecVolPrefix_defaultValue))+secVolName;
-
                 InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
                 Uri[] treeUris = inputDirs.toUriArray();
 
@@ -745,7 +617,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 // Iterate on folders containing source images
                 for (int j = 0; j < treeUris.length; j++) {
                     updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, FileUtil.getFullPathFromTreeUri(treeUris[j], getContext())) + "</b></u><br>",1));
-
                     {
                         // Check permission... If we don't have permission, continue to next volumeDir
                         updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
@@ -768,14 +639,16 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                     }
 
                     // 1. build list of files to process
-                    ETADocs etaDocs = new ETADocs(getContext(), treeUris[j], secVolDirName);
+                    ETADocs etaDocs = new ETADocs(getContext(), treeUris[j]);
                     TreeSet<DocumentFile> docs = (TreeSet<DocumentFile>)etaDocs.getDocsSet();
+
                     updateUiLog(Html.fromHtml(getString(R.string.frag1_log_count_files_to_process, docs.size() ) + "<br>",1));
 
                     // 1. Iterate on all files
                     int i = 0;
-                    for (DocumentFile doc : docs) {
+                    for (DocumentFile _doc : docs) {
                         i++;
+                        ETADoc doc = new ETADoc(_doc, getContext(), etaDocs);
                         if (stopProcessing) {
                             setIsProcessFalse(view);
                             stopProcessing = false;
@@ -783,12 +656,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             return;
                         }
 
-                        String mainDir = UriUtil.getDD1(doc.getUri());
-                        String subDir = UriUtil.getDDSubParent(doc.getUri());
-                        String treeId = UriUtil.getTreeId(doc.getUri());
-                        String docIdParent = UriUtil.getDParent(doc.getUri());
-                        String subPath = docIdParent.replace(treeId, "");
-                        subPath = subPath.startsWith("/") ? subPath.replaceFirst("/", "") : subPath;
+                        String subPath = doc.getSubPath();
 
                         updateUiLog("⋅ [" + i + "/" + docs.size() + "] " +
                                 subPath + (subPath.isEmpty() ? "" : File.separator) +
@@ -799,7 +667,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             continue;
                         }
 
-                        if (! doc.getType().equals("image/jpeg")) {
+                        if (!doc.isJpeg()) {
                             updateUiLog(getString(R.string.frag1_log_skipping_not_jpeg));
                             continue;
                         }
@@ -842,7 +710,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         try {
                             //if (enableLog) Log.i(TAG, "Creating thumbnail");
                             thumbnail = makeThumbnailRotated(
-                                    doc,
+                                    doc.getDocumentFile(),
                                     prefs.getBoolean("rotateThumbnails", true),
                                     srcImgDegrees);
 
@@ -879,17 +747,9 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         }
 
                         // a. create output dirs
-                        PathUtil pathUtil = new PathUtil(
-                                doc.getUri(),
-                                mainDir,
-                                subDir,
-                                UriUtil.getTVolId(treeUris[j]),
-                                secVolDirName,
-                                prefs);
-
-                        Uri tmpUri = pathUtil.getTmpUri(getContext(), false);
-                        Uri backupUri = pathUtil.getBackupUri(getContext(), false);
-                        Uri outputUri = pathUtil.getDestUri(getContext());
+                        Uri tmpUri = doc.getTmpUri(false);
+                        Uri backupUri = doc.getBackupUri(false);
+                        Uri outputUri = doc.getDestUri();
 
                         PathUtil.createDirFor(getContext(), tmpUri);
                         PathUtil.createDirFor(getContext(), backupUri);
