@@ -230,7 +230,7 @@ public class PathUtil {
         return outUri;
     }
 
-    public static Uri getSrcDocumentUriFor(Uri contentUri, String mainDir, String sourceFileTreeIdForGetSrcUri) throws Exception {
+    public static Uri getSrcDocumentUriFor(Uri contentUri, String mainDir, String sourceFileTreeIdForGetSrcUri, boolean withVolumeName) throws Exception {
         String storagePath =  UriUtil.getDVolId(contentUri) + ":";   // "primary:"
         String uriAuthority = contentUri.getAuthority();
 
@@ -245,7 +245,11 @@ public class PathUtil {
             //baseDir = storagePath + File.separator + mainDir;
         }
 
-        fullDir = baseDir + File.separator + UriUtil.getDSub(UriUtil.getDDSub(contentUri));
+        if (withVolumeName) {
+            fullDir = baseDir + File.separator + UriUtil.getDSub(UriUtil.getDSub(UriUtil.getDDSub(contentUri)));
+        } else {
+            fullDir = baseDir + File.separator + UriUtil.getDSub(UriUtil.getDDSub(contentUri));
+        }
 
         // Remove trailing "/"
         fullDir = Paths.get(fullDir).toString();

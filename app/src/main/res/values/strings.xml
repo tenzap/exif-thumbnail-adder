@@ -163,8 +163,9 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="sync_text_description"><![CDATA[Synchronize deletions made in source folders to files in backup & working directory]]></string>
     <string name="sync_log_content" />
     <string name="sync_button_del_files">Delete</string>
+    <string name="sync_log_checking">Checking: %1$s</string>
     <string name="sync_button_list_files">List</string>
     <string name="sync_log_failure_to_delete_file">Failure to delete file</string>
-    <string name="sync_log_files_to_remove">Files to remove (not is source anymore):</string>
+    <string name="sync_log_files_to_remove">Files to remove (not in source anymore):</string>
 
 </resources>

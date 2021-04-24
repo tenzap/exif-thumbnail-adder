@@ -38,6 +38,7 @@ import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -117,18 +118,27 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                 }
 
                 InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
-                Uri[] treeUris = inputDirs.toUriArray();
+                Object[] srcDirs;
+                if (MainApplication.useSAF) {
+                    srcDirs = inputDirs.toUriArray(); // Uri[]
+                } else {
+                    srcDirs = inputDirs.toFileArray(getApplicationContext()); // File[]
+                }
 
                 List<UriPermission> persUriPermList = getContentResolver().getPersistedUriPermissions();
 
                 // Iterate on folders containing source images
-                for (int j = 0; j < treeUris.length; j++) {
-                    updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, FileUtil.getFullPathFromTreeUri(treeUris[j], getApplicationContext())) + "</b></u><br>",1));
-                    {
+                for (int j = 0; j < srcDirs.length; j++) {
+                    if (srcDirs[j] instanceof Uri)
+                        updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, FileUtil.getFullPathFromTreeUri((Uri)srcDirs[j], getApplicationContext())) + "</b></u><br>",1));
+                    else if (srcDirs[j] instanceof File)
+                        updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, ((File)srcDirs[j]).toPath()) + "</b></u><br>",1));
+
+                    if (srcDirs[j] instanceof Uri) {
                         // Check permission... If we don't have permission, continue to next volumeDir
                         updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
                         boolean perm_ok = false;
-                        String tString = treeUris[j].toString();
+                        String tString = srcDirs[j].toString();
                         for (UriPermission perm : persUriPermList) {
                             if (tString.startsWith(perm.getUri().toString())) {
                                 if (perm.isReadPermission() && perm.isWritePermission()) {
@@ -144,19 +154,43 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                         updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
                     }
 
-                    ETADocs etaDocs = new ETADocs(getApplicationContext(), treeUris[j]);
-                    DocumentFile baseDf = DocumentFile.fromTreeUri(getApplicationContext(), treeUris[j]);
-                    ETADoc etaDoc = new ETADoc(baseDf, getApplicationContext(), etaDocs);
+                    ETADocs etaDocs = new ETADocs(getApplicationContext(), srcDirs[j]);
+                    ETADoc etaDocSrc = null;
+                    if (srcDirs[j] instanceof Uri) {
+                        DocumentFile baseDf = DocumentFile.fromTreeUri(getApplicationContext(), (Uri)srcDirs[j]);
+                        etaDocSrc = new ETADoc(baseDf, getApplicationContext(), etaDocs, false);
+                    } else if (srcDirs[j] instanceof File) {
+                        etaDocSrc = new ETADoc((File)srcDirs[j], getApplicationContext(), etaDocs, true);
+                    }
+                    if (etaDocSrc == null) throw new UnsupportedOperationException();
 
                     // Process backupUri
-                    Uri backupUri = etaDoc.getBackupUri(false);
-                    doSyncForUri(backupUri, UriUtil.getTreeId(treeUris[j]), etaDoc.getMainDir(), dryRun);
+                    ETADocs etaDocsBackup = null;
+                    if (srcDirs[j] instanceof Uri) {
+                        etaDocsBackup = new ETADocs(
+                                getApplicationContext(),
+                                etaDocSrc.getBackupUri());
+                    } else if (srcDirs[j] instanceof File) {
+                        etaDocsBackup = new ETADocs(
+                                getApplicationContext(),
+                                etaDocSrc.getBackupPath().toFile());
+                    }
+                    doSyncForUri(etaDocsBackup, etaDocSrc, dryRun);
 
                     // Process outputUri
                     if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("writeThumbnailedToOriginalFolder", false)) {
-                        Uri outputUri = etaDoc.getDestUri();
                         updateUiLog(Html.fromHtml("<br>",1));
-                        doSyncForUri(outputUri, UriUtil.getTreeId(treeUris[j]), etaDoc.getMainDir(), dryRun);
+                        ETADocs etaDocsDest = null;
+                        if (srcDirs[j] instanceof Uri) {
+                            etaDocsDest = new ETADocs(
+                                    getApplicationContext(),
+                                    etaDocSrc.getDestUri());
+                        } else if (srcDirs[j] instanceof File) {
+                            etaDocsDest = new ETADocs(
+                                    getApplicationContext(),
+                                    etaDocSrc.getDestPath().toFile());
+                        }
+                        doSyncForUri(etaDocsDest, etaDocSrc, dryRun);
                     }
                 }
 
@@ -167,16 +201,25 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
         }).start();
     }
 
-    private void doSyncForUri(Uri backupUri, String srcTreeId,  String mainDir, boolean dryRun ) {
-        ETADocs etaDocs = new ETADocs(this, backupUri);
-        TreeSet<DocumentFile> docFilesInBackup = (TreeSet<DocumentFile>)etaDocs.getDocsSet();
+    private void doSyncForUri(ETADocs workingDirDocs, ETADoc srcDirEtaDoc, boolean dryRun ) {
 
-        updateUiLog("WorkingDir: ");
-        updateUiLog(FileUtil.getFullPathFromTreeUri(backupUri, this));
+        TreeSet<Object> docsInWorkingDir = (TreeSet<Object>)workingDirDocs.getDocsSet();
+
+        updateUiLog(getString(R.string.sync_log_checking, workingDirDocs.getFSPathWithoutRoot()));
         updateUiLog("\n");
         updateUiLog(Html.fromHtml("<u>" + getString(R.string.sync_log_files_to_remove) + "</u><br>",1));
 
-        for (DocumentFile doc : docFilesInBackup) {
+        for (Object _doc : docsInWorkingDir) {
+
+            // Convert (Object)_doc to (Uri)doc or (File)doc
+            ETADoc doc = null;
+            if (workingDirDocs.getDocsRoot() instanceof Uri) {
+                doc = new ETADoc((DocumentFile) _doc, getApplicationContext(), workingDirDocs, false);
+            } else if (workingDirDocs.getDocsRoot() instanceof File) {
+                doc = new ETADoc((File) _doc, getApplicationContext(), workingDirDocs, true);
+            }
+            if (doc == null) throw new UnsupportedOperationException();
+
             if (stopProcessing) {
                 setIsProcessFalse();
                 stopProcessing = false;
@@ -184,26 +227,31 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                 return;
             }
 
-            Uri srcUri = null;
+            // Skip some files
+            if (doc.isFile()) {
+                if (!doc.isJpeg()) continue;
+                if (doc.getName().equals(".nomedia")) continue;
+            }
+            if (doc.isDirectory()) continue;
+
+            boolean srcFileExists = true;
             try {
-                srcUri = PathUtil.getSrcDocumentUriFor(doc.getUri(), mainDir, srcTreeId);
+                if (workingDirDocs.getDocsRoot() instanceof Uri) {
+                    Uri srcUri = doc.getSrcUri(srcDirEtaDoc.getMainDir(), srcDirEtaDoc.getTreeId());
+                    srcFileExists = DocumentFile.fromTreeUri(this, srcUri).exists();
+                } else if (workingDirDocs.getDocsRoot() instanceof File) {
+                    File srcFile = doc.getSrcPath(srcDirEtaDoc.getFullFSPath()).toFile();
+                    srcFileExists = srcFile.exists();
+                }
             } catch (Exception e) {
                 updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
                 e.printStackTrace();
                 continue;
             }
 
-            // Skip some files
-            if (doc.isFile()) {
-                if (doc.getName().equals(".nomedia")) continue;
-                if (!doc.getType().equals("image/jpeg")) continue;
-            }
-            if (doc.isDirectory()) continue;
-
             // Delete file if it doesn't exist in source directory
-            boolean srcFileExists = DocumentFile.fromTreeUri(this, srcUri).exists();
             if (!srcFileExists) {
-                updateUiLog("⋅ " + UriUtil.getDPath(doc.getUri()) + "... ");
+                updateUiLog("⋅ " + doc.getDPath() + "... ");
                 if (!dryRun) {
                     boolean deleted = doc.delete();
                     if (deleted)

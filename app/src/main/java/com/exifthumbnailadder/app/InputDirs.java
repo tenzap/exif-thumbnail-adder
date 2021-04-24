@@ -27,12 +27,15 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.exifthumbnailadder.app.MainApplication.enableLog;
+import static com.exifthumbnailadder.app.MainApplication.TAG;
+
 public class InputDirs implements Serializable {
-    private final String TAG = "ETALog";
     private final List<Uri> selectedUris = new ArrayList<Uri>();
     JSONArray jsonArray = new JSONArray();
 
@@ -88,4 +91,13 @@ public class InputDirs implements Serializable {
         uris = selectedUris.toArray(uris);
         return uris;
     }
+
+    public File[] toFileArray(Context ctx) {
+        File[] files = new File[selectedUris.size()];
+        for (int i=0; i < selectedUris.size(); i++) {
+            files[i] = new File(FileUtil.getFullPathFromTreeUri(selectedUris.get(i), ctx));
+        }
+        return files;
+    }
+
 }

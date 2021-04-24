@@ -42,13 +42,40 @@ import java.util.TreeSet;
 public class ETADocs {
 
     Context ctx;
-    Object etaDocsRoot;
+    Object etaDocsRoot; // Accepted classes: Uri or File
     String excluded;
 
     public ETADocs(Context ctx, Object etaDocsRoot) {
+        if ( ! (etaDocsRoot instanceof Uri || etaDocsRoot instanceof File))
+            throw new UnsupportedOperationException("etaDocsRoot should be of Class File or Uri");
+
         this.ctx = ctx;
         this.etaDocsRoot = etaDocsRoot;
         this.excluded = getExcludedPath();
+    }
+
+    public String getFSPath() {
+        if (etaDocsRoot instanceof Uri) {
+            return FileUtil.getFullPathFromTreeUri((Uri)etaDocsRoot, ctx);
+        }
+        if (etaDocsRoot instanceof File) {
+            return ((File) etaDocsRoot).getPath();
+        }
+        return null;
+    }
+
+    public String getFSPathWithoutRoot() {
+        if (etaDocsRoot instanceof Uri) {
+            return UriUtil.getDPath((Uri)etaDocsRoot);
+        }
+        if (etaDocsRoot instanceof File) {
+            return ((File) etaDocsRoot).getPath().substring(getVolumeRootPath().length());
+        }
+        return null;
+    }
+
+    public Object getDocsRoot() {
+        return etaDocsRoot;
     }
 
     public Object getDocsSet() {

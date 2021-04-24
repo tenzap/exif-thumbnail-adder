@@ -48,7 +48,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.Fragment;
@@ -57,10 +56,7 @@ import androidx.preference.PreferenceManager;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -86,11 +82,10 @@ import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-public class FirstFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+import static com.exifthumbnailadder.app.MainApplication.enableLog;
+import static com.exifthumbnailadder.app.MainApplication.TAG;
 
-    private final boolean enableLog = MainApplication.enableLog;
-    private final String TAG = MainApplication.TAG;
-    private final String THUMB_EXT = "";
+public class FirstFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     SharedPreferences prefs = null;
     TextView textViewLog, textViewDirList;
@@ -137,7 +132,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 start.setVisibility(Button.GONE);
                 stop.setVisibility(Button.VISIBLE);
                 addThumbsUsingTreeUris(view);
-                //addThumbsUsingFiles(view);
             }
         });
         view.findViewById(R.id.button_stopProcess).setOnClickListener(new View.OnClickListener() {
@@ -392,201 +386,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         copyFileAttributes(inFilePath, outFilePath);
     }
 
-    public void addThumbsUsingFiles(View view) {
-        isProcessing = true;
-        stopProcessing = false;
-        log.clear();
-        updateUiLog(getString(R.string.frag1_log_starting));
-
-        String[] volumesDir = getVolumesDir();
-        String[] mainDirs = {"DCIM", "Pictures"};
-
-        for (int j = 0; j < volumesDir.length; j++) {
-            for (int d = 0; d < mainDirs.length; d++) {
-                String srcPath = volumesDir[j] + File.separator + mainDirs[d] + File.separator;
-
-                final ETADocs etaDocs = new ETADocs(getContext(), new File(srcPath));
-                TreeSet<File> docs = (TreeSet<File>)etaDocs.getDocsSet();
-
-                updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, srcPath) + "</b></u><br>",1));
-
-                int i = 0;
-                for (File doc_ : docs) {
-                    i++;
-                    ETADoc doc = new ETADoc(doc_, getContext(), etaDocs);
-                    if (enableLog) Log.i(TAG, getString(R.string.frag1_log_processing_path_filename, doc.getPath(), doc.getName()));
-
-                    String subDir = doc.getSubDir(); // if "mountDir/DCIM/dir1/s2/file.jpg" --> dir1/s2/file.jpg
-                    if (enableLog) Log.i(TAG, "mainDir: " + doc.getMainDir());
-                    if (enableLog) Log.i(TAG, "subDir: " + subDir);
-
-                    updateUiLog("⋅ [" + (i+1) + "/" + docs.size() + "] " +
-                            subDir + (subDir.isEmpty() ? "" : File.separator) +
-                            doc.getName() + "... ");
-
-                    if (!doc.isJpeg()) {
-                        if (enableLog) Log.i(TAG, getString(R.string.frag1_log_skipping_path_filename, doc.getPath() , doc.getName()));
-                        updateUiLog(getString(R.string.frag1_log_skipping_not_jpeg));
-                        continue;
-                    }
-
-                    if(doc.length() == 0) {
-                        updateUiLog(getString(R.string.frag1_log_skipping_empty_file));
-                        continue;
-                    }
-
-                    // a. check if sourceFile already has Exif Thumbnail
-                    ExifInterface srcImgExifInterface = null;
-                    InputStream srcImgIs = null;
-                    ByteArrayOutputStream newImgOs = new ByteArrayOutputStream();
-
-                    boolean srcImgHasThumbnail = false;
-                    int srcImgDegrees = 0;
-
-                    try {
-                        srcImgIs = doc.fileInputStream();
-                        srcImgExifInterface = new ExifInterface(srcImgIs);
-                        if (srcImgExifInterface != null) {
-                            srcImgHasThumbnail = srcImgExifInterface.hasThumbnail();
-                            srcImgDegrees = srcImgExifInterface.getRotationDegrees();
-                        }
-                        srcImgIs.close();
-                        srcImgExifInterface = null;
-
-                        if (srcImgHasThumbnail && prefs.getBoolean("skipPicsHavingThumbnail", true)) {
-                            updateUiLog(getString(R.string.frag1_log_skipping_has_thumbnail));
-                            continue;
-                        }
-                    } catch (Exception e) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                        e.printStackTrace();
-                        continue;
-                    }
-
-                    // a. extract thumbnail & write to output stream
-                    try {
-                        //if (enableLog) Log.i(TAG, "Creating thumbnail");
-                        Bitmap thumbnail = makeThumbnailRotated(
-                                doc.getFile(),
-                                prefs.getBoolean("rotateThumbnails", true),
-                                srcImgDegrees);
-
-                        srcImgIs = doc.fileInputStream();
-
-                        switch (prefs.getString("exif_library", "exiflib_exiv2")) {
-                            case "exiflib_android-exif-extended":
-                                writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, doc.getUri(), thumbnail);
-                                break;
-                            case "exiflib_pixymeta":
-                                if (!PixymetaInterface.hasPixymetaLib()) {
-                                    updateUiLog(Html.fromHtml("<br><br><span style='color:red'>" + getString(R.string.frag1_log_pixymeta_missing) + "</span><br>", 1));
-                                    return;
-                                }
-                                PixymetaInterface.writeThumbnailWithPixymeta(srcImgIs, newImgOs, thumbnail);
-                                break;
-                        }
-
-                        // Close Streams
-                        srcImgIs.close();
-                        newImgOs.close();
-                    } catch (BadOriginalImageException e) {
-                        updateUiLog(getString(R.string.frag1_log_skipping_bad_image));
-                        e.printStackTrace();
-                        continue;
-                    } catch (Exception e) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                        e.printStackTrace();
-                        continue;
-                    }
-
-                    // Create folders where files are written
-                    String tmpPath = doc.getTmpDir(true);
-                    String backupPath = doc.getBackupDir(true);
-                    String outputPath = doc.getDestDir();
-
-                    PathUtil.createDirFor(tmpPath);
-                    PathUtil.createDirFor(backupPath);
-                    PathUtil.createDirFor(outputPath);
-
-                    String outputFilename = tmpPath + "/" + doc.getName() + THUMB_EXT;
-
-                    try {
-                        // Write output file to disk
-                        if (enableLog) Log.i(TAG, "Write to: " + outputFilename);
-
-                        FileOutputStream outputStream;
-                        outputStream = new FileOutputStream(outputFilename);
-                        outputStream.write(newImgOs.toByteArray());
-                        outputStream.close();
-                        if (enableLog) Log.i(TAG, "Write to DONE: " + outputFilename);
-                    } catch (FileNotFoundException e) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                        e.printStackTrace();
-                    }
-
-                    // Copy file attributes from source to target
-                    try {
-                        copyFileAttributes(doc.toPath(), new File(outputFilename).toPath());
-                    } catch (Exception e) {
-                        updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
-                        e.printStackTrace();
-                    }
-
-                    Path from, to = null;
-
-                    // a. Move or copy original files (from DCIM) to backup dir (DCIM.bak)
-                    if (prefs.getBoolean("backupOriginalPic", true)) {
-                        from = doc.toPath();
-                        to = new File(backupPath + "/" + doc.getName()).toPath();
-
-                        if (!prefs.getBoolean("writeThumbnailedToOriginalFolder", false)) {
-                            try {
-                                Files.copy(from, to, REPLACE_EXISTING, COPY_ATTRIBUTES);
-                            } catch (Exception e) {
-                                updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
-                                e.printStackTrace();
-                                continue;
-                            }
-                        } else {
-                            if (etaDocs.getVolumeName() == MediaStore.VOLUME_EXTERNAL_PRIMARY) {
-                                try {
-                                    Files.move(from, to, ATOMIC_MOVE);
-                                } catch (Exception e) {
-                                    updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
-                                    e.printStackTrace();
-                                    continue;
-                                }
-                            } else {
-                                // Do nothing
-                            }
-                        }
-                    }
-
-                    // a. Move new file (having Thumbnail) from DCIM.tmp folder to its final folder
-                    //   DCIM (when in production), in this case we don't replace the file in DCIM
-                    //   DCIM.new (in test), in this case we replace the file in DCIM.new
-                    from = new File(outputFilename).toPath();
-                    to = new File(outputPath + "/" + doc.getName()).toPath();
-                    try {
-                        Files.move(from, to, REPLACE_EXISTING, ATOMIC_MOVE);
-                    } catch (Exception e) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_moving_doc, e.getMessage()) + "</span><br>", 1));
-                        e.printStackTrace();
-                        continue;
-                    }
-
-                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_done)+"</span><br>",1));
-                }
-            }
-        }
-        updateUiLog(getString(R.string.frag1_log_finished));
-
-        setIsProcessFalse(view);
-    }
-
     public void addThumbsUsingTreeUris(View view) {
         isProcessing = true;
         stopProcessing = false;
@@ -610,18 +409,28 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 }
 
                 InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
-                Uri[] treeUris = inputDirs.toUriArray();
+                Object[] srcDirs;
+                if (MainApplication.useSAF) {
+                    srcDirs = inputDirs.toUriArray(); // Uri[]
+                } else {
+                    srcDirs = inputDirs.toFileArray(getContext()); // File[]
+                }
 
                 List<UriPermission> persUriPermList = getActivity().getContentResolver().getPersistedUriPermissions();
 
                 // Iterate on folders containing source images
-                for (int j = 0; j < treeUris.length; j++) {
-                    updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, FileUtil.getFullPathFromTreeUri(treeUris[j], getContext())) + "</b></u><br>",1));
-                    {
-                        // Check permission... If we don't have permission, continue to next volumeDir
+                for (int j = 0; j < srcDirs.length; j++) {
+                    if (srcDirs[j] instanceof Uri)
+                        updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, FileUtil.getFullPathFromTreeUri((Uri)srcDirs[j], getContext())) + "</b></u><br>",1));
+                    else if (srcDirs[j] instanceof File)
+                        updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, ((File)srcDirs[j]).toPath()) + "</b></u><br>",1));
+
+                    if (srcDirs[j] instanceof Uri) {
+                        // Check permission in case we use SAF...
+                        // If we don't have permission, continue to next srcDir
                         updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
                         boolean perm_ok = false;
-                        String tString = treeUris[j].toString();
+                        String tString = srcDirs[j].toString();
                         for (UriPermission perm : persUriPermList) {
                             if (tString.startsWith(perm.getUri().toString())) {
                                 if (perm.isReadPermission() && perm.isWritePermission()) {
@@ -639,16 +448,25 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                     }
 
                     // 1. build list of files to process
-                    ETADocs etaDocs = new ETADocs(getContext(), treeUris[j]);
-                    TreeSet<DocumentFile> docs = (TreeSet<DocumentFile>)etaDocs.getDocsSet();
+                    ETADocs etaDocs = new ETADocs(getContext(), srcDirs[j]);
+                    TreeSet<Object> docs = (TreeSet<Object>)etaDocs.getDocsSet();
 
                     updateUiLog(Html.fromHtml(getString(R.string.frag1_log_count_files_to_process, docs.size() ) + "<br>",1));
 
                     // 1. Iterate on all files
                     int i = 0;
-                    for (DocumentFile _doc : docs) {
+                    for (Object _doc : docs) {
                         i++;
-                        ETADoc doc = new ETADoc(_doc, getContext(), etaDocs);
+
+                        // Convert (Object)_doc to (Uri)doc or (File)doc
+                        ETADoc doc = null;
+                        if (srcDirs[j] instanceof Uri) {
+                            doc = new ETADoc((DocumentFile) _doc, getContext(), etaDocs, false);
+                        } else if (srcDirs[j] instanceof File) {
+                            doc = new ETADoc((File) _doc, getContext(), etaDocs, true);
+                        }
+                        if (doc == null) throw new UnsupportedOperationException();
+
                         if (stopProcessing) {
                             setIsProcessFalse(view);
                             stopProcessing = false;
@@ -656,10 +474,10 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             return;
                         }
 
-                        String subPath = doc.getSubPath();
+                        String subDir = doc.getSubDir();
 
                         updateUiLog("⋅ [" + i + "/" + docs.size() + "] " +
-                                subPath + (subPath.isEmpty() ? "" : File.separator) +
+                                subDir + (subDir.isEmpty() ? "" : File.separator) +
                                 doc.getName() + "... ");
 
                         if (!doc.exists()) {
@@ -686,7 +504,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         int srcImgDegrees = 0;
 
                         try {
-                            srcImgIs = getActivity().getContentResolver().openInputStream(doc.getUri());
+                            srcImgIs = doc.inputStream();
                             srcImgExifInterface = new ExifInterface(srcImgIs);
                             if (srcImgExifInterface != null) {
                                 srcImgHasThumbnail = srcImgExifInterface.hasThumbnail();
@@ -709,16 +527,19 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         // a. extract thumbnail & write to output stream
                         try {
                             //if (enableLog) Log.i(TAG, "Creating thumbnail");
+                            Object docObj = null;
+                            if (srcDirs[j] instanceof Uri) docObj = doc.getDocumentFile();
+                            else if (srcDirs[j] instanceof File) docObj = doc.getFile();
+
                             thumbnail = makeThumbnailRotated(
-                                    doc.getDocumentFile(),
+                                    docObj,
                                     prefs.getBoolean("rotateThumbnails", true),
                                     srcImgDegrees);
-
-                            srcImgIs = getActivity().getContentResolver().openInputStream(doc.getUri());
+                            srcImgIs = doc.inputStream();
 
                             switch (prefs.getString("exif_library", "exiflib_exiv2")) {
                                 case "exiflib_android-exif-extended":
-                                    writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, doc.getUri(), thumbnail);
+                                    writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, doc, thumbnail);
                                     break;
                                 case "exiflib_pixymeta":
                                     if (!PixymetaInterface.hasPixymetaLib()) {
@@ -747,25 +568,13 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         }
 
                         // a. create output dirs
-                        Uri tmpUri = doc.getTmpUri(false);
-                        Uri backupUri = doc.getBackupUri(false);
-                        Uri outputUri = doc.getDestUri();
-
-                        PathUtil.createDirFor(getContext(), tmpUri);
-                        PathUtil.createDirFor(getContext(), backupUri);
-                        PathUtil.createDirFor(getContext(), outputUri);
+                        doc.createDirForTmp();
+                        doc.createDirForBackup();
+                        doc.createDirForDest();
 
                         // a. write outputstream to disk
-                        Uri outputTmpFileUri = null;
                         try  {
-                            String filename = doc.getName() + THUMB_EXT;
-                            outputTmpFileUri = getOutputFileUri(tmpUri, filename);
-                            OutputStream outputStream = getOutputStreamForTreeUri(outputTmpFileUri);
-
-                            //if (enableLog) Log.i(TAG, "Write to: " + tmpUri.getPath() + File.separator + filename);
-                            outputStream.write(newImgOs.toByteArray());
-                            outputStream.close();
-                            //if (enableLog) Log.i(TAG, "Write to DONE");
+                            doc.writeInTmp(newImgOs);
                         } catch (Exception e) {
                             updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
@@ -776,15 +585,10 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             switch (prefs.getString("exif_library", "exiflib_exiv2")) {
                                 case "exiflib_libexif":
                                     try {
-                                        String outFilepath;
-                                        if ( outputTmpFileUri.getScheme().equals("file")) {
-                                            outFilepath = outputTmpFileUri.getPath();
-                                        } else {
-                                            outFilepath = FileUtil.getFullDocIdPathFromTreeUri(outputTmpFileUri, getContext());
-                                        }
+                                        String outFilepath = doc.getTmpFSPathWithFilename();
 
                                         new NativeLibHelper().writeThumbnailWithLibexifThroughFile(
-                                                FileUtil.getFullDocIdPathFromTreeUri(doc.getUri(), getContext()),
+                                                doc.getFullFSPath(),
                                                 outFilepath,
                                                 thumbnail,
                                                 prefs.getBoolean("libexifSkipOnError", true));
@@ -806,20 +610,24 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
                                 case "exiflib_exiv2":
                                     try {
-                                        String outFilepath;
-                                        if ( outputTmpFileUri.getScheme().equals("file")) {
-                                            outFilepath = outputTmpFileUri.getPath();
-                                        } else {
-                                            outFilepath = FileUtil.getFullDocIdPathFromTreeUri(outputTmpFileUri, getContext());
-                                        }
+                                        String outFilepath = doc.getTmpFSPathWithFilename();
 
                                         // copy original picture to location of tmp picture on which exiv2 will operate.
                                         Uri targetUri = null;
                                         try {
-                                            targetUri = copyDocument(doc.getUri(),
-                                                    tmpUri,
-                                                    true,
-                                                    prefs.getBoolean("keepTimeStampOnBackup", false));
+                                            if (srcDirs[j] instanceof Uri) {
+                                                targetUri = copyDocument(
+                                                        doc.getUri(),
+                                                        doc.getTmpUri(),
+                                                        true,
+                                                        prefs.getBoolean("keepTimeStampOnBackup", false));
+                                            } else if (srcDirs[j] instanceof File) {
+                                                Files.copy(
+                                                        doc.toPath(),
+                                                        doc.getTmpPath().resolve(doc.getName()),
+                                                        REPLACE_EXISTING,
+                                                        COPY_ATTRIBUTES);
+                                            }
                                         } catch (CopyAttributesFailedException e) {
                                             updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                                             e.printStackTrace();
@@ -855,7 +663,10 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
                         // a. Copy attributes from original file to tmp file
                         try {
-                            copyFileAttributes(doc.getUri(), outputTmpFileUri);
+                            if (srcDirs[j] instanceof Uri)
+                                copyFileAttributes(doc.getUri(), (Uri)doc.getOutputInTmp());
+                            else if (srcDirs[j] instanceof File)
+                                copyFileAttributes(doc.toPath(), ((File)doc.getOutputInTmp()).toPath());
                         } catch (CopyAttributesFailedException e) {
                             updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
@@ -865,21 +676,36 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             continue;
                         }
 
-                        Uri outputFile = null;
-                        Uri sourceFile = null;
-                        Uri originalImage = null;
-                        Uri targetDir = null;
+                        Uri outputFile = null; // Uri returned by "copyDocument" to dest
+                        Uri originalImage = null; // Uri returned by "moveDocument", file in bak.
 
                         // a. Move or copy original files (from DCIM) to backup dir (DCIM.bak)
                         if (prefs.getBoolean("backupOriginalPic", true)) {
-                            sourceFile = doc.getUri();
-                            originalImage = sourceFile;
-                            targetDir = backupUri;
-
                             if (prefs.getBoolean("writeThumbnailedToOriginalFolder", false)) {
                                 // We do a move (so that the file with a thumbnail can be placed to the original dir)
                                 try {
-                                    originalImage = moveDocument(sourceFile, UriUtil.buildDParentAsUri(sourceFile), targetDir, false);
+                                    if (srcDirs[j] instanceof Uri) {
+                                        originalImage = moveDocument(
+                                                doc.getUri(),
+                                                UriUtil.buildDParentAsUri(doc.getUri()),
+                                                doc.getBackupUri(),
+                                                false);
+                                    } else if (srcDirs[j] instanceof File) {
+                                        if (etaDocs.getVolumeName() == MediaStore.VOLUME_EXTERNAL_PRIMARY) {
+                                            try {
+                                                Files.move(
+                                                        doc.toPath(),
+                                                        doc.getBackupPath().resolve(doc.getName()),
+                                                        ATOMIC_MOVE);
+                                            } catch (Exception e) {
+                                                updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
+                                                e.printStackTrace();
+                                                continue;
+                                            }
+                                        } else {
+                                            // Do nothing
+                                        }
+                                    }
                                 } catch (DestinationFileExistsException e) {
                                     updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_cannot_move_to_backup)+"</span><br>",1));
                                     e.printStackTrace();
@@ -895,8 +721,19 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             } else {
                                 // We do a copy
                                 try {
-                                    copyDocument(sourceFile, targetDir, true,
-                                            prefs.getBoolean("keepTimeStampOnBackup", true));
+                                    if (srcDirs[j] instanceof Uri) {
+                                        copyDocument(
+                                                doc.getUri(),
+                                                doc.getBackupUri(),
+                                                true,
+                                                prefs.getBoolean("keepTimeStampOnBackup", true));
+                                    } else if (srcDirs[j] instanceof File) {
+                                        Files.copy(
+                                                doc.toPath(),
+                                                doc.getBackupPath().resolve(doc.getName()),
+                                                REPLACE_EXISTING,
+                                                COPY_ATTRIBUTES);
+                                    }
                                 } catch (CopyAttributesFailedException e) {
                                     updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                                     e.printStackTrace();
@@ -910,16 +747,24 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
                         // a. Move new file (having Thumbnail) from tmp folder to its final folder
                         // final folder depends on the setting: "writeThumbnailedToOriginalFolder"
-                        sourceFile = outputTmpFileUri;
-                        targetDir = outputUri;
-
                         boolean replaceExising = false;
                         if ( prefs.getBoolean("overwriteDestPic", false)) {
                             replaceExising = true;
                         }
 
                         try {
-                            outputFile = moveDocument(sourceFile, tmpUri, targetDir, replaceExising);
+                            if (srcDirs[j] instanceof Uri) {
+                                outputFile = moveDocument(
+                                        (Uri)doc.getOutputInTmp(),
+                                        doc.getTmpUri(),
+                                        doc.getDestUri(),
+                                        replaceExising);
+                            } else if (srcDirs[j] instanceof File) {
+                                Files.move(
+                                        ((File)doc.getOutputInTmp()).toPath(),
+                                        doc.getDestPath().resolve(doc.getName()),
+                                        REPLACE_EXISTING, ATOMIC_MOVE);
+                            }
                         } catch (DestinationFileExistsException e) {
                             updateUiLog(Html.fromHtml("<span style='color:red'>"+ getString(R.string.frag1_log_overwrite_not_allowed)+"</span><br>",1));
                             e.printStackTrace();
@@ -949,43 +794,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 setIsProcessFalse(view);
             }
         }).start();
-    }
-
-    public Uri getOutputFileUri(Uri tmpUri, String filename) {
-        if (tmpUri.getScheme().equals("file")) {
-            return Uri.withAppendedPath(tmpUri, filename);
-        }
-
-        Uri outputFileUri = null;
-        DocumentFile outputFileDf = DocumentFile.fromTreeUri(getContext(), tmpUri).findFile(filename);
-        try {
-            if (outputFileDf != null) {
-                outputFileUri = outputFileDf.getUri();
-            } else {
-                outputFileUri = DocumentsContract.createDocument(
-                        getActivity().getContentResolver(),
-                        tmpUri,
-                        "image/jpg",
-                        filename);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return outputFileUri;
-    }
-
-    public OutputStream getOutputStreamForTreeUri (Uri outputFileUri) {
-        OutputStream outputStream = null;
-
-        try {
-            outputStream = getActivity().getContentResolver().openOutputStream(outputFileUri);
-        } catch (Exception e ){
-            e.printStackTrace();
-        }
-
-        //if (enableLog) Log.i(TAG, "OutputStream ready for: " + outputFileUri.getPath());
-        return outputStream;
     }
 
     private Uri copyDocument(Uri sourceUri, Uri targetParentUri, boolean replaceExisting, boolean copyFileAttributes)
@@ -1163,7 +971,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
     }
 
     private void writeThumbnailWithAndroidExifExtended (
-            InputStream srcImgIs, OutputStream newImgOs, Uri inputUri, Bitmap thumbnail)
+            InputStream srcImgIs, OutputStream newImgOs, ETADoc doc, Bitmap thumbnail)
             throws Exception, AssertionError {
         try {
             // Andoid-Exif-Extended will write twice the APP1 structure to the file,
@@ -1186,7 +994,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
             // Close & Reopen InputStream, otherwise writeExif will fail with an exception
             // because srcImgIs was already read
             srcImgIs.close();
-            srcImgIs = getActivity().getContentResolver().openInputStream(inputUri);
+            srcImgIs = doc.inputStream();
 
             // writeExif recopies anyway the tags that are in srcImgIs (which will be added
             // to those already in sInExif). It is necessary to call readExif,
