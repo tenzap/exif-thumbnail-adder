@@ -61,6 +61,7 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URLConnection;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -602,8 +603,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                                 Files.copy(
                                                         doc.toPath(),
                                                         doc.getTmpPath().resolve(doc.getName()),
-                                                        REPLACE_EXISTING,
-                                                        COPY_ATTRIBUTES);
+                                                        REPLACE_EXISTING);
                                             }
                                         } catch (CopyAttributesFailedException e) {
                                             updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
@@ -623,6 +623,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                         switch (prefs.getString("exiv2SkipOnLogLevel", "warn")) {
                                             case "warn":
                                             case "error":
+                                                if (doc instanceof ETADocFile) { doc.deleteOutputInTmp(); }
                                                 updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                                                 continue;
                                             case "none":
@@ -669,21 +670,18 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                                 false);
                                     } else if (doc instanceof ETADocFile) {
                                         if (etaSrcDir.getVolumeName() == MediaStore.VOLUME_EXTERNAL_PRIMARY) {
-                                            try {
-                                                Files.move(
-                                                        doc.toPath(),
-                                                        doc.getBackupPath().resolve(doc.getName()),
-                                                        ATOMIC_MOVE);
-                                            } catch (Exception e) {
-                                                updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
-                                                e.printStackTrace();
-                                                continue;
-                                            }
+                                            Path backupFile = doc.getBackupPath().resolve(doc.getName());
+                                            if (backupFile.toFile().exists())
+                                                throw new FileAlreadyExistsException(backupFile.toString());
+                                            Files.move(
+                                                    doc.toPath(),
+                                                    backupFile,
+                                                    ATOMIC_MOVE);
                                         } else {
                                             // Do nothing
                                         }
                                     }
-                                } catch (DestinationFileExistsException e) {
+                                } catch (DestinationFileExistsException | FileAlreadyExistsException e) {
                                     updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_cannot_move_to_backup)+"</span><br>",1));
                                     e.printStackTrace();
                                     continue;
@@ -705,11 +703,18 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                                 true,
                                                 prefs.getBoolean("keepTimeStampOnBackup", true));
                                     } else if (doc instanceof ETADocFile) {
-                                        Files.copy(
-                                                doc.toPath(),
-                                                doc.getBackupPath().resolve(doc.getName()),
-                                                REPLACE_EXISTING,
-                                                COPY_ATTRIBUTES);
+                                        if (prefs.getBoolean("keepTimeStampOnBackup", true)) {
+                                            Files.copy(
+                                                    doc.toPath(),
+                                                    doc.getBackupPath().resolve(doc.getName()),
+                                                    REPLACE_EXISTING,
+                                                    COPY_ATTRIBUTES);
+                                        } else {
+                                            Files.copy(
+                                                    doc.toPath(),
+                                                    doc.getBackupPath().resolve(doc.getName()),
+                                                    REPLACE_EXISTING);
+                                        }
                                     }
                                 } catch (CopyAttributesFailedException e) {
                                     updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
@@ -737,12 +742,22 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                         doc.getDestUri(),
                                         replaceExising);
                             } else if (doc instanceof ETADocFile) {
-                                Files.move(
-                                        ((File)doc.getOutputInTmp()).toPath(),
-                                        doc.getDestPath().resolve(doc.getName()),
-                                        REPLACE_EXISTING, ATOMIC_MOVE);
+                                Path destFile = doc.getDestPath().resolve(doc.getName());
+                                if (replaceExising) {
+                                    Files.move(
+                                            ((File) doc.getOutputInTmp()).toPath(),
+                                            destFile,
+                                            REPLACE_EXISTING, ATOMIC_MOVE);
+                                } else {
+                                    if (destFile.toFile().exists())
+                                        throw new FileAlreadyExistsException(destFile.toString());
+                                    Files.move(
+                                            ((File) doc.getOutputInTmp()).toPath(),
+                                            destFile,
+                                            ATOMIC_MOVE);
+                                }
                             }
-                        } catch (DestinationFileExistsException e) {
+                        } catch (DestinationFileExistsException | FileAlreadyExistsException e ) {
                             updateUiLog(Html.fromHtml("<span style='color:red'>"+ getString(R.string.frag1_log_overwrite_not_allowed)+"</span><br>",1));
                             doc.deleteOutputInTmp();
                             e.printStackTrace();
