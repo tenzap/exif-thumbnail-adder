@@ -154,24 +154,32 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                         updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
                     }
 
-                    ETASrcDir etaSrcDir = new ETASrcDir(getApplicationContext(), srcDirs[j]);
-                    ETADoc etaDocSrc = null;
+                    ETASrcDir etaSrcDir = null;
                     if (srcDirs[j] instanceof Uri) {
-                        DocumentFile baseDf = DocumentFile.fromTreeUri(getApplicationContext(), (Uri)srcDirs[j]);
-                        etaDocSrc = new ETADocDf(baseDf, getApplicationContext(), etaSrcDir, false);
+                        etaSrcDir = new ETASrcDirUri(getApplicationContext(), (Uri)srcDirs[j]);
                     } else if (srcDirs[j] instanceof File) {
-                        etaDocSrc = new ETADocFile((File)srcDirs[j], getApplicationContext(), etaSrcDir, true);
+                        etaSrcDir = new ETASrcDirFile(getApplicationContext(), (File)srcDirs[j]);
+                    }
+                    if (etaSrcDir == null) throw new UnsupportedOperationException();
+
+
+                    ETADoc etaDocSrc = null;
+                    if (etaSrcDir instanceof ETASrcDirUri) {
+                        DocumentFile baseDf = DocumentFile.fromTreeUri(getApplicationContext(), (Uri)srcDirs[j]);
+                        etaDocSrc = new ETADocDf(baseDf, getApplicationContext(), (ETASrcDirUri)etaSrcDir, false);
+                    } else if (etaSrcDir instanceof ETASrcDirFile) {
+                        etaDocSrc = new ETADocFile((File)srcDirs[j], getApplicationContext(), (ETASrcDirFile)etaSrcDir, true);
                     }
                     if (etaDocSrc == null) throw new UnsupportedOperationException();
 
                     // Process backupUri
                     ETASrcDir etaSrcDirBackup = null;
                     if (etaDocSrc instanceof ETADocDf) {
-                        etaSrcDirBackup = new ETASrcDir(
+                        etaSrcDirBackup = new ETASrcDirUri(
                                 getApplicationContext(),
                                 etaDocSrc.getBackupUri());
                     } else if (etaDocSrc instanceof ETADocFile) {
-                        etaSrcDirBackup = new ETASrcDir(
+                        etaSrcDirBackup = new ETASrcDirFile(
                                 getApplicationContext(),
                                 etaDocSrc.getBackupPath().toFile());
                     }
@@ -182,11 +190,11 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                         updateUiLog(Html.fromHtml("<br>",1));
                         ETASrcDir etaSrcDirDest = null;
                         if (etaDocSrc instanceof ETADocDf) {
-                            etaSrcDirDest = new ETASrcDir(
+                            etaSrcDirDest = new ETASrcDirUri(
                                     getApplicationContext(),
                                     etaDocSrc.getDestUri());
                         } else if (etaDocSrc instanceof ETADocFile) {
-                            etaSrcDirDest = new ETASrcDir(
+                            etaSrcDirDest = new ETASrcDirFile(
                                     getApplicationContext(),
                                     etaDocSrc.getDestPath().toFile());
                         }
@@ -214,9 +222,9 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
             // Convert (Object)_doc to (Uri)doc or (File)doc
             ETADoc doc = null;
             if (workingDirDocs.getDocsRoot() instanceof Uri) {
-                doc = new ETADocDf((DocumentFile) _doc, getApplicationContext(), workingDirDocs, false);
+                doc = new ETADocDf((DocumentFile) _doc, getApplicationContext(), (ETASrcDirUri) workingDirDocs, false);
             } else if (workingDirDocs.getDocsRoot() instanceof File) {
-                doc = new ETADocFile((File) _doc, getApplicationContext(), workingDirDocs, true);
+                doc = new ETADocFile((File) _doc, getApplicationContext(), (ETASrcDirFile)workingDirDocs, true);
             }
             if (doc == null) throw new UnsupportedOperationException();
 

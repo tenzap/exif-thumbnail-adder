@@ -442,7 +442,12 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                     }
 
                     // 1. build list of files to process
-                    ETASrcDir etaSrcDir = new ETASrcDir(getContext(), srcDirs[j]);
+                    ETASrcDir etaSrcDir = null;
+                    if (srcDirs[j] instanceof Uri) {
+                        etaSrcDir = new ETASrcDirUri(getContext(), (Uri)srcDirs[j]);
+                    } else if (srcDirs[j] instanceof File) {
+                        etaSrcDir = new ETASrcDirFile(getContext(), (File)srcDirs[j]);
+                    }
                     TreeSet<Object> docs = (TreeSet<Object>) etaSrcDir.getDocsSet();
 
                     updateUiLog(Html.fromHtml(getString(R.string.frag1_log_count_files_to_process, docs.size() ) + "<br>",1));
@@ -455,9 +460,9 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         // Convert (Object)_doc to (Uri)doc or (File)doc
                         ETADoc doc = null;
                         if (srcDirs[j] instanceof Uri) {
-                            doc = new ETADocDf((DocumentFile) _doc, getContext(), etaSrcDir, false);
+                            doc = new ETADocDf((DocumentFile) _doc, getContext(), (ETASrcDirUri)etaSrcDir, false);
                         } else if (srcDirs[j] instanceof File) {
-                            doc = new ETADocFile((File) _doc, getContext(), etaSrcDir, true);
+                            doc = new ETADocFile((File) _doc, getContext(), (ETASrcDirFile)etaSrcDir, true);
                         }
                         if (doc == null) throw new UnsupportedOperationException();
 
