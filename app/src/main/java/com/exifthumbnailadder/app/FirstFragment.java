@@ -598,7 +598,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                                         doc.getUri(),
                                                         doc.getTmpUri(),
                                                         true,
-                                                        prefs.getBoolean("keepTimeStampOnBackup", false));
+                                                        false);
                                             } else if (doc instanceof ETADocFile) {
                                                 Files.copy(
                                                         doc.toPath(),
