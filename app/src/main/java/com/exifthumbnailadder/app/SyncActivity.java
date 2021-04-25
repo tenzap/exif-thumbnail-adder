@@ -125,35 +125,8 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                     srcDirs = inputDirs.toFileArray(getApplicationContext()); // File[]
                 }
 
-                List<UriPermission> persUriPermList = getContentResolver().getPersistedUriPermissions();
-
                 // Iterate on folders containing source images
                 for (int j = 0; j < srcDirs.length; j++) {
-                    if (srcDirs[j] instanceof Uri)
-                        updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, FileUtil.getFullPathFromTreeUri((Uri)srcDirs[j], getApplicationContext())) + "</b></u><br>",1));
-                    else if (srcDirs[j] instanceof File)
-                        updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, ((File)srcDirs[j]).toPath()) + "</b></u><br>",1));
-
-                    if (srcDirs[j] instanceof Uri) {
-                        // Check permission... If we don't have permission, continue to next volumeDir
-                        updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
-                        boolean perm_ok = false;
-                        String tString = srcDirs[j].toString();
-                        for (UriPermission perm : persUriPermList) {
-                            if (tString.startsWith(perm.getUri().toString())) {
-                                if (perm.isReadPermission() && perm.isWritePermission()) {
-                                    perm_ok = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (!perm_ok) {
-                            updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
-                            continue;
-                        }
-                        updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
-                    }
-
                     ETASrcDir etaSrcDir = null;
                     if (srcDirs[j] instanceof Uri) {
                         etaSrcDir = new ETASrcDirUri(getApplicationContext(), (Uri)srcDirs[j]);
@@ -161,6 +134,17 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                         etaSrcDir = new ETASrcDirFile(getApplicationContext(), (File)srcDirs[j]);
                     }
                     if (etaSrcDir == null) throw new UnsupportedOperationException();
+
+                    updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, etaSrcDir.getFSPath()) + "</b></u><br>",1));
+
+                    // Check permission in case we use SAF...
+                    // If we don't have permission, continue to next srcDir
+                    updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
+                    if (! etaSrcDir.isPermOk()) {
+                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
+                        continue;
+                    }
+                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
 
 
                     ETADoc etaDocSrc = null;

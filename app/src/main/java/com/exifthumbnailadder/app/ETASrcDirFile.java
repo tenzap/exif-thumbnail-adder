@@ -21,6 +21,7 @@
 package com.exifthumbnailadder.app;
 
 import android.content.Context;
+import android.content.UriPermission;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
@@ -32,6 +33,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Comparator;
+import java.util.List;
 import java.util.TreeSet;
 
 public class ETASrcDirFile extends ETASrcDir {
@@ -155,4 +157,8 @@ public class ETASrcDirFile extends ETASrcDir {
         return volumeRootPath;
     }
 
+    public boolean isPermOk() {
+        //TODO
+        return true;
+    }
 }

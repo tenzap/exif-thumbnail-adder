@@ -51,6 +51,7 @@ public abstract class ETASrcDir {
     public abstract String getVolumeName();
     public abstract String getExcludedPath();
     public abstract String getVolumeRootPath();
+    public abstract boolean isPermOk();
 
     protected abstract TreeSet<DocumentFile> docFilesToProcessList(DocumentFile df, int level, String excluded);
     protected abstract TreeSet<File> filesToProcessList(File dir, int level, File excluded);

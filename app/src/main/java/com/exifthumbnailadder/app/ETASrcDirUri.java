@@ -21,6 +21,7 @@
 package com.exifthumbnailadder.app;
 
 import android.content.Context;
+import android.content.UriPermission;
 import android.net.Uri;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
@@ -32,6 +33,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Comparator;
+import java.util.List;
 import java.util.TreeSet;
 
 public class ETASrcDirUri extends ETASrcDir {
@@ -106,6 +108,21 @@ public class ETASrcDirUri extends ETASrcDir {
 
     public String getVolumeRootPath() {
         throw new UnsupportedOperationException();
+    }
+
+    public boolean isPermOk() {
+        List<UriPermission> persUriPermList = ctx.getContentResolver().getPersistedUriPermissions();
+        boolean perm_ok = false;
+        String tString = etaDocsRoot.toString();
+        for (UriPermission perm : persUriPermList) {
+            if (tString.startsWith(perm.getUri().toString())) {
+                if (perm.isReadPermission() && perm.isWritePermission()) {
+                    perm_ok = true;
+                    break;
+                }
+            }
+        }
+        return perm_ok;
     }
 
 }

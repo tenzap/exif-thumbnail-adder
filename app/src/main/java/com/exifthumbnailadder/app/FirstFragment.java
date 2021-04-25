@@ -410,46 +410,28 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                     srcDirs = inputDirs.toFileArray(getContext()); // File[]
                 }
 
-                List<UriPermission> persUriPermList = getActivity().getContentResolver().getPersistedUriPermissions();
-
                 // Iterate on folders containing source images
                 for (int j = 0; j < srcDirs.length; j++) {
-                    if (srcDirs[j] instanceof Uri)
-                        updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, FileUtil.getFullPathFromTreeUri((Uri)srcDirs[j], getContext())) + "</b></u><br>",1));
-                    else if (srcDirs[j] instanceof File)
-                        updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, ((File)srcDirs[j]).toPath()) + "</b></u><br>",1));
-
-                    if (srcDirs[j] instanceof Uri) {
-                        // Check permission in case we use SAF...
-                        // If we don't have permission, continue to next srcDir
-                        updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
-                        boolean perm_ok = false;
-                        String tString = srcDirs[j].toString();
-                        for (UriPermission perm : persUriPermList) {
-                            if (tString.startsWith(perm.getUri().toString())) {
-                                if (perm.isReadPermission() && perm.isWritePermission()) {
-                                    perm_ok = true;
-                                    break;
-                                }
-                            }
-                        }
-                        if (!perm_ok) {
-                            updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
-                            continue;
-                        }
-                        updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
-
-                    }
-
-                    // 1. build list of files to process
                     ETASrcDir etaSrcDir = null;
                     if (srcDirs[j] instanceof Uri) {
                         etaSrcDir = new ETASrcDirUri(getContext(), (Uri)srcDirs[j]);
                     } else if (srcDirs[j] instanceof File) {
                         etaSrcDir = new ETASrcDirFile(getContext(), (File)srcDirs[j]);
                     }
-                    TreeSet<Object> docs = (TreeSet<Object>) etaSrcDir.getDocsSet();
 
+                    updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, etaSrcDir.getFSPath()) + "</b></u><br>",1));
+
+                    // Check permission in case we use SAF...
+                    // If we don't have permission, continue to next srcDir
+                    updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
+                    if (! etaSrcDir.isPermOk()) {
+                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
+                        continue;
+                    }
+                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
+
+                    // 1. build list of files to process
+                    TreeSet<Object> docs = (TreeSet<Object>) etaSrcDir.getDocsSet();
                     updateUiLog(Html.fromHtml(getString(R.string.frag1_log_count_files_to_process, docs.size() ) + "<br>",1));
 
                     // 1. Iterate on all files
@@ -459,9 +441,9 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
                         // Convert (Object)_doc to (Uri)doc or (File)doc
                         ETADoc doc = null;
-                        if (srcDirs[j] instanceof Uri) {
+                        if (etaSrcDir instanceof ETASrcDirUri) {
                             doc = new ETADocDf((DocumentFile) _doc, getContext(), (ETASrcDirUri)etaSrcDir, false);
-                        } else if (srcDirs[j] instanceof File) {
+                        } else if (etaSrcDir instanceof ETASrcDirFile) {
                             doc = new ETADocFile((File) _doc, getContext(), (ETASrcDirFile)etaSrcDir, true);
                         }
                         if (doc == null) throw new UnsupportedOperationException();
