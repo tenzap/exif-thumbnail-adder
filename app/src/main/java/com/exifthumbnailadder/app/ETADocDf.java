@@ -75,7 +75,21 @@ public class ETADocDf extends ETADoc {
     }
 
     public String getName() {
-        return etaDoc.getName();
+        String name = etaDoc.getName();
+
+        if (name == null) {
+            // DIRTY HACK: name is null, probably the file has moved,
+            // so we have to get its original name another way
+            String[] splitPath = _uri.getPath().split(File.separator);
+            return splitPath[splitPath.length-1];
+
+            // Other Method would be by using:
+            // String lastPathSegment = _uri.getLastPathSegment(); // returns  primary:DCIM/dir/pic.jpg
+            // String[] splitPath = lastPathSegment.split(File.separator);
+            // return splitPath[splitPath.length-1];
+        }
+
+        return name;
     }
 
     public Uri getTmpUri() {
