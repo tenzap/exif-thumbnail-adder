@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
-    <!ENTITY pref_writeThumbnailedToOriginalFolder_title "Update in original location">
+    <!ENTITY pref_writeThumbnailedToOriginalFolder_title "Update in source location">
     ]>
 
 <resources>
@@ -126,7 +126,7 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="pref_categ_folders">Folders</string>
     <string name="pref_dirToProcess_title">Directories to process</string>
     <string name="pref_workingDir_title"><![CDATA[Backup & working directory]]></string>
-    <string name="pref_workingDir_dialogMessage"><![CDATA[This directory contains the backup of the original pictures and also some temporary files created during process. It is located at the root of each volume (phone, sdcard...).\nFor example with the default value, files would be placed into <SDCARD>/ThumbAdder/DCIM.bak or <PHONE_STORAGE>/ThumbAdder/DCIM.bak]]></string>
+    <string name="pref_workingDir_dialogMessage"><![CDATA[This directory contains the backup of the source pictures and also some temporary files created during process. It is located at the root of each volume (phone, sdcard...).\nFor example with the default value, files would be placed into <SDCARD>/ThumbAdder/DCIM.bak or <PHONE_STORAGE>/ThumbAdder/DCIM.bak]]></string>
     <string name="pref_allFilesAccess_title">All files access (for Android 11+ only)</string>
     <string name="pref_allFilesAccess_summary">Gives access to all files on your device. This permits to keep the timestamps of the processed files. The timestamps of your pictures stored in EXIF are not altered whichever value this option has.</string>
 
@@ -135,15 +135,15 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="pref_rotateThumbnail_summary">Rotate thumbnails to correspond to the picture. Most apps need the thumbnail to be rotated (eg. Win10 photo import)</string>
     <string name="pref_skipPicsHavingThumbnail_title">Skip pictures with thumbnail</string>
     <string name="pref_skipPicsHavingThumbnail_summary">If picture already has a thumbnail, skip processing</string>
-    <string name="pref_backupOriginalPic_title">Create backup of original picture</string>
-    <string name="pref_backupOriginalPic_summary">Backup location is the working directory (if the backup exists and you select to overwrite original file, the backup is never overwritten)</string>
+    <string name="pref_backupOriginalPic_title">Create backup of source picture</string>
+    <string name="pref_backupOriginalPic_summary">Backup location is the working directory (if the backup exists and you select to overwrite source file, the backup is never overwritten)</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">&pref_writeThumbnailedToOriginalFolder_title;</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Add thumbnail to the exif tags of the original picture</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Add thumbnail to a copy of the original picture in the working directory (in \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Add thumbnail to the picture of the source directory</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Add thumbnail to a copy of the source picture in the working directory (in \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
     <string name="pref_overwriteDestPic_title">Overwrite picture in destination</string>
     <string name="pref_overwriteDestPic_summary">Silently override the file in the destination folder if it already exists</string>
     <string name="pref_keepTimeStampOnBackup_title">Copy timestamp to backup</string>
-    <string name="pref_keepTimeStampOnBackup_summary">If \'&pref_writeThumbnailedToOriginalFolder_title;\' is \'off\', copy the timestamp of the original picture to its copy in the backup directory.\nIf \'&pref_writeThumbnailedToOriginalFolder_title;\' is \'on\', the timestamp of the backup is always kept.</string>
+    <string name="pref_keepTimeStampOnBackup_summary">If \'&pref_writeThumbnailedToOriginalFolder_title;\' is \'off\', copy the timestamp of the source picture to its copy in the backup directory.\nIf \'&pref_writeThumbnailedToOriginalFolder_title;\' is \'on\', the timestamp of the backup is always kept.</string>
     <string name="pref_writeTmpToCacheDir_title">Write tmp images to cache dir</string>
     <string name="pref_writeTmpToCacheDir_summaryOn">Write temporary images created during processing to the cache directory of the application</string>
     <string name="pref_writeTmpToCacheDir_summaryOff">Write temporary images created during processing to the working directory</string>

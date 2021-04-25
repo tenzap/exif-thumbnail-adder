@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
-    <!ENTITY pref_writeThumbnailedToOriginalFolder_title "Modifier dans le répertoire d\'origine">
+    <!ENTITY pref_writeThumbnailedToOriginalFolder_title "Modifier dans le répertoire source">
     ]>
 
 <resources>
@@ -115,16 +115,16 @@
     <string name="pref_rotateThumbnail_summary">Pivote la vignette pour correspondre à l\'image. La plupart des programmes nécessitent une vignette pivotée (par ex. l\'outil d\'import de photos de Win10)</string>
     <string name="pref_skipPicsHavingThumbnail_title">Sauter les fichiers avec vignette</string>
     <string name="pref_skipPicsHavingThumbnail_summary">Si le fichier a déjà une vignette ne pas la traiter</string>
-    <string name="pref_backupOriginalPic_title">Faire une sauvegarde de l\'image d\'origine</string>
-    <string name="pref_backupOriginalPic_summary">La sauvegarde est placée dans le répertoire de travail (si elle existe déjà et que vous choisissez d\'écraser l\'image d\'origine, la sauvegarde n\'est jamais écrasée)</string>
+    <string name="pref_backupOriginalPic_title">Faire une sauvegarde de l\'image source</string>
+    <string name="pref_backupOriginalPic_summary">La sauvegarde est placée dans le répertoire de travail (si elle existe déjà et que vous choisissez d\'écraser l\'image source, la sauvegarde n\'est jamais écrasée)</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">&pref_writeThumbnailedToOriginalFolder_title;</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ajoute la vignette dans les étiquettes EXIF de l\'image d\'origine</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Ajoute la vignette à une copie de l\'image d\'origine dans le répertoire de travail (dans \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ajoute la vignette dans l\'image du répertoire source</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Ajoute la vignette à une copie de l\'image source dans le répertoire de travail (dans \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
     <string name="pref_overwriteDestPic_title">Ecraser l\'image du répertoire cible</string>
     <string name="pref_overwriteDestPic_summary">Ecrase silencieusement le fichier du répetoire cible s\'il existe déjà</string>
     <string name="pref_keepTimeStampOnBackup_title">Copier l\'horodatage sur la sauvegarde</string>
-    <string name="pref_keepTimeStampOnBackup_summary">Si \'&pref_writeThumbnailedToOriginalFolder_title;\',
-        copier l\'horodatage du fichier d\'origine sur la copie dans le répertoire de sauvegarde.\n
+    <string name="pref_keepTimeStampOnBackup_summary">Si \'&pref_writeThumbnailedToOriginalFolder_title;\' est \'off\',
+        copier l\'horodatage du fichier source sur la copie dans le répertoire de sauvegarde.\n
         Si \'&pref_writeThumbnailedToOriginalFolder_title;\' est \'on\', l\'horodatage est toujours conservé.</string>
     <string name="pref_writeTmpToCacheDir_title">Ecrire les images temporaires dans le cache</string>
     <string name="pref_writeTmpToCacheDir_summaryOn">Ecrit les images temporaires crées pendant le traitement dans le répertoire cache de l\'application</string>
