@@ -121,6 +121,11 @@ public abstract class ETADoc {
         return mimeType != null && mimeType.equals("image/jpeg");
     }
 
+    public static boolean srcUriCorrespondsDerivedUri(Uri srcUri, Uri derivedUri) {
+        String subSrc = UriUtil.getDDSub(srcUri);
+        String subDerived = UriUtil.getDSub((UriUtil.getDDSub(derivedUri)));
+        return subSrc.equals(subDerived);
+    }
 
     public static Uri getSrcDocumentUriFor(Uri contentUri, String mainDir, String sourceFileTreeIdForGetSrcUri, boolean withVolumeName) throws Exception {
         String storagePath =  UriUtil.getDVolId(contentUri) + ":";   // "primary:"

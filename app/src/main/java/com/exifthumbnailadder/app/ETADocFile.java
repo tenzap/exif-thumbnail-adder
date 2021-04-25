@@ -300,7 +300,7 @@ public class ETADocFile extends ETADoc {
         throw new UnsupportedOperationException();
     }
 
-    public static void createNomediaFile(String path, String exceptDir) {
+    static void createNomediaFile(String path, String exceptDir) {
         File thePath = new File(path);
         File theExceptDir = new File(exceptDir);
 
@@ -336,7 +336,7 @@ public class ETADocFile extends ETADoc {
         }
     }
 
-    public static void createDirFor(String path) {
+    static void createDirFor(String path) {
         File f = new File(path);
 
         if (!f.exists()) {
@@ -344,7 +344,7 @@ public class ETADocFile extends ETADoc {
             f.mkdirs();
         } else if (f.isFile()) {
             //TODO
-            Log.e(TAG, "Output dir already exists as regular file...", new Throwable());
+            if (enableLog) Log.e(TAG, "Output dir already exists as regular file...", new Throwable());
         }
     }
 

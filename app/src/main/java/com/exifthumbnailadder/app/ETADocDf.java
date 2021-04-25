@@ -101,7 +101,7 @@ public class ETADocDf extends ETADoc {
             treeRootUri = DocumentsContract.buildTreeDocumentUri(_uriAuthority, volumeRootPath+pref_workingDir);
             outUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, fullDir);
 
-            createNomediaFile(ctx, treeRootUri, baseDir, getMainDir());
+            createNomediaFile(treeRootUri, baseDir, getMainDir());
         } else {
             outUri = Uri.fromFile(new File(fullDir));
             ETADocFile.createNomediaFile(baseDir, ctx.getExternalCacheDir() + d + getMainDir());
@@ -126,7 +126,7 @@ public class ETADocDf extends ETADoc {
         Uri treeRootUri = DocumentsContract.buildTreeDocumentUri(_uriAuthority, volumeRootPath+pref_workingDir);
         Uri outUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, fullDir);
 
-        createNomediaFile(ctx, treeRootUri, baseDir, getMainDir());
+        createNomediaFile(treeRootUri, baseDir, getMainDir());
         return outUri;
     }
 
@@ -153,7 +153,7 @@ public class ETADocDf extends ETADoc {
         Uri outUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, fullDir);
 
         if (! suffixes.get(dirId).isEmpty()) {
-            createNomediaFile(ctx, treeRootUri, baseDir, getMainDir());
+            createNomediaFile(treeRootUri, baseDir, getMainDir());
         }
         return outUri;
     }
@@ -191,15 +191,15 @@ public class ETADocDf extends ETADoc {
     }
 
     public void createDirForTmp() {
-        createDirFor(ctx, getTmpUri());
+        createDirFor(getTmpUri());
     }
 
     public void createDirForBackup() {
-        createDirFor(ctx, getBackupUri());
+        createDirFor(getBackupUri());
     }
 
     public void createDirForDest() {
-        createDirFor(ctx, getDestUri());
+        createDirFor(getDestUri());
     }
 
     public Object getOutputInTmp() {
@@ -280,11 +280,10 @@ public class ETADocDf extends ETADoc {
         }
     }
 
-
-    private static void createNomediaFile(Context con, Uri treeRootUri, String mainDir, String exceptDir) {
+    private void createNomediaFile(Uri treeRootUri, String mainDir, String exceptDir) {
         Uri nomediaParentUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, mainDir);
         Uri nomediaFileUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, mainDir+File.separator+".nomedia");
-        DocumentFile nomediaFile = DocumentFile.fromTreeUri(con, nomediaFileUri);
+        DocumentFile nomediaFile = DocumentFile.fromTreeUri(ctx, nomediaFileUri);
 
         if (nomediaFile.exists())
             return;
@@ -294,11 +293,11 @@ public class ETADocDf extends ETADoc {
             return;
         }
 
-        createDirFor(con, nomediaParentUri);
+        createDirFor(nomediaParentUri);
 
         try {
             DocumentsContract.createDocument(
-                    con.getContentResolver(),
+                    ctx.getContentResolver(),
                     nomediaParentUri,
                     "",
                     ".nomedia");
@@ -307,33 +306,26 @@ public class ETADocDf extends ETADoc {
         }
     }
 
-    private static void createDirFor(Context con, Uri uri) {
+    private void createDirFor(Uri uri) {
         if ( uri.getScheme().equals("file")) {
             ETADocFile.createDirFor(uri.getPath());
             return;
         }
 
-        DocumentFile df = DocumentFile.fromTreeUri(con, uri);
+        DocumentFile df = DocumentFile.fromTreeUri(ctx, uri);
         if (df.exists() && df.isDirectory()) {
             return;
         }
 
         if (df.isFile()) {
-            Log.e("MyLog", "destination dir already exists as file.");
+            if (enableLog) Log.e(TAG, "destination dir already exists as file.");
             return;
         }
 
         String name = UriUtil.getDName(uri);
         Uri parentUri = UriUtil.buildDParentAsUri(uri);
-        createDirFor(con, parentUri);
-        DocumentFile.fromTreeUri(con, parentUri).createDirectory(name);
-
-    }
-
-    public static boolean srcUriCorrespondsDerivedUri(Uri srcUri, Uri derivedUri) {
-        String subSrc = UriUtil.getDDSub(srcUri);
-        String subDerived = UriUtil.getDSub((UriUtil.getDDSub(derivedUri)));
-        return subSrc.equals(subDerived);
+        createDirFor(parentUri);
+        DocumentFile.fromTreeUri(ctx, parentUri).createDirectory(name);
     }
 
     String getBaseDir(String dirId) {
