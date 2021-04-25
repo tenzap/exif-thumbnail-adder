@@ -605,13 +605,13 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                         // copy original picture to location of tmp picture on which exiv2 will operate.
                                         Uri targetUri = null;
                                         try {
-                                            if (srcDirs[j] instanceof Uri) {
+                                            if (doc instanceof ETADocDf) {
                                                 targetUri = copyDocument(
                                                         doc.getUri(),
                                                         doc.getTmpUri(),
                                                         true,
                                                         prefs.getBoolean("keepTimeStampOnBackup", false));
-                                            } else if (srcDirs[j] instanceof File) {
+                                            } else if (doc instanceof ETADocFile) {
                                                 Files.copy(
                                                         doc.toPath(),
                                                         doc.getTmpPath().resolve(doc.getName()),
@@ -653,9 +653,9 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
                         // a. Copy attributes from original file to tmp file
                         try {
-                            if (srcDirs[j] instanceof Uri)
+                            if (doc instanceof ETADocDf)
                                 copyFileAttributes(doc.getUri(), (Uri)doc.getOutputInTmp());
-                            else if (srcDirs[j] instanceof File)
+                            else if (doc instanceof ETADocFile)
                                 copyFileAttributes(doc.toPath(), ((File)doc.getOutputInTmp()).toPath());
                         } catch (CopyAttributesFailedException e) {
                             updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
@@ -674,13 +674,13 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             if (prefs.getBoolean("writeThumbnailedToOriginalFolder", false)) {
                                 // We do a move (so that the file with a thumbnail can be placed to the original dir)
                                 try {
-                                    if (srcDirs[j] instanceof Uri) {
+                                    if (doc instanceof ETADocDf) {
                                         originalImage = moveDocument(
                                                 doc.getUri(),
                                                 UriUtil.buildDParentAsUri(doc.getUri()),
                                                 doc.getBackupUri(),
                                                 false);
-                                    } else if (srcDirs[j] instanceof File) {
+                                    } else if (doc instanceof ETADocFile) {
                                         if (etaDocs.getVolumeName() == MediaStore.VOLUME_EXTERNAL_PRIMARY) {
                                             try {
                                                 Files.move(
@@ -711,13 +711,13 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             } else {
                                 // We do a copy
                                 try {
-                                    if (srcDirs[j] instanceof Uri) {
+                                    if (doc instanceof ETADocDf) {
                                         copyDocument(
                                                 doc.getUri(),
                                                 doc.getBackupUri(),
                                                 true,
                                                 prefs.getBoolean("keepTimeStampOnBackup", true));
-                                    } else if (srcDirs[j] instanceof File) {
+                                    } else if (doc instanceof ETADocFile) {
                                         Files.copy(
                                                 doc.toPath(),
                                                 doc.getBackupPath().resolve(doc.getName()),
@@ -743,13 +743,13 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         }
 
                         try {
-                            if (srcDirs[j] instanceof Uri) {
+                            if (doc instanceof ETADocDf) {
                                 outputFile = moveDocument(
                                         (Uri)doc.getOutputInTmp(),
                                         doc.getTmpUri(),
                                         doc.getDestUri(),
                                         replaceExising);
-                            } else if (srcDirs[j] instanceof File) {
+                            } else if (doc instanceof ETADocFile) {
                                 Files.move(
                                         ((File)doc.getOutputInTmp()).toPath(),
                                         doc.getDestPath().resolve(doc.getName()),

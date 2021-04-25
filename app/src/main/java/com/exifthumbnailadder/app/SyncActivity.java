@@ -166,11 +166,11 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
 
                     // Process backupUri
                     ETADocs etaDocsBackup = null;
-                    if (srcDirs[j] instanceof Uri) {
+                    if (etaDocSrc instanceof ETADocDf) {
                         etaDocsBackup = new ETADocs(
                                 getApplicationContext(),
                                 etaDocSrc.getBackupUri());
-                    } else if (srcDirs[j] instanceof File) {
+                    } else if (etaDocSrc instanceof ETADocFile) {
                         etaDocsBackup = new ETADocs(
                                 getApplicationContext(),
                                 etaDocSrc.getBackupPath().toFile());
@@ -181,11 +181,11 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                     if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("writeThumbnailedToOriginalFolder", false)) {
                         updateUiLog(Html.fromHtml("<br>",1));
                         ETADocs etaDocsDest = null;
-                        if (srcDirs[j] instanceof Uri) {
+                        if (etaDocSrc instanceof ETADocDf) {
                             etaDocsDest = new ETADocs(
                                     getApplicationContext(),
                                     etaDocSrc.getDestUri());
-                        } else if (srcDirs[j] instanceof File) {
+                        } else if (etaDocSrc instanceof ETADocFile) {
                             etaDocsDest = new ETADocs(
                                     getApplicationContext(),
                                     etaDocSrc.getDestPath().toFile());
