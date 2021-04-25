@@ -1,3 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+    <!ENTITY pref_writeThumbnailedToOriginalFolder_title "Update in original location">
+    ]>
+
 <resources>
     <string name="app_name">Exif Thumbnail Adder</string>
 
@@ -102,7 +107,7 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="frag1_log_finished">\nFinished.</string>
     <string name="frag1_log_pixymeta_missing">Pixymeta-android library not available in this build. Select another library in settings.</string>
     <string name="frag1_log_done">\u00A0Done</string>
-    <string name="frag1_log_overwrite_not_allowed">\u00A0Overwriting picture not allowed (see settings). Destination file exists. Skipping.</string>
+    <string name="frag1_log_overwrite_not_allowed">\u00A0Overwriting picture in destination dir not allowed (see settings). Destination file exists. Skipping.</string>
     <string name="frag1_log_cannot_move_to_backup">\u00A0Cannot move picture to backup. File exists. Skipping.</string>
     <string name="frag1_log_ok">\u00A0OK</string>
     <string name="frag1_log_not_granted">\u00A0Not granted. Please add the directory again in Settings.</string>
@@ -132,13 +137,13 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="pref_skipPicsHavingThumbnail_summary">If picture already has a thumbnail, skip processing</string>
     <string name="pref_backupOriginalPic_title">Create backup of original picture</string>
     <string name="pref_backupOriginalPic_summary">Backup location is the working directory (if the backup exists and you select to overwrite original file, the backup is never overwritten)</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_title">Add thumbnail to original picture</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_title">&pref_writeThumbnailedToOriginalFolder_title;</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Add thumbnail to the exif tags of the original picture</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Add thumbnail to a copy of the original picture in the working directory (in \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
     <string name="pref_overwriteDestPic_title">Overwrite picture in destination</string>
     <string name="pref_overwriteDestPic_summary">Silently override the file in the destination folder if it already exists</string>
     <string name="pref_keepTimeStampOnBackup_title">Copy timestamp to backup</string>
-    <string name="pref_keepTimeStampOnBackup_summary">If \'Write to original folder\' is \'off\', this option permits to copy the timestamp of the original picture to its copy in the backup directory.\nIf \'Write to original folder\' is \'on\', the timestamp of the backup is always kept.</string>
+    <string name="pref_keepTimeStampOnBackup_summary">If \'&pref_writeThumbnailedToOriginalFolder_title;\' is \'off\', copy the timestamp of the original picture to its copy in the backup directory.\nIf \'&pref_writeThumbnailedToOriginalFolder_title;\' is \'on\', the timestamp of the backup is always kept.</string>
     <string name="pref_writeTmpToCacheDir_title">Write tmp images to cache dir</string>
     <string name="pref_writeTmpToCacheDir_summaryOn">Write temporary images created during processing to the cache directory of the application</string>
     <string name="pref_writeTmpToCacheDir_summaryOff">Write temporary images created during processing to the working directory</string>
