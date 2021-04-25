@@ -158,9 +158,9 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                     ETADoc etaDocSrc = null;
                     if (srcDirs[j] instanceof Uri) {
                         DocumentFile baseDf = DocumentFile.fromTreeUri(getApplicationContext(), (Uri)srcDirs[j]);
-                        etaDocSrc = new ETADoc(baseDf, getApplicationContext(), etaDocs, false);
+                        etaDocSrc = new ETADocDf(baseDf, getApplicationContext(), etaDocs, false);
                     } else if (srcDirs[j] instanceof File) {
-                        etaDocSrc = new ETADoc((File)srcDirs[j], getApplicationContext(), etaDocs, true);
+                        etaDocSrc = new ETADocFile((File)srcDirs[j], getApplicationContext(), etaDocs, true);
                     }
                     if (etaDocSrc == null) throw new UnsupportedOperationException();
 
@@ -214,9 +214,9 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
             // Convert (Object)_doc to (Uri)doc or (File)doc
             ETADoc doc = null;
             if (workingDirDocs.getDocsRoot() instanceof Uri) {
-                doc = new ETADoc((DocumentFile) _doc, getApplicationContext(), workingDirDocs, false);
+                doc = new ETADocDf((DocumentFile) _doc, getApplicationContext(), workingDirDocs, false);
             } else if (workingDirDocs.getDocsRoot() instanceof File) {
-                doc = new ETADoc((File) _doc, getApplicationContext(), workingDirDocs, true);
+                doc = new ETADocFile((File) _doc, getApplicationContext(), workingDirDocs, true);
             }
             if (doc == null) throw new UnsupportedOperationException();
 

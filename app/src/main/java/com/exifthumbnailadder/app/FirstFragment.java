@@ -55,7 +55,6 @@ import androidx.preference.PreferenceManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -225,17 +224,12 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         return Bitmap.createBitmap(tb_bitmap, 0, 0, tb_bitmap.getWidth(), tb_bitmap.getHeight(), matrix, true);
     }
 
-    private Bitmap makeThumbnailRotated(Object pic, boolean rotateThumbnail, int degrees) throws Exception, BadOriginalImageException {
+    private Bitmap makeThumbnailRotated(ETADoc pic, boolean rotateThumbnail, int degrees) throws Exception, BadOriginalImageException {
         // pic Object should be either DocumentFile or File
         Bitmap tb_bitmap = null;
         InputStream is = null;
         try {
-            if (pic instanceof DocumentFile)
-                is = getActivity().getContentResolver().openInputStream(((DocumentFile)pic).getUri());
-            else if (pic instanceof File)
-                is = new FileInputStream((File)pic);
-            else
-                throw new UnsupportedOperationException("unsupported object type in makeThumbnailRotated: "+pic.getClass().toString());
+            is = pic.inputStream();
             tb_bitmap = this.createThumbnail(is);
             is.close();
         } catch (BadOriginalImageException e) {
@@ -461,9 +455,9 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         // Convert (Object)_doc to (Uri)doc or (File)doc
                         ETADoc doc = null;
                         if (srcDirs[j] instanceof Uri) {
-                            doc = new ETADoc((DocumentFile) _doc, getContext(), etaDocs, false);
+                            doc = new ETADocDf((DocumentFile) _doc, getContext(), etaDocs, false);
                         } else if (srcDirs[j] instanceof File) {
-                            doc = new ETADoc((File) _doc, getContext(), etaDocs, true);
+                            doc = new ETADocFile((File) _doc, getContext(), etaDocs, true);
                         }
                         if (doc == null) throw new UnsupportedOperationException();
 
@@ -527,12 +521,8 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         // a. extract thumbnail & write to output stream
                         try {
                             //if (enableLog) Log.i(TAG, "Creating thumbnail");
-                            Object docObj = null;
-                            if (srcDirs[j] instanceof Uri) docObj = doc.getDocumentFile();
-                            else if (srcDirs[j] instanceof File) docObj = doc.getFile();
-
                             thumbnail = makeThumbnailRotated(
-                                    docObj,
+                                    doc,
                                     prefs.getBoolean("rotateThumbnails", true),
                                     srcImgDegrees);
                             srcImgIs = doc.inputStream();
