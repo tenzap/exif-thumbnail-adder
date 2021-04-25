@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
-    <!ENTITY pref_writeThumbnailedToOriginalFolder_title "Modifier dans le répertoire d'\origine">
+    <!ENTITY pref_writeThumbnailedToOriginalFolder_title "Modifier dans le répertoire d\'origine">
     ]>
 
 <resources>
