@@ -42,7 +42,7 @@ int Exiv2Helper::insertThumbnail(
         assert(image.get() != 0);
         image->readMetadata();
 
-        if (image->exifData().empty()) {
+        if (image->exifData().empty() || !hasOneMandatoryTag(&image->exifData())) {
             // Add minimal mandatory tags if they don't exist yet
             // This permits to create the ExifIFD without which some programs may not find the
             // EXIF tags/thumbnail (eg. Android ExifInterface, identify -verbose from imageMagick...)
@@ -106,6 +106,35 @@ int Exiv2Helper::insertThumbnail(
         throw;
     }
     return 0;
+}
+
+bool Exiv2Helper::hasOneMandatoryTag(Exiv2::ExifData *ed) const {
+
+    Exiv2::ExifKey key = Exiv2::ExifKey("Exif.Photo.ExifVersion");
+    Exiv2::ExifData::iterator pos = ed->findKey(key);
+    if (pos != ed->end()) return true; // Tag found
+
+    key = Exiv2::ExifKey("Exif.Photo.ComponentsConfiguration");
+    pos = ed->findKey(key);
+    if (pos != ed->end()) return true; // Tag found
+
+    key = Exiv2::ExifKey("Exif.Photo.FlashpixVersion");
+    pos = ed->findKey(key);
+    if (pos != ed->end()) return true; // Tag found
+
+    key = Exiv2::ExifKey("Exif.Photo.ColorSpace");
+    pos = ed->findKey(key);
+    if (pos != ed->end()) return true; // Tag found
+
+    key = Exiv2::ExifKey("Exif.Photo.PixelXDimension");
+    pos = ed->findKey(key);
+    if (pos != ed->end()) return true; // Tag found
+
+    key = Exiv2::ExifKey("Exif.Photo.PixelYDimension");
+    pos = ed->findKey(key);
+    if (pos != ed->end()) return true; // Tag found
+
+    return false;
 }
 
 void Exiv2Helper::errorHandler(int level, const char* s)

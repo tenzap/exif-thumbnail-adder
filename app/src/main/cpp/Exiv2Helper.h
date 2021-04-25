@@ -46,6 +46,7 @@ public:
                         Exiv2::URational xres,
                         Exiv2::URational yres,
                         uint16_t unit) const;
+    bool hasOneMandatoryTag(Exiv2::ExifData *ed) const;
 
 };
 
