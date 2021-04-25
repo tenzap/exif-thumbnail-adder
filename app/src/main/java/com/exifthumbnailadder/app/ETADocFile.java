@@ -222,6 +222,11 @@ public class ETADocFile extends ETADoc {
         return outputFilename.toFile(); // File
     }
 
+    public boolean deleteOutputInTmp() {
+        File outputInTmp = (File)getOutputInTmp();
+        return outputInTmp.delete();
+    }
+
     public String getTmpFSPathWithFilename() {
         return ((File)getOutputInTmp()).getPath();
     }

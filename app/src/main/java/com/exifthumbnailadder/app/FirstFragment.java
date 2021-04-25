@@ -744,6 +744,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             }
                         } catch (DestinationFileExistsException e) {
                             updateUiLog(Html.fromHtml("<span style='color:red'>"+ getString(R.string.frag1_log_overwrite_not_allowed)+"</span><br>",1));
+                            doc.deleteOutputInTmp();
                             e.printStackTrace();
                             continue;
                         } catch (CopyAttributesFailedException e) {

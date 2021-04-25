@@ -208,6 +208,15 @@ public class ETADocDf extends ETADoc {
         return outputTmpFileUri; // Uri
     }
 
+    public boolean deleteOutputInTmp() {
+        Uri outputInTmp = (Uri)getOutputInTmp();
+        if (outputInTmp.getScheme().equals("file")) {
+            return new File(outputInTmp.getPath()).delete();
+        }
+
+        return DocumentFile.fromTreeUri(ctx, outputInTmp).delete();
+    }
+
     public String getTmpFSPathWithFilename() {
         String outFilepath;
         Uri outputTmpFileUri = (Uri)getOutputInTmp();
@@ -232,16 +241,21 @@ public class ETADocDf extends ETADoc {
         if (enableLog) Log.i(TAG, "Write to DONE");
     }
 
-    public Uri getOutputFileUri(Uri tmpUri, String filename) {
+    public Uri getOutputFileUri(Uri uri, String filename) {
         Uri outputFileUri = null;
-        DocumentFile outputFileDf = DocumentFile.fromTreeUri(ctx, tmpUri).findFile(filename);
+
+        if ( uri.getScheme().equals("file")) {
+            return Uri.fromFile(new File(uri.getPath() + File.separator + filename));
+        }
+
+        DocumentFile outputFileDf = DocumentFile.fromTreeUri(ctx, uri).findFile(filename);
         try {
             if (outputFileDf != null) {
                 outputFileUri = outputFileDf.getUri();
             } else {
                 outputFileUri = DocumentsContract.createDocument(
                         ctx.getContentResolver(),
-                        tmpUri,
+                        uri,
                         "image/jpg",
                         filename);
             }

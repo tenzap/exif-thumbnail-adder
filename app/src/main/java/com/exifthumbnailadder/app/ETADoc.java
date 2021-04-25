@@ -97,6 +97,7 @@ public abstract class ETADoc {
     public abstract boolean isDirectory();
     public abstract boolean delete();
     public abstract String getDPath();
+    public abstract boolean deleteOutputInTmp();
 
     abstract String getBaseDir(String dirId);
 
