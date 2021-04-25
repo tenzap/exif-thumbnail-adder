@@ -23,15 +23,11 @@ package com.exifthumbnailadder.app;
 import android.content.Context;
 import android.content.UriPermission;
 import android.net.Uri;
-import android.os.storage.StorageManager;
-import android.os.storage.StorageVolume;
 import android.util.Log;
 
 import androidx.documentfile.provider.DocumentFile;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
@@ -41,10 +37,10 @@ import static com.exifthumbnailadder.app.MainApplication.TAG;
 
 public class ETASrcDirUri extends ETASrcDir {
 
-    Uri etaDocsRoot;
+    final Uri etaDocsRoot;
 
     public ETASrcDirUri(Context ctx, Uri etaDocsRoot) {
-        this.ctx = ctx;
+        super(ctx);
         this.etaDocsRoot = etaDocsRoot;
         this.excluded = getExcludedPath();
     }

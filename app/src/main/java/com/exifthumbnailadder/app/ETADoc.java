@@ -44,15 +44,37 @@ public abstract class ETADoc {
 
     final HashMap<String, String> suffixes = new HashMap<String, String>();
 
-    String pref_workingDir;
-    boolean pref_writeTmpToCacheDir;
-    boolean pref_writeThumbnailedToOriginalFolder;
+    final String pref_workingDir;
+    final boolean pref_writeTmpToCacheDir;
+    final boolean pref_writeThumbnailedToOriginalFolder;
 
-    Context ctx;
-    String volumeName;
-    String volumeRootPath;
-    ETASrcDir root;
-    boolean withVolumeName;
+    final Context ctx;
+    final String volumeName;
+    final String volumeRootPath;
+    final ETASrcDir root;
+    final boolean withVolumeName;
+
+    protected ETADoc(Context ctx, ETASrcDir root, String volumeName, String volumeRootPath, boolean withVolumeName) {
+        this.ctx = ctx;
+        this.root = root;
+        this.volumeName = volumeName;
+        this.volumeRootPath = volumeRootPath;
+
+        this.withVolumeName = withVolumeName;
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        pref_workingDir = prefs.getString("working_dir", "ThumbAdder");
+        pref_writeTmpToCacheDir = prefs.getBoolean("writeTmpToCacheDir", true);
+        pref_writeThumbnailedToOriginalFolder = prefs.getBoolean("writeThumbnailedToOriginalFolder", false);
+
+        if (pref_writeThumbnailedToOriginalFolder) {
+            suffixes.put(SUFFIX_DEST,"");
+        } else {
+            suffixes.put(SUFFIX_DEST,".new");
+        }
+        suffixes.put(SUFFIX_TMP,".tmp");
+        suffixes.put(SUFFIX_BACKUP,".bak");
+    }
 
     // Common to ETADocUri & ETADocFile
     public abstract String getMainDir();
@@ -129,23 +151,6 @@ public abstract class ETADoc {
 
         return outUri;
     }
-
-    void initVarsFromPrefs() {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
-        pref_workingDir = prefs.getString("working_dir", "ThumbAdder");
-        pref_writeTmpToCacheDir = prefs.getBoolean("writeTmpToCacheDir", true);
-        pref_writeThumbnailedToOriginalFolder = prefs.getBoolean("writeThumbnailedToOriginalFolder", false);
-
-        if (pref_writeThumbnailedToOriginalFolder) {
-            suffixes.put(SUFFIX_DEST,"");
-        } else {
-            suffixes.put(SUFFIX_DEST,".new");
-        }
-        suffixes.put(SUFFIX_TMP,".tmp");
-        suffixes.put(SUFFIX_BACKUP,".bak");
-    }
-
-
 
     String getFullDir(String baseDir, boolean withVolumeName) {
         if (withVolumeName) {

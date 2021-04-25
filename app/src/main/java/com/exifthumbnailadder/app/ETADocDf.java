@@ -26,7 +26,6 @@ import android.provider.DocumentsContract;
 import android.util.Log;
 
 import androidx.documentfile.provider.DocumentFile;
-import androidx.preference.PreferenceManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -40,23 +39,15 @@ import static com.exifthumbnailadder.app.MainApplication.enableLog;
 
 public class ETADocDf extends ETADoc {
 
-    DocumentFile etaDoc = null;
-    Uri _uri = null;
-    String _uriAuthority;
+    final DocumentFile etaDoc;
+    final Uri _uri;
+    final String _uriAuthority;
 
     public ETADocDf(DocumentFile docFile, Context ctx, ETASrcDirUri root, boolean withVolumeName) {
+        super(ctx, root, root.getVolumeName(), root.getVolumeRootPath(), withVolumeName);
         this.etaDoc = docFile;
         this._uri = docFile.getUri();
         this._uriAuthority = _uri.getAuthority();
-
-        this.ctx = ctx;
-        this.root = root;
-        this.volumeName = root.getVolumeName();
-        this.volumeRootPath = root.getVolumeRootPath();
-
-        this.withVolumeName = withVolumeName;
-
-        initVarsFromPrefs();
     }
 
     public String getMainDir() {

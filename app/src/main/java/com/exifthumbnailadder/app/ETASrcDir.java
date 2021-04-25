@@ -41,7 +41,7 @@ import java.util.TreeSet;
 
 public abstract class ETASrcDir {
 
-    Context ctx;
+    final Context ctx;
     String excluded;
 
     public abstract String getFSPath();
@@ -55,6 +55,10 @@ public abstract class ETASrcDir {
 
     protected abstract TreeSet<DocumentFile> docFilesToProcessList(DocumentFile df, int level, String excluded);
     protected abstract TreeSet<File> filesToProcessList(File dir, int level, File excluded);
+
+    protected ETASrcDir(Context ctx) {
+        this.ctx = ctx;
+    }
 
     private void listDirectory(File dir, int level) {
         File[] firstLevelFiles = dir.listFiles();

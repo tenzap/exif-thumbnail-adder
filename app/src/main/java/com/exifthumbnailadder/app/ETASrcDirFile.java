@@ -42,10 +42,10 @@ import static com.exifthumbnailadder.app.MainApplication.TAG;
 
 public class ETASrcDirFile extends ETASrcDir {
 
-    File etaDocsRoot;
+    final File etaDocsRoot;
 
     public ETASrcDirFile(Context ctx, File etaDocsRoot) {
-        this.ctx = ctx;
+        super(ctx);
         this.etaDocsRoot = etaDocsRoot;
         this.excluded = getExcludedPath();
     }

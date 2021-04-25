@@ -28,7 +28,6 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.documentfile.provider.DocumentFile;
-import androidx.preference.PreferenceManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -45,19 +44,11 @@ import static com.exifthumbnailadder.app.MainApplication.enableLog;
 
 public class ETADocFile extends ETADoc {
 
-    File etaDoc = null;
+    final File etaDoc;
 
     public ETADocFile(File file, Context ctx, ETASrcDirFile root, boolean withVolumeName) {
+        super(ctx, root, root.getVolumeName(), root.getVolumeRootPath(), withVolumeName);
         this.etaDoc = file;
-
-        this.ctx = ctx;
-        this.root = root;
-        this.volumeName = root.getVolumeName();
-        this.volumeRootPath = root.getVolumeRootPath();
-
-        this.withVolumeName = withVolumeName;
-
-        initVarsFromPrefs();
     }
 
     public String getMainDir() {
