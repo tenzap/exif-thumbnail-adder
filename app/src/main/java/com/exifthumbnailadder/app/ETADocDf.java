@@ -29,9 +29,11 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.exifthumbnailadder.app.MainApplication.TAG;
 import static com.exifthumbnailadder.app.MainApplication.enableLog;
@@ -40,23 +42,21 @@ public class ETADocDf extends ETADoc {
 
     DocumentFile etaDoc = null;
     Uri _uri = null;
+    String _uriAuthority;
 
     public ETADocDf(DocumentFile docFile, Context ctx, ETASrcDirUri root, boolean withVolumeName) {
         this.etaDoc = docFile;
         this._uri = docFile.getUri();
+        this._uriAuthority = _uri.getAuthority();
 
         this.ctx = ctx;
-        this.volumeName = root.getVolumeName();
         this.root = root;
+        this.volumeName = root.getVolumeName();
+        this.volumeRootPath = root.getVolumeRootPath();
+
         this.withVolumeName = withVolumeName;
 
-        pathUtil = new PathUtil(
-                _uri,
-                getMainDir(),
-                getSubDir(),
-                this.volumeName,
-                root.getSecStorageDirName(),
-                PreferenceManager.getDefaultSharedPreferences(ctx));
+        initVarsFromPrefs();
     }
 
     public String getMainDir() {
@@ -88,15 +88,83 @@ public class ETADocDf extends ETADoc {
     }
 
     public Uri getTmpUri() {
-        return pathUtil.getTmpUri(ctx, withVolumeName);
+        String dirId = SUFFIX_TMP;
+        String baseDir, fullDir;
+
+        if (pref_writeTmpToCacheDir) {
+            baseDir = ctx.getExternalCacheDir() + d + getMainDir() + suffixes.get(dirId);
+        } else {
+            baseDir = getBaseDir(dirId);
+        }
+
+        fullDir = getFullDir(baseDir, withVolumeName);
+
+        Uri treeRootUri = null;
+        Uri outUri = null;
+
+        if (!pref_writeTmpToCacheDir) {
+            // Remove trailing "/"
+            baseDir = Paths.get(baseDir).toString();
+            fullDir = Paths.get(fullDir).toString();
+
+            treeRootUri = DocumentsContract.buildTreeDocumentUri(_uriAuthority, volumeRootPath+pref_workingDir);
+            outUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, fullDir);
+
+            createNomediaFile(ctx, treeRootUri, baseDir, getMainDir());
+        } else {
+            outUri = Uri.fromFile(new File(fullDir));
+            ETADocFile.createNomediaFile(baseDir, ctx.getExternalCacheDir() + d + getMainDir());
+        }
+
+        if (enableLog) Log.i(TAG, "Writing files for '" + dirId + "' to: " + fullDir);
+        return outUri;
     }
 
     public Uri getBackupUri() {
-        return pathUtil.getBackupUri(ctx, withVolumeName);
+        String dirId = SUFFIX_BACKUP;
+        String baseDir, fullDir;
+
+        baseDir = getBaseDir(dirId);
+
+        fullDir = getFullDir(baseDir, withVolumeName);
+
+        // Remove trailing "/"
+        baseDir = Paths.get(baseDir).toString();
+        fullDir = Paths.get(fullDir).toString();
+
+        Uri treeRootUri = DocumentsContract.buildTreeDocumentUri(_uriAuthority, volumeRootPath+pref_workingDir);
+        Uri outUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, fullDir);
+
+        createNomediaFile(ctx, treeRootUri, baseDir, getMainDir());
+        return outUri;
     }
 
     public Uri getDestUri() {
-        return pathUtil.getDestUri(ctx);
+        String dirId = SUFFIX_DEST;
+        String baseDir, fullDir, treeDocId;
+
+        baseDir = getBaseDir(dirId);
+
+        fullDir = getFullDir(baseDir, false);
+
+        // Remove trailing "/"
+        baseDir = Paths.get(baseDir).toString();
+        fullDir = Paths.get(fullDir).toString();
+
+        if (pref_writeThumbnailedToOriginalFolder) {
+            // We want to write to the source tree
+            treeDocId = getTreeId();
+        } else {
+            // We want to write to the workingDir tree
+            treeDocId = volumeRootPath+pref_workingDir;
+        }
+        Uri treeRootUri = DocumentsContract.buildTreeDocumentUri(_uriAuthority, treeDocId);
+        Uri outUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, fullDir);
+
+        if (! suffixes.get(dirId).isEmpty()) {
+            createNomediaFile(ctx, treeRootUri, baseDir, getMainDir());
+        }
+        return outUri;
     }
 
     public Path getTmpPath() {
@@ -132,15 +200,15 @@ public class ETADocDf extends ETADoc {
     }
 
     public void createDirForTmp() {
-        PathUtil.createDirFor(ctx, getTmpUri());
+        createDirFor(ctx, getTmpUri());
     }
 
     public void createDirForBackup() {
-        PathUtil.createDirFor(ctx, getBackupUri());
+        createDirFor(ctx, getBackupUri());
     }
 
     public void createDirForDest() {
-        PathUtil.createDirFor(ctx, getDestUri());
+        createDirFor(ctx, getDestUri());
     }
 
     public Object getOutputInTmp() {
@@ -215,11 +283,75 @@ public class ETADocDf extends ETADoc {
 
     public Uri getSrcUri(String srcDirMainDir, String srcDirTreeId) throws Exception {
         try {
-            return PathUtil.getSrcDocumentUriFor(_uri, srcDirMainDir, srcDirTreeId, withVolumeName);
+            return getSrcDocumentUriFor(_uri, srcDirMainDir, srcDirTreeId, withVolumeName);
         } catch (Exception e) {
             throw e;
         }
     }
 
 
+    private static void createNomediaFile(Context con, Uri treeRootUri, String mainDir, String exceptDir) {
+        Uri nomediaParentUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, mainDir);
+        Uri nomediaFileUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, mainDir+File.separator+".nomedia");
+        DocumentFile nomediaFile = DocumentFile.fromTreeUri(con, nomediaFileUri);
+
+        if (nomediaFile.exists())
+            return;
+
+        String path = mainDir.split(":")[1];
+        if (path.equals(exceptDir)) {
+            return;
+        }
+
+        createDirFor(con, nomediaParentUri);
+
+        try {
+            DocumentsContract.createDocument(
+                    con.getContentResolver(),
+                    nomediaParentUri,
+                    "",
+                    ".nomedia");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void createDirFor(Context con, Uri uri) {
+        if ( uri.getScheme().equals("file")) {
+            ETADocFile.createDirFor(uri.getPath());
+            return;
+        }
+
+        DocumentFile df = DocumentFile.fromTreeUri(con, uri);
+        if (df.exists() && df.isDirectory()) {
+            return;
+        }
+
+        if (df.isFile()) {
+            Log.e("MyLog", "destination dir already exists as file.");
+            return;
+        }
+
+        String name = UriUtil.getDName(uri);
+        Uri parentUri = UriUtil.buildDParentAsUri(uri);
+        createDirFor(con, parentUri);
+        DocumentFile.fromTreeUri(con, parentUri).createDirectory(name);
+
+    }
+
+    public static boolean srcUriCorrespondsDerivedUri(Uri srcUri, Uri derivedUri) {
+        String subSrc = UriUtil.getDDSub(srcUri);
+        String subDerived = UriUtil.getDSub((UriUtil.getDDSub(derivedUri)));
+        return subSrc.equals(subDerived);
+    }
+
+    String getBaseDir(String dirId) {
+        String wDir = pref_workingDir;
+
+        if (pref_writeThumbnailedToOriginalFolder && dirId.equals(SUFFIX_DEST)) {
+            wDir = "";
+        }
+
+        return volumeRootPath + wDir + d + getMainDir() + suffixes.get(dirId);
+    }
 }

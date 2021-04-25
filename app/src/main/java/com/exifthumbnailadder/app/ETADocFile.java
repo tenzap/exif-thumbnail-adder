@@ -34,8 +34,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import static com.exifthumbnailadder.app.MainApplication.TAG;
@@ -44,24 +46,18 @@ import static com.exifthumbnailadder.app.MainApplication.enableLog;
 public class ETADocFile extends ETADoc {
 
     File etaDoc = null;
-    String volumeRootPath;
 
     public ETADocFile(File file, Context ctx, ETASrcDirFile root, boolean withVolumeName) {
         this.etaDoc = file;
-        this.volumeRootPath = root.getVolumeRootPath();
 
         this.ctx = ctx;
-        this.volumeName = root.getVolumeName();
         this.root = root;
+        this.volumeName = root.getVolumeName();
+        this.volumeRootPath = root.getVolumeRootPath();
+
         this.withVolumeName = withVolumeName;
 
-        pathUtil = new PathUtil(
-                getWritablePath(),
-                getMainDir(),
-                getSubDir(),
-                this.volumeName,
-                root.getSecStorageDirName(),
-                PreferenceManager.getDefaultSharedPreferences(ctx));
+        initVarsFromPrefs();
     }
 
     public String getMainDir() {
@@ -118,7 +114,25 @@ public class ETADocFile extends ETADoc {
     }
 
     protected String getTmpDir() {
-        return pathUtil.getTmpDir(ctx, withVolumeName);
+        String dirId = SUFFIX_TMP;
+        String baseDir, fullDir;
+
+        if (pref_writeTmpToCacheDir) {
+            baseDir = ctx.getExternalCacheDir() + d + getMainDir() + suffixes.get(dirId);
+        } else {
+            baseDir = getBaseDir(dirId);
+        }
+
+        fullDir = getFullDir(baseDir, withVolumeName);
+
+        // Remove trailing "/"
+        baseDir = Paths.get(baseDir).toString();
+        fullDir = Paths.get(fullDir).toString();
+
+        createNomediaFile(baseDir, getWritablePath() + d + getMainDir());
+
+        if (enableLog) Log.i(TAG, "Writing files for '" + dirId + "' to: " + fullDir);
+        return fullDir;
     }
 
     public Path getTmpPath() {
@@ -126,7 +140,21 @@ public class ETADocFile extends ETADoc {
     }
 
     protected String getBackupDir() {
-        return pathUtil.getBackupDir(withVolumeName);
+        String dirId = SUFFIX_BACKUP;
+        String baseDir, fullDir;
+
+        baseDir = getBaseDir(dirId);
+
+        fullDir = getFullDir(baseDir, withVolumeName);
+
+        // Remove trailing "/"
+        baseDir = Paths.get(baseDir).toString();
+        fullDir = Paths.get(fullDir).toString();
+
+        createNomediaFile(baseDir, getWritablePath() + d + getMainDir());
+
+        if (enableLog) Log.i(TAG, "Writing files for '" + dirId + "' to: " + fullDir);
+        return fullDir;
     }
 
     public Path getBackupPath() {
@@ -134,7 +162,24 @@ public class ETADocFile extends ETADoc {
     }
 
     protected String getDestDir() {
-        return pathUtil.getDestDir();
+        String dirId = SUFFIX_DEST;
+        String baseDir, fullDir;
+
+        baseDir = getBaseDir(dirId);
+
+        if (volumeName.equals(MediaStore.VOLUME_EXTERNAL_PRIMARY)) {
+            fullDir = getFullDir(baseDir, false);
+        } else {
+            fullDir = baseDir + d + root.getSecStorageDirName() + d + getSubDir();
+        }
+
+        // Remove trailing "/"
+        baseDir = Paths.get(baseDir).toString();
+        fullDir = Paths.get(fullDir).toString();
+
+        if (! suffixes.get(dirId).isEmpty())
+            createNomediaFile(baseDir, getWritablePath() + d + getMainDir());
+        return fullDir;
     }
 
     public Path getDestPath() {
@@ -170,15 +215,15 @@ public class ETADocFile extends ETADoc {
     }
 
     public void createDirForTmp() {
-        PathUtil.createDirFor(getTmpDir());
+        createDirFor(getTmpDir());
     }
 
     public void createDirForBackup() {
-        PathUtil.createDirFor(getBackupDir());
+        createDirFor(getBackupDir());
     }
 
     public void createDirForDest() {
-        PathUtil.createDirFor(getDestDir());
+        createDirFor(getDestDir());
     }
 
     public Object getOutputInTmp() {
@@ -262,6 +307,65 @@ public class ETADocFile extends ETADoc {
     public Uri getSrcUri(String srcDirMainDir, String srcDirTreeId) throws Exception {
 
         throw new UnsupportedOperationException();
+    }
+
+    public static void createNomediaFile(String path, String exceptDir) {
+        File thePath = new File(path);
+        File theExceptDir = new File(exceptDir);
+
+        if (theExceptDir.exists() && ! theExceptDir.isDirectory())
+            return;
+
+        // .../DCIM == .../DCIM
+        if (thePath.equals(theExceptDir))
+            return;
+
+        String thePathString = thePath.toString();
+        String theExceptDirString = theExceptDir.toString();
+        // .../DCIM/a   &   .../DCIM/
+        if ( thePathString.startsWith( theExceptDirString + File.separator ))
+            return;
+
+        // Don't create for folders at lower level than theExceptDirString
+        if ( thePathString.startsWith( theExceptDirString ) && thePathString.split(File.separator).length >  theExceptDirString.split(File.separator).length)
+            return;
+
+        // We create folder if it doesn't exist
+        if (!thePath.exists()) {
+            // Dir doesn't exist. Creating it.
+            thePath.mkdirs();
+        }
+
+        // Create nomedia file
+        File nomediaFile = new File(path + "/.nomedia");
+        try {
+            nomediaFile.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void createDirFor(String path) {
+        File f = new File(path);
+
+        if (!f.exists()) {
+            // Dir doesn't exist. Creating it.
+            f.mkdirs();
+        } else if (f.isFile()) {
+            //TODO
+            Log.e(TAG, "Output dir already exists as regular file...", new Throwable());
+        }
+    }
+
+    String getBaseDir(String dirId) {
+        String wDir = pref_workingDir;
+
+        if (pref_writeThumbnailedToOriginalFolder && dirId.equals(SUFFIX_DEST)) {
+            wDir = "";
+        }
+
+        return getWritablePath() + d + wDir + d + getMainDir() + suffixes.get(dirId);
+
     }
 
 }

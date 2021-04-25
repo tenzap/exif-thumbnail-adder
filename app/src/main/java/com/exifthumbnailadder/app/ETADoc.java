@@ -21,20 +21,36 @@
 package com.exifthumbnailadder.app;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.provider.DocumentsContract;
+
+import androidx.preference.PreferenceManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URLConnection;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 
 public abstract class ETADoc {
     final String THUMB_EXT = "";
+    final String SUFFIX_TMP = "tmp";
+    final String SUFFIX_BACKUP = "bak";
+    final String SUFFIX_DEST = "dest";
+    final String d = File.separator;    // "/"
 
-    PathUtil pathUtil = null;
+    final HashMap<String, String> suffixes = new HashMap<String, String>();
+
+    String pref_workingDir;
+    boolean pref_writeTmpToCacheDir;
+    boolean pref_writeThumbnailedToOriginalFolder;
+
     Context ctx;
     String volumeName;
+    String volumeRootPath;
     ETASrcDir root;
     boolean withVolumeName;
 
@@ -60,6 +76,8 @@ public abstract class ETADoc {
     public abstract boolean delete();
     public abstract String getDPath();
 
+    abstract String getBaseDir(String dirId);
+
     // ETADocUri only
     public abstract Uri getSrcUri(String srcDirMainDir, String srcDirTreeId) throws Exception;
     public abstract String getTreeId();
@@ -81,4 +99,59 @@ public abstract class ETADoc {
         return mimeType != null && mimeType.equals("image/jpeg");
     }
 
+
+    public static Uri getSrcDocumentUriFor(Uri contentUri, String mainDir, String sourceFileTreeIdForGetSrcUri, boolean withVolumeName) throws Exception {
+        String storagePath =  UriUtil.getDVolId(contentUri) + ":";   // "primary:"
+        String uriAuthority = contentUri.getAuthority();
+
+        String baseDir, fullDir;
+
+        if (storagePath.endsWith(":")) {
+            // This is a URI path (primary:DCIM....)
+            baseDir = storagePath + mainDir;
+        } else {
+            // TODO
+            throw new UnsupportedOperationException();
+            //baseDir = storagePath + File.separator + mainDir;
+        }
+
+        if (withVolumeName) {
+            fullDir = baseDir + File.separator + UriUtil.getDSub(UriUtil.getDSub(UriUtil.getDDSub(contentUri)));
+        } else {
+            fullDir = baseDir + File.separator + UriUtil.getDSub(UriUtil.getDDSub(contentUri));
+        }
+
+        // Remove trailing "/"
+        fullDir = Paths.get(fullDir).toString();
+
+        Uri treeRootUri = DocumentsContract.buildTreeDocumentUri(uriAuthority, sourceFileTreeIdForGetSrcUri);
+        Uri outUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, fullDir);
+
+        return outUri;
+    }
+
+    void initVarsFromPrefs() {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        pref_workingDir = prefs.getString("working_dir", "ThumbAdder");
+        pref_writeTmpToCacheDir = prefs.getBoolean("writeTmpToCacheDir", true);
+        pref_writeThumbnailedToOriginalFolder = prefs.getBoolean("writeThumbnailedToOriginalFolder", false);
+
+        if (pref_writeThumbnailedToOriginalFolder) {
+            suffixes.put(SUFFIX_DEST,"");
+        } else {
+            suffixes.put(SUFFIX_DEST,".new");
+        }
+        suffixes.put(SUFFIX_TMP,".tmp");
+        suffixes.put(SUFFIX_BACKUP,".bak");
+    }
+
+
+
+    String getFullDir(String baseDir, boolean withVolumeName) {
+        if (withVolumeName) {
+            return baseDir + d + volumeName + d + getSubDir();
+        } else {
+            return baseDir + d + getSubDir();
+        }
+    }
 }

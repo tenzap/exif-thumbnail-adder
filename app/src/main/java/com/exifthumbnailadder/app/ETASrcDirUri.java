@@ -110,7 +110,8 @@ public class ETASrcDirUri extends ETASrcDir {
     }
 
     public String getVolumeRootPath() {
-        throw new UnsupportedOperationException();
+        // Will return: "primary:" or "xxxx-xxxx:"
+        return getVolumeName() + ":";
     }
 
     public boolean isPermOk() {
