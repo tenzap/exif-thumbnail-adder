@@ -46,6 +46,9 @@ import androidx.preference.SwitchPreferenceCompat;
 
 import java.util.List;
 
+import static com.exifthumbnailadder.app.MainApplication.enableLog;
+import static com.exifthumbnailadder.app.MainApplication.TAG;
+
 public class SettingsActivity extends AppCompatActivity {
 
     private final int OPEN_DOCUMENT_TREE_RESULT_CODE = 10;
@@ -69,7 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
-        private final String TAG = "ETALog";
+
         private boolean doNotUnregisterPreferenceChangedListener = false;
 
         public void setDoNotUnregisterPreferenceChangedListener(boolean value) {
@@ -187,11 +190,11 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                     intentFailed = true;
                 } else {
-                    Log.w(TAG, "Request all files access not supported");
+                    if (enableLog) Log.w(TAG, "Request all files access not supported");
                     intentFailed = true;
                 }
             } catch (ActivityNotFoundException e) {
-                Log.w(TAG, "Request all files access not supported", e);
+                if (enableLog) Log.w(TAG, "Request all files access not supported", e);
                 intentFailed = true;
             }
             if (intentFailed) {

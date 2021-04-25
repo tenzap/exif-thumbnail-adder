@@ -33,7 +33,6 @@ import android.content.UriPermission;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +40,9 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
+
+import static com.exifthumbnailadder.app.MainApplication.enableLog;
+import static com.exifthumbnailadder.app.MainApplication.TAG;
 
 public class WorkingDirPermActivity extends AppCompatActivity {
 
@@ -151,7 +153,7 @@ public class WorkingDirPermActivity extends AppCompatActivity {
             }
 
             if (!perm_ok) {
-                Log.e("My Log", "No permission for: " + tString);
+                if (enableLog) Log.e(TAG, "No permission for: " + tString);
                 treeRootUri = DocumentsContract.buildTreeDocumentUri(treeUris[j].getAuthority(), volumeId + ":");
                 DocumentFile file = DocumentFile.fromTreeUri(con, treeRootUri);
 

@@ -50,7 +50,7 @@ public class InputDirs implements Serializable {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        //Log.i(TAG, "json: " + this.toString());
+        //if (enableLog) Log.i(TAG, "json: " + this.toString());
     }
 
     public void add(Uri uri) {

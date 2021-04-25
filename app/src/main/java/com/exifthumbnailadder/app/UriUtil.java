@@ -34,6 +34,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+import static com.exifthumbnailadder.app.MainApplication.enableLog;
+import static com.exifthumbnailadder.app.MainApplication.TAG;
+
 public class UriUtil {
 
     /*
@@ -257,7 +260,7 @@ public class UriUtil {
                 return defaultValue;
             }
         } catch (Exception e) {
-            Log.w("My", "Failed query: " + e);
+            if (enableLog) Log.w(TAG, "Failed query: " + e);
             return defaultValue;
         } finally {
             closeQuietly(c);

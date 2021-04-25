@@ -246,7 +246,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         if (tb_bitmap != null) {
             return tb_bitmap;
         } else {
-            Log.e(TAG, "Couldn't build thumbnails (bitmap is null... abnormal...)");
+            if (enableLog) Log.e(TAG, "Couldn't build thumbnails (bitmap is null... abnormal...)");
             //return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
             throw new Exception("Couldn't build thumbnails (is null)");
         }
@@ -273,7 +273,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
             if (new File(dirTrailing + name).isDirectory()) {
                 recurseCheckAccept = false;
             }
-            //Log.i("MyLog Here", "D: " + dir.toString() + " N: " + name + " " + dirTrailing + " recurseCheckAccept? " + recurseCheckAccept);
+            //if (enableLog) Log.i(TAG, "D: " + dir.toString() + " N: " + name + " " + dirTrailing + " recurseCheckAccept? " + recurseCheckAccept);
 
             if (dirTrailing.equals(this.acceptedPath) && recurseCheckAccept) {
                 result = true;
