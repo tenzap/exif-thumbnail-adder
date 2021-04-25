@@ -36,6 +36,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
+import static com.exifthumbnailadder.app.MainApplication.enableLog;
+import static com.exifthumbnailadder.app.MainApplication.TAG;
+
+
 public class ETASrcDirFile extends ETASrcDir {
 
     File etaDocsRoot;
@@ -153,7 +157,7 @@ public class ETASrcDirFile extends ETASrcDir {
             e.printStackTrace();
         }
 
-        if (MainApplication.enableLog) Log.i(MainApplication.TAG, "volumeRootPath: " + volumeRootPath);
+        if (enableLog) Log.i(TAG, "volumeRootPath: " + volumeRootPath);
         return volumeRootPath;
     }
 

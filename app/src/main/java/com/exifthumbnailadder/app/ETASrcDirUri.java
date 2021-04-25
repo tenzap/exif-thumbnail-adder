@@ -36,6 +36,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.TreeSet;
 
+import static com.exifthumbnailadder.app.MainApplication.enableLog;
+import static com.exifthumbnailadder.app.MainApplication.TAG;
+
 public class ETASrcDirUri extends ETASrcDir {
 
     Uri etaDocsRoot;
@@ -84,7 +87,7 @@ public class ETASrcDirUri extends ETASrcDir {
                 }
                 if (aFile.isDirectory()) {
                     if (aFile.getName().equals(excluded)) {
-                        if (MainApplication.enableLog) Log.i(MainApplication.TAG, ctx.getString(R.string.frag1_log_skipping_excluded_dir, excluded, aFile.getUri().getPath()));
+                        if (enableLog) Log.i(TAG, ctx.getString(R.string.frag1_log_skipping_excluded_dir, excluded, aFile.getUri().getPath()));
                     } else {
                         //System.out.println("[" + aFile.getName() + "]");
                         treeSet.addAll(docFilesToProcessList(aFile, level + 1, excluded));
