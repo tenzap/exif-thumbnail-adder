@@ -22,26 +22,12 @@ package com.exifthumbnailadder.app;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.util.Log;
-
-import androidx.documentfile.provider.DocumentFile;
-import androidx.preference.PreferenceManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URLConnection;
 import java.nio.file.Path;
-import java.util.Arrays;
-
-import static com.exifthumbnailadder.app.MainApplication.enableLog;
-import static com.exifthumbnailadder.app.MainApplication.TAG;
 
 public abstract class ETADoc {
     final String THUMB_EXT = "";
@@ -49,7 +35,7 @@ public abstract class ETADoc {
     PathUtil pathUtil = null;
     Context ctx;
     String volumeName;
-    ETADocs root;
+    ETASrcDir root;
     boolean withVolumeName;
 
     // Common to ETADocUri & ETADocFile

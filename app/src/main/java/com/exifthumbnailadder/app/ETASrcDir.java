@@ -39,13 +39,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TreeSet;
 
-public class ETADocs {
+public class ETASrcDir {
 
     Context ctx;
     Object etaDocsRoot; // Accepted classes: Uri or File
     String excluded;
 
-    public ETADocs(Context ctx, Object etaDocsRoot) {
+    public ETASrcDir(Context ctx, Object etaDocsRoot) {
         if ( ! (etaDocsRoot instanceof Uri || etaDocsRoot instanceof File))
             throw new UnsupportedOperationException("etaDocsRoot should be of Class File or Uri");
 

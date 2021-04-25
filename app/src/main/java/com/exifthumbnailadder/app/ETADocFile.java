@@ -46,7 +46,7 @@ public class ETADocFile extends ETADoc {
     File etaDoc = null;
     String volumeRootPath;
 
-    public ETADocFile(File file, Context ctx, ETADocs root, boolean withVolumeName) {
+    public ETADocFile(File file, Context ctx, ETASrcDir root, boolean withVolumeName) {
         this.etaDoc = file;
         this.volumeRootPath = root.getVolumeRootPath();
 

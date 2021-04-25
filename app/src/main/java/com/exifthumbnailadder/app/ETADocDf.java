@@ -41,7 +41,7 @@ public class ETADocDf extends ETADoc {
     DocumentFile etaDoc = null;
     Uri _uri = null;
 
-    public ETADocDf(DocumentFile docFile, Context ctx, ETADocs root, boolean withVolumeName) {
+    public ETADocDf(DocumentFile docFile, Context ctx, ETASrcDir root, boolean withVolumeName) {
         this.etaDoc = docFile;
         this._uri = docFile.getUri();
 

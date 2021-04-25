@@ -154,43 +154,43 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                         updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
                     }
 
-                    ETADocs etaDocs = new ETADocs(getApplicationContext(), srcDirs[j]);
+                    ETASrcDir etaSrcDir = new ETASrcDir(getApplicationContext(), srcDirs[j]);
                     ETADoc etaDocSrc = null;
                     if (srcDirs[j] instanceof Uri) {
                         DocumentFile baseDf = DocumentFile.fromTreeUri(getApplicationContext(), (Uri)srcDirs[j]);
-                        etaDocSrc = new ETADocDf(baseDf, getApplicationContext(), etaDocs, false);
+                        etaDocSrc = new ETADocDf(baseDf, getApplicationContext(), etaSrcDir, false);
                     } else if (srcDirs[j] instanceof File) {
-                        etaDocSrc = new ETADocFile((File)srcDirs[j], getApplicationContext(), etaDocs, true);
+                        etaDocSrc = new ETADocFile((File)srcDirs[j], getApplicationContext(), etaSrcDir, true);
                     }
                     if (etaDocSrc == null) throw new UnsupportedOperationException();
 
                     // Process backupUri
-                    ETADocs etaDocsBackup = null;
+                    ETASrcDir etaSrcDirBackup = null;
                     if (etaDocSrc instanceof ETADocDf) {
-                        etaDocsBackup = new ETADocs(
+                        etaSrcDirBackup = new ETASrcDir(
                                 getApplicationContext(),
                                 etaDocSrc.getBackupUri());
                     } else if (etaDocSrc instanceof ETADocFile) {
-                        etaDocsBackup = new ETADocs(
+                        etaSrcDirBackup = new ETASrcDir(
                                 getApplicationContext(),
                                 etaDocSrc.getBackupPath().toFile());
                     }
-                    doSyncForUri(etaDocsBackup, etaDocSrc, dryRun);
+                    doSyncForUri(etaSrcDirBackup, etaDocSrc, dryRun);
 
                     // Process outputUri
                     if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("writeThumbnailedToOriginalFolder", false)) {
                         updateUiLog(Html.fromHtml("<br>",1));
-                        ETADocs etaDocsDest = null;
+                        ETASrcDir etaSrcDirDest = null;
                         if (etaDocSrc instanceof ETADocDf) {
-                            etaDocsDest = new ETADocs(
+                            etaSrcDirDest = new ETASrcDir(
                                     getApplicationContext(),
                                     etaDocSrc.getDestUri());
                         } else if (etaDocSrc instanceof ETADocFile) {
-                            etaDocsDest = new ETADocs(
+                            etaSrcDirDest = new ETASrcDir(
                                     getApplicationContext(),
                                     etaDocSrc.getDestPath().toFile());
                         }
-                        doSyncForUri(etaDocsDest, etaDocSrc, dryRun);
+                        doSyncForUri(etaSrcDirDest, etaDocSrc, dryRun);
                     }
                 }
 
@@ -201,7 +201,7 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
         }).start();
     }
 
-    private void doSyncForUri(ETADocs workingDirDocs, ETADoc srcDirEtaDoc, boolean dryRun ) {
+    private void doSyncForUri(ETASrcDir workingDirDocs, ETADoc srcDirEtaDoc, boolean dryRun ) {
 
         TreeSet<Object> docsInWorkingDir = (TreeSet<Object>)workingDirDocs.getDocsSet();
 
