@@ -47,16 +47,15 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
     - this means that all EXIF tags will be duplicate if checked by exiftool
     - Any other tags (XMP for example) are kept
 - When choosing exiv2:
-    - on some pictures some tags of [Canon] & [Composite] group on Canon pictures might be stripped, [NikonCustom], [Ducky] group may be removed too
+    - on some Canon pictures some tags of [Canon] group might be stripped. See [exiv2 bugreport](https://github.com/Exiv2/exiv2/issues/1589)
     - [XMP*] is kept
-    - If exiv2 detects some problems (errors) in your files, the file are be skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
+    - If exiv2 detects some problems (errors) in your files, the file are skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
 - When choosing libexif:
     - All [XMP*] metadata groups and tags get deleted.
-    - Some or all tags of [Olympus] [Canon] [Composite] group get deleted.
-    - [Ducky] group is kept
+    - Some or all tags of [Olympus] [Canon] group get deleted.
     - The tags supported by libexif and exif structure are rewritten.
     - It is almost like running "exif --create-exif --remove-thumbnail --insert-thumbnail tb.jpg" from the exif command line.
-    - If libexif detects some problems (errors) in your files, the file are be skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
+    - If libexif detects some problems (errors) in your files, the file are skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
 - When choosing pixymeta-android library (**usage is discouraged** until pixymeta bug is fixed):
     - the existing EXIF tags are copied and things a rewritten from scratch. 
     - [XMP*] tags are kept
