@@ -132,6 +132,12 @@ public abstract class ETADoc {
         return mimeType != null && mimeType.equals("image/jpeg");
     }
 
+    public static boolean isImageFile(String path) {
+        // https://stackoverflow.com/a/30696106
+        String mimeType = URLConnection.guessContentTypeFromName(path);
+        return mimeType != null && mimeType.startsWith("image");
+    }
+
     public static boolean srcUriCorrespondsDerivedUri(Uri srcUri, Uri derivedUri) {
         String subSrc = UriUtil.getDDSub(srcUri);
         String subDerived = UriUtil.getDSub((UriUtil.getDDSub(derivedUri)));

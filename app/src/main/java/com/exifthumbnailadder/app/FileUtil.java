@@ -10,13 +10,19 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
 import java.io.File;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.exifthumbnailadder.app.MainApplication.TAG;
+import static com.exifthumbnailadder.app.MainApplication.enableLog;
 
 public final class FileUtil {
     private static final String PRIMARY_VOLUME_NAME = "primary";
@@ -135,4 +141,33 @@ public final class FileUtil {
         return UriUtil.getTPath(treeUri);
     }
 
+    private static String[] getVolumesDir(Context ctx) {
+        ArrayList<String> volumesArrayList = new ArrayList<String>();
+        String[] volumesArray = new String[volumesArrayList.size()];
+
+        StorageManager myStorageManager = (StorageManager) ctx.getSystemService(Context.STORAGE_SERVICE);
+        List<StorageVolume> mySV = myStorageManager.getStorageVolumes();
+        Class<?> storageVolumeClazz = null;
+
+        for (int i = 0; i < mySV.size(); i++) {
+            try {
+                storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
+                Method getPath = storageVolumeClazz.getMethod("getPath");
+                volumesArrayList.add((String) getPath.invoke(mySV.get(i)));
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+            if (enableLog) Log.i(TAG, mySV.get(i).toString());
+
+        }
+        volumesArray = volumesArrayList.toArray(volumesArray);
+        return volumesArray;
+    }
 }

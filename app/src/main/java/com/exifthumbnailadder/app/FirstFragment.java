@@ -28,8 +28,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.storage.StorageManager;
-import android.os.storage.StorageVolume;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.Html;
@@ -55,9 +53,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URLConnection;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -67,8 +62,6 @@ import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.UserPrincipal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -203,44 +196,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
             return result;
         }
     }
-
-    private String[] getVolumesDir() {
-        ArrayList<String> volumesArrayList = new ArrayList<String>();
-        String[] volumesArray = new String[volumesArrayList.size()];
-
-        StorageManager myStorageManager = (StorageManager) getActivity().getSystemService(Context.STORAGE_SERVICE);
-        List<StorageVolume> mySV = myStorageManager.getStorageVolumes();
-        Class<?> storageVolumeClazz = null;
-
-        for (int i = 0; i < mySV.size(); i++) {
-            try {
-                storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
-                Method getPath = storageVolumeClazz.getMethod("getPath");
-                volumesArrayList.add((String) getPath.invoke(mySV.get(i)));
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-            if (enableLog) Log.i(TAG, mySV.get(i).toString());
-
-        }
-        volumesArray = volumesArrayList.toArray(volumesArray);
-        return volumesArray;
-    }
-
-
-    public static boolean isImageFile(String path) {
-        // https://stackoverflow.com/a/30696106
-        String mimeType = URLConnection.guessContentTypeFromName(path);
-        return mimeType != null && mimeType.startsWith("image");
-    }
-
 
     private void copyFileAttributes(Path inFilePath, Path outFilePath) throws Exception {
         if (enableLog) Log.i(TAG, getString(R.string.frag1_log_copying_attr));
@@ -979,14 +934,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 stop.setVisibility(Button.GONE);
             }
         });
-    }
-
-    public static byte[] bitmapToJPEGBytearray(Bitmap thumbnail) {
-        //Convert bitmap to byte array
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bos);
-        byte[] bitmapdata = bos.toByteArray();
-        return bitmapdata;
     }
 
     public static class BadOriginalImageException extends Exception {}
