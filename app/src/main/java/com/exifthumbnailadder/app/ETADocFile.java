@@ -21,6 +21,8 @@
 package com.exifthumbnailadder.app;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.DocumentsContract;
@@ -187,6 +189,10 @@ public class ETADocFile extends ETADoc {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    public Bitmap toBitmap() {
+        return BitmapFactory.decodeFile(etaDoc.getPath());
     }
 
     public Path toPath() {

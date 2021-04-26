@@ -23,10 +23,7 @@ package com.exifthumbnailadder.app;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.UriPermission;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -173,84 +170,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
     public void onResume() {
         super.onResume();
         textViewLog.setText(log);
-    }
-
-    public static Bitmap createThumbnail(InputStream is) throws BadOriginalImageException {
-        Bitmap original = null;
-        original = BitmapFactory.decodeStream(is);
-
-        if (original == null) {
-            throw new BadOriginalImageException();
-        }
-        int imageWidth = original.getWidth();
-        int imageHeight = original.getHeight();
-
-        float imageRatio = ((float)Math.min(imageWidth, imageHeight) / (float)Math.max(imageWidth, imageHeight));
-        int thumbnailWidth = (imageWidth < imageHeight) ? Math.round(160*imageRatio) : 160 ;
-        int thumbnailHeight = (imageWidth < imageHeight) ? 160 : Math.round(160*imageRatio);
-//        if (imageWidth < imageHeight) {
-//            // Swap thumbnail width and height to keep a relative aspect ratio
-//            int temp = thumbnailWidth;
-//            thumbnailWidth = thumbnailHeight;
-//            thumbnailHeight = temp;
-//        }
-        if (imageWidth < thumbnailWidth) thumbnailWidth = imageWidth;
-        if (imageHeight < thumbnailHeight) thumbnailHeight = imageHeight;
-
-        // https://stackoverflow.com/a/13252754
-        // Apply the principle of not reducing more than 50% each time
-        int tmpWidth = imageWidth;
-        int tmpHeight = imageHeight;
-        Bitmap thumbnail = original;
-        while (tmpWidth / thumbnailWidth > 2 || tmpHeight / thumbnailHeight > 2) {
-            tmpWidth /= 2;
-            tmpHeight /= 2;
-            thumbnail = Bitmap.createScaledBitmap(thumbnail, tmpWidth, tmpHeight, true);
-        }
-        thumbnail = Bitmap.createScaledBitmap(thumbnail, thumbnailWidth, thumbnailHeight, true);
-
-        return thumbnail;
-    }
-
-    private Bitmap rotateThumbnail(Bitmap tb_bitmap, int degrees) {
-        // Google's "Files" app applies the rotation of the principal picture to the thumbnail
-        // when it displays the thumbnail. Kde in PTP mode and Windows don't do that, so the have to
-        // rotate the thumbnail.
-        // Neither GoogleFiles, nor the others consider the "Orientation" tag when set on IFD1
-        // (which is for the thumbnail), so it is not usefsull to set that orientation tag
-
-        // Get rotation & rotate thumbnail
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degrees);
-        return Bitmap.createBitmap(tb_bitmap, 0, 0, tb_bitmap.getWidth(), tb_bitmap.getHeight(), matrix, true);
-    }
-
-    private Bitmap makeThumbnailRotated(ETADoc pic, boolean rotateThumbnail, int degrees) throws Exception, BadOriginalImageException {
-        // pic Object should be either DocumentFile or File
-        Bitmap tb_bitmap = null;
-        InputStream is = null;
-        try {
-            is = pic.inputStream();
-            tb_bitmap = this.createThumbnail(is);
-            is.close();
-        } catch (BadOriginalImageException e) {
-            throw e;
-        } catch (Exception e) {
-            //TODO
-            e.printStackTrace();
-            throw e;
-        }
-
-        if (tb_bitmap != null && rotateThumbnail) {
-            tb_bitmap = rotateThumbnail(tb_bitmap, degrees);
-        }
-        if (tb_bitmap != null) {
-            return tb_bitmap;
-        } else {
-            if (enableLog) Log.e(TAG, "Couldn't build thumbnails (bitmap is null... abnormal...)");
-            //return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-            throw new Exception("Couldn't build thumbnails (is null)");
-        }
     }
 
     private static class MyFilenameFilter implements FilenameFilter {
@@ -509,8 +428,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         // a. extract thumbnail & write to output stream
                         try {
                             //if (enableLog) Log.i(TAG, "Creating thumbnail");
-                            thumbnail = makeThumbnailRotated(
-                                    doc,
+                            thumbnail = doc.getThumbnail(
                                     prefs.getBoolean("rotateThumbnails", true),
                                     srcImgDegrees);
                             srcImgIs = doc.inputStream();

@@ -21,8 +21,12 @@
 package com.exifthumbnailadder.app;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.documentfile.provider.DocumentFile;
@@ -194,6 +198,16 @@ public class ETADocDf extends ETADoc {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    public Bitmap toBitmap() throws Exception {
+        Bitmap b;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            b = ImageDecoder.decodeBitmap(ImageDecoder.createSource(ctx.getContentResolver(), _uri));
+        } else {
+            b = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), _uri);
+        }
+        return b;
     }
 
     public Path toPath() {
