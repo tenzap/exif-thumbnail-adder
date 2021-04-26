@@ -108,7 +108,7 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
 
                 {
                     updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
-                    if (!WorkingDirPermActivity.isWorkingDirPermOk(getApplicationContext())) {
+                    if (!WorkingDirPermActivity.isWorkingDirPermOk(SyncActivity.this)) {
                         updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_ko)+"</span><br>", 1));
                         setIsProcessFalse();
                         stopProcessing = false;
@@ -122,16 +122,16 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                 if (MainApplication.useSAF) {
                     srcDirs = inputDirs.toUriArray(); // Uri[]
                 } else {
-                    srcDirs = inputDirs.toFileArray(getApplicationContext()); // File[]
+                    srcDirs = inputDirs.toFileArray(SyncActivity.this); // File[]
                 }
 
                 // Iterate on folders containing source images
                 for (int j = 0; j < srcDirs.length; j++) {
                     ETASrcDir etaSrcDir = null;
                     if (srcDirs[j] instanceof Uri) {
-                        etaSrcDir = new ETASrcDirUri(getApplicationContext(), (Uri)srcDirs[j]);
+                        etaSrcDir = new ETASrcDirUri(SyncActivity.this, (Uri)srcDirs[j]);
                     } else if (srcDirs[j] instanceof File) {
-                        etaSrcDir = new ETASrcDirFile(getApplicationContext(), (File)srcDirs[j]);
+                        etaSrcDir = new ETASrcDirFile(SyncActivity.this, (File)srcDirs[j]);
                     }
                     if (etaSrcDir == null) throw new UnsupportedOperationException();
 
@@ -149,10 +149,10 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
 
                     ETADoc etaDocSrc = null;
                     if (etaSrcDir instanceof ETASrcDirUri) {
-                        DocumentFile baseDf = DocumentFile.fromTreeUri(getApplicationContext(), (Uri)srcDirs[j]);
-                        etaDocSrc = new ETADocDf(baseDf, getApplicationContext(), (ETASrcDirUri)etaSrcDir, false);
+                        DocumentFile baseDf = DocumentFile.fromTreeUri(SyncActivity.this, (Uri)srcDirs[j]);
+                        etaDocSrc = new ETADocDf(baseDf, SyncActivity.this, (ETASrcDirUri)etaSrcDir, false);
                     } else if (etaSrcDir instanceof ETASrcDirFile) {
-                        etaDocSrc = new ETADocFile((File)srcDirs[j], getApplicationContext(), (ETASrcDirFile)etaSrcDir, true);
+                        etaDocSrc = new ETADocFile((File)srcDirs[j], SyncActivity.this, (ETASrcDirFile)etaSrcDir, true);
                     }
                     if (etaDocSrc == null) throw new UnsupportedOperationException();
 
@@ -160,26 +160,26 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                     ETASrcDir etaSrcDirBackup = null;
                     if (etaDocSrc instanceof ETADocDf) {
                         etaSrcDirBackup = new ETASrcDirUri(
-                                getApplicationContext(),
+                                SyncActivity.this,
                                 etaDocSrc.getBackupUri());
                     } else if (etaDocSrc instanceof ETADocFile) {
                         etaSrcDirBackup = new ETASrcDirFile(
-                                getApplicationContext(),
+                                SyncActivity.this,
                                 etaDocSrc.getBackupPath().toFile());
                     }
                     doSyncForUri(etaSrcDirBackup, etaDocSrc, dryRun);
 
                     // Process outputUri
-                    if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("writeThumbnailedToOriginalFolder", false)) {
+                    if (!PreferenceManager.getDefaultSharedPreferences(SyncActivity.this).getBoolean("writeThumbnailedToOriginalFolder", false)) {
                         updateUiLog(Html.fromHtml("<br>",1));
                         ETASrcDir etaSrcDirDest = null;
                         if (etaDocSrc instanceof ETADocDf) {
                             etaSrcDirDest = new ETASrcDirUri(
-                                    getApplicationContext(),
+                                    SyncActivity.this,
                                     etaDocSrc.getDestUri());
                         } else if (etaDocSrc instanceof ETADocFile) {
                             etaSrcDirDest = new ETASrcDirFile(
-                                    getApplicationContext(),
+                                    SyncActivity.this,
                                     etaDocSrc.getDestPath().toFile());
                         }
                         doSyncForUri(etaSrcDirDest, etaDocSrc, dryRun);
@@ -206,9 +206,9 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
             // Convert (Object)_doc to (Uri)doc or (File)doc
             ETADoc doc = null;
             if (workingDirDocs.getDocsRoot() instanceof Uri) {
-                doc = new ETADocDf((DocumentFile) _doc, getApplicationContext(), (ETASrcDirUri) workingDirDocs, false);
+                doc = new ETADocDf((DocumentFile) _doc, SyncActivity.this, (ETASrcDirUri) workingDirDocs, false);
             } else if (workingDirDocs.getDocsRoot() instanceof File) {
-                doc = new ETADocFile((File) _doc, getApplicationContext(), (ETASrcDirFile)workingDirDocs, true);
+                doc = new ETADocFile((File) _doc, SyncActivity.this, (ETASrcDirFile)workingDirDocs, true);
             }
             if (doc == null) throw new UnsupportedOperationException();
 
