@@ -204,6 +204,9 @@ public class ETADocDf extends ETADoc {
         Bitmap b;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             b = ImageDecoder.decodeBitmap(ImageDecoder.createSource(ctx.getContentResolver(), _uri));
+
+            // decodeBitmap returns a bitmap that is already rotated according to EXIF tags, so set to true
+            toBitmapReturnsRotatedBitmap = true;
         } else {
             b = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), _uri);
         }

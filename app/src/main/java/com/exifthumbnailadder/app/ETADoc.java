@@ -63,6 +63,8 @@ public abstract class ETADoc {
     final ETASrcDir root;
     final boolean withVolumeName;
 
+    boolean toBitmapReturnsRotatedBitmap = false;
+
     protected ETADoc(Context ctx, ETASrcDir root, String volumeName, String volumeRootPath, boolean withVolumeName) {
         this.ctx = ctx;
         this.root = root;
@@ -239,11 +241,11 @@ public abstract class ETADoc {
 
     public Bitmap getThumbnail(boolean rotateThumbnail, int degrees) throws Exception, FirstFragment.BadOriginalImageException {
         // There is ThumbnailUtils.extractThumbnail in Android, but quality doesn't seem much better.
-        Bitmap tb_bitmap = null;
+        Bitmap thumbnail = null;
         InputStream is = null;
         try {
             is = inputStream();
-            tb_bitmap = createThumbnail(is);
+            thumbnail = createThumbnail(is);
             is.close();
         } catch (FirstFragment.BadOriginalImageException e) {
             throw e;
@@ -253,16 +255,24 @@ public abstract class ETADoc {
             throw e;
         }
 
-        if (tb_bitmap != null && rotateThumbnail) {
-            tb_bitmap = rotateThumbnail(tb_bitmap, degrees);
-        }
-        if (tb_bitmap != null) {
-            return tb_bitmap;
-        } else {
+        if (thumbnail == null) {
             if (enableLog) Log.e(TAG, "Couldn't build thumbnails (bitmap is null... abnormal...)");
             //return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
             throw new Exception("Couldn't build thumbnails (is null)");
         }
+
+        if (rotateThumbnail) {
+            if (!toBitmapReturnsRotatedBitmap) {
+                thumbnail = rotateThumbnail(thumbnail, degrees);
+            }
+        } else {
+            if (toBitmapReturnsRotatedBitmap) {
+                // we need to undo rotation
+                thumbnail = rotateThumbnail(thumbnail, -degrees);
+            }
+        }
+
+        return thumbnail;
     }
 
     public Bitmap getThumbnailUsingThumbnailUtils(boolean rotateThumbnail, int degrees) throws Exception, FirstFragment.BadOriginalImageException {
@@ -285,15 +295,23 @@ public abstract class ETADoc {
         }
         thumbnail = ThumbnailUtils.extractThumbnail(thumbnail, targetSize.getWidth(), targetSize.getHeight(), ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
 
-        if (thumbnail != null && rotateThumbnail) {
-            thumbnail = rotateThumbnail(thumbnail, degrees);
-        }
-        if (thumbnail != null) {
-            return thumbnail;
-        } else {
+        if (thumbnail == null) {
             if (enableLog) Log.e(TAG, "Couldn't build thumbnails (bitmap is null... abnormal...)");
             //return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
             throw new Exception("Couldn't build thumbnails (is null)");
         }
+
+        if (rotateThumbnail) {
+            if (!toBitmapReturnsRotatedBitmap) {
+                thumbnail = rotateThumbnail(thumbnail, degrees);
+            }
+        } else {
+            if (toBitmapReturnsRotatedBitmap) {
+                // we need to undo rotation
+                thumbnail = rotateThumbnail(thumbnail, -degrees);
+            }
+        }
+
+        return thumbnail;
     }
 }
