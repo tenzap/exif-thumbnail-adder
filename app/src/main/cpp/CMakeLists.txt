@@ -31,6 +31,11 @@ set (exiv2
         ${EXIV2DIR}/src/utils.cpp ${EXIV2DIR}/src/utils.hpp
         )
 
+# exifThumbnailAdderHelpers links to libavutil & libswscale
+# we need to use link_directories so that target_link_libraries works.
+# link_directories must be set before "add_library", otherwise the libs will not be found
+link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+
 add_library(exifThumbnailAdderHelpers
         SHARED
         ${SOURCES} ${HEADERS}
@@ -53,3 +58,7 @@ target_link_libraries(exifThumbnailAdderHelpers exiv2lib)
 target_include_directories(exifThumbnailAdderHelpers PRIVATE ${EXIV2DIR}/src)
 target_include_directories(exifThumbnailAdderHelpers PRIVATE ${EXIV2DIR}/include)
 target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}) # for "exiv2lib_export.h"
+
+add_dependencies(exifThumbnailAdderHelpers ffmpeg_target)
+target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/include)
+target_link_libraries(exifThumbnailAdderHelpers swscale avutil)

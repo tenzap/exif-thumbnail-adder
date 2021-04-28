@@ -33,3 +33,6 @@ add_subdirectory(
 add_subdirectory(
         app/src/main/cpp
 )
+
+set(FFMPEG_CONFIGURE_EXTRAS --enable-jni --enable-mediacodec)
+include(cmake/ffmpeg.cmake)
