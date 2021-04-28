@@ -74,11 +74,15 @@ public class AboutActivity extends AppCompatActivity {
         text.append("</li><li>");
         text.append("<a href='https://www.exiv2.org/'>exiv2-0.27.3</a> GNU General Public License, version 2");
         text.append("</li><li>");
+        text.append("<a href='https://ffmpeg.org/'>ffmpeg-4.4</a> GNU Lesser General Public License (LGPL) version 2.1");
+        text.append("</li><li>");
         text.append("<a href='https://libexif.github.io/'>libexif-0.6.22</a> GNU Lesser General Public License, version 2.1");
         if (PixymetaInterface.hasPixymetaLib()) {
             text.append("</li><li>");
             text.append("<a href='https://github.com/dragon66/pixymeta-android'>pixymeta-android</a> Eclipse Public License - v 1.0");
         }
+        text.append("</li><li>");
+        text.append("<a href='https://github.com/ser-gik/smoothrescale'>smoothrescale</a> BSD 2-Clause or GNU General Public License, version 2");
         text.append("</li></ul>");
         text.append("");
 
