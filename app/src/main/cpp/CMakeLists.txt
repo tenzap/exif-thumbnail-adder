@@ -41,6 +41,7 @@ add_library(exifThumbnailAdderHelpers
         ${SOURCES} ${HEADERS}
         ${SOURCES_Exiv2Helper} ${HEADERS_Exiv2Helper}
         ${exiv2}
+        ffmpeg_helper.c
         )
 
 target_include_directories(exifThumbnailAdderHelpers PRIVATE .)
@@ -62,3 +63,5 @@ target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}
 add_dependencies(exifThumbnailAdderHelpers ffmpeg_target)
 target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/include)
 target_link_libraries(exifThumbnailAdderHelpers swscale avutil)
+target_link_libraries(exifThumbnailAdderHelpers log)         # for __android_log_print
+target_link_libraries(exifThumbnailAdderHelpers jnigraphics) # for android bitmap in jni/c

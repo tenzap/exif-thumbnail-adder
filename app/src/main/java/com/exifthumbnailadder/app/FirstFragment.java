@@ -383,7 +383,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         // a. extract thumbnail & write to output stream
                         try {
                             //if (enableLog) Log.i(TAG, "Creating thumbnail");
-                            thumbnail = doc.getThumbnail(
+                            thumbnail = doc.getThumbnailUsingFFmpeg(
                                     prefs.getBoolean("rotateThumbnails", true),
                                     srcImgDegrees);
                             srcImgIs = doc.inputStream();

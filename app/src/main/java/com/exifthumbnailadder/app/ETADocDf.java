@@ -29,6 +29,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
 import java.io.ByteArrayOutputStream;
@@ -203,12 +204,24 @@ public class ETADocDf extends ETADoc {
     public Bitmap toBitmap() throws Exception {
         Bitmap b;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            b = ImageDecoder.decodeBitmap(ImageDecoder.createSource(ctx.getContentResolver(), _uri));
+            // We need a bitmap that has not Config.HARDWARE
+            // for this we have to set it mutable
+            // This is for use in ffmpeg
+            // for code below, see https://stackoverflow.com/a/63022406/15401262)
+            ImageDecoder.Source source = ImageDecoder.createSource(ctx.getContentResolver(), _uri);
+            ImageDecoder.OnHeaderDecodedListener listener = new ImageDecoder.OnHeaderDecodedListener() {
+                @Override
+                public void onHeaderDecoded(@NonNull ImageDecoder decoder, @NonNull ImageDecoder.ImageInfo info, @NonNull ImageDecoder.Source source) {
+                    decoder.setMutableRequired(true);
+                }
+            };
+            b = ImageDecoder.decodeBitmap(source, listener);
 
             // decodeBitmap returns a bitmap that is already rotated according to EXIF tags, so set to true
             toBitmapReturnsRotatedBitmap = true;
         } else {
             b = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), _uri);
+            if (enableLog) Log.i(TAG, "BitmapConfig: "+ b.getConfig().toString());
         }
         return b;
     }

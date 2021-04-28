@@ -33,6 +33,8 @@ import android.util.Size;
 
 import androidx.preference.PreferenceManager;
 
+import com.schokoladenbrown.Smooth;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -294,6 +296,45 @@ public abstract class ETADoc {
             thumbnail = ThumbnailUtils.extractThumbnail(thumbnail, tmpWidth, tmpHeight, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
         }
         thumbnail = ThumbnailUtils.extractThumbnail(thumbnail, targetSize.getWidth(), targetSize.getHeight(), ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+
+        if (thumbnail == null) {
+            if (enableLog) Log.e(TAG, "Couldn't build thumbnails (bitmap is null... abnormal...)");
+            //return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
+            throw new Exception("Couldn't build thumbnails (is null)");
+        }
+
+        if (rotateThumbnail) {
+            if (!toBitmapReturnsRotatedBitmap) {
+                thumbnail = rotateThumbnail(thumbnail, degrees);
+            }
+        } else {
+            if (toBitmapReturnsRotatedBitmap) {
+                // we need to undo rotation
+                thumbnail = rotateThumbnail(thumbnail, -degrees);
+            }
+        }
+
+        return thumbnail;
+    }
+
+    public Bitmap getThumbnailUsingFFmpeg(boolean rotateThumbnail, int degrees) throws Exception, FirstFragment.BadOriginalImageException {
+        Bitmap original = toBitmap();
+        if (original == null) {
+            throw new FirstFragment.BadOriginalImageException();
+        }
+        int imageWidth = original.getWidth();
+        int imageHeight = original.getHeight();
+
+        Size targetSize = getThumbnailTargetSize(imageWidth, imageHeight, 160);
+
+        // Algorithm choice for ffmpeg swscale: https://stackoverflow.com/a/29743840/15401262
+        //  "I'd say the quality is: point << bilinear < bicubic < lanczos/sinc/spline I don't really know the others"
+        // Bilinear is somehow blurred
+        // Sinc and Lanczos look similar, but Lanczos seems much faster. So choosing this one
+
+        //thumbnail = Smooth.rescale(thumbnail, targetSize.getWidth(), targetSize.getHeight(), Smooth.Algo.BILINEAR);
+        //thumbnail = Smooth.rescale(thumbnail, targetSize.getWidth(), targetSize.getHeight(), Smooth.Algo.SINC);
+        Bitmap thumbnail = Smooth.rescale(original, targetSize.getWidth(), targetSize.getHeight(), Smooth.AlgoParametrized1.LANCZOS, 3.0);  // 3 is default width in ffmpeg.
 
         if (thumbnail == null) {
             if (enableLog) Log.e(TAG, "Couldn't build thumbnails (bitmap is null... abnormal...)");

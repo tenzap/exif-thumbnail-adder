@@ -192,7 +192,11 @@ public class ETADocFile extends ETADoc {
     }
 
     public Bitmap toBitmap() {
-        return BitmapFactory.decodeFile(etaDoc.getPath());
+        // We need a bitmap that has not Config.HARDWARE
+        // This is for use in ffmpeg (if we don't set Config, it will use Config.HARDWARE on some devices)
+        BitmapFactory.Options bmo = new BitmapFactory.Options();
+        bmo.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        return BitmapFactory.decodeFile(etaDoc.getPath(), bmo);
     }
 
     public Path toPath() {
