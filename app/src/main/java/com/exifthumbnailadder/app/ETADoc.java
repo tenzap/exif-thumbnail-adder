@@ -202,32 +202,6 @@ public abstract class ETADoc {
         return new Size(thumbnailWidth, thumbnailHeight);
     }
 
-    private static Bitmap createThumbnail(InputStream is) throws FirstFragment.BadOriginalImageException {
-        Bitmap original = BitmapFactory.decodeStream(is);
-
-        if (original == null) {
-            throw new FirstFragment.BadOriginalImageException();
-        }
-        int imageWidth = original.getWidth();
-        int imageHeight = original.getHeight();
-
-        Size targetSize = getThumbnailTargetSize(imageWidth, imageHeight, 160);
-
-        // https://stackoverflow.com/a/13252754
-        // Apply the principle of not reducing more than 50% each time
-        int tmpWidth = imageWidth;
-        int tmpHeight = imageHeight;
-        Bitmap thumbnail = original;
-        while (tmpWidth / targetSize.getWidth() > 2 || tmpHeight / targetSize.getHeight() > 2) {
-            tmpWidth /= 2;
-            tmpHeight /= 2;
-            thumbnail = Bitmap.createScaledBitmap(thumbnail, tmpWidth, tmpHeight, true);
-        }
-        thumbnail = Bitmap.createScaledBitmap(thumbnail, targetSize.getWidth(), targetSize.getHeight(), true);
-
-        return thumbnail;
-    }
-
     private Bitmap rotateThumbnail(Bitmap tb_bitmap, int degrees) {
         // Google's "Files" app applies the rotation of the principal picture to the thumbnail
         // when it displays the thumbnail. Kde in PTP mode and Windows don't do that, so the have to
@@ -241,100 +215,56 @@ public abstract class ETADoc {
         return Bitmap.createBitmap(tb_bitmap, 0, 0, tb_bitmap.getWidth(), tb_bitmap.getHeight(), matrix, true);
     }
 
-    public Bitmap getThumbnail(boolean rotateThumbnail, int degrees) throws Exception, FirstFragment.BadOriginalImageException {
-        // There is ThumbnailUtils.extractThumbnail in Android, but quality doesn't seem much better.
+    public Bitmap getThumbnail(String lib, boolean rotateThumbnail, int degrees) throws Exception, FirstFragment.BadOriginalImageException {
+        Bitmap original = toBitmap();
+        if (original == null) {
+            throw new FirstFragment.BadOriginalImageException();
+        }
+        int imageWidth = original.getWidth();
+        int imageHeight = original.getHeight();
+
+        Size targetSize = getThumbnailTargetSize(imageWidth, imageHeight, 160);
+
         Bitmap thumbnail = null;
-        InputStream is = null;
-        try {
-            is = inputStream();
-            thumbnail = createThumbnail(is);
-            is.close();
-        } catch (FirstFragment.BadOriginalImageException e) {
-            throw e;
-        } catch (Exception e) {
-            //TODO
-            e.printStackTrace();
-            throw e;
+        int tmpWidth, tmpHeight;
+        switch (lib) {
+            case "ThumbnailUtils":
+                tmpWidth = imageWidth;
+                tmpHeight = imageHeight;
+                thumbnail = original;
+                while (tmpWidth / targetSize.getWidth() > 2 || tmpHeight / targetSize.getHeight() > 2) {
+                    tmpWidth /= 2;
+                    tmpHeight /= 2;
+                    thumbnail = ThumbnailUtils.extractThumbnail(thumbnail, tmpWidth, tmpHeight, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+                }
+                thumbnail = ThumbnailUtils.extractThumbnail(thumbnail, targetSize.getWidth(), targetSize.getHeight(), ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+                break;
+            case "ffmpeg":
+                // Algorithm choice for ffmpeg swscale: https://stackoverflow.com/a/29743840/15401262
+                //  "I'd say the quality is: point << bilinear < bicubic < lanczos/sinc/spline I don't really know the others"
+                // Bilinear is somehow blurred
+                // Sinc and Lanczos look similar, but Lanczos seems much faster. So choosing this one
+
+                //thumbnail = Smooth.rescale(thumbnail, targetSize.getWidth(), targetSize.getHeight(), Smooth.Algo.BILINEAR);
+                //thumbnail = Smooth.rescale(thumbnail, targetSize.getWidth(), targetSize.getHeight(), Smooth.Algo.SINC);
+                thumbnail = Smooth.rescale(original, targetSize.getWidth(), targetSize.getHeight(), Smooth.AlgoParametrized1.LANCZOS, 3.0);  // 3 is default width in ffmpeg.
+                break;
+            case "internal":
+            default:
+                // There is ThumbnailUtils.extractThumbnail in Android, but quality doesn't seem much better.
+                // https://stackoverflow.com/a/13252754
+                // Apply the principle of not reducing more than 50% each time
+                tmpWidth = imageWidth;
+                tmpHeight = imageHeight;
+                thumbnail = original;
+                while (tmpWidth / targetSize.getWidth() > 2 || tmpHeight / targetSize.getHeight() > 2) {
+                    tmpWidth /= 2;
+                    tmpHeight /= 2;
+                    thumbnail = Bitmap.createScaledBitmap(thumbnail, tmpWidth, tmpHeight, true);
+                }
+                thumbnail = Bitmap.createScaledBitmap(thumbnail, targetSize.getWidth(), targetSize.getHeight(), true);
+                break;
         }
-
-        if (thumbnail == null) {
-            if (enableLog) Log.e(TAG, "Couldn't build thumbnails (bitmap is null... abnormal...)");
-            //return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-            throw new Exception("Couldn't build thumbnails (is null)");
-        }
-
-        if (rotateThumbnail) {
-            if (!toBitmapReturnsRotatedBitmap) {
-                thumbnail = rotateThumbnail(thumbnail, degrees);
-            }
-        } else {
-            if (toBitmapReturnsRotatedBitmap) {
-                // we need to undo rotation
-                thumbnail = rotateThumbnail(thumbnail, -degrees);
-            }
-        }
-
-        return thumbnail;
-    }
-
-    public Bitmap getThumbnailUsingThumbnailUtils(boolean rotateThumbnail, int degrees) throws Exception, FirstFragment.BadOriginalImageException {
-        Bitmap original = toBitmap();
-        if (original == null) {
-            throw new FirstFragment.BadOriginalImageException();
-        }
-        int imageWidth = original.getWidth();
-        int imageHeight = original.getHeight();
-
-        Size targetSize = getThumbnailTargetSize(imageWidth, imageHeight, 160);
-
-        int tmpWidth = imageWidth;
-        int tmpHeight = imageHeight;
-        Bitmap thumbnail = original;
-        while (tmpWidth / targetSize.getWidth() > 2 || tmpHeight / targetSize.getHeight() > 2) {
-            tmpWidth /= 2;
-            tmpHeight /= 2;
-            thumbnail = ThumbnailUtils.extractThumbnail(thumbnail, tmpWidth, tmpHeight, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-        }
-        thumbnail = ThumbnailUtils.extractThumbnail(thumbnail, targetSize.getWidth(), targetSize.getHeight(), ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-
-        if (thumbnail == null) {
-            if (enableLog) Log.e(TAG, "Couldn't build thumbnails (bitmap is null... abnormal...)");
-            //return Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888);
-            throw new Exception("Couldn't build thumbnails (is null)");
-        }
-
-        if (rotateThumbnail) {
-            if (!toBitmapReturnsRotatedBitmap) {
-                thumbnail = rotateThumbnail(thumbnail, degrees);
-            }
-        } else {
-            if (toBitmapReturnsRotatedBitmap) {
-                // we need to undo rotation
-                thumbnail = rotateThumbnail(thumbnail, -degrees);
-            }
-        }
-
-        return thumbnail;
-    }
-
-    public Bitmap getThumbnailUsingFFmpeg(boolean rotateThumbnail, int degrees) throws Exception, FirstFragment.BadOriginalImageException {
-        Bitmap original = toBitmap();
-        if (original == null) {
-            throw new FirstFragment.BadOriginalImageException();
-        }
-        int imageWidth = original.getWidth();
-        int imageHeight = original.getHeight();
-
-        Size targetSize = getThumbnailTargetSize(imageWidth, imageHeight, 160);
-
-        // Algorithm choice for ffmpeg swscale: https://stackoverflow.com/a/29743840/15401262
-        //  "I'd say the quality is: point << bilinear < bicubic < lanczos/sinc/spline I don't really know the others"
-        // Bilinear is somehow blurred
-        // Sinc and Lanczos look similar, but Lanczos seems much faster. So choosing this one
-
-        //thumbnail = Smooth.rescale(thumbnail, targetSize.getWidth(), targetSize.getHeight(), Smooth.Algo.BILINEAR);
-        //thumbnail = Smooth.rescale(thumbnail, targetSize.getWidth(), targetSize.getHeight(), Smooth.Algo.SINC);
-        Bitmap thumbnail = Smooth.rescale(original, targetSize.getWidth(), targetSize.getHeight(), Smooth.AlgoParametrized1.LANCZOS, 3.0);  // 3 is default width in ffmpeg.
 
         if (thumbnail == null) {
             if (enableLog) Log.e(TAG, "Couldn't build thumbnails (bitmap is null... abnormal...)");
