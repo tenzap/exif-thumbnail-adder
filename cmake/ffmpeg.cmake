@@ -103,7 +103,8 @@ ExternalProject_Add(ffmpeg_target
         -DSYSROOT:STRING=${CMAKE_SYSROOT}
         -DC_FLAGS:STRING=${FFMPEG_C_FLAGS}
         -DLD_FLAGS:STRING=${FFMPEG_LD_FLAGS}
-        -DPREFIX:STRING=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+        -DPREFIX:STRING=${CMAKE_CURRENT_BINARY_DIR}
+        #-DINSTALL_LIBDIR:STRING=${CMAKE_LIBRARY_OUTPUT_DIRECTORY} # Test
         -DCONFIGURE_EXTRAS:STRING=${FFMPEG_CONFIGURE_EXTRAS_ENCODED}
         -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_build_system.cmake
         BUILD_COMMAND ${CMAKE_COMMAND} -E env
@@ -126,25 +127,28 @@ ExternalProject_Add(ffmpeg_target
         LOG_INSTALL 1
         DEPENDS ${FFMPEG_DEPENDS}
 
-        BUILD_ALWAYS 1 ## ETA addition: otherwise lib files might not be installed in the output dir
+        #BUILD_ALWAYS 1
 
         PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_Makefile.patch  ## ETA addition: because we removed some dirs from ffmpeg sources
         #LOG_PATCH 1 ## ETA addition: needs CMAKE >= version 3.14
+
+        # fix for "missing and no known rule to make it": https://stackoverflow.com/a/65803911/15401262
+        BUILD_BYPRODUCTS ${CMAKE_BINARY_DIR}/lib/libavutil.so ${CMAKE_BINARY_DIR}/lib/libswscale.so
         )
 
 ExternalProject_Get_property(ffmpeg_target SOURCE_DIR)
-ExternalProject_Add_Step(
-        ffmpeg_target
-        copy_headers
-        COMMAND ${CMAKE_COMMAND}
-        -DBUILD_DIR:STRING=${SOURCE_DIR}
-        -DSOURCE_DIR:STRING=${CMAKE_CURRENT_SOURCE_DIR}
-        -DFFMPEG_NAME:STRING=${FFMPEG_NAME}
-        -DOUT:STRING=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-        -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_copy_headers.cmake
-        DEPENDEES build
-        DEPENDERS install
-)
+#ExternalProject_Add_Step(
+#        ffmpeg_target
+#        copy_headers
+#        COMMAND ${CMAKE_COMMAND}
+#        -DBUILD_DIR:STRING=${SOURCE_DIR}
+#        -DSOURCE_DIR:STRING=${CMAKE_CURRENT_SOURCE_DIR}
+#        -DFFMPEG_NAME:STRING=${FFMPEG_NAME}
+#        -DOUT:STRING=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+#        -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_copy_headers.cmake
+#        DEPENDEES build
+#        DEPENDERS install
+#)
 
 # FFMPEG EXTERNAL PROJECT CONFIG SECTION: END
 
@@ -160,3 +164,25 @@ set(ffmpeg_src
         )
 
 # FFMPEG EXE SOURCES SECTION: END
+
+add_library(libavutilLib SHARED IMPORTED)
+add_dependencies(libavutilLib ffmpeg_target)
+set_target_properties(
+        # Specifies the target library.
+        libavutilLib
+        # Specifies the parameter you want to define.
+        PROPERTIES IMPORTED_LOCATION
+        # Provides the path to the library you want to import.
+        ${CMAKE_BINARY_DIR}/lib/libswscale.so
+)
+
+add_library(libswscaleLib SHARED IMPORTED)
+add_dependencies(libswscaleLib ffmpeg_target)
+set_target_properties(
+        # Specifies the target library.
+        libswscaleLib
+        # Specifies the parameter you want to define.
+        PROPERTIES IMPORTED_LOCATION
+        # Provides the path to the library you want to import.
+        ${CMAKE_BINARY_DIR}/lib/libavutil.so
+)

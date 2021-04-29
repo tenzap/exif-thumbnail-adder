@@ -105,8 +105,7 @@ add_library(exif
         )
 
 target_include_directories(exif PRIVATE .)
-#target_include_directories(exif PRIVATE ${CMAKE_BINARY_DIR}) # Use CMAKE_CURRENT_BINARY_DIR instead
-target_include_directories(exif PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(exif PRIVATE ${CMAKE_BINARY_DIR})
 target_compile_definitions(exif PRIVATE -D_CRT_SECURE_NO_WARNINGS)
 target_compile_definitions(exif PRIVATE -DGETTEXT_PACKAGE="${PACKAGE}")
 
@@ -114,8 +113,8 @@ include(CheckFunctionExists)
 include(CheckIncludeFile)
 
 check_function_exists(dcgettext HAVE_DCGETTEXT)
-check_function_exists(gettext HAVE_DCGETTEXT)
-check_function_exists(iconv HAVE_DCGETTEXT)
+check_function_exists(gettext HAVE_GETTEXT)
+check_function_exists(iconv HAVE_ICONV)
 check_function_exists(localtime_r HAVE_DCGETTEXT)
 
 check_include_file(dlfcn.h HAVE_DLFCN_H)

@@ -30,7 +30,7 @@ if (${STEP} STREQUAL configure)
             --enable-shared
             --enable-protocol=file
             --enable-pic
-            --shlibdir=${PREFIX}
+            #--shlibdir=${INSTALL_LIBDIR}
             --prefix=${PREFIX}
 
             # In ExifThumbnailAdder we need only swscale, so disable all other

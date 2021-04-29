@@ -1,38 +1,43 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-# Adds the CMakeLists.txt file located in the specified directory
-# as a build dependency.
-add_subdirectory(
-        library/libexif-0.6.22
-)
+include(ExternalProject)
 
-add_subdirectory(
-        library/exif-0.6.22
-)
+# Make a copy of all CMAKE arguments for use in subproject
+# Needed so that the exteral project have all the config for android (ninja, android toolchain...)
+# see: https://stackoverflow.com/a/48555098/15401262
+# MUST be done before call to 'project'
+get_cmake_property(vars CACHE_VARIABLES)
+foreach(var ${vars})
+    get_property(currentHelpString CACHE "${var}" PROPERTY HELPSTRING)
+    if("${currentHelpString}" MATCHES "No help, variable specified on the command line." OR "${currentHelpString}" STREQUAL "")
+        # message("${var} = [${${var}}]  --  ${currentHelpString}") # uncomment to see the variables being processed
+        list(APPEND CL_ARGS "-D${var}=${${var}}")
+    endif()
+endforeach()
 
-add_subdirectory(
-        library/expat-2.3.0
-)
+project(SuperBuild)
 
-# For exiv2:
-#set(CMAKE_CXX_STANDARD 11)             # Uncommenting this line leads to "no stop on breakpoints in C++ code in Android Studio"
-#set(CMAKE_CXX_FLAGS -Wno-deprecated)   # Uncommenting this line leads to "no stop on breakpoints in C++ code in Android Studio"
+##############################################
+# Include external projects/libraries
+##############################################
 
-# Overwrite exiv2 cmake options
-set(EXIV2_BUILD_SAMPLES         OFF CACHE BOOL "Build sample applications"              FORCE)
-set(EXIV2_ENABLE_PNG            OFF CACHE BOOL "Build with png support (requires libz)" FORCE)
-set(EXIV2_BUILD_EXIV2_COMMAND   OFF CACHE BOOL "Build exiv2 command-line executable"    FORCE)
+#### libexif
+include(cmake/libexif.cmake)
 
-# Set EXPAT variables needed by exiv2/xmpsdk
-set(EXPAT_LIBRARY expat)
-set(EXPAT_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/../expat-2.3.0/lib)
-add_subdirectory(
-        library/exiv2-0.27.3-Source
-)
+#### exif
+include(cmake/exif.cmake)
 
+#### Expat (required by xmpsdk in exiv2)
+include(cmake/expat.cmake)
+
+#### exiv2
+include(cmake/exiv2.cmake)
+
+#### ffmpeg
+set(FFMPEG_CONFIGURE_EXTRAS --enable-jni --enable-mediacodec)
+include(cmake/ffmpeg.cmake)
+
+#### Now to build the native-lib code specific to "Exif Thumbnail Adder"
 add_subdirectory(
         app/src/main/cpp
 )
-
-set(FFMPEG_CONFIGURE_EXTRAS --enable-jni --enable-mediacodec)
-include(cmake/ffmpeg.cmake)

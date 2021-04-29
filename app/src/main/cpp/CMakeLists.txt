@@ -3,9 +3,12 @@ project(exifThumbnailAdderHelpers LANGUAGES C CXX)
 
 set(PACKAGE "exifThumbnailAdderHelpers")
 
-set(LIBEXIFDIR  "../../../../library/libexif-0.6.22")
-set(EXIFDIR     "../../../../library/exif-0.6.22")
-set(EXIV2DIR    "../../../../library/exiv2-0.27.3-Source")
+include(ExternalProject)
+
+# Fetch source location of exiv2 and store in "EXIV2DIR"
+ExternalProject_Get_Property(exiv2_external SOURCE_DIR)
+set(EXIV2DIR ${SOURCE_DIR})
+unset(SOURCE_DIR)
 
 set(SOURCES
         libexif-helper.c
@@ -34,7 +37,7 @@ set (exiv2
 # exifThumbnailAdderHelpers links to libavutil & libswscale
 # we need to use link_directories so that target_link_libraries works.
 # link_directories must be set before "add_library", otherwise the libs will not be found
-link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+#link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 add_library(exifThumbnailAdderHelpers
         SHARED
@@ -45,23 +48,19 @@ add_library(exifThumbnailAdderHelpers
         )
 
 target_include_directories(exifThumbnailAdderHelpers PRIVATE .)
-target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+#target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include)
 
-add_dependencies(exifThumbnailAdderHelpers exif exifExecAsLib)
-target_link_libraries(exifThumbnailAdderHelpers exif exifExecAsLib)
-target_include_directories(exifThumbnailAdderHelpers PRIVATE ${LIBEXIFDIR})
-target_include_directories(exifThumbnailAdderHelpers PRIVATE ${EXIFDIR})
-target_include_directories(exifThumbnailAdderHelpers PRIVATE ${EXIFDIR}/exif)
-target_include_directories(exifThumbnailAdderHelpers PRIVATE ${EXIFDIR}/libjpeg)
+# for libexif_helper
+target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include/libexif_app)
+target_link_libraries(exifThumbnailAdderHelpers libexifLib exifLib)
 
-add_dependencies(exifThumbnailAdderHelpers exiv2lib)
-target_link_libraries(exifThumbnailAdderHelpers exiv2lib)
-target_include_directories(exifThumbnailAdderHelpers PRIVATE ${EXIV2DIR}/src)
-target_include_directories(exifThumbnailAdderHelpers PRIVATE ${EXIV2DIR}/include)
-target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}) # for "exiv2lib_export.h"
+# for Exiv2Helper
+target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include/exiv2)
+target_link_libraries(exifThumbnailAdderHelpers libexpatLib) # To be sure libexpat.so is added since it is needed by exiv2
+target_link_libraries(exifThumbnailAdderHelpers libexiv2Lib)
 
-add_dependencies(exifThumbnailAdderHelpers ffmpeg_target)
-target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/include)
-target_link_libraries(exifThumbnailAdderHelpers swscale avutil)
+# for ffmpeg_helper
+target_link_libraries(exifThumbnailAdderHelpers libswscaleLib libavutilLib)
 target_link_libraries(exifThumbnailAdderHelpers log)         # for __android_log_print
 target_link_libraries(exifThumbnailAdderHelpers jnigraphics) # for android bitmap in jni/c
