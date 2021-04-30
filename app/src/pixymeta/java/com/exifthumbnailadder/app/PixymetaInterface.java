@@ -43,7 +43,7 @@ public class PixymetaInterface {
         // PixyMeta doesn't copy correctly the IFDInterop
         try {
             IFD tbIFD = new IFD();
-            ExifThumbnail exifTb = new ExifThumbnail(thumbnail.getWidth(), thumbnail.getHeight(), ExifThumbnail.DATA_TYPE_KJpegRGB, FirstFragment.bitmapToJPEGBytearray(thumbnail), tbIFD);
+            ExifThumbnail exifTb = new ExifThumbnail(thumbnail.getWidth(), thumbnail.getHeight(), ExifThumbnail.DATA_TYPE_KJpegRGB, NativeLibHelper.bitmapToJPEGBytearray(thumbnail), tbIFD);
             JpegExif jpegExif = new JpegExif();
             jpegExif.setThumbnail(exifTb);
 
