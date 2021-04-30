@@ -46,7 +46,7 @@ public class AboutActivity extends AppCompatActivity {
         String version = new String();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            version = pInfo.versionName;
+            version = pInfo.versionName + " (flavor: " + BuildConfig.FLAVOR + "; type: " + BuildConfig.BUILD_TYPE + ")";
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -61,7 +61,7 @@ public class AboutActivity extends AppCompatActivity {
         text.append("<u><strong>" + getString(R.string.about_homepage_source) + "</strong></u><br><a href='"+homepage_url+"'>"+homepage_url+"</a>");
         text.append("</p><p>");
         text.append("</p><p>");
-        text.append("<u><strong>" + getString(R.string.about_license) + "</strong></u> <a href='http://www.gnu.org/licenses/gpl-3.0.html'>GNU General Public License, version 3</a>");
+        text.append("<u><strong>" + getString(R.string.about_license) + "</strong></u> <a href='https://www.gnu.org/licenses/gpl-3.0.html'>GNU General Public License, version 3</a>");
         text.append("</p><p>");
         text.append("<u><strong>" + getString(R.string.about_external_libraries) + "</strong></u>");
         text.append("</p>");
