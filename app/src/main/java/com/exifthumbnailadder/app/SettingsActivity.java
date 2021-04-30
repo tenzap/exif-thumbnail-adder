@@ -38,6 +38,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
@@ -95,6 +96,13 @@ public class SettingsActivity extends AppCompatActivity {
             setAllFilesAccess();
             setSkipPicsHavingThumbnail();
 
+            SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+            String exif_library = prefs.getString("exif_library", "exiflib_exiv2");
+            if (exif_library.equals("exiflib_pixymeta") ||
+                    BuildConfig.FLAVOR.equals("pixymeta") ||
+                    BuildConfig.BUILD_TYPE.equals("debug")) {
+                addPixymetaToLibraryList();
+            }
         }
 
         @Override
@@ -139,6 +147,24 @@ public class SettingsActivity extends AppCompatActivity {
                     t.show();
                 }
             }
+        }
+
+        public void addPixymetaToLibraryList() {
+            CharSequence[] ent_def = getResources().getTextArray(R.array.exif_library_entries);
+            CharSequence[] ent_pixymeta = getResources().getTextArray(R.array.exif_library_pixymeta_entries);
+            CharSequence[] ent_all = new CharSequence[ent_def.length + ent_pixymeta.length];
+            System.arraycopy(ent_def, 0, ent_all, 0, ent_def.length);
+            System.arraycopy(ent_pixymeta, 0, ent_all, ent_def.length, ent_pixymeta.length);
+
+            CharSequence[] val_def = getResources().getTextArray(R.array.exif_library_values);
+            CharSequence[] val_pixymeta = getResources().getTextArray(R.array.exif_library_pixymeta_values);
+            CharSequence[] val_all = new CharSequence[val_def.length + val_pixymeta.length];
+            System.arraycopy(val_def, 0, val_all, 0, val_def.length);
+            System.arraycopy(val_pixymeta, 0, val_all, val_def.length, val_pixymeta.length);
+
+            ListPreference exif_libraryPref = findPreference("exif_library");
+            exif_libraryPref.setEntries(ent_all);
+            exif_libraryPref.setEntryValues(val_all);
         }
 
         public void updatePathsSummary() {
