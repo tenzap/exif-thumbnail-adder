@@ -37,8 +37,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributeView;
 import java.util.Arrays;
 
 import static com.exifthumbnailadder.app.MainApplication.TAG;
@@ -374,4 +376,28 @@ public class ETADocFile extends ETADoc {
 
     }
 
+    void copyAttributesTo(Object doc) throws Exception {
+        if (!attributesAreSet) throw new FirstFragment.CopyAttributesFailedException("Attributes have not been stored with storeFileAttributes");
+
+        Path outFilePath;
+        if (doc instanceof Path)
+            outFilePath = (Path)doc;
+        else
+            throw new UnsupportedOperationException("passed object must be of type Path");
+
+        try {
+            // Set owner attribute
+            Files.setOwner(outFilePath, attributeUser);
+            // Set time attributes
+            Files.getFileAttributeView(outFilePath, BasicFileAttributeView.class).setTimes(
+                    attributeBasic.lastModifiedTime(),
+                    attributeBasic.lastAccessTime(),
+                    attributeBasic.creationTime());
+            // Set Posix attributes
+            Files.setPosixFilePermissions(outFilePath, attributePosix);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new FirstFragment.CopyAttributesFailedException(e);
+        }
+    }
 }

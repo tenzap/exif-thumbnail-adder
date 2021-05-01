@@ -39,9 +39,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URLConnection;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.UserPrincipal;
 import java.util.HashMap;
+import java.util.Set;
 
 import static com.exifthumbnailadder.app.MainApplication.TAG;
 import static com.exifthumbnailadder.app.MainApplication.enableLog;
@@ -66,6 +72,10 @@ public abstract class ETADoc {
     final boolean withVolumeName;
 
     boolean toBitmapReturnsRotatedBitmap = false;
+    BasicFileAttributes attributeBasic;
+    UserPrincipal attributeUser;
+    Set<PosixFilePermission> attributePosix;
+    boolean attributesAreSet = false;
 
     protected ETADoc(Context ctx, ETASrcDir root, String volumeName, String volumeRootPath, boolean withVolumeName) {
         this.ctx = ctx;
@@ -114,6 +124,7 @@ public abstract class ETADoc {
     public abstract boolean deleteOutputInTmp();
 
     abstract String getBaseDir(String dirId);
+    abstract void copyAttributesTo(Object doc) throws Exception;
 
     // ETADocUri only
     public abstract Uri getSrcUri(String srcDirMainDir, String srcDirTreeId) throws Exception;
@@ -284,5 +295,21 @@ public abstract class ETADoc {
         }
 
         return thumbnail;
+    }
+
+    void storeFileAttributes() throws Exception {
+        Path inFilePath = Paths.get(getFullFSPath());
+        try {
+            // Save basic attributes (containing file timestamps)
+            attributeBasic = Files.readAttributes(inFilePath, BasicFileAttributes.class);
+            // Save owner attribute
+            attributeUser = Files.getOwner(inFilePath, LinkOption.NOFOLLOW_LINKS);
+            // Save Posix attributes
+            attributePosix = Files.getPosixFilePermissions(inFilePath, LinkOption.NOFOLLOW_LINKS);
+            attributesAreSet = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 }

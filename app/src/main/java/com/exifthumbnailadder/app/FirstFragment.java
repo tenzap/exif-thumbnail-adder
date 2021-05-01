@@ -943,6 +943,9 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         public CopyAttributesFailedException(Throwable err) {
             super(err);
         }
+        public CopyAttributesFailedException(String msg) {
+            super(msg);
+        }
     }
 
 }
