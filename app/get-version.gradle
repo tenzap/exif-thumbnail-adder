@@ -44,14 +44,16 @@ def fallbackVersionNumber() {
             String mydata = file("../version_last_tag.txt").text.toString()
             Pattern pattern = Pattern.compile('version: (.+)\\+(.+)');
             Matcher matcher = pattern.matcher(mydata);
-            //if (matcher.find()) System.out.println(matcher.group(1))
-            return matcher.group(1) + "-exotic-" + versionCodeAsDateTime()
+            if (matcher.find()) {
+                //System.out.println(matcher.group(1))
+                String part1 = matcher.group(1).split("-exotic-")[0]
+                return part1 + "-exotic-" + versionCodeAsDateTime()
+            }
         } catch (Exception e) {
             e.printStackTrace()
         }
-    } else {
-        return 'missingGitTag' + "-" + versionCodeAsDateTime()
     }
+    return 'missingGitTag' + "-" + versionCodeAsDateTime()
 }
 
 def fallbackVersionCode() {
@@ -61,14 +63,23 @@ def fallbackVersionCode() {
             String mydata = file("../version_last_tag.txt").text.toString()
             Pattern pattern = Pattern.compile('version: (.+)\\+(.+)');
             Matcher matcher = pattern.matcher(mydata);
-            //if (matcher.find()) System.out.println(matcher.group(2));
-            return Integer.parseInt(matcher.group(2))
+            if (matcher.find()) {
+                // System.out.println(matcher.group(2));
+                try {
+                    int val = Integer.parseInt(matcher.group(2))
+                    return val
+                } catch (NumberFormatException e) {
+                    System.err.println("Version Code in file version_last_tag.txt is not a number. Setting it to 1.");
+                    return 1
+                } catch (Exception e) {
+                    e.printStackTrace()
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace()
         }
-    } else {
-        return 1
     }
+    return 1
 }
 
 def finalVersionCode() {
