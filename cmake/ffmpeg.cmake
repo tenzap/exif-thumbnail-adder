@@ -173,7 +173,7 @@ set_target_properties(
         # Specifies the parameter you want to define.
         PROPERTIES IMPORTED_LOCATION
         # Provides the path to the library you want to import.
-        ${CMAKE_BINARY_DIR}/lib/libswscale.so
+        ${CMAKE_BINARY_DIR}/lib/libavutil.so
 )
 
 add_library(libswscaleLib SHARED IMPORTED)
@@ -184,5 +184,5 @@ set_target_properties(
         # Specifies the parameter you want to define.
         PROPERTIES IMPORTED_LOCATION
         # Provides the path to the library you want to import.
-        ${CMAKE_BINARY_DIR}/lib/libavutil.so
+        ${CMAKE_BINARY_DIR}/lib/libswscale.so
 )
