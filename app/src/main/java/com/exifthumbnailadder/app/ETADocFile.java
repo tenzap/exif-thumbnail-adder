@@ -20,11 +20,14 @@
 
 package com.exifthumbnailadder.app;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
+import android.os.Build;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -37,6 +40,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -216,10 +220,35 @@ public class ETADocFile extends ETADoc {
         if (volumeName == MediaStore.VOLUME_EXTERNAL_PRIMARY) {
             writablePath = volumeRootPath;
         } else {
-            // Attention "getExternalStorageDirectory" deprecated from API 29,
-            writablePath = Environment.getExternalStorageDirectory().toString();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                writablePath = getPrimaryStorageVolumeForAndroid11AndAbove();
+            else
+                writablePath = getPrimaryStorageVolumeBeforeAndroid11();
         }
         return writablePath;
+    }
+
+    @TargetApi(Build.VERSION_CODES.R)
+    private String getPrimaryStorageVolumeForAndroid11AndAbove() {
+        StorageManager myStorageManager = (StorageManager) ctx.getSystemService(Context.STORAGE_SERVICE);
+        StorageVolume mySV = myStorageManager.getPrimaryStorageVolume();
+        return mySV.getDirectory().getPath();
+    }
+
+    private String getPrimaryStorageVolumeBeforeAndroid11() {
+        String volumeRootPath = "";
+        StorageManager myStorageManager = (StorageManager) ctx.getSystemService(Context.STORAGE_SERVICE);
+        StorageVolume mySV = myStorageManager.getPrimaryStorageVolume();
+        Class<?> storageVolumeClazz = null;
+
+        try {
+            storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
+            Method getPath = storageVolumeClazz.getMethod("getPath");
+            volumeRootPath = (String) getPath.invoke(mySV);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return volumeRootPath;
     }
 
     public void createDirForTmp() {
