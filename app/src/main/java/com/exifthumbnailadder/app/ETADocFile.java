@@ -70,8 +70,13 @@ public class ETADocFile extends ETADoc {
         if (etaDoc.toString().startsWith(volumeRootPath)) {
             String tmp = etaDoc.toString().substring(volumeRootPath.length()); // "/DCIM/dir1/s2/file.jpg"
             String[] b = tmp.split(File.separator); // [0]: "" ; [1]: "DCIM; [2]: "dir1"...
-            if (b.length > 2)
-                subDir = String.join(File.separator, Arrays.copyOfRange(b, 2, b.length - 1)); // "dir1/s2"
+            if (b.length > 2) {
+                if (etaDoc.isFile())
+                    subDir = String.join(File.separator, Arrays.copyOfRange(b, 2, b.length - 1)); // "dir1/s2"
+                else if (etaDoc.isDirectory())
+                    subDir = String.join(File.separator, Arrays.copyOfRange(b, 2, b.length)); // "dir1/s2"
+                else throw new UnsupportedOperationException("Path is neither file, nor directory. Not supported.");
+            }
         }
         return subDir;
     }

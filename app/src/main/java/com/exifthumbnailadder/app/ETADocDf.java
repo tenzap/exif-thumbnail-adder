@@ -62,7 +62,11 @@ public class ETADocDf extends ETADoc {
     }
 
     public String getSubDir() {
-        return UriUtil.getDDSubParent(_uri);
+        if (etaDoc.isFile())
+            return UriUtil.getDDSubParent(_uri);
+        else if (etaDoc.isDirectory())
+            return UriUtil.getDDSub(_uri);
+        else throw new UnsupportedOperationException("DocumentFile is neither file, nor directory. Not supported.");
     }
 
     public String getTreeId() {
