@@ -20,6 +20,7 @@
 
 package com.exifthumbnailadder.app;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
@@ -208,27 +209,37 @@ public class ETADocDf extends ETADoc {
     }
 
     public Bitmap toBitmap() throws Exception {
-        Bitmap b;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // We need a bitmap that has not Config.HARDWARE
-            // for this we have to set it mutable
-            // This is for use in ffmpeg
-            // for code below, see https://stackoverflow.com/a/63022406/15401262)
-            ImageDecoder.Source source = ImageDecoder.createSource(ctx.getContentResolver(), _uri);
-            ImageDecoder.OnHeaderDecodedListener listener = new ImageDecoder.OnHeaderDecodedListener() {
-                @Override
-                public void onHeaderDecoded(@NonNull ImageDecoder decoder, @NonNull ImageDecoder.ImageInfo info, @NonNull ImageDecoder.Source source) {
-                    decoder.setMutableRequired(true);
-                }
-            };
-            b = ImageDecoder.decodeBitmap(source, listener);
-
-            // decodeBitmap returns a bitmap that is already rotated according to EXIF tags, so set to true
-            toBitmapReturnsRotatedBitmap = true;
+            return toBitmapImageDecoder();
         } else {
-            b = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), _uri);
-            if (enableLog) Log.i(TAG, "BitmapConfig: "+ b.getConfig().toString());
+            return toBitmapLegacy();
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    private Bitmap toBitmapLegacy() throws Exception {
+        Bitmap b = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), _uri);
+        if (enableLog) Log.i(TAG, "BitmapConfig: "+ b.getConfig().toString());
+        return b;
+    }
+
+    @TargetApi(Build.VERSION_CODES.P)
+    private Bitmap toBitmapImageDecoder() throws Exception {
+        // We need a bitmap that has not Config.HARDWARE
+        // for this we have to set it mutable
+        // This is for use in ffmpeg
+        // for code below, see https://stackoverflow.com/a/63022406/15401262)
+        ImageDecoder.Source source = ImageDecoder.createSource(ctx.getContentResolver(), _uri);
+        ImageDecoder.OnHeaderDecodedListener listener = new ImageDecoder.OnHeaderDecodedListener() {
+            @Override
+            public void onHeaderDecoded(@NonNull ImageDecoder decoder, @NonNull ImageDecoder.ImageInfo info, @NonNull ImageDecoder.Source source) {
+                decoder.setMutableRequired(true);
+            }
+        };
+        Bitmap b = ImageDecoder.decodeBitmap(source, listener);
+
+        // decodeBitmap returns a bitmap that is already rotated according to EXIF tags, so set to true
+        toBitmapReturnsRotatedBitmap = true;
         return b;
     }
 
