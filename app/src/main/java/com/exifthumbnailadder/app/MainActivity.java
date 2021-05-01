@@ -36,10 +36,7 @@ import android.content.pm.PackageManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private final String TAG = "ETALog";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,9 +63,17 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
 
+        // In case the useSAF preference was changed with a debug release,
+        // here we revert it to the default value "enabled"
+        if (!BuildConfig.BUILD_TYPE.equals("debug")) {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("useSAF", true);
+            //editor.commit();
+            editor.apply();
+        }
     }
 
     @Override
