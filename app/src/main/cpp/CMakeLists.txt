@@ -66,6 +66,9 @@ target_link_libraries(exifThumbnailAdderHelpers libexpatLib) # To be sure libexp
 target_link_libraries(exifThumbnailAdderHelpers libexiv2Lib)
 
 # for ffmpeg_helper
+if (CMAKE_HOST_WIN32)
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/ffmpeg-4.4/include)
+endif()
 target_link_libraries(exifThumbnailAdderHelpers libswscaleLib libavutilLib)
 target_link_libraries(exifThumbnailAdderHelpers log)         # for __android_log_print
 target_link_libraries(exifThumbnailAdderHelpers jnigraphics) # for android bitmap in jni/c

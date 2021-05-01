@@ -34,8 +34,13 @@ include(cmake/expat.cmake)
 include(cmake/exiv2.cmake)
 
 #### ffmpeg
-set(FFMPEG_CONFIGURE_EXTRAS --enable-jni --enable-mediacodec)
-include(cmake/ffmpeg.cmake)
+if(CMAKE_HOST_WIN32)
+    # use precompiled library because we can't easily run "./configure" from win32 systems
+    include(cmake/ffmpeg-win32.cmake)
+else()
+    set(FFMPEG_CONFIGURE_EXTRAS --enable-jni --enable-mediacodec)
+    include(cmake/ffmpeg.cmake)
+endif()
 
 #### Now to build the native-lib code specific to "Exif Thumbnail Adder"
 add_subdirectory(
