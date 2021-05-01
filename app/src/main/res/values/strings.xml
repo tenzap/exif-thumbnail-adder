@@ -113,6 +113,7 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="frag1_log_not_granted">\u00A0Not granted. Please add the directory again in Settings.</string>
     <string name="frag1_log_ko">\u00A0KO"</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr">Could not copy file timestamps &amp; attributes: %1$s</string>
+    <string name="frag1_log_could_not_store_timestamp_and_attr">Could not store file timestamps &amp; attributes: %1$s</string>
     <string name="frag1_log_error_moving_doc">ERROR moving document: %1$s</string>
     <string name="frag1_log_error_copying_doc">ERROR copying document: %1$s</string>
     <string name="frag1_log_count_files_to_process">%1$d file(s) to process."</string>

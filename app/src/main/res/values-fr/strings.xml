@@ -90,6 +90,7 @@
     <string name="frag1_log_not_granted">\u00A0Non accordée. Veuillez à nouveau ajouter le répertoire dans les paramètres.</string>
     <string name="frag1_log_ko">\u00A0KO"</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr">N\'a pu copier l\'horodatage et les attributs de fichier: %1$s</string>
+    <string name="frag1_log_could_not_store_timestamp_and_attr">N\'a pu sauver l\'horodatage et les attributs de fichier: %1$s</string>
     <string name="frag1_log_error_moving_doc">ERREUR dans le déplacement du document: %1$s</string>
     <string name="frag1_log_error_copying_doc">ERREUR dans la copie du document: %1$s</string>
     <string name="frag1_log_count_files_to_process">%1$d fichiers(s) à traiter."</string>

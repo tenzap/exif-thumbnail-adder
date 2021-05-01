@@ -53,6 +53,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
@@ -141,7 +142,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
 
         LinearLayout ll = (LinearLayout)view.findViewById(R.id.block_allFilesAccess);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play")) {
             // Use of "All Files Access Permissions" may result in rejection from the google play store
             // We use it only to be able to update the attributes of the files (ie timestamps)
             if (SettingsActivity.haveAllFilesAccessPermission())
@@ -424,6 +425,13 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         doc.createDirForBackup();
                         doc.createDirForDest();
 
+                        try {
+                            doc.storeFileAttributes();
+                        } catch (Exception e) {
+                            updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_store_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
+                            e.printStackTrace();
+                        }
+
                         // a. write outputstream to disk
                         try  {
                             doc.writeInTmp(newImgOs);
@@ -513,23 +521,14 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                             }
                         }
 
-                        // a. Copy attributes from original file to tmp file
-                        try {
-                            if (doc instanceof ETADocDf)
-                                copyFileAttributes(doc.getUri(), (Uri)doc.getOutputInTmp());
-                            else if (doc instanceof ETADocFile)
-                                copyFileAttributes(doc.toPath(), ((File)doc.getOutputInTmp()).toPath());
-                        } catch (CopyAttributesFailedException e) {
-                            updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
-                            e.printStackTrace();
-                        } catch (Exception e) {
-                            updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error, e.getMessage()) + "</span><br>", 1));
-                            e.printStackTrace();
-                            continue;
-                        }
+                        // a. We don't copy attributes from original file to tmp file because from Android 11
+                        // it may fail on setOwner when tmp file is put in Cache Dir
+                        // We set the attributes on the output files another way
 
-                        Uri outputFile = null; // Uri returned by "copyDocument" to dest
-                        Uri originalImage = null; // Uri returned by "moveDocument", file in bak.
+                        Uri outputUri = null; // Uri returned by "copyDocument" to dest
+                        Uri originalImageUri = null; // Uri returned by "moveDocument", file in bak.
+                        Path outputPath = null;
+                        Path originalImagePath = null;
 
                         // a. Move or copy original files (from DCIM) to backup dir (DCIM.bak)
                         if (prefs.getBoolean("backupOriginalPic", true)) {
@@ -537,7 +536,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                 // We do a move (so that the file with a thumbnail can be placed to the original dir)
                                 try {
                                     if (doc instanceof ETADocDf) {
-                                        originalImage = moveDocument(
+                                        originalImageUri = moveDocument(
                                                 doc.getUri(),
                                                 UriUtil.buildDParentAsUri(doc.getUri()),
                                                 doc.getBackupUri(),
@@ -547,10 +546,18 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                             Path backupFile = doc.getBackupPath().resolve(doc.getName());
                                             if (backupFile.toFile().exists())
                                                 throw new FileAlreadyExistsException(backupFile.toString());
-                                            Files.move(
+                                            try {
+                                                originalImagePath = Files.move(
                                                     doc.toPath(),
                                                     backupFile,
                                                     ATOMIC_MOVE);
+                                            } catch (AtomicMoveNotSupportedException e) {
+                                                if (enableLog) Log.i(TAG, "Error moving document. Trying 'move' without ATOMIC_MOVE option. " + e.getMessage());
+                                                originalImagePath = Files.move(
+                                                        doc.toPath(),
+                                                        backupFile);
+                                                doc.copyAttributesTo(originalImagePath);
+                                            }
                                         } else {
                                             // Do nothing
                                         }
@@ -571,20 +578,22 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                 // We do a copy
                                 try {
                                     if (doc instanceof ETADocDf) {
-                                        copyDocument(
+                                        originalImageUri = copyDocument(
                                                 doc.getUri(),
                                                 doc.getBackupUri(),
                                                 true,
-                                                prefs.getBoolean("keepTimeStampOnBackup", true));
+                                                false);
+                                        if (prefs.getBoolean("keepTimeStampOnBackup", true))
+                                            doc.copyAttributesTo(originalImageUri);
                                     } else if (doc instanceof ETADocFile) {
                                         if (prefs.getBoolean("keepTimeStampOnBackup", true)) {
-                                            Files.copy(
+                                            originalImagePath = Files.copy(
                                                     doc.toPath(),
                                                     doc.getBackupPath().resolve(doc.getName()),
                                                     REPLACE_EXISTING,
                                                     COPY_ATTRIBUTES);
                                         } else {
-                                            Files.copy(
+                                            originalImagePath = Files.copy(
                                                     doc.toPath(),
                                                     doc.getBackupPath().resolve(doc.getName()),
                                                     REPLACE_EXISTING);
@@ -610,25 +619,43 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
                         try {
                             if (doc instanceof ETADocDf) {
-                                outputFile = moveDocument(
+                                outputUri = moveDocument(
                                         (Uri)doc.getOutputInTmp(),
                                         doc.getTmpUri(),
                                         doc.getDestUri(),
                                         replaceExising);
+                                doc.copyAttributesTo(outputUri);
                             } else if (doc instanceof ETADocFile) {
                                 Path destFile = doc.getDestPath().resolve(doc.getName());
                                 if (replaceExising) {
-                                    Files.move(
-                                            ((File) doc.getOutputInTmp()).toPath(),
-                                            destFile,
-                                            REPLACE_EXISTING, ATOMIC_MOVE);
+                                    try {
+                                        outputPath = Files.move(
+                                                ((File) doc.getOutputInTmp()).toPath(),
+                                                destFile,
+                                                REPLACE_EXISTING, ATOMIC_MOVE);
+                                    } catch (AtomicMoveNotSupportedException e) {
+                                        if (enableLog) Log.i(TAG, "Error moving document. Trying 'move' without ATOMIC_MOVE option. " + e.getMessage());
+                                        outputPath = Files.move(
+                                                ((File) doc.getOutputInTmp()).toPath(),
+                                                destFile,
+                                                REPLACE_EXISTING);
+                                        doc.copyAttributesTo(outputPath);
+                                    }
                                 } else {
                                     if (destFile.toFile().exists())
                                         throw new FileAlreadyExistsException(destFile.toString());
-                                    Files.move(
-                                            ((File) doc.getOutputInTmp()).toPath(),
-                                            destFile,
-                                            ATOMIC_MOVE);
+                                    try {
+                                        outputPath = Files.move(
+                                                ((File) doc.getOutputInTmp()).toPath(),
+                                                destFile,
+                                                ATOMIC_MOVE);
+                                    } catch (AtomicMoveNotSupportedException e) {
+                                        if (enableLog) Log.i(TAG, "Error moving document. Trying 'move' without ATOMIC_MOVE option. " + e.getMessage());
+                                        outputPath = Files.move(
+                                                ((File) doc.getOutputInTmp()).toPath(),
+                                                destFile);
+                                        doc.copyAttributesTo(outputPath);
+                                    }
                                 }
                             }
                         } catch (DestinationFileExistsException | FileAlreadyExistsException e ) {
@@ -754,7 +781,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         return targetUri;
     }
 
-    private void copyDocument(Uri sourceUri, Uri targetParentUri, Uri targetUri) throws Exception {
+    private Uri copyDocument(Uri sourceUri, Uri targetParentUri, Uri targetUri) throws Exception {
         // Copy is most time not possible. See:
         // https://stackoverflow.com/questions/66660155/android-saf-cannot-copy-file-flag-supports-copy-not-set
         // So we check if it is supported, otherwise, we fall back to copying with streams.
@@ -766,16 +793,17 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
             if (enableLog) Log.i(TAG, "File supports DocumentsContract.copyDocument... Copying...");
             try {
                 Uri outUri = DocumentsContract.copyDocument(getActivity().getContentResolver(), sourceUri, targetParentUri);
+                return outUri;
             } catch (Exception e ) {
                 throw e;
                 //e.printStackTrace();
             }
         } else {
-            copyDocumentWithStream(sourceUri, targetUri);
+            return copyDocumentWithStream(sourceUri, targetUri);
         }
     }
 
-    private void copyDocumentWithStream(Uri sourceUri, Uri targetUri) throws Exception {
+    private Uri copyDocumentWithStream(Uri sourceUri, Uri targetUri) throws Exception {
         try {
             InputStream is = getActivity().getContentResolver().openInputStream(sourceUri);
             OutputStream os = getActivity().getContentResolver().openOutputStream(targetUri);
@@ -791,6 +819,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
             throw e;
             //e.printStackTrace();
         }
+        return targetUri;
     }
 
     private Uri moveDocument(Uri sourceUri, Uri sourceParentUri, Uri targetParentUri, boolean replaceExisting)

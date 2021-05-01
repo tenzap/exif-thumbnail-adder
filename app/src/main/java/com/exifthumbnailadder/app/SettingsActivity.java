@@ -191,7 +191,7 @@ public class SettingsActivity extends AppCompatActivity {
             if (allFilesAccess == null) return;
 
             PreferenceCategory mCategory = (PreferenceCategory) findPreference("categ_Folders");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play")) {
                 // update preference value
                 allFilesAccess.setChecked(SettingsActivity.haveAllFilesAccessPermission());
             } else {
