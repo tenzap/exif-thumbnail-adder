@@ -21,6 +21,7 @@
 package com.exifthumbnailadder.app;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -35,6 +36,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.documentfile.provider.DocumentFile;
@@ -52,7 +57,6 @@ import static com.exifthumbnailadder.app.MainApplication.TAG;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private final int OPEN_DOCUMENT_TREE_RESULT_CODE = 10;
     SettingsFragment settingsFragment;
 
     @Override
@@ -239,24 +243,25 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
-        if (resultCode != RESULT_OK)
-            return;
-
-        if (requestCode == OPEN_DOCUMENT_TREE_RESULT_CODE) {
-            Uri treeUri = resultData.getData();
-            DocumentFile pickedDir = DocumentFile.fromTreeUri(this, treeUri);
-            grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
-            getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION );
-            setChosenPath( pickedDir.getUri());
-        }
-    }
+    ActivityResultLauncher<Intent> mLauncherOpenDocumentTree = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Uri treeUri = result.getData().getData();
+                        DocumentFile pickedDir = DocumentFile.fromTreeUri(getApplicationContext(), treeUri);
+                        grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
+                        getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION );
+                        setChosenPath( pickedDir.getUri());
+                    }
+                }
+            });
 
     public void choosePaths(View view) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         settingsFragment.setDoNotUnregisterPreferenceChangedListener(true);
-        startActivityForResult(intent, OPEN_DOCUMENT_TREE_RESULT_CODE);
+        mLauncherOpenDocumentTree.launch(intent);
     }
 
     public void deletePaths(View view) {

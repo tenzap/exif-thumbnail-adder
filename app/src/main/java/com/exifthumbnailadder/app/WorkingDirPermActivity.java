@@ -20,7 +20,10 @@
 
 package com.exifthumbnailadder.app;
 
-import androidx.annotation.Nullable;
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
@@ -46,10 +49,6 @@ import static com.exifthumbnailadder.app.MainApplication.TAG;
 
 public class WorkingDirPermActivity extends AppCompatActivity {
 
-    private static final int SELECT_ROOT_FOLDER = 1;
-    private static final int CREATE_DOCUMENT = 2;
-    private static final int OPEN_DOCUMENT_TREE = 3;
-
     SharedPreferences  prefs = null;
 
     @Override
@@ -60,69 +59,43 @@ public class WorkingDirPermActivity extends AppCompatActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    // Replacing startActivityForResult
+    // https://stackoverflow.com/a/62615065/15401262
+    ActivityResultLauncher<Intent> mLauncherCreateDocument = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Uri dirUri = result.getData().getData();
 
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case SELECT_ROOT_FOLDER:
-                    Uri treeRootUri = data.getData();
-
-                    // Check if workingdir folder already exists
-                    String volumeId = UriUtil.getTVolId(treeRootUri);
-                    String workingDir = prefs.getString("working_dir", "ThumbAdder");
-                    Uri workingDirUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, volumeId + ":" + workingDir);
-
-                    if (!DocumentFile.fromTreeUri(this, workingDirUri).exists()) {
-                        // Continue with creating the folder (it doesn't exist yet)
-                        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-                        intent.addCategory(Intent.CATEGORY_OPENABLE);
-                        intent.setType(DocumentsContract.Document.MIME_TYPE_DIR);
-                        intent.putExtra(Intent.EXTRA_TITLE, prefs.getString("working_dir", "ThumbAdder"));
-
-                        DocumentFile file = DocumentFile.fromTreeUri(this, treeRootUri);
-                        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, file.getUri());
-
-                        startActivityForResult(intent, CREATE_DOCUMENT);
-                    } else {
-                        // Folder exists already, we continue by querying permissions on the tree.
+                        // Prepare the call to get permanent permissions on the folder
+                        // we just created
                         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-
-                        Uri treeRootUri2 = DocumentsContract.buildTreeDocumentUri(treeRootUri.getAuthority(), volumeId+":"+ workingDir);
-                        Uri workingDirUri2 = DocumentsContract.buildDocumentUriUsingTree(treeRootUri2, volumeId + ":" + workingDir);
-
-                        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, workingDirUri2);
-                        startActivityForResult(intent, OPEN_DOCUMENT_TREE);
+                        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, dirUri);
+                        mLauncherOpenDocumentTree.launch(intent);
                     }
-                    break;
-                case CREATE_DOCUMENT:
-                    Uri dirUri = data.getData();
+                }
+            });
 
-                    // Prepare the wall to get permanent permissions on the folder
-                    // we just created
-                    Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, dirUri);
-                    startActivityForResult(intent, OPEN_DOCUMENT_TREE);
+    ActivityResultLauncher<Intent> mLauncherOpenDocumentTree = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Uri treeUri = result.getData().getData();
 
-                    break;
-                case OPEN_DOCUMENT_TREE:
-                    Uri treeUri = data.getData();
+                        // Store permissions
+                        grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
+                        getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                    // Store permissions
-                    grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
-                    getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-                    // Call again "checkWorkingDirPermissions"
-                    Button b = findViewById(R.id.button_checkPermissions);
-                    checkWorkingDirPermissions(b);
-
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+                        // Call again "checkWorkingDirPermissions"
+                        Button b = findViewById(R.id.button_checkPermissions);
+                        checkWorkingDirPermissions(b);
+                    }
+                }
+            });
 
     public static Uri workingDirPermMissing(SharedPreferences prefs, List<UriPermission> persUriPermList, Context con) {
 
@@ -169,10 +142,6 @@ public class WorkingDirPermActivity extends AppCompatActivity {
         List<UriPermission> persUriPermList = this.getContentResolver().getPersistedUriPermissions();
         Uri uri = workingDirPermMissing(prefs, persUriPermList, this);
         if (uri != null) {
-            //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                // Starting from android 11, we cannot select the root folder anymore.
-                // So we do it differently
-
                 String volumeId = UriUtil.getTVolId(uri);
                 String workingDir = prefs.getString("working_dir", "ThumbAdder");
 
@@ -189,7 +158,7 @@ public class WorkingDirPermActivity extends AppCompatActivity {
                     // Open document tree on WorkingDirUri to get the permission
                     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                     intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, wDUri);
-                    startActivityForResult(intent, OPEN_DOCUMENT_TREE);
+                    mLauncherOpenDocumentTree.launch(intent);
                 } else {
                     // Create the WorkingDirectory dir at the root of the volume
                     Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
@@ -200,17 +169,9 @@ public class WorkingDirPermActivity extends AppCompatActivity {
                     Uri treeRootUri = DocumentsContract.buildTreeDocumentUri(uri.getAuthority(), volumeId+":");
                     Uri treeRootDocUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, volumeId+":");
                     intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, treeRootDocUri);
-
-                    startActivityForResult(intent, CREATE_DOCUMENT);
+                    mLauncherCreateDocument.launch(intent);
                 }
-                /*
-            } else {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
-                startActivityForResult(intent, SELECT_ROOT_FOLDER);
-            }
 
-                 */
             return;
         }
 
