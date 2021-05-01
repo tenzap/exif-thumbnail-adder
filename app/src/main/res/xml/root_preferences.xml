@@ -24,6 +24,7 @@
         <SwitchPreferenceCompat
             app:defaultValue="false"
             app:key="settings_allFilesAccess"
+            app:singleLineTitle="false"
             app:title="@string/pref_allFilesAccess_title"
             app:summary="@string/pref_allFilesAccess_summary" />
     </PreferenceCategory>
