@@ -46,7 +46,6 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
 
     SharedPreferences prefs = null;
     TextView textViewLog, textViewDirList;
-    Handler mHandler;
     public final static SpannableStringBuilder log = new SpannableStringBuilder("");
     ScrollView scrollview = null;
     private boolean stopProcessing = false;
@@ -99,7 +98,6 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
         isProcessing = true;
         stopProcessing = false;
 
-        mHandler = new Handler();
         new Thread(new Runnable() {
             @Override
             public void run() {

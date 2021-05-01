@@ -80,7 +80,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
     SharedPreferences prefs = null;
     TextView textViewLog, textViewDirList;
-    Handler mHandler;
     public final static SpannableStringBuilder log = new SpannableStringBuilder("");
     ScrollView scrollview = null;
     private boolean stopProcessing = false;
@@ -260,7 +259,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         isProcessing = true;
         stopProcessing = false;
 
-        mHandler = new Handler();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -673,14 +671,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         }
 
                         updateUiLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_done) + "</span><br>",1));
-
-                        //Update the value background thread to UI thread
-                        mHandler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                //textViewLog.setText(log);
-                            }
-                        });
                     }
                 }
                 updateUiLog(getString(R.string.frag1_log_finished));
