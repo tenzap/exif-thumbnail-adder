@@ -123,4 +123,14 @@
             app:title="@string/pref_excludedSecVolPrefix_title" />
     </PreferenceCategory>
 
+    <PreferenceCategory
+        app:key="categ_debug"
+        app:title="@string/pref_categ_debug">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="useSAF"
+            app:singleLineTitle="false"
+            app:title="@string/pref_useSAF_title"
+            app:summary="@string/pref_useSAF_summary" />
+    </PreferenceCategory>
 </PreferenceScreen>

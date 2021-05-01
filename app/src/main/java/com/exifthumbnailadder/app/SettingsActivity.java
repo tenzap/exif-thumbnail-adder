@@ -103,6 +103,15 @@ public class SettingsActivity extends AppCompatActivity {
                     BuildConfig.BUILD_TYPE.equals("debug")) {
                 addPixymetaToLibraryList();
             }
+
+            PreferenceCategory debugCategory = (PreferenceCategory) findPreference("categ_debug");
+            if (!BuildConfig.BUILD_TYPE.equals("debug")) {
+                debugCategory.setVisible(false);
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putBoolean("useSAF", true);
+                //editor.commit();
+                editor.apply();
+            }
         }
 
         @Override

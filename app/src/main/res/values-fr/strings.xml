@@ -142,7 +142,6 @@
     <string name="pref_libexifSkipOnError_title">Sauter en cas d\'erreur libexif</string>
     <string name="pref_libexifSkipOnError_summary">Sauter l\'image en cas d\'erreur remontée par libexif</string>
 
-    pref_categ_libexif_settings
     <string name="pref_categ_extra">Suppléments</string>
     <string name="pref_excludedSecVolPrefix_title">Préfixe du répertoire exclu</string>
     <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[On peut définir un sous répertoire qui doit être exclu
@@ -150,6 +149,10 @@
     Par example \'copie_de_XXXX-XXXX\'.\nL\'id du volume (par ex d\'une une carte SD) peut se voir dans la liste des répertoires à traiter
     sour la forme XXXX-XXXX.]]></string>
     <string name="pref_excludedSecVolPrefix_defaultValue">copie_de_</string>
+
+    <string name="pref_categ_debug">Debug options</string>
+    <string name="pref_useSAF_title">use Storage Access Framework</string>
+    <string name="pref_useSAF_summary">ON=\'use SAF\' ; OFF=\'use Files\'</string>
 
     <!-- Sync Activity -->
     <string name="sync_text_description"><![CDATA[Synchronise les suppressions de fichiers du répertoire source vers le répertoire de sauvegarde et de travail]]></string>

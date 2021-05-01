@@ -280,7 +280,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
                 InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
                 Object[] srcDirs;
-                if (MainApplication.useSAF) {
+                if (prefs.getBoolean("useSAF", true)) {
                     srcDirs = inputDirs.toUriArray(); // Uri[]
                 } else {
                     srcDirs = inputDirs.toFileArray(getContext()); // File[]

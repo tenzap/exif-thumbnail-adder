@@ -119,7 +119,7 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
 
                 InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
                 Object[] srcDirs;
-                if (MainApplication.useSAF) {
+                if (prefs.getBoolean("useSAF", true)) {
                     srcDirs = inputDirs.toUriArray(); // Uri[]
                 } else {
                     srcDirs = inputDirs.toFileArray(SyncActivity.this); // File[]

@@ -165,12 +165,16 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[It is possible to specify a subdir that should be excluded from processing. This value will prefix the volume id in order to form an excluded dir named \'<prefix><volId>\'. For example \'copy_of_XXXX-XXXX\'.\nThe volume id of the volume (typically an sdcard) can be found in the list of directories to process in the form of XXXX-XXXX.]]></string>
     <string name="pref_excludedSecVolPrefix_defaultValue">copy_of_</string>
 
+    <string name="pref_categ_debug">Debug options</string>
+    <string name="pref_useSAF_title">use Storage Access Framework</string>
+    <string name="pref_useSAF_summary">ON=\'use SAF\' ; OFF=\'use Files\'</string>
+
     <!-- Sync Activity -->
     <string name="sync_text_description"><![CDATA[Synchronize deletions made in source folders to files in backup & working directory]]></string>
     <string name="sync_log_content" />
     <string name="sync_button_del_files">Delete</string>
-    <string name="sync_log_checking">Checking: %1$s</string>
     <string name="sync_button_list_files">List</string>
+    <string name="sync_log_checking">Checking: %1$s</string>
     <string name="sync_log_failure_to_delete_file">Failure to delete file</string>
     <string name="sync_log_files_to_remove">Files to remove (not in source anymore):</string>
 
