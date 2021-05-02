@@ -43,6 +43,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.widget.NestedScrollView;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.Fragment;
@@ -81,7 +82,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
     SharedPreferences prefs = null;
     TextView textViewLog, textViewDirList;
     public final static SpannableStringBuilder log = new SpannableStringBuilder("");
-    ScrollView scrollview = null;
+    NestedScrollView scrollview = null;
     private boolean stopProcessing = false;
     private boolean isProcessing = false;
 
@@ -137,7 +138,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
         textViewLog = (TextView)view.findViewById(R.id.textview_log);
         textViewDirList = (TextView)view.findViewById(R.id.textview_dir_list);
-        scrollview = ((ScrollView)  view.findViewById(R.id.scrollview));
+        scrollview = ((NestedScrollView)  view.findViewById(R.id.scrollview));
         FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
 
         LinearLayout ll = (LinearLayout)view.findViewById(R.id.block_allFilesAccess);
