@@ -112,12 +112,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             //return true;
         }
 
-        if (id == R.id.action_sync) {
-            Intent intent = new Intent(this, SyncActivity.class);
-            startActivity(intent);
-            //return true;
-        }
-
         if (id == R.id.action_about) {
             Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);

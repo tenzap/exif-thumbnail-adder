@@ -20,9 +20,6 @@
         android:roundIcon="@mipmap/ic_exif_thumbnails_adder_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ExifThumbnailAdder">
-        <activity android:name=".SyncActivity"
-            android:label="@string/title_activity_sync"
-            android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".AboutActivity"
             android:label="@string/title_activity_about"
             android:parentActivityName=".MainActivity" />

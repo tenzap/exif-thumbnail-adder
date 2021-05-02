@@ -20,29 +20,29 @@
 
 package com.exifthumbnailadder.app;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import android.content.SharedPreferences;
-import android.content.UriPermission;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.File;
-import java.util.List;
 import java.util.TreeSet;
 
-public class SyncActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SyncFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     SharedPreferences prefs = null;
     TextView textViewLog, textViewDirList;
@@ -52,13 +52,28 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
     private boolean isProcessing = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sync);
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState
+    ) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_sync, container, false);
+    }
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        findViewById(R.id.sync_button_list_files).setOnClickListener(new View.OnClickListener() {
+//        view.findViewById(R.id.button_second).setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                NavHostFragment.findNavController(SecondFragment_.this)
+//                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
+//            }
+//        });
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        view.findViewById(R.id.sync_button_list_files).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 displayStopButton();
@@ -66,7 +81,7 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
             }
         });
 
-        findViewById(R.id.sync_button_del_files).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.sync_button_del_files).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 displayStopButton();
@@ -74,7 +89,7 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
             }
         });
 
-        findViewById(R.id.sync_button_stop).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.sync_button_stop).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 stopProcessing = true;
@@ -82,16 +97,23 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
             }
         });
 
-        textViewLog = (TextView)findViewById(R.id.sync_textview_log);
-        textViewDirList = (TextView)findViewById(R.id.sync_textview_dir_list);
-        scrollview = ((ScrollView)findViewById(R.id.sync_scrollview));
-        FirstFragment.updateTextViewDirList(this, textViewDirList);
+        textViewLog = (TextView)view.findViewById(R.id.sync_textview_log);
+        textViewDirList = (TextView)view.findViewById(R.id.sync_textview_dir_list);
+        scrollview = ((ScrollView)view.findViewById(R.id.sync_scrollview));
+        FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
+
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if ( key.equals("srcUris")) {
-            FirstFragment.updateTextViewDirList(this, textViewDirList);
+            FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        textViewLog.setText(log);
     }
 
     public void doSync(boolean dryRun) {
@@ -106,7 +128,7 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
 
                 {
                     updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
-                    if (!WorkingDirPermActivity.isWorkingDirPermOk(SyncActivity.this)) {
+                    if (!WorkingDirPermActivity.isWorkingDirPermOk(getContext())) {
                         updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_ko)+"</span><br>", 1));
                         setIsProcessFalse();
                         stopProcessing = false;
@@ -120,16 +142,16 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                 if (prefs.getBoolean("useSAF", true)) {
                     srcDirs = inputDirs.toUriArray(); // Uri[]
                 } else {
-                    srcDirs = inputDirs.toFileArray(SyncActivity.this); // File[]
+                    srcDirs = inputDirs.toFileArray(getContext()); // File[]
                 }
 
                 // Iterate on folders containing source images
                 for (int j = 0; j < srcDirs.length; j++) {
                     ETASrcDir etaSrcDir = null;
                     if (srcDirs[j] instanceof Uri) {
-                        etaSrcDir = new ETASrcDirUri(SyncActivity.this, (Uri)srcDirs[j]);
+                        etaSrcDir = new ETASrcDirUri(getContext(), (Uri)srcDirs[j]);
                     } else if (srcDirs[j] instanceof File) {
-                        etaSrcDir = new ETASrcDirFile(SyncActivity.this, (File)srcDirs[j]);
+                        etaSrcDir = new ETASrcDirFile(getContext(), (File)srcDirs[j]);
                     }
                     if (etaSrcDir == null) throw new UnsupportedOperationException();
 
@@ -147,10 +169,10 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
 
                     ETADoc etaDocSrc = null;
                     if (etaSrcDir instanceof ETASrcDirUri) {
-                        DocumentFile baseDf = DocumentFile.fromTreeUri(SyncActivity.this, (Uri)srcDirs[j]);
-                        etaDocSrc = new ETADocDf(baseDf, SyncActivity.this, (ETASrcDirUri)etaSrcDir, false);
+                        DocumentFile baseDf = DocumentFile.fromTreeUri(getContext(), (Uri)srcDirs[j]);
+                        etaDocSrc = new ETADocDf(baseDf, getContext(), (ETASrcDirUri)etaSrcDir, false);
                     } else if (etaSrcDir instanceof ETASrcDirFile) {
-                        etaDocSrc = new ETADocFile((File)srcDirs[j], SyncActivity.this, (ETASrcDirFile)etaSrcDir, true);
+                        etaDocSrc = new ETADocFile((File)srcDirs[j], getContext(), (ETASrcDirFile)etaSrcDir, true);
                     }
                     if (etaDocSrc == null) throw new UnsupportedOperationException();
 
@@ -158,26 +180,26 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
                     ETASrcDir etaSrcDirBackup = null;
                     if (etaDocSrc instanceof ETADocDf) {
                         etaSrcDirBackup = new ETASrcDirUri(
-                                SyncActivity.this,
+                                getContext(),
                                 etaDocSrc.getBackupUri());
                     } else if (etaDocSrc instanceof ETADocFile) {
                         etaSrcDirBackup = new ETASrcDirFile(
-                                SyncActivity.this,
+                                getContext(),
                                 etaDocSrc.getBackupPath().toFile());
                     }
                     doSyncForUri(etaSrcDirBackup, etaDocSrc, dryRun);
 
                     // Process outputUri
-                    if (!PreferenceManager.getDefaultSharedPreferences(SyncActivity.this).getBoolean("writeThumbnailedToOriginalFolder", false)) {
+                    if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("writeThumbnailedToOriginalFolder", false)) {
                         updateUiLog(Html.fromHtml("<br>",1));
                         ETASrcDir etaSrcDirDest = null;
                         if (etaDocSrc instanceof ETADocDf) {
                             etaSrcDirDest = new ETASrcDirUri(
-                                    SyncActivity.this,
+                                    getContext(),
                                     etaDocSrc.getDestUri());
                         } else if (etaDocSrc instanceof ETADocFile) {
                             etaSrcDirDest = new ETASrcDirFile(
-                                    SyncActivity.this,
+                                    getContext(),
                                     etaDocSrc.getDestPath().toFile());
                         }
                         doSyncForUri(etaSrcDirDest, etaDocSrc, dryRun);
@@ -204,9 +226,9 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
             // Convert (Object)_doc to (Uri)doc or (File)doc
             ETADoc doc = null;
             if (workingDirDocs.getDocsRoot() instanceof Uri) {
-                doc = new ETADocDf((DocumentFile) _doc, SyncActivity.this, (ETASrcDirUri) workingDirDocs, false);
+                doc = new ETADocDf((DocumentFile) _doc, getContext(), (ETASrcDirUri) workingDirDocs, false);
             } else if (workingDirDocs.getDocsRoot() instanceof File) {
-                doc = new ETADocFile((File) _doc, SyncActivity.this, (ETASrcDirFile)workingDirDocs, true);
+                doc = new ETADocFile((File) _doc, getContext(), (ETASrcDirFile)workingDirDocs, true);
             }
             if (doc == null) throw new UnsupportedOperationException();
 
@@ -228,7 +250,7 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
             try {
                 if (workingDirDocs.getDocsRoot() instanceof Uri) {
                     Uri srcUri = doc.getSrcUri(srcDirEtaDoc.getMainDir(), srcDirEtaDoc.getTreeId());
-                    srcFileExists = DocumentFile.fromTreeUri(this, srcUri).exists();
+                    srcFileExists = DocumentFile.fromTreeUri(getContext(), srcUri).exists();
                 } else if (workingDirDocs.getDocsRoot() instanceof File) {
                     File srcFile = doc.getSrcPath(srcDirEtaDoc.getFullFSPath()).toFile();
                     srcFileExists = srcFile.exists();
@@ -257,7 +279,7 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
     public void updateUiLog(String text) {
         if (MainApplication.enableLog) Log.i(MainApplication.TAG, text);
         log.append(text);
-        runOnUiThread(new Runnable() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 textViewLog.setText(log);
@@ -275,7 +297,7 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
     public void updateUiLog(Spanned text) {
         if (MainApplication.enableLog) Log.i(MainApplication.TAG, text.toString());
         log.append(text);
-        runOnUiThread(new Runnable() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 textViewLog.setText(log);
@@ -292,7 +314,7 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
 
     public void setIsProcessFalse() {
         isProcessing = false;
-        runOnUiThread(new Runnable() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 displayStartButton();
@@ -301,18 +323,18 @@ public class SyncActivity extends AppCompatActivity implements SharedPreferences
     }
 
     public void displayStopButton() {
-        Button list = (Button) findViewById(R.id.sync_button_list_files);
-        Button start = (Button) findViewById(R.id.sync_button_del_files);
-        Button stop = (Button) findViewById(R.id.sync_button_stop);
+        Button list = (Button) getView().findViewById(R.id.sync_button_list_files);
+        Button start = (Button) getView().findViewById(R.id.sync_button_del_files);
+        Button stop = (Button)getView().findViewById(R.id.sync_button_stop);
         list.setVisibility(Button.GONE);
         start.setVisibility(Button.GONE);
         stop.setVisibility(Button.VISIBLE);
     }
 
     public void displayStartButton() {
-        Button list = (Button) findViewById(R.id.sync_button_list_files);
-        Button start = (Button) findViewById(R.id.sync_button_del_files);
-        Button stop = (Button) findViewById(R.id.sync_button_stop);
+        Button list = (Button) getView().findViewById(R.id.sync_button_list_files);
+        Button start = (Button) getView().findViewById(R.id.sync_button_del_files);
+        Button stop = (Button) getView().findViewById(R.id.sync_button_stop);
         list.setVisibility(Button.VISIBLE);
         start.setVisibility(Button.VISIBLE);
         stop.setVisibility(Button.GONE);

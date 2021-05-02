@@ -12,8 +12,18 @@
         tools:layout="@layout/fragment_first">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_FirstFragment_to_SyncFragment"
+            app:destination="@id/SyncFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/SyncFragment"
+        android:name="com.exifthumbnailadder.app.SyncFragment"
+        android:label="@string/second_fragment_label"
+        tools:layout="@layout/fragment_sync">
+
+        <action
+            android:id="@+id/action_SyncFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
