@@ -177,5 +177,6 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="sync_log_checking">Checking: %1$s</string>
     <string name="sync_log_failure_to_delete_file">Failure to delete file</string>
     <string name="sync_log_files_to_remove">Files to remove (not in source anymore):</string>
+    <string name="action_add_thumbs">Add</string>
 
 </resources>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/FirstFragment"
+        android:icon="@drawable/ic_add"
+        android:orderInCategory="100"
+        android:title="@string/action_add_thumbs"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/SecondFragment"
+        android:icon="@drawable/ic_sync"
+        android:orderInCategory="100"
+        android:title="@string/action_sync"
+        app:showAsAction="never"
+        />
+
+<!--    <item-->
+<!--        android:id="@+id/action_settings"-->
+<!--        android:icon="@drawable/ic_settings"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:title="@string/action_settings"-->
+<!--        app:showAsAction="never" />-->
+
+</menu>
