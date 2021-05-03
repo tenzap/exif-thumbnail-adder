@@ -53,10 +53,14 @@ import static com.exifthumbnailadder.app.MainApplication.enableLog;
 public class ETADocFile extends ETADoc {
 
     final File etaDoc;
+    final boolean isFile;
+    final boolean isDirectory;
 
     public ETADocFile(File file, Context ctx, ETASrcDirFile root, boolean withVolumeName) {
         super(ctx, root, root.getVolumeName(), root.getVolumeRootPath(), withVolumeName);
         this.etaDoc = file;
+        this.isFile = file.isFile();
+        this.isDirectory = file.isDirectory();
     }
 
     public String getMainDir() {
@@ -75,11 +79,11 @@ public class ETADocFile extends ETADoc {
             String tmp = etaDoc.toString().substring(volumeRootPath.length()); // "/DCIM/dir1/s2/file.jpg"
             String[] b = tmp.split(File.separator); // [0]: "" ; [1]: "DCIM; [2]: "dir1"...
             if (b.length > 2) {
-                if (etaDoc.isFile())
+                if (isFile)
                     subDir = String.join(File.separator, Arrays.copyOfRange(b, 2, b.length - 1)); // "dir1/s2"
-                else if (etaDoc.isDirectory())
+                else if (isDirectory)
                     subDir = String.join(File.separator, Arrays.copyOfRange(b, 2, b.length)); // "dir1/s2"
-                else throw new UnsupportedOperationException("Path is neither file, nor directory. Not supported.");
+                else throw new UnsupportedOperationException("Path is neither file, nor directory. Not supported. ("+etaDoc.getPath()+")");
             }
         }
         return subDir;
@@ -316,11 +320,11 @@ public class ETADocFile extends ETADoc {
     }
 
     public boolean isFile() {
-        return etaDoc.isFile();
+        return isFile;
     }
 
     public boolean isDirectory() {
-        return etaDoc.isDirectory();
+        return isDirectory;
     }
 
     public boolean delete() {
