@@ -21,12 +21,16 @@
 package com.exifthumbnailadder.app;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import static com.exifthumbnailadder.app.MainApplication.enableLog;
+import static com.exifthumbnailadder.app.MainApplication.TAG;
 
 public class NativeLibHelper {
 
@@ -87,6 +91,7 @@ public class NativeLibHelper {
         try {
             writeBitmapToFile(thumbnail, tbFile);
         } catch (Exception e) {
+            if (enableLog) Log.e(TAG, "Exception with file: "+ tbFile);
             e.printStackTrace();
             throw e;
         }
