@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
-    <!ENTITY pref_writeThumbnailedToOriginalFolder_title "Modifier dans le répertoire source">
+    <!ENTITY pref_writeThumbnailedToOriginalFolder_title "Modifier dans le dossier source">
     ]>
 
 <resources>
@@ -29,7 +29,6 @@
     <!-- Working dir perm activity -->
     <string name="working_dir_perm_permissions_set_retry">Les permissions du répertoire de travail sont accordées, vous pouvez ressayer.</string>
     <string name="working_dir_button_create_dir_and_set_permissions">Créer le répertoire et accorder les permissions</string>
-    <!--string name="working_dir_text_you_don_t_have_the_permission_to_write"><![CDATA[You don\'t have the permission to write to the WorkingDirectory or it doesn\'t exist.\n \n To save the backup of your pictures and store some temporary files, this application uses a directory at the root of the volumes carrying the pictures you want to process.\n By default it is named \'ThumbAdder\' (this can be changed in the settings).\n For this to work, the directory has to exist and it must be permitted to read & write. This can be achieved only if you give the application the permission. The button bellow will help you to do this easily.\n \n Once you click the button some screens will appear and ask you to give access. All you have to do is confirm every step.\n 1. You are asked to confirm the directory name and the folder where it is created (keep default value)\n 2. You give permanent read & write access to the working directory.\n \n \n You only have to confirm every screen.\n The required values are already set for you.\n \n Once permissions are set you are redirected to the main screen, and you can start again.\n]]></string-->
     <string name="working_dir_text_you_don_t_have_the_permission_to_write">
     Vous n\'avez par la permission d\'écrire dans le répertoire de travail ou il n\'existe pas.\n
     \n
@@ -54,8 +53,8 @@
         pourrez relancer le traitement.\n</string>
 
     <!-- First Fragment -->
-    <string name="frag1_text_list_of_dirs_to_process">Liste des répertoires à traiter</string>
-    <string name="frag1_text_no_dir_selected">Pas de répertoire sélectionné. Allez dans les paramètres pour en sélectionner.</string>
+    <string name="frag1_text_list_of_dirs_to_process">Liste des dossiers à traiter</string>
+    <string name="frag1_text_no_dir_selected">Pas de dossier sélectionné. Allez dans les paramètres pour en sélectionner.</string>
     <string name="frag1_text_all_files_access_permissions_is_not_granted">La permission \'Accès à tous les fichiers\'
         n\'est pas accordée sur votre appareil. Vous pouvez tout de même utiliser l\'appli mais les date et heure de
         fichier seront l\'heure actuelle. Ceci n\'affecte pas les date/heure stockées dans les données EXIF de vos
@@ -88,7 +87,7 @@
     <string name="frag1_log_overwrite_not_allowed">\u00A0Ecraser l\'image dans le répertoire de destination n\'est pas permis (cf paramètres). Le fichier cible existe. Saute.</string>
     <string name="frag1_log_cannot_move_to_backup">\u00A0Ne peut déplacer l\'image dans la sauvegarde. Le fichier existe. Saute.</string>
     <string name="frag1_log_ok">\u00A0OK</string>
-    <string name="frag1_log_not_granted">\u00A0Non accordée. Veuillez à nouveau ajouter le répertoire dans les paramètres.</string>
+    <string name="frag1_log_not_granted">\u00A0Non accordée. Veuillez à nouveau ajouter le dossier dans les paramètres.</string>
     <string name="frag1_log_ko">\u00A0KO"</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr">N\'a pu copier l\'horodatage et les attributs de fichier: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">N\'a pu sauver l\'horodatage et les attributs de fichier: %1$s</string>
@@ -99,12 +98,12 @@
 
     <!-- Settings -->
     <string name="settings_dialog_all_files_access_not_supported">Votre appareil ne prend pas en charge l\'accès à tous les fichiers</string>
-    <string name="settings_button_remove_all_dirs">Supprimer tous les répertoires</string>
+    <string name="settings_button_remove_all_dirs">Supprimer tous les dossiers</string>
     <string name="settings_button_add_dir">Ajouter</string>
 
     <string name="pref_categ_folders">Dossiers</string>
-    <string name="pref_dirToProcess_title">Répertoires à traiter</string>
-    <string name="pref_workingDir_title"><![CDATA[Dossier de sauvegarde et de travail]]></string>
+    <string name="pref_dirToProcess_title">Dossiers à traiter</string>
+    <string name="pref_workingDir_title"><![CDATA[Répertoire de sauvegarde et de travail]]></string>
     <string name="pref_workingDir_dialogMessage"><![CDATA[Ce répertoire contient la sauvegarde des images originales
      et quelques fichiers temporaires crées pendant le traitement. Il est placé à la racine de chaque volume (téléphone, carte SD...).\n
      Par exemple avec la valeur par défaut, les fichiers sont placés dans <CARTE_SD>/ThumbAdder/DCIM.bak ou <STOCKAGE_TEL>/ThumbAdder/DCIM.bak]]></string>
@@ -120,10 +119,10 @@
     <string name="pref_backupOriginalPic_title">Faire une sauvegarde de l\'image source</string>
     <string name="pref_backupOriginalPic_summary">La sauvegarde est placée dans le répertoire de travail. Si un fichier de même nom existe il n\'est pas écrasé</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">&pref_writeThumbnailedToOriginalFolder_title;</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ajoute la vignette dans l\'image du répertoire source</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ajoute la vignette dans l\'image du dossier source</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Ajoute la vignette à une copie de l\'image source dans le répertoire de travail (dans \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
     <string name="pref_overwriteDestPic_title">Ecraser l\'image du répertoire cible</string>
-    <string name="pref_overwriteDestPic_summary">Ecrase le fichier de même nom dans le répertoire cible (les sauvegardes ne sont pas concernées et ne sont jamais écrasés)</string>
+    <string name="pref_overwriteDestPic_summary">Ecrase le fichier de même nom dans le répertoire de travail (les sauvegardes ne sont pas concernées et ne sont jamais écrasés)</string>
     <string name="pref_keepTimeStampOnBackup_title">Copier l\'horodatage sur la sauvegarde</string>
     <string name="pref_keepTimeStampOnBackup_summary">Si \'&pref_writeThumbnailedToOriginalFolder_title;\' est \'off\',
         copier l\'horodatage du fichier source sur la copie dans le répertoire de sauvegarde.\n
@@ -144,10 +143,10 @@
     <string name="pref_libexifSkipOnError_summary">Sauter l\'image en cas d\'erreur remontée par libexif</string>
 
     <string name="pref_categ_extra">Suppléments</string>
-    <string name="pref_excludedSecVolPrefix_title">Préfixe du répertoire exclu</string>
-    <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[On peut définir un sous répertoire qui doit être exclu
-    du traitement. La valeur donnée ici préfixe l\'id du volume pour former un nom de répertoire exclu sous la forme \'<préfixe><volId>\'.
-    Par example \'copie_de_XXXX-XXXX\'.\nL\'id du volume (par ex d\'une une carte SD) peut se voir dans la liste des répertoires à traiter
+    <string name="pref_excludedSecVolPrefix_title">Préfixe du dossier exclu</string>
+    <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[On peut définir un sous dossier qui doit être exclu
+    du traitement. La valeur donnée ici préfixe l\'id du volume pour former un nom de dossier exclu sous la forme \'<préfixe><volId>\'.
+    Par example \'copie_de_XXXX-XXXX\'.\nL\'id du volume (par ex d\'une une carte SD) peut se voir dans la liste des dossier à traiter
     sour la forme XXXX-XXXX.]]></string>
     <string name="pref_excludedSecVolPrefix_defaultValue">copie_de_</string>
 
@@ -156,12 +155,13 @@
     <string name="pref_useSAF_summary">ON=\'use SAF\' ; OFF=\'use Files\'</string>
 
     <!-- Sync Activity -->
-    <string name="sync_text_description"><![CDATA[Synchronise les suppressions de fichiers du répertoire source vers le répertoire de sauvegarde et de travail]]></string>
+    <string name="sync_text_description"><![CDATA[Synchronise les suppressions de fichiers du dossier source vers le répertoire de sauvegarde et de travail]]></string>
     <string name="sync_log_content" />
     <string name="sync_button_del_files">Supprimer</string>
     <string name="sync_button_list_files">Lister</string>
     <string name="sync_log_checking">Vérification de : %1$s</string>
     <string name="sync_log_failure_to_delete_file">Erreur à la suppression</string>
     <string name="sync_log_files_to_remove">Fichiers à supprimer (ils ne sont plus dans la source) :</string>
+    <string name="add_text_description">Add thumbnails to pictures from the selected directories</string>
 
 </resources>

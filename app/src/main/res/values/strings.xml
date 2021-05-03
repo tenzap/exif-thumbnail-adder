@@ -29,7 +29,6 @@
     <!-- Working dir perm activity -->
     <string name="working_dir_perm_permissions_set_retry">WorkingDir permissions set, please retry.</string>
     <string name="working_dir_button_create_dir_and_set_permissions">Create Dir &amp; set permissions</string>
-    <!--string name="working_dir_text_you_don_t_have_the_permission_to_write"><![CDATA[You don\'t have the permission to write to the WorkingDirectory or it doesn\'t exist.\n \n To save the backup of your pictures and store some temporary files, this application uses a directory at the root of the volumes carrying the pictures you want to process.\n By default it is named \'ThumbAdder\' (this can be changed in the settings).\n For this to work, the directory has to exist and it must be permitted to read & write. This can be achieved only if you give the application the permission. The button bellow will help you to do this easily.\n \n Once you click the button some screens will appear and ask you to give access. All you have to do is confirm every step.\n 1. You are asked to confirm the directory name and the folder where it is created (keep default value)\n 2. You give permanent read & write access to the working directory.\n \n \n You only have to confirm every screen.\n The required values are already set for you.\n \n Once permissions are set you are redirected to the main screen, and you can start again.\n]]></string-->
     <string name="working_dir_text_you_don_t_have_the_permission_to_write">
     You don\'t have the permission to write to the WorkingDirectory or it doesn\'t exist.\n
     \n
@@ -42,7 +41,7 @@
     \n
     Once you click the button some screens will appear and ask you to give access.
     All you have to do is confirm every step.\n
-    1. You are asked to confirm the directory name and the folder where it is created
+    1. You are asked to confirm the directory name and the directory where it is created
     (keep default value)\n
     2. You give permanent read &amp; write access to the working directory.\n
     \n
@@ -80,8 +79,8 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="todo">TODO</string>
 
     <!-- First Fragment -->
-    <string name="frag1_text_list_of_dirs_to_process">List of directories to process</string>
-    <string name="frag1_text_no_dir_selected">No directory selected. Go to Settings to select.</string>
+    <string name="frag1_text_list_of_dirs_to_process">List of source folders to process</string>
+    <string name="frag1_text_no_dir_selected">No folder selected. Go to Settings to select.</string>
     <string name="frag1_text_all_files_access_permissions_is_not_granted">\'All files access\' permissions is not granted on your device. You can still use this app normally but please understand that time and date of your files will be set to current time. This does not affect the time/date stored in the EXIF tags of your pictures. You may give permission in settings.</string>
     <string name="frag1_button_settings">Settings</string>
     <string name="frag1_button_start_processing">Start processing</string>
@@ -111,7 +110,7 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="frag1_log_overwrite_not_allowed">\u00A0Overwriting picture in destination dir not allowed (see settings). Destination file exists. Skipping.</string>
     <string name="frag1_log_cannot_move_to_backup">\u00A0Cannot move picture to backup. File exists. Skipping.</string>
     <string name="frag1_log_ok">\u00A0OK</string>
-    <string name="frag1_log_not_granted">\u00A0Not granted. Please add the directory again in Settings.</string>
+    <string name="frag1_log_not_granted">\u00A0Not granted. Please add the folder again in Settings.</string>
     <string name="frag1_log_ko">\u00A0KO"</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr">Could not copy file timestamps &amp; attributes: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">Could not store file timestamps &amp; attributes: %1$s</string>
@@ -122,11 +121,11 @@ Once permissions are set this screen will not appear anymore, you are redirected
 
     <!-- Settings -->
     <string name="settings_dialog_all_files_access_not_supported">Your device does not support all files access</string>
-    <string name="settings_button_remove_all_dirs">Remove all directories</string>
+    <string name="settings_button_remove_all_dirs">Remove all folders</string>
     <string name="settings_button_add_dir">Add</string>
 
     <string name="pref_categ_folders">Folders</string>
-    <string name="pref_dirToProcess_title">Directories to process</string>
+    <string name="pref_dirToProcess_title">Folders to process</string>
     <string name="pref_workingDir_title"><![CDATA[Backup & working directory]]></string>
     <string name="pref_workingDir_dialogMessage"><![CDATA[This directory contains the backup of the source pictures and also some temporary files created during process. It is located at the root of each volume (phone, sdcard...).\nFor example with the default value, files would be placed into <SDCARD>/ThumbAdder/DCIM.bak or <PHONE_STORAGE>/ThumbAdder/DCIM.bak]]></string>
     <string name="pref_allFilesAccess_title">All files access (for Android 11+ only)</string>
@@ -140,10 +139,10 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="pref_backupOriginalPic_title">Create backup of source picture</string>
     <string name="pref_backupOriginalPic_summary">Backup is placed in the working directory. If a file with same name exists, it is not overwritten</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">&pref_writeThumbnailedToOriginalFolder_title;</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Add thumbnail to the picture of the source directory</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Add thumbnail to the picture of the source folder</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Add thumbnail to a copy of the source picture in the working directory (in \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
     <string name="pref_overwriteDestPic_title">Overwrite picture in destination</string>
-    <string name="pref_overwriteDestPic_summary">Override file having same name in the destination folder (this doesn\'t affect backups, which are never overwritten)</string>
+    <string name="pref_overwriteDestPic_summary">Override file having same name in the working directory (this doesn\'t affect backups, which are never overwritten)</string>
     <string name="pref_keepTimeStampOnBackup_title">Copy timestamp to backup</string>
     <string name="pref_keepTimeStampOnBackup_summary">If \'&pref_writeThumbnailedToOriginalFolder_title;\' is \'off\', copy the timestamp of the source picture to its copy in the backup directory.\nIf \'&pref_writeThumbnailedToOriginalFolder_title;\' is \'on\', the timestamp of the backup is always kept.</string>
     <string name="pref_writeTmpToCacheDir_title">Write tmp images to cache dir</string>
@@ -162,8 +161,8 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="pref_libexifSkipOnError_summary">Skip picture if libexif reports an error</string>
 
     <string name="pref_categ_extra">Extra</string>
-    <string name="pref_excludedSecVolPrefix_title">Prefix for excluded dir</string>
-    <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[It is possible to specify a subdir that should be excluded from processing. This value will prefix the volume id in order to form an excluded dir named \'<prefix><volId>\'. For example \'copy_of_XXXX-XXXX\'.\nThe volume id of the volume (typically an sdcard) can be found in the list of directories to process in the form of XXXX-XXXX.]]></string>
+    <string name="pref_excludedSecVolPrefix_title">Prefix for excluded folder</string>
+    <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[It is possible to specify a subfolder that should be excluded from processing. This value will prefix the volume id in order to form an excluded dir named \'<prefix><volId>\'. For example \'copy_of_XXXX-XXXX\'.\nThe volume id of the volume (typically an sdcard) can be found in the list of folders to process in the form of XXXX-XXXX.]]></string>
     <string name="pref_excludedSecVolPrefix_defaultValue">copy_of_</string>
 
     <string name="pref_categ_debug">Debug options</string>
@@ -178,5 +177,6 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="sync_log_checking">Checking: %1$s</string>
     <string name="sync_log_failure_to_delete_file">Failure to delete file</string>
     <string name="sync_log_files_to_remove">Files to remove (not in source anymore):</string>
+    <string name="add_text_description">Add thumbnails to pictures from the selected source folders</string>
 
 </resources>

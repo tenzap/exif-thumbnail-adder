@@ -13,6 +13,16 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/add_textview_text_desciption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/add_text_description"
+            android:textStyle="bold"
+            android:background="@drawable/rounded_corner"
+            />
+
+        <TextView
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
