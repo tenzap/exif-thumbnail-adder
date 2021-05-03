@@ -164,6 +164,23 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
     public void onResume() {
         super.onResume();
         textViewLog.setText(log);
+        FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
+        scrollDown();
+    }
+
+    private void scrollDown() {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // Stuff that updates the UI
+                scrollview.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        scrollview.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                });
+            }
+        });
     }
 
     private static class MyFilenameFilter implements FilenameFilter {
