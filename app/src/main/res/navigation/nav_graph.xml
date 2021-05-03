@@ -14,6 +14,9 @@
         <action
             android:id="@+id/action_FirstFragment_to_SyncFragment"
             app:destination="@id/SyncFragment" />
+        <action
+            android:id="@+id/action_FirstFragment_to_SettingsFragment"
+            app:destination="@id/SettingsFragment" />
     </fragment>
     <fragment
         android:id="@+id/SyncFragment"
@@ -24,6 +27,22 @@
         <action
             android:id="@+id/action_SyncFragment_to_FirstFragment"
             app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_SyncFragment_to_SettingsFragment"
+            app:destination="@id/SettingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/SettingsFragment"
+        android:name="com.exifthumbnailadder.app.SettingsFragment"
+        android:label="@string/settings_fragment_label"
+        tools:layout="@layout/fragment_settings">
+
+        <action
+            android:id="@+id/action_SettingsFragment_to_FirstFragment"
+            app:destination="@id/FirstFragment" />
+        <action
+            android:id="@+id/action_SettingsFragment_to_SyncFragment"
+            app:destination="@id/SyncFragment" />
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"

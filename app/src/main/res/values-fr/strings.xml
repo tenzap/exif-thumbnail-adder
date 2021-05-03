@@ -163,5 +163,6 @@
     <string name="sync_log_failure_to_delete_file">Erreur à la suppression</string>
     <string name="sync_log_files_to_remove">Fichiers à supprimer (ils ne sont plus dans la source) :</string>
     <string name="action_add_thumbs">Ajouter</string>
+    <string name="settings_fragment_label">Settings</string>
 
 </resources>

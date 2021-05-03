@@ -21,62 +21,27 @@
 package com.exifthumbnailadder.app;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.UriPermission;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
 import androidx.preference.SwitchPreferenceCompat;
-
-import java.util.List;
 
 import static com.exifthumbnailadder.app.MainApplication.enableLog;
 import static com.exifthumbnailadder.app.MainApplication.TAG;
 
-public class SettingsActivity extends AppCompatActivity {
-
-    SettingsFragment settingsFragment;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-        settingsFragment = new SettingsFragment();
-        if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.settings, settingsFragment)
-                    .commit();
-        }
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-    }
-
-    public static class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
         private boolean doNotUnregisterPreferenceChangedListener = false;
 
@@ -206,7 +171,7 @@ public class SettingsActivity extends AppCompatActivity {
             PreferenceCategory mCategory = (PreferenceCategory) findPreference("categ_Folders");
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play")) {
                 // update preference value
-                allFilesAccess.setChecked(SettingsActivity.haveAllFilesAccessPermission());
+                allFilesAccess.setChecked(MainActivity.haveAllFilesAccessPermission());
             } else {
                 // remove preference from the settings screen
                 mCategory.removePreference(allFilesAccess);
@@ -243,67 +208,3 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    ActivityResultLauncher<Intent> mLauncherOpenDocumentTree = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Uri treeUri = result.getData().getData();
-                        DocumentFile pickedDir = DocumentFile.fromTreeUri(getApplicationContext(), treeUri);
-                        grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
-                        getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION );
-                        setChosenPath( pickedDir.getUri());
-                    }
-                }
-            });
-
-    public void choosePaths(View view) {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-        settingsFragment.setDoNotUnregisterPreferenceChangedListener(true);
-        mLauncherOpenDocumentTree.launch(intent);
-    }
-
-    public void deletePaths(View view) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // 1. Suppress the persistent permissions.
-        InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
-        for (int i = 0; i< inputDirs.size(); i++) {
-            releasePersistableUriPermission(inputDirs.get(i));
-        }
-
-        // 1. Remove the paths from the preferences
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("srcUris", "");
-        //editor.commit();
-        editor.apply();
-    }
-
-    public void releasePersistableUriPermission(Uri uri) {
-        uri = UriUtil.getAsTreeUri(uri);
-        List<UriPermission> uriPermissionList = getContentResolver().getPersistedUriPermissions();
-
-        for (int j = 0; j < uriPermissionList.size(); j++) {
-            Uri permUri = uriPermissionList.get(j).getUri();
-            if (permUri.equals(uri)) {
-                getContentResolver().releasePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            }
-        }
-    }
-
-    private void setChosenPath(Uri path) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String prefsUri = prefs.getString("srcUris", "");
-        InputDirs inputDirs = new InputDirs(prefsUri);
-        inputDirs.add(path);
-
-        //prefs.edit().putString("srcUris", inputDirs.toString()).commit();
-        prefs.edit().putString("srcUris", inputDirs.toString()).apply();
-    }
-
-    @TargetApi(30)
-    public static boolean haveAllFilesAccessPermission() {
-        return Environment.isExternalStorageManager();
-    }
-}

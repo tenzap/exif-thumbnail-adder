@@ -20,14 +20,24 @@
 
 package com.exifthumbnailadder.app;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.UriPermission;
+import android.net.Uri;
 import android.os.Bundle;
 import android.Manifest;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.documentfile.provider.DocumentFile;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -37,10 +47,14 @@ import androidx.core.content.ContextCompat;
 
 import android.content.pm.PackageManager;
 
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -105,13 +119,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-            //return true;
-        }
-
         if (id == R.id.action_about) {
             Intent intent = new Intent(this, AboutActivity.class);
             startActivity(intent);
@@ -140,5 +147,77 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 break;
         }
 */
+    }
+
+    ActivityResultLauncher<Intent> mLauncherOpenDocumentTree = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Uri treeUri = result.getData().getData();
+                        DocumentFile pickedDir = DocumentFile.fromTreeUri(getApplicationContext(), treeUri);
+                        grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
+                        getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION );
+                        setChosenPath( pickedDir.getUri());
+                    }
+                }
+            });
+
+    public Fragment getForegroundFragment(){
+        Fragment navHostFragment = getSupportFragmentManager().getPrimaryNavigationFragment();
+        return navHostFragment == null ? null : navHostFragment.getChildFragmentManager().getFragments().get(0);
+    }
+
+    public void choosePaths(View view) {
+        Fragment currentFragment = getForegroundFragment();
+        if (currentFragment instanceof SettingsFragment) {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+            ((SettingsFragment) currentFragment).setDoNotUnregisterPreferenceChangedListener(true);
+            mLauncherOpenDocumentTree.launch(intent);
+        }
+    }
+
+    public void deletePaths(View view) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // 1. Suppress the persistent permissions.
+        InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
+        for (int i = 0; i< inputDirs.size(); i++) {
+            releasePersistableUriPermission(inputDirs.get(i));
+        }
+
+        // 1. Remove the paths from the preferences
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("srcUris", "");
+        //editor.commit();
+        editor.apply();
+    }
+
+    public void releasePersistableUriPermission(Uri uri) {
+        uri = UriUtil.getAsTreeUri(uri);
+        List<UriPermission> uriPermissionList = getContentResolver().getPersistedUriPermissions();
+
+        for (int j = 0; j < uriPermissionList.size(); j++) {
+            Uri permUri = uriPermissionList.get(j).getUri();
+            if (permUri.equals(uri)) {
+                getContentResolver().releasePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            }
+        }
+    }
+
+    private void setChosenPath(Uri path) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String prefsUri = prefs.getString("srcUris", "");
+        InputDirs inputDirs = new InputDirs(prefsUri);
+        inputDirs.add(path);
+
+        //prefs.edit().putString("srcUris", inputDirs.toString()).commit();
+        prefs.edit().putString("srcUris", inputDirs.toString()).apply();
+    }
+
+    @TargetApi(30)
+    public static boolean haveAllFilesAccessPermission() {
+        return Environment.isExternalStorageManager();
     }
 }

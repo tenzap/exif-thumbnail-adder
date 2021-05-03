@@ -27,7 +27,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.Html;
@@ -108,12 +107,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
         });*/
-        view.findViewById(R.id.button_settings).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showSettingsActivity(view );
-            }
-        });
         view.findViewById(R.id.button_addThumbs).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,7 +138,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play")) {
             // Use of "All Files Access Permissions" may result in rejection from the google play store
             // We use it only to be able to update the attributes of the files (ie timestamps)
-            if (SettingsActivity.haveAllFilesAccessPermission())
+            if (MainActivity.haveAllFilesAccessPermission())
                 ll.setVisibility(View.GONE);
             else
                 ll.setVisibility(View.VISIBLE);
@@ -908,11 +901,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         } catch (Exception e) {
             throw e;
         }
-    }
-
-    public void showSettingsActivity(View view) {
-        Intent intent = new Intent(getContext(), SettingsActivity.class);
-        startActivity(intent);
     }
 
     public static void updateTextViewDirList(Context ctx, TextView textView) {
