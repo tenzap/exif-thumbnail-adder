@@ -21,6 +21,7 @@
 package com.exifthumbnailadder.app;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuView;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
@@ -77,6 +78,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
             @Override
             public void onClick(View view) {
                 displayStopButton();
+                setBottomBarMenuItemsEnabled(false);
                 doSync(true);
             }
         });
@@ -85,6 +87,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
             @Override
             public void onClick(View view) {
                 displayStopButton();
+                setBottomBarMenuItemsEnabled(false);
                 doSync(false);
             }
         });
@@ -93,6 +96,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
             @Override
             public void onClick(View view) {
                 stopProcessing = true;
+                setBottomBarMenuItemsEnabled(true);
                 displayStartButton();
             }
         });
@@ -117,6 +121,22 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
         textViewLog.setText(log);
         FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
         scrollDown();
+    }
+
+    private void setBottomBarMenuItemsEnabled(boolean enabled) {
+        MenuView.ItemView item1 = getActivity().findViewById(R.id.FirstFragment);
+        item1.setEnabled(enabled);
+        MenuView.ItemView item2 = getActivity().findViewById(R.id.SyncFragment);
+        item2.setEnabled(enabled);
+
+        // TODO: grey out
+        // Some ideas: https://stackoverflow.com/questions/9642990/is-it-possible-to-grey-out-not-just-disable-a-menuitem-in-android
+        //item2.getItemData().getIcon().setAlpha(enabled ? 255 : 64);
+
+//        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
+//        Menu menu = bottomNavigationView.getMenu();
+//        MenuItem item = menu.getItem(2);
+//        int current = bottomNavigationView.getSelectedItemId();
     }
 
     private void scrollDown() {
@@ -336,6 +356,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
             @Override
             public void run() {
                 displayStartButton();
+                setBottomBarMenuItemsEnabled(true);
             }
         });
     }

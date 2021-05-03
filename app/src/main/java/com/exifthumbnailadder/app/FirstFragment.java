@@ -42,6 +42,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuView;
 import androidx.core.widget.NestedScrollView;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.exifinterface.media.ExifInterface;
@@ -115,6 +116,8 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
                 start.setVisibility(Button.GONE);
                 stop.setVisibility(Button.VISIBLE);
+
+                setBottomBarMenuItemsEnabled(false);
                 addThumbsUsingTreeUris(view);
             }
         });
@@ -126,6 +129,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 Button stop = (Button) getView().findViewById(R.id.button_stopProcess);
                 start.setVisibility(Button.VISIBLE);
                 stop.setVisibility(Button.GONE);
+                setBottomBarMenuItemsEnabled(true);
             }
         });
 
@@ -160,6 +164,22 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         textViewLog.setText(log);
         FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
         scrollDown();
+    }
+
+    private void setBottomBarMenuItemsEnabled(boolean enabled) {
+        MenuView.ItemView item1 = getActivity().findViewById(R.id.SettingsFragment);
+        item1.setEnabled(enabled);
+        MenuView.ItemView item2 = getActivity().findViewById(R.id.SyncFragment);
+        item2.setEnabled(enabled);
+
+        // TODO: grey out
+        // Some ideas: https://stackoverflow.com/questions/9642990/is-it-possible-to-grey-out-not-just-disable-a-menuitem-in-android
+        //item2.getItemData().getIcon().setAlpha(enabled ? 255 : 64);
+
+//        BottomNavigationView bottomNavigationView = getActivity().findViewById(R.id.bottomNavigationView);
+//        Menu menu = bottomNavigationView.getMenu();
+//        MenuItem item = menu.getItem(2);
+//        int current = bottomNavigationView.getSelectedItemId();
     }
 
     private void scrollDown() {
@@ -959,6 +979,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 Button stop =  (Button)getView().findViewById(R.id.button_stopProcess);
                 start.setVisibility(Button.VISIBLE);
                 stop.setVisibility(Button.GONE);
+                setBottomBarMenuItemsEnabled(true);
             }
         });
     }
