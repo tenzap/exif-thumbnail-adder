@@ -113,6 +113,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().setTitle(R.string.action_sync);
         textViewLog.setText(log);
         FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
         scrollDown();

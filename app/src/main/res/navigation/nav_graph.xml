@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.exifthumbnailadder.app.FirstFragment"
-        android:label="@string/first_fragment_label"
+        android:label="@string/action_add_thumbs"
         tools:layout="@layout/fragment_first">
 
         <action
@@ -21,7 +21,7 @@
     <fragment
         android:id="@+id/SyncFragment"
         android:name="com.exifthumbnailadder.app.SyncFragment"
-        android:label="@string/second_fragment_label"
+        android:label="@string/action_sync"
         tools:layout="@layout/fragment_sync">
 
         <action
@@ -34,7 +34,7 @@
     <fragment
         android:id="@+id/SettingsFragment"
         android:name="com.exifthumbnailadder.app.SettingsFragment"
-        android:label="@string/settings_fragment_label"
+        android:label="@string/action_settings"
         tools:layout="@layout/fragment_settings">
 
         <action

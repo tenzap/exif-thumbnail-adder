@@ -7,8 +7,8 @@
     <string name="app_name">Exif Thumbnail Adder</string>
 
     <!-- AndroidManifest.xml -->
-    <string name="title_activity_settings">Paramètres</string>
-    <string name="title_activity_sync">Sync. les suppressions</string>
+<!--    <string name="title_activity_settings">Paramètres</string>-->
+<!--    <string name="title_activity_sync">Sync. les suppressions</string>-->
     <string name="title_activity_about">A propos de</string>
     <string name="title_activity_working_dir_perm">Permissions du répertoire de travail</string>
 
@@ -16,6 +16,7 @@
     <string name="action_settings">Paramètres</string>
     <string name="action_sync">Sync. les suppressions</string>
     <string name="action_about">A propos de</string>
+    <string name="action_add_thumbs">Ajouter les vignettes</string>
 
     <!-- About Activity -->
     <string name="about_about_title">A propos de</string>
@@ -162,7 +163,5 @@
     <string name="sync_log_checking">Vérification de : %1$s</string>
     <string name="sync_log_failure_to_delete_file">Erreur à la suppression</string>
     <string name="sync_log_files_to_remove">Fichiers à supprimer (ils ne sont plus dans la source) :</string>
-    <string name="action_add_thumbs">Ajouter</string>
-    <string name="settings_fragment_label">Settings</string>
 
 </resources>

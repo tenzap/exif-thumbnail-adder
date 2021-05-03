@@ -156,6 +156,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
     @Override
     public void onResume() {
         super.onResume();
+        getActivity().setTitle(R.string.action_add_thumbs);
         textViewLog.setText(log);
         FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
         scrollDown();

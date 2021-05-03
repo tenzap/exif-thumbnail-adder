@@ -86,6 +86,7 @@ import static com.exifthumbnailadder.app.MainApplication.TAG;
         @Override
         public void onResume() {
             super.onResume();
+            getActivity().setTitle(R.string.action_settings);
             getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
             setAllFilesAccess();
         }
