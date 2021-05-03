@@ -50,12 +50,16 @@ public class ETADocDf extends ETADoc {
     final DocumentFile etaDoc;
     final Uri _uri;
     final String _uriAuthority;
+    final boolean isFile;
+    final boolean isDirectory;
 
     public ETADocDf(DocumentFile docFile, Context ctx, ETASrcDirUri root, boolean withVolumeName) {
         super(ctx, root, root.getVolumeName(), root.getVolumeRootPath(), withVolumeName);
         this.etaDoc = docFile;
         this._uri = docFile.getUri();
         this._uriAuthority = _uri.getAuthority();
+        this.isFile = docFile.isFile();
+        this.isDirectory = docFile.isDirectory();
     }
 
     public String getMainDir() {
@@ -63,11 +67,11 @@ public class ETADocDf extends ETADoc {
     }
 
     public String getSubDir() {
-        if (etaDoc.isFile())
+        if (isFile)
             return UriUtil.getDDSubParent(_uri);
-        else if (etaDoc.isDirectory())
+        else if (isDirectory)
             return UriUtil.getDDSub(_uri);
-        else throw new UnsupportedOperationException("DocumentFile is neither file, nor directory. Not supported.");
+        else throw new UnsupportedOperationException("DocumentFile is neither file, nor directory. Not supported. ("+_uri.toString()+")");
     }
 
     public String getTreeId() {
@@ -328,11 +332,11 @@ public class ETADocDf extends ETADoc {
     }
 
     public boolean isFile() {
-        return DocumentFile.fromTreeUri(ctx, _uri).isFile();
+        return isFile;
     }
 
     public boolean isDirectory() {
-        return DocumentFile.fromTreeUri(ctx, _uri).isDirectory();
+        return isDirectory;
     }
 
     public boolean delete() {
