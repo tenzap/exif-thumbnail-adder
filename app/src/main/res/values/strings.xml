@@ -79,6 +79,7 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="todo">TODO</string>
 
     <!-- First Fragment -->
+    <string name="frag1_text_description">Add thumbnails to pictures from the selected source folders</string>
     <string name="frag1_text_list_of_dirs_to_process">List of source folders to process</string>
     <string name="frag1_text_no_dir_selected">No folder selected. Go to Settings to select.</string>
     <string name="frag1_text_all_files_access_permissions_is_not_granted">\'All files access\' permissions is not granted on your device. You can still use this app normally but please understand that time and date of your files will be set to current time. This does not affect the time/date stored in the EXIF tags of your pictures. You may give permission in settings.</string>
@@ -177,6 +178,5 @@ Once permissions are set this screen will not appear anymore, you are redirected
     <string name="sync_log_checking">Checking: %1$s</string>
     <string name="sync_log_failure_to_delete_file">Failure to delete file</string>
     <string name="sync_log_files_to_remove">Files to remove (not in source anymore):</string>
-    <string name="add_text_description">Add thumbnails to pictures from the selected source folders</string>
 
 </resources>

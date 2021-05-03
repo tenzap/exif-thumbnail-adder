@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="@string/add_text_description"
+            android:text="@string/frag1_text_description"
             android:textStyle="bold"
             android:background="@drawable/rounded_corner"
             />
