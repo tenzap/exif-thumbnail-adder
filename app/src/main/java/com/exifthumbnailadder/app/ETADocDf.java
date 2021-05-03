@@ -26,6 +26,8 @@ import android.graphics.Bitmap;
 import android.graphics.ImageDecoder;
 import android.net.Uri;
 import android.os.Build;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -108,11 +110,17 @@ public class ETADocDf extends ETADoc {
         return name;
     }
 
+    private boolean isPrimaryStorageVolume() {
+        StorageManager myStorageManager = (StorageManager) ctx.getSystemService(Context.STORAGE_SERVICE);
+        StorageVolume mySV = myStorageManager.getStorageVolume(Paths.get(FileUtil.getFullDocIdPathFromTreeUri(_uri, ctx)).toFile());
+        return mySV.isPrimary();
+    }
+
     public Uri getTmpUri() {
         String dirId = SUFFIX_TMP;
         String baseDir, fullDir;
 
-        if (pref_writeTmpToCacheDir) {
+        if (pref_writeTmpToCacheDir || !isPrimaryStorageVolume()) {
             baseDir = ctx.getExternalCacheDir() + d + getMainDir() + suffixes.get(dirId);
         } else {
             baseDir = getBaseDir(dirId);
@@ -123,7 +131,7 @@ public class ETADocDf extends ETADoc {
         Uri treeRootUri = null;
         Uri outUri = null;
 
-        if (!pref_writeTmpToCacheDir) {
+        if (!pref_writeTmpToCacheDir && isPrimaryStorageVolume()) {
             // Remove trailing "/"
             baseDir = Paths.get(baseDir).toString();
             fullDir = Paths.get(fullDir).toString();
