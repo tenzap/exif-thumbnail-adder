@@ -128,6 +128,8 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
         item1.setEnabled(enabled);
         MenuView.ItemView item2 = getActivity().findViewById(R.id.SyncFragment);
         item2.setEnabled(enabled);
+        MenuView.ItemView item3 = getActivity().findViewById(R.id.SettingsFragment);
+        item3.setEnabled(enabled);
 
         // TODO: grey out
         // Some ideas: https://stackoverflow.com/questions/9642990/is-it-possible-to-grey-out-not-just-disable-a-menuitem-in-android

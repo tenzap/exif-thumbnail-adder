@@ -167,10 +167,12 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
     }
 
     private void setBottomBarMenuItemsEnabled(boolean enabled) {
-        MenuView.ItemView item1 = getActivity().findViewById(R.id.SettingsFragment);
+        MenuView.ItemView item1 = getActivity().findViewById(R.id.FirstFragment);
         item1.setEnabled(enabled);
         MenuView.ItemView item2 = getActivity().findViewById(R.id.SyncFragment);
         item2.setEnabled(enabled);
+        MenuView.ItemView item3 = getActivity().findViewById(R.id.SettingsFragment);
+        item3.setEnabled(enabled);
 
         // TODO: grey out
         // Some ideas: https://stackoverflow.com/questions/9642990/is-it-possible-to-grey-out-not-just-disable-a-menuitem-in-android
