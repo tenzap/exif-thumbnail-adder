@@ -72,7 +72,7 @@ android {
     productFlavors {
         standard {
             // Without pixymeta-android
-            isDefault.set(true)
+            getIsDefault().set(true)
         }
         google_play {
             // Without pixymeta-android
