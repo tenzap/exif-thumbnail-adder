@@ -1,76 +1,61 @@
-Cherche les images (JPEG) sur votre appareil et ajoute une vignette dans les étiquettes EXIF s'il n'y en a pas encore.
+Cette application pour appareils Android cherche les images (JPEG) et <b>ajoute une vignette</b> s'il n'y en a pas encore. Les vignettes sont ajoutées à la structure de métadonnées EXIF.
 
-C'est une application pour les appareils android qui cherche des images (JPEG) sur l'appareil et <strong>ajoute une vignette</strong> dans les étiquettes EXIF s'il n'y en a pas encore.
+Elle fonctionne depuis Android Oreo (android 8, SDK 26) et a été testé sur un appareil réel avec android 10 et sur un appareil virtuel avec android 8 et 11.
 
-Cela devrait fonctionner à partir d'android Oreo (android 8, SDK 26) et a été testé sur un appareil réel avec android 10 et sur un appareil virtuel avec android 11.
+Signalez les erreurs ici: <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnail-adder/issues</a>
 
-Page d'accueil du projet : https://github.com/tenzap/exif-thumbnail-adder
-Homepage: https://github.com/tenzap/exif-thumbnail-adder
+Plus d'informations, certains faits connus et comment contribuer, sont sur la [page d'accueil du projet][1].
 
+<b>Logique/raisonnement</b>
 
-## Logique/raisonnement
-Avec mon smartphone (Xiaomi Redmi Note 9S), quand je souhaite importer mes images dans Windows (ou tout autre système d'exploitation prenant en charge les protocoles MTP ou PTP), j'ai remarqué que les vignettes ne sont pas affichées par l'outil d'importation (que ce soit avec l'app « Photos » ou via la fonctionnalité d'import de Windows Explorer. Ceci est dû au fait que mon téléphone ne met pas les vignettes sur les photos prises avec le smartphone.
+Avec mon smartphone (Xiaomi Redmi Note 9S), quand je souhaite importer mes images dans Windows (ou tout autre système d'exploitation prenant en charge les protocoles MTP ou PTP), j'ai remarqué que les vignettes ne sont pas affichées par l'outil d'importation (que ce soit avec l'app 'Photos' ou via la fonctionnalité d'import de Windows Explorer. Ceci est dû au fait que mon téléphone ne met pas les vignettes sur les photos prises avec le smartphone.
 
+<b>Fonctionnalités</b>
 
-## Fonctionnalités
 - Ajout de vignette aux images (JPEG) qui n'en ont pas
+- Algorithme Lanczos pour redimensionner les images grâce à la [librairie swscale de FFmpeg][2] pour un meilleur résultat.
+- Sélection d'un ou plusieurs dossiers à scanner. Par exemple DCIM, Pictures... (sur stockage interne, carte SD...)
+- Exclusion d'un sous-dossier des dossiers sélectionnés
 - Conservation de l'horodatage des images
-- Sélection des répertoires à balayer. Par exemple DCIM, Pictures...
 - Journal de traitement
-- Fonctionne aussi bien avec les cartes SD qu'avec la mémoire interne de l'appareil (appelés primary external storage & secondary external storage dans la terminologie technique android)
-- Possibilité d'exclure un sous-répertoire des répertoires à balayer
-- Installation sur le stockage interne ou externe
-- Les options par défaut sont conservatrices (création d'une sauvegarde qui ne peut être écrasée, saute les images avec EXIF malformé...) . Dans les paramètres, on peut choisir de traiter les fichiers avec EXIF malformé en choisissant de les sauter si une erreur est détectée.
-- Diverses options
-    - Pivoter les vignettes
-    - Sauvegarder les images d'origine
-    - Remplacer les images à l'endroit où elles sont, ou les placer dans un autre répertoire
-    - Choix de la bibliothèque EXIF à utiliser pour ajouter les vignettes. Voir "Faits connus" ci-dessous pour les avantages et inconvénients de chaque bibliothèque.  
-    Les librairies disponibles sont:
-        - Android-Exif-Extended
-        - exiv2
-        - libexif
-        - pixymeta-android (Notez qu'au moment où ceci est écrit, pixymeta-android est publié sous la licence EPL-1.0 qui n'est pas compatible avec les licences GPL. Vous pouvez compiler vous-même le variant utilisant pixymeta-android. Plus d'informations dans le README des sources.)
+- Synchronisation des fichiers supprimés dans les dossiers source vers le répertoire de sauvegarde et de travail (pour ne pas conserver dans la sauvegarde des fichiers que vous n'avez plus dans les dossiers source)
+- Options par défaut conservatrices (sauvegarde, saute les fichiers corrompus)
+- Installation de l'app dans le stockage interne ou externe
+- Bibliothèque EXIF par défaut: [exiv2][3].
+- Bibliothèques alternatives: Android-Exif-Extended (intégré), libexif (intégré), pixymeta-android (requiert la compilation manuelle depuis les sources). Cf "known facts" sur la page du projet pour connaître les avantages et inconvients de chacun.
+- Paramètres
+&emsp;- Rotation des vignettes
+&emsp;- Remplacement de la vignette existante
+&emsp;- Sauvegarde de l'image originale
+&emsp;- Saute les images ayant des métadonnées malformées (désactivable, afin de traiter aussi les fichiers avec étiquettes corrompues)
+&emsp;- Modifie les images à leur emplacement ou ajoute la vignette à une copie dans un autre dossier
 
+<b>Permissions demandées</b>
 
-## Installation
-- Prérequis : minimum android Oreo (android 8, SDK 26). App testée jusqu'à Android 11.
-- Télécharger via l'app F-Droid https://f-droid.org
-- Télécharger le fichier APK depuis la page des « release » : https://github.com/tenzap/exif-thumbnail-adder/releases
+- <i>READ_EXTERNAL_STORAGE</i>
+&emsp;- pour lire les images de votre espace de stockage
+- <i>WRITE_EXTERNAL_STORAGE</i>
+&emsp;- pour écrire/modifier les images de votre espace de stockage
+- <i>MANAGE_EXTERNAL_STORAGE</i>
+&emsp;- demandé seulement avec le 'flavor' <i>standard</i> qui est livré sur f-droid.org
+&emsp;- sur google play, ce n'est pas demandé pour le moment
+&emsp;- Préférez celle disponible sur F-Droid qui est totalement fonctionnelle pour des versions d'Android >= 11.
+&emsp;- obtenez plus de détails sur la page du projet
 
+<b>Installation</b>
 
-## Faits connus
-- Le traitement peut être plus lent sur une carte SD. Cela peut être dû à la vitesse de votre carte SD.
-- Avec la bibliothèque Android-Exif-Extended library:
-    - toute la structure EXIF existante est conservée et une nouvelle structure APP1 qui contient les vignettes est ajoutée à la structure APP1 préexistante.
-    - tous les tags EXIF sont donc dupliqués si on vérifie avec exiftool
-    - Les autres tags (XMP par exemple) sont conservés
-- Avec la bibliothèque exiv2:
-    - sur certaines images Canon, certains tags de [Canon] & [Composite] peuvent être supprimés. Les groupes [NikonCustom], [Ducky] peuvent aussi être supprimés
-    - [XMP*] est conservé
-    - Si exiv2 détecte des problèmes (erreurs) dans un fichier, le fichier est sauté (l'erreur est affichée dans l'appli). Ceci peut-être modifié dans les paramètres.
-- Avec la bibliothèque libexif:
-    - tous les tags [XMP*] sont supprimés.
-    - Certains ou tous les tags [Olympus] [Canon] [Composite] sont supprimés.
-    - Le groupe [Ducky] est conservé
-    - Tous les tags pris en charge par libexif et exif sont réécrits.
-    - C'est comme lancer la commande "exif --create-exif --remove-thumbnail --insert-thumbnail tb.jpg" à la ligne de commande.
-    - Si libexif détecte des problèmes (erreurs) dans un fichier, le fichier est sauté (l'erreur est affichée dans l'appli). Ceci peut-être modifié dans les paramètres.
-- Avec la bibliothèque pixymeta-android (**l'utilisation des découragée** jusqu'à la correction du bug pixymeta):
-    - les étiquettes EXIF sont copiées et réécrites de novo.
-    - les tags [XMP*] sont conservés
-    - le groupe [InteropIFD] n'est pas correctement réécrit ce qui entraîne des problèmes tels que "Bad InteropIFD directory" ou "IFD1 pointer references previous InteropIFD directory" ou "GPS pointer references previous InteropIFD directory". Voir le rapport de bug : https://github.com/dragon66/pixymeta-android/issues/10.
+- Prérequis: minimum android Oreo (android 8, SDK 26). App testée jusqu'à Android 11.
+- Télécharger via l'app F-Droid [ici][4]
+- Télécharger le fichier APK depuis la [page des 'releases'][5]
 
+<b>Licence</b>
 
-## Contribuer
-- N'hésitez pas à contribuer au projet soit en testant, remontant des bugs, développant, créant des « Pull Requests » avec corrections et nouvelles fonctionnalités.
-- Suggestions de contribution
-    - Si vous avez un compte « google developer », vous pouvez me contacter pour voir comment vous pourriez publier l'application sur le play store
-    - transformer le traitement par lot (batch) en un "Service » afin que celui-ci ne s'arrête pas quand l'utilisateur quitte l'« Activity » principale
-    - Traductions
-    - Améliorer le thème, l'interface graphique
-    - Implémenter une autre bibliothèque et/ou corriger https://github.com/dragon66/pixymeta-android/issues/10
+GPL-3.0 (cf "COPYING" sur la page du projet)
 
+<b>URLs</b>
 
-## Licence
-GPL-3.0 (cf fichier "LICENSE")
+- [1]: <a href="https://github.com/tenzap/exif-thumbnail-adder">https://github.com/tenzap/exif-thumbnail-adder</a>
+- [2]: <a href="https://ffmpeg.org/libswscale.html">https://ffmpeg.org/libswscale.html</a>
+- [3]: <a href="https://www.exiv2.org">https://www.exiv2.org</a>
+- [4]: <a href="https://f-droid.org/packages/com.exifthumbnailadder.app/">https://f-droid.org/packages/com.exifthumbnailadder.app/</a>
+- [5]: <a href="https://github.com/tenzap/exif-thumbnail-adder/releases">https://github.com/tenzap/exif-thumbnail-adder/releases</a>

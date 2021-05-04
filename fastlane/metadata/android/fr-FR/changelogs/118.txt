@@ -1,0 +1,4 @@
+- nouveau: synchronisation des suppressions des dossiers sources vers le répertoire de travail
+- nouveau: utilisation de l'algorithme Lanczos pour construire les vignettes (elles sont plus jolies) grâce à la bibliothèque FFmpeg 
+- améliore certains libellés des paramètres
+- diverses corrections

@@ -1,0 +1,4 @@
+- new: synchronize deletions from source folders to working directory
+- new: use Lanczos algorithm to create thumbnails (they look better) thanks to FFmpeg library
+- improve labels of some settings
+- various fixes
