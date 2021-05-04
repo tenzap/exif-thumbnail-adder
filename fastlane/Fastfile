@@ -37,4 +37,66 @@ platform :android do
     gradle(task: "clean assembleRelease")
     upload_to_play_store
   end
+
+  desc "Build debug and test APK for screenshots"
+  lane :build_for_screengrab do
+    #gradle(
+    #  task: 'clean'
+    #)
+    build_android_app(
+      task: 'assemble',
+      flavor: 'Standard',
+      build_type: 'Debug',
+      properties: {
+        "noVersionInArchivesBaseName" => "true",
+      }
+    )
+    build_android_app(
+      task: 'assemble',
+      build_type: 'StandardDebugAndroidTest',
+      properties: {
+        "noVersionInArchivesBaseName" => "true",
+      }
+    )
+  end
+
+  desc "Copy sample pictures to the device"
+  lane :copy_test_pics_for_screengrab do
+    adb(
+      #serial: 'emulator-5554',
+      command: 'shell rm -fr /storage/emulated/0/ThumbAdder-sg'
+    )
+    adb(
+      #serial: 'emulator-5554',
+      command: 'shell rm -fr /storage/emulated/0/DCIM/sg'
+    )
+    adb(
+      #serial: 'emulator-5554',
+      command: 'shell mkdir -p /storage/emulated/0/DCIM/sg'
+    )
+    adb(
+      #serial: 'emulator-5554',
+      command: 'push ~/Fujifilm_FinePix_E500.jpg /storage/emulated/0/DCIM/sg'
+    )
+    adb(
+      #serial: 'emulator-5554',
+      command: 'push ~/Olympus_C8080WZ.jpg /storage/emulated/0/DCIM/sg'
+    )
+  end
+
+  desc "Do screenshots"
+  lane :screenshots do
+    build_for_screengrab
+    copy_test_pics_for_screengrab
+    capture_android_screenshots(
+      use_timestamp_suffix: false,
+      clear_previous_screenshots: true,
+      locales: ["en-US", "fr-FR"],
+      reinstall_app: true,
+      app_apk_path: "app/build/outputs/apk/standard/debug/exifthumbnailadder-standard-debug.apk",
+      tests_apk_path: "app/build/outputs/apk/androidTest/standard/debug/exifthumbnailadder-standard-debug-androidTest.apk",
+      #specific_device: "emulator-5554"
+    )
+  end
+
 end

@@ -23,7 +23,13 @@ android {
         //file("../version_head.txt").text = "version: " + finalVersionName + "+" + finalVersionCode
 
         // Add version to APK name
-        setProperty("archivesBaseName", "exifthumbnailadder-$versionName")
+        if (project.hasProperty("noVersionInArchivesBaseName") && noVersionInArchivesBaseName == "true") {
+            // APK name used in screengrab to build screenshots with fastlane is hardcoded
+            // so we don't want the version no in the apk file
+            setProperty("archivesBaseName", "exifthumbnailadder")
+        } else {
+            setProperty("archivesBaseName", "exifthumbnailadder-$versionName")
+        }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 

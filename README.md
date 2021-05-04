@@ -140,7 +140,7 @@ echo "dependencies { pixymetaImplementation project(path: ':library:pixymeta-and
 
 
 ### To create screenshots
+From within the root directory of the project run:
 ```Shell
-./gradlew assembleDebug assembleAndroidTest
-fastlane screengrab --use_timestamp_suffix false --clear_previous_screenshots -q "en-US,fr-FR" --reinstall_app
+ANDROID_SDK_ROOT=~/Android/Sdk/ fastlane screenshots
 ```
