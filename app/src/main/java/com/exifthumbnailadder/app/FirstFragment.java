@@ -427,6 +427,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                 case "exiflib_pixymeta":
                                     if (!PixymetaInterface.hasPixymetaLib()) {
                                         updateUiLog(Html.fromHtml("<br><br><span style='color:red'>" + getString(R.string.frag1_log_pixymeta_missing) + "</span><br>", 1));
+                                        setIsProcessFalse(view);
                                         return;
                                     }
                                     PixymetaInterface.writeThumbnailWithPixymeta(srcImgIs, newImgOs, thumbnail);
