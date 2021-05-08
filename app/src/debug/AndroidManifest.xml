@@ -12,4 +12,9 @@
     <!-- Allows changing locales -->
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
 
+    <!-- Needed to get the documentsUI package resources when taking screenshots for android 11+ -->
+    <queries>
+        <package android:name="com.android.documentsui" />
+        <package android:name="com.google.android.documentsui" />
+    </queries>
 </manifest>
