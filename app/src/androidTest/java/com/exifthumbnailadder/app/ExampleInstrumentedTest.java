@@ -90,6 +90,14 @@ public class ExampleInstrumentedTest {
     public void testTakeScreenshot() {
         Screengrab.setDefaultScreenshotStrategy(new UiAutomatorScreenshotStrategy());
 
+//        // Attempt to find volume name as displayed in filePicker
+//        String a = android.provider.Settings.Global.DEVICE_NAME;
+//        String b = android.os.Build.MODEL;
+//        String c = android.os.Build.MANUFACTURER;
+//        String d = android.os.Build.PRODUCT;
+//        String g = Build.HARDWARE;
+//        String f = Build.DISPLAY;
+
         int i = 0;
         // Main screen
         Screengrab.screenshot(String.format("%03d", ++i));
@@ -152,6 +160,8 @@ public class ExampleInstrumentedTest {
         try { uiElement.clickAndWaitForNewWindow(); }
         catch (Exception e) { e.printStackTrace(); }
 
+        String volumeNameInFilePicker = Build.MODEL;
+
         int iterations_count = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) ? 2 : 1;
         for (int j=0; j<iterations_count; j++) {
             // Need to do it twice to be sure to catch the sd card. Sometimes it fails to do so.
@@ -162,7 +172,7 @@ public class ExampleInstrumentedTest {
             } catch (Exception e) { e.printStackTrace(); }
 
             //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
-            uiElement = device.findObject(new UiSelector().textMatches("(?i).*x86.*"));
+            uiElement = device.findObject(new UiSelector().textMatches("(?i)"+volumeNameInFilePicker));
             try { uiElement.clickAndWaitForNewWindow(); }
             catch (Exception e) { e.printStackTrace(); }
         }
