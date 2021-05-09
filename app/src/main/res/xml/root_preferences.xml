@@ -72,13 +72,6 @@
             app:summary="@string/pref_keepTimeStampOnBackup_summary"
             app:enabled="false"
         />
-        <SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:key="writeTmpToCacheDir"
-            app:singleLineTitle="false"
-            app:summaryOn="@string/pref_writeTmpToCacheDir_summaryOn"
-            app:summaryOff="@string/pref_writeTmpToCacheDir_summaryOff"
-            app:title="@string/pref_writeTmpToCacheDir_title" />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_categ_backend">
@@ -132,5 +125,12 @@
             app:singleLineTitle="false"
             app:title="@string/pref_useSAF_title"
             app:summary="@string/pref_useSAF_summary" />
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="writeTmpToCacheDir"
+            app:singleLineTitle="false"
+            app:summaryOn="@string/pref_writeTmpToCacheDir_summaryOn"
+            app:summaryOff="@string/pref_writeTmpToCacheDir_summaryOff"
+            app:title="@string/pref_writeTmpToCacheDir_title" />
     </PreferenceCategory>
 </PreferenceScreen>
