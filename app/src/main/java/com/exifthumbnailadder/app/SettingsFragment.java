@@ -74,7 +74,7 @@ import static com.exifthumbnailadder.app.MainApplication.TAG;
             }
 
             PreferenceCategory debugCategory = (PreferenceCategory) findPreference("categ_debug");
-            if (!BuildConfig.BUILD_TYPE.equals("debug")) {
+            if (!BuildConfig.BUILD_TYPE.equals("debug") || BuildConfig.IS_SCREENSHOTS.get()) {
                 debugCategory.setVisible(false);
                 SharedPreferences.Editor editor = prefs.edit();
                 editor.putBoolean("useSAF", true);

@@ -88,6 +88,10 @@ public class ExampleInstrumentedTest {
         assertEquals("com.exifthumbnailadder.app", appContext.getPackageName());
     }
 
+    static {
+        BuildConfig.IS_SCREENSHOTS.set(true);
+    }
+
     @Test
     public void testTakeScreenshot() {
         Screengrab.setDefaultScreenshotStrategy(new UiAutomatorScreenshotStrategy());
