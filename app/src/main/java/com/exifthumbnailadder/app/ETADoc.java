@@ -61,6 +61,7 @@ public abstract class ETADoc {
 
     final HashMap<String, String> suffixes = new HashMap<String, String>();
 
+    final boolean pref_useSAF;
     final String pref_workingDir;
     final boolean pref_writeTmpToCacheDir;
     final boolean pref_writeThumbnailedToOriginalFolder;
@@ -86,6 +87,7 @@ public abstract class ETADoc {
         this.withVolumeName = withVolumeName;
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctx);
+        pref_useSAF = prefs.getBoolean("useSAF", true);
         pref_workingDir = prefs.getString("working_dir", "ThumbAdder");
         pref_writeTmpToCacheDir = prefs.getBoolean("writeTmpToCacheDir", true);
         pref_writeThumbnailedToOriginalFolder = prefs.getBoolean("writeThumbnailedToOriginalFolder", false);

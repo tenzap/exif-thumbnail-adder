@@ -20,9 +20,12 @@
 
 package com.exifthumbnailadder.app;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -41,8 +44,12 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.menu.MenuView;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.exifinterface.media.ExifInterface;
@@ -85,6 +92,8 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
     NestedScrollView scrollview = null;
     private boolean stopProcessing = false;
     private boolean isProcessing = false;
+    private boolean hasWriteExternalStoragePermission = false;
+    private boolean continueWithoutWriteExternalStoragePermission = false;
 
     @Override
     public View onCreateView(
@@ -289,6 +298,54 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         copyFileAttributes(inFilePath, outFilePath);
     }
 
+    private boolean hasWriteExternalStorage() {
+        if (ContextCompat.checkSelfPermission(
+                getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_GRANTED) {
+            hasWriteExternalStoragePermission = true;
+        } else if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
+            alertBuilder.setCancelable(true);
+            alertBuilder.setTitle("Permission necessary");
+            if (prefs.getBoolean("useSAF", true) &&
+                    ( BuildConfig.FLAVOR.equals("google_play") ||
+                            (BuildConfig.FLAVOR.equals("standard") && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q))) {
+                alertBuilder.setMessage("External storage permission is necessary to keep timestamps of files.\nIf you deny permission, processing will be done without keeping permissions.\nAfter permission is given, you need to restart processing.");
+                alertBuilder.setNegativeButton("Deny permission", new DialogInterface.OnClickListener() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        continueWithoutWriteExternalStoragePermission = true;
+                    }
+                });
+            } else {
+                alertBuilder.setMessage("External storage permission is necessary. After permission is given, you need to restart processing.");
+            }
+            alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                public void onClick(DialogInterface dialog, int which) {
+                    requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                }
+            });
+            alertBuilder.setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                public void onClick(DialogInterface dialog, int which) {
+                    //requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                }
+            });
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    AlertDialog alert = alertBuilder.create();
+                    alert.show();
+                }
+            });
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        return hasWriteExternalStoragePermission;
+    }
+
     public void addThumbsUsingTreeUris(View view) {
         isProcessing = true;
         stopProcessing = false;
@@ -298,6 +355,22 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
             public void run() {
                 log.clear();
                 updateUiLog(getString(R.string.frag1_log_starting));
+
+                if (!prefs.getBoolean("useSAF", true) || BuildConfig.FLAVOR.equals("google_play")
+                        || BuildConfig.FLAVOR.equals("standard") && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
+                {
+                    updateUiLog(Html.fromHtml("Checking WRITE_EXTERNAL_STORAGE permission", 1));
+                    if  (prefs.getBoolean("useSAF", true) && continueWithoutWriteExternalStoragePermission) {
+                        updateUiLog(Html.fromHtml("<span style='color:blue'>"+"\u00A0Permission not given, continuing without keeping timestamps"+"</span><br>", 1));
+                    } else if (!hasWriteExternalStorage()) {
+                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_ko)+"</span><br>", 1));
+                        setIsProcessFalse(view);
+                        stopProcessing = false;
+                        return;
+                    } else {
+                        updateUiLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_ok) + "</span><br>", 1));
+                    }
+                }
 
                 {
                     updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
@@ -986,6 +1059,15 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
             }
         });
     }
+
+    private ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    hasWriteExternalStoragePermission = true;
+                } else {
+                    hasWriteExternalStoragePermission = false;
+                }
+            });
 
     public static class BadOriginalImageException extends Exception {}
     public static class DestinationFileExistsException extends Exception {}

@@ -120,7 +120,9 @@ public class ETADocDf extends ETADoc {
         String dirId = SUFFIX_TMP;
         String baseDir, fullDir;
 
-        if (pref_writeTmpToCacheDir || !isPrimaryStorageVolume()) {
+        boolean forceCacheDir = (pref_writeTmpToCacheDir || pref_useSAF);
+
+        if (forceCacheDir) {
             baseDir = ctx.getExternalCacheDir() + d + getMainDir() + suffixes.get(dirId);
         } else {
             baseDir = getBaseDir(dirId);
@@ -131,7 +133,7 @@ public class ETADocDf extends ETADoc {
         Uri treeRootUri = null;
         Uri outUri = null;
 
-        if (!pref_writeTmpToCacheDir && isPrimaryStorageVolume()) {
+        if (!forceCacheDir) {
             // Remove trailing "/"
             baseDir = Paths.get(baseDir).toString();
             fullDir = Paths.get(fullDir).toString();
