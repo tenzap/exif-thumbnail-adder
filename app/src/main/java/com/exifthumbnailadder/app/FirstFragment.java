@@ -745,7 +745,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                                 ((File) doc.getOutputInTmp()).toPath(),
                                                 destFile,
                                                 REPLACE_EXISTING);
-                                        doc.copyAttributesTo(outputPath);
                                     }
                                 } else {
                                     if (destFile.toFile().exists())
@@ -760,9 +759,9 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                                         outputPath = Files.move(
                                                 ((File) doc.getOutputInTmp()).toPath(),
                                                 destFile);
-                                        doc.copyAttributesTo(outputPath);
                                     }
                                 }
+                                doc.copyAttributesTo(outputPath);
                             }
                         } catch (DestinationFileExistsException | FileAlreadyExistsException e ) {
                             updateUiLog(Html.fromHtml("<span style='color:red'>"+ getString(R.string.frag1_log_overwrite_not_allowed)+"</span><br>",1));
