@@ -20,7 +20,7 @@
 
     <!-- About Activity -->
     <string name="about_about_title">About</string>
-    <string name="about_content">About...</string>
+    <string name="about_content">About…</string>
     <string name="about_version">Version</string>
     <string name="about_homepage_source">Project homepage &amp; source code:</string>
     <string name="about_license">License:</string>
@@ -61,22 +61,31 @@
     <string name="stop">Stop</string>
     <string name="frag1_text_processing_log">Processing Log</string>
 
+    <string name="frag1_perm_request_title">Permission request</string>
+    <string name="frag1_perm_request_message_timestamp">External storage permission is necessary to keep timestamps of files.\n
+        If you deny permission, processing will be done without keeping timestamps.\n
+        After permission is given, you need to restart processing.</string>
+    <string name="frag1_perm_request_deny">Deny permission</string>
+    <string name="frag1_perm_request_message_Files">External storage permission is necessary. After permission is given, you need to restart processing.</string>
+    <string name="frag1_check_write_perm">Checking WRITE_EXTERNAL_STORAGE permission…</string>
+    <string name="frag1_continue_without_timestamps">\u00A0Permission not given, continuing without keeping timestamps.</string>
+
     <string name="frag1_log_skipping_excluded_dir">Skipping excluded dir %1$s in %2$s</string>
-    <string name="frag1_log_copying_attr">Copying attributes...</string>
-    <string name="frag1_log_starting">Starting...\n</string>
+    <string name="frag1_log_copying_attr">Copying attributes…</string>
+    <string name="frag1_log_starting">Starting…\n</string>
     <string name="frag1_log_stopped_by_user">Stopped by user.</string>
     <string name="frag1_log_processing_dir">Processing %1$s</string>
-    <string name="frag1_log_processing_path_filename">Processing... Path: %1$s Filename: %2$s</string>
-    <string name="frag1_log_skipping_path_filename">Skipping... Path: %1$s Filename: %2$s</string>
-    <string name="frag1_log_checking_workingdir_perm">Checking working directory permissions...</string>
-    <string name="frag1_log_checking_perm">Checking permissions...</string>
+    <string name="frag1_log_processing_path_filename">Processing… Path: %1$s Filename: %2$s</string>
+    <string name="frag1_log_skipping_path_filename">Skipping… Path: %1$s Filename: %2$s</string>
+    <string name="frag1_log_checking_workingdir_perm">Checking working directory permissions…</string>
+    <string name="frag1_log_checking_perm">Checking permissions…</string>
     <string name="frag1_log_skipping_file_missing">Skipping (file missing)</string>
     <string name="frag1_log_skipping_not_jpeg">Skipping (not JPEG)\n</string>
     <string name="frag1_log_skipping_empty_file">Skipping (empty file)\n</string>
     <string name="frag1_log_skipping_has_thumbnail">Skipping (has thumbnail)\n</string>
     <string name="frag1_log_skipping_bad_image">Skipping (bad image?)\n</string>
     <string name="frag1_log_skipping_error">Skipping (ERROR): %1$s</string>
-    <string name="frag1_log_continue_despite_error_as_per_setting">Continue processing as per settings...</string>
+    <string name="frag1_log_continue_despite_error_as_per_setting">Continue processing as per settings…</string>
     <string name="frag1_log_file_exists">File already exists: %1$s</string>
     <string name="frag1_log_finished">\nFinished.</string>
     <string name="frag1_log_pixymeta_missing">Pixymeta-android library not available in this build. Select another library in settings.</string>
@@ -101,7 +110,7 @@
     <string name="pref_categ_folders">Folders</string>
     <string name="pref_dirToProcess_title">Folders to process</string>
     <string name="pref_workingDir_title"><![CDATA[Backup & working directory]]></string>
-    <string name="pref_workingDir_dialogMessage"><![CDATA[This directory contains the backup of the source pictures and also some temporary files created during process. It is located at the root of each volume (phone, sdcard...).\nFor example with the default value, files would be placed into <SDCARD>/ThumbAdder/DCIM.bak or <PHONE_STORAGE>/ThumbAdder/DCIM.bak]]></string>
+    <string name="pref_workingDir_dialogMessage"><![CDATA[This directory contains the backup of the source pictures and also some temporary files created during process. It is located at the root of each volume (phone, sdcard…).\nFor example with the default value, files would be placed into <SDCARD>/ThumbAdder/DCIM.bak or <PHONE_STORAGE>/ThumbAdder/DCIM.bak]]></string>
     <string name="pref_allFilesAccess_title">All files access (for Android 11+ only)</string>
     <string name="pref_allFilesAccess_summary">Gives access to all files on your device. This permits to keep the timestamps of the processed files. The timestamps of your pictures stored in EXIF are not altered whichever value this option has.</string>
 

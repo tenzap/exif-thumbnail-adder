@@ -306,21 +306,21 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
             alertBuilder.setCancelable(true);
-            alertBuilder.setTitle("Permission necessary");
+            alertBuilder.setTitle(R.string.frag1_perm_request_title);
             if (prefs.getBoolean("useSAF", true) &&
                     ( BuildConfig.FLAVOR.equals("google_play") ||
                             (BuildConfig.FLAVOR.equals("standard") && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q))) {
-                alertBuilder.setMessage("External storage permission is necessary to keep timestamps of files.\nIf you deny permission, processing will be done without keeping permissions.\nAfter permission is given, you need to restart processing.");
-                alertBuilder.setNegativeButton("Deny permission", new DialogInterface.OnClickListener() {
+                alertBuilder.setMessage(R.string.frag1_perm_request_message_timestamp);
+                alertBuilder.setNegativeButton(R.string.frag1_perm_request_deny, new DialogInterface.OnClickListener() {
                     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                     public void onClick(DialogInterface dialog, int which) {
                         continueWithoutWriteExternalStoragePermission = true;
                     }
                 });
             } else {
-                alertBuilder.setMessage("External storage permission is necessary. After permission is given, you need to restart processing.");
+                alertBuilder.setMessage(R.string.frag1_perm_request_message_Files);
             }
-            alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+            alertBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                 public void onClick(DialogInterface dialog, int which) {
                     requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -329,7 +329,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
             alertBuilder.setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                 public void onClick(DialogInterface dialog, int which) {
-                    //requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    //do nothing
                 }
             });
 
@@ -359,9 +359,9 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
                 if (!prefs.getBoolean("useSAF", true) || BuildConfig.FLAVOR.equals("google_play")
                         || BuildConfig.FLAVOR.equals("standard") && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
                 {
-                    updateUiLog(Html.fromHtml("Checking WRITE_EXTERNAL_STORAGE permission", 1));
+                    updateUiLog(Html.fromHtml(getString(R.string.frag1_check_write_perm), 1));
                     if  (prefs.getBoolean("useSAF", true) && continueWithoutWriteExternalStoragePermission) {
-                        updateUiLog(Html.fromHtml("<span style='color:blue'>"+"\u00A0Permission not given, continuing without keeping timestamps"+"</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:blue'>"+getString(R.string.frag1_continue_without_timestamps)+"</span><br>", 1));
                     } else if (!hasWriteExternalStorage()) {
                         updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_ko)+"</span><br>", 1));
                         setIsProcessFalse(view);
