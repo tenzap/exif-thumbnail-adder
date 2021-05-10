@@ -181,8 +181,10 @@ public class ExampleInstrumentedTest {
         catch (Exception e) { e.printStackTrace(); }
 
         String volumeNameInFilePicker = Build.MODEL;
+        String sdCardNameInFilePicker = getSdCardNameInFilePicker();
 
-        int iterations_count = (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) ? 2 : 1;
+        //int iterations_count = (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) ? 2 : 1;
+        int iterations_count = 1;
         for (int j=0; j<iterations_count; j++) {
             // Need to do it twice to be sure to catch the sd card. Sometimes it fails to do so.
             UiObject drawer = device.findObject(new UiSelector().resourceId(documentsUiPackageName+":id/drawer_layout"));
@@ -192,6 +194,7 @@ public class ExampleInstrumentedTest {
             } catch (Exception e) { e.printStackTrace(); }
 
             //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
+            //uiElement = device.findObject(new UiSelector().textMatches("(?i)"+sdCardNameInFilePicker)); //DOESN'T WORK
             uiElement = device.findObject(new UiSelector().textMatches("(?i)"+volumeNameInFilePicker));
             try { uiElement.clickAndWaitForNewWindow(); }
             catch (Exception e) { e.printStackTrace(); }
@@ -228,7 +231,7 @@ public class ExampleInstrumentedTest {
         editor.commit();
 
         // give all files access (we need it to delete folders)
-        if (Build.VERSION.SDK_INT >= 30 && !BuildConfig.FLAVOR.equals("google_play") && !MainActivity.haveAllFilesAccessPermission()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play") && !MainActivity.haveAllFilesAccessPermission()) {
             requestAllFilesAccess();
         }
 
@@ -240,6 +243,17 @@ public class ExampleInstrumentedTest {
 
         // Run "Add thumbnails" which brings us to the WorkingDirPermActivity
         onView(withId(R.id.button_addThumbs)).perform(click());
+
+//        // Give WRITE_EXTERNAL_STORAGE permissions for <R & not 'standard')
+//        // Doesn't seem necessary as permission is already given in this test case
+//        if (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && BuildConfig.FLAVOR.equals("standard"))) {
+//            onView(withText(context.getString(android.R.string.ok))).perform(click());
+//
+//            uiElement = device.findObject(new UiSelector().clickable(true).textContains(allow));
+//            try { uiElement.clickAndWaitForNewWindow(); }
+//            catch (Exception e) { e.printStackTrace(); }
+//        }
+
         Screengrab.screenshot(String.format("%03d", ++i));
 
         // Give permissions to the WorkingDir
@@ -308,5 +322,19 @@ public class ExampleInstrumentedTest {
         try { uiElement2.click(); }
         catch (Exception e) { e.printStackTrace(); }
         device.pressBack();
+    }
+
+    String getSdCardNameInFilePicker() {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        PackageManager manager = context.getPackageManager();
+        int resId = 0;
+        Resources resources = null;
+        try {
+            // Identifier names are taken here:
+            // https://cs.android.com/android/platform/superproject/+/master:packages/apps/Settings/res/values/strings.xml
+            resources = manager.getResourcesForApplication("com.android.settings");
+            resId = resources.getIdentifier("sdcard_setting", "string", "com.android.settings");
+        } catch (Exception e) { e.printStackTrace(); }
+        return resources.getString(resId);
     }
 }
