@@ -64,14 +64,6 @@
             app:title="@string/pref_overwriteDestPic_title"
             app:summary="@string/pref_overwriteDestPic_summary"
             />
-        <SwitchPreferenceCompat
-            app:defaultValue="true"
-            app:key="keepTimeStampOnBackup"
-            app:singleLineTitle="false"
-            app:title="@string/pref_keepTimeStampOnBackup_title"
-            app:summary="@string/pref_keepTimeStampOnBackup_summary"
-            app:enabled="false"
-        />
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_categ_backend">
@@ -119,6 +111,14 @@
     <PreferenceCategory
         app:key="categ_debug"
         app:title="@string/pref_categ_debug">
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="keepTimeStampOnBackup"
+            app:singleLineTitle="false"
+            app:title="@string/pref_keepTimeStampOnBackup_title"
+            app:summary="@string/pref_keepTimeStampOnBackup_summary"
+            app:enabled="false"
+            />
         <SwitchPreferenceCompat
             app:defaultValue="true"
             app:key="useSAF"
