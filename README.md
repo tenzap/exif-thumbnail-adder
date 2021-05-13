@@ -36,19 +36,15 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 
 ## Requested permissions
 - `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`
-    - permit to read and write/update the picture from the storage of your device
-    - requested with the `google_play` flavor that is shipped on google play and with the `standard` flavor on Android 10 and before
-    - these permissions are required to keep the timestamp of the pictures
+    - to keep the timestamp of the pictures
 - `MANAGE_EXTERNAL_STORAGE`
-    - requested only with the `standard` flavor on Android 11 and above to keep the timestamp of the pictures
-    - on google play, it is not requested for now.
-    - To have full functionality of the app, prefer the one shipped on F-Droid which is fully functional for versions of Android  >= 11.
-    - get more details on the project homepage
+    - requested only with the `standard` flavor that is shipped on F-Droid for devices running Android 11 and above to keep the timestamp of the pictures
+- get more details about them on the project homepage
 
 
 ## Installation
 - Prerequisites: minimum android Oreo (android 8, SDK 26). App was tested up to Android 11.
-- Download it through F-Droid app [here](https://f-droid.org/packages/com.exifthumbnailadder.app/)
+- Download it through F-Droid app [here](https://f-droid.org/packages/com.exifthumbnailadder.app)
 - Download the APK from the [release page](https://github.com/tenzap/exif-thumbnail-adder/releases)
 
 
@@ -92,6 +88,12 @@ GPL-3.0 (see "COPYING" file on project homepage)
 - the existing EXIF tags are copied and things a rewritten from scratch. 
 - [XMP*] tags are kept
 - [InteropIFD] directory is not correctly rewritten leading to problems such as "Bad InteropIFD directory" or "IFD1 pointer references previous InteropIFD directory" or "GPS pointer references previous InteropIFD directory". See [pixymeta bug report](https://github.com/dragon66/pixymeta-android/issues/10).
+
+
+## Concerning `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`
+- permit to read and write/update the picture from the storage of your device
+- requested with the `google_play` flavor that is shipped on google play and with the `standard` flavor on Android 10 and before
+- these permissions are required to keep the timestamp of the pictures
 
 
 ## Concerning `MANAGE_EXTERNAL_STORAGE` (for flavor `standard`)

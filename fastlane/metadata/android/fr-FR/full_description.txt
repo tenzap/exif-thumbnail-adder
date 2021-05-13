@@ -32,15 +32,11 @@ Avec mon smartphone (Xiaomi Redmi Note 9S), quand je souhaite importer mes image
 
 <b>Permissions demandées</b>
 
-- <i>READ_EXTERNAL_STORAGE</i>
-&emsp;- pour lire les images de votre espace de stockage
-- <i>WRITE_EXTERNAL_STORAGE</i>
-&emsp;- pour écrire/modifier les images de votre espace de stockage
+- <i>READ_EXTERNAL_STORAGE</i> et <i>WRITE_EXTERNAL_STORAGE</i>
+&emsp;- pour garder l'horodatage des images
 - <i>MANAGE_EXTERNAL_STORAGE</i>
-&emsp;- demandé seulement avec le 'flavor' <i>standard</i> qui est livré sur f-droid.org
-&emsp;- sur google play, ce n'est pas demandé pour le moment
-&emsp;- Préférez celle disponible sur F-Droid qui est totalement fonctionnelle pour des versions d'Android >= 11.
-&emsp;- obtenez plus de détails sur la page du projet
+&emsp;- demandé seulement avec le 'flavor' <i>standard</i> qui est livré sur F-Droid pour les appareils avec Android 11 et supérieur pour conserver l'horodatage des fichiers
+- obtenez plus de détails sur la page du projet
 
 <b>Installation</b>
 
@@ -57,5 +53,5 @@ GPL-3.0 (cf "COPYING" sur la page du projet)
 - [1]: <a href="https://github.com/tenzap/exif-thumbnail-adder">https://github.com/tenzap/exif-thumbnail-adder</a>
 - [2]: <a href="https://ffmpeg.org/libswscale.html">https://ffmpeg.org/libswscale.html</a>
 - [3]: <a href="https://www.exiv2.org">https://www.exiv2.org</a>
-- [4]: <a href="https://f-droid.org/packages/com.exifthumbnailadder.app/">https://f-droid.org/packages/com.exifthumbnailadder.app/</a>
+- [4]: <a href="https://f-droid.org/packages/com.exifthumbnailadder.app">https://f-droid.org/packages/com.exifthumbnailadder.app</a>
 - [5]: <a href="https://github.com/tenzap/exif-thumbnail-adder/releases">https://github.com/tenzap/exif-thumbnail-adder/releases</a>

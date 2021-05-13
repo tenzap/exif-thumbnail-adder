@@ -76,11 +76,11 @@ platform :android do
     )
     adb(
       #serial: 'emulator-5554',
-      command: 'push ~/Fujifilm_FinePix_E500.jpg /storage/emulated/0/DCIM/sg'
+      command: 'push ../pic-exif-samples/jpg/Fujifilm_FinePix_E500.jpg /storage/emulated/0/DCIM/sg'
     )
     adb(
       #serial: 'emulator-5554',
-      command: 'push ~/Olympus_C8080WZ.jpg /storage/emulated/0/DCIM/sg'
+      command: 'push ../pic-exif-samples/jpg/Olympus_C8080WZ.jpg /storage/emulated/0/DCIM/sg'
     )
   end
 

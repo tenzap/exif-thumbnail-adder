@@ -1,0 +1,2 @@
+- corrections cosmétiques et de la navigation
+- demande la permission WRITE_EXTERNAL_STORAGE seulement quand c'est nécessaire
