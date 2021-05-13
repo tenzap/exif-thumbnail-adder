@@ -1,6 +1,6 @@
 Cette application pour appareils Android cherche les images (JPEG) et <b>ajoute une vignette</b> s'il n'y en a pas encore. Les vignettes sont ajoutées à la structure de métadonnées EXIF.
 
-Elle fonctionne depuis Android Oreo (android 8, SDK 26) et a été testé sur un appareil réel avec android 10 et sur un appareil virtuel avec android 8 et 11.
+Elle fonctionne depuis Android Oreo (android 8, SDK 26) et a été testée sur un appareil réel avec android 10 et sur un appareil virtuel avec android 8 et 11.
 
 Signalez les erreurs ici: <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnail-adder/issues</a>
 
@@ -8,12 +8,12 @@ Plus d'informations, certains faits connus et comment contribuer, sont sur la [p
 
 <b>Logique/raisonnement</b>
 
-Avec mon smartphone (Xiaomi Redmi Note 9S), quand je souhaite importer mes images dans Windows (ou tout autre système d'exploitation prenant en charge les protocoles MTP ou PTP), j'ai remarqué que les vignettes ne sont pas affichées par l'outil d'importation (que ce soit avec l'app 'Photos' ou via la fonctionnalité d'import de Windows Explorer. Ceci est dû au fait que mon téléphone ne met pas les vignettes sur les photos prises avec le smartphone.
+Avec mon smartphone (Xiaomi Redmi Note 9S), quand je souhaite importer mes images dans Windows (ou tout autre système d'exploitation prenant en charge les protocoles MTP ou PTP), j'ai remarqué que les vignettes ne sont pas affichées par l'outil d'importation (que ce soit avec l'app 'Photos' ou via la fonctionnalité d'import de Windows Explorer). Ceci est dû au fait que mon téléphone ne met pas les vignettes sur les photos prises avec le smartphone.
 
 <b>Fonctionnalités</b>
 
 - Ajout de vignette aux images (JPEG) qui n'en ont pas
-- Algorithme Lanczos pour redimensionner les images grâce à la [librairie swscale de FFmpeg][2] pour un meilleur résultat.
+- Algorithme Lanczos pour redimensionner les images grâce à la [bibliothèque swscale de FFmpeg][2] pour un meilleur résultat.
 - Sélection d'un ou plusieurs dossiers à scanner. Par exemple DCIM, Pictures... (sur stockage interne, carte SD...)
 - Exclusion d'un sous-dossier des dossiers sélectionnés
 - Conservation de l'horodatage des images
