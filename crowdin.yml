@@ -7,6 +7,6 @@ files:
   - source: app/src/main/res/values/arrays.xml
     translation: /app/src/main/res/values-%two_letters_code%/arrays.xml
     translatable_elements:
-      - '/resources/string-array[@name="exif_library_entries"]'
-      - '/resources/string-array[@name="exif_library_pixymeta_entries"]'
-      - '/resources/string-array[@name="exiv2SkipLevel_entries"]'
+      - '/resources/string-array[@name=''exif_library_entries'']'
+      - '/resources/string-array[@name=''exif_library_pixymeta_entries'']'
+      - '/resources/string-array[@name=''exiv2SkipLevel_entries'']'
