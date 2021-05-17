@@ -1,1 +1,1 @@
-Add thumbnail in the EXIF tag of JPEG picture not having one (batch processing)
+Ajoute des vignettes dans les données EXIF des images JPEG qui n'en ont pas
