@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE resources [
-<!ENTITY pref_writeThumbnailedToOriginalFolder_title "Update in source location">
-]>
 <resources>
     <string name="app_name">Exif Thumbnail Adder</string>
     <!-- AndroidManifest.xml -->
@@ -85,7 +82,7 @@
     <string name="frag1_log_cannot_move_to_backup">\u00A0Cannot move picture to backup. File exists. Skipping.</string>
     <string name="frag1_log_ok">\u00A0OK</string>
     <string name="frag1_log_not_granted">\u00A0Not granted. Please add the folder again in Settings.</string>
-    <string name="frag1_log_ko">\u00A0KO\"</string>
+    <string name="frag1_log_ko">\u00A0KO</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr">Could not copy file timestamps &amp; attributes: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">Could not store file timestamps &amp; attributes: %1$s</string>
     <string name="frag1_log_error_moving_doc">ERROR moving document: %1$s</string>
