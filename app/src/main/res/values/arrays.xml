@@ -2,11 +2,11 @@
     <!-- Settings: ListPreference: exiflib -->
     <string-array name="exif_library_entries">
         <item>Android-Exif-Extended</item>
-        <item>exiv2</item>
+        <item>Exiv2</item>
         <item>libexif (⚠️ strips XMP, see README)</item>
     </string-array>
 
-    <string-array name="exif_library_values">
+    <string-array name="exif_library_values" translatable="false">
         <item>exiflib_android-exif-extended</item>
         <item>exiflib_exiv2</item>
         <item>exiflib_libexif</item>
@@ -16,7 +16,7 @@
         <item>pixymeta-android (⚠️ problems with InteropIFD, see README)</item>
     </string-array>
 
-    <string-array name="exif_library_pixymeta_values">
+    <string-array name="exif_library_pixymeta_values" translatable="false">
         <item>exiflib_pixymeta</item>
     </string-array>
 
@@ -27,7 +27,7 @@
         <item>Never skip, even in case of error</item>
     </string-array>
 
-    <string-array name="exiv2SkipLevel_values">
+    <string-array name="exiv2SkipLevel_values" translatable="false">
         <item>warn</item>
         <item>error</item>
         <item>none</item>

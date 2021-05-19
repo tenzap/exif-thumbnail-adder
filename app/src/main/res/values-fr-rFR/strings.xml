@@ -128,15 +128,15 @@
     <string name="pref_skipPicsHavingThumbnail_summary">Si le fichier a déjà une vignette ne pas la traiter</string>
     <string name="pref_backupOriginalPic_title">Faire une sauvegarde de l\'image source</string>
     <string name="pref_backupOriginalPic_summary">La sauvegarde est placée dans le répertoire de travail. Si un fichier de même nom existe il n\'est pas écrasé</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_title">&pref_writeThumbnailedToOriginalFolder_title;</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_title">Modifier dans le dossier source</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ajoute la vignette dans l\'image du dossier source</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Ajoute la vignette à une copie de l\'image source dans le répertoire de travail (dans \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
     <string name="pref_overwriteDestPic_title">Ecraser l\'image du répertoire cible</string>
     <string name="pref_overwriteDestPic_summary">Ecrase le fichier de même nom dans le répertoire de travail (les sauvegardes ne sont pas concernées et ne sont jamais écrasés)</string>
     <string name="pref_keepTimeStampOnBackup_title">Copier l\'horodatage sur la sauvegarde</string>
-    <string name="pref_keepTimeStampOnBackup_summary">Si \'&pref_writeThumbnailedToOriginalFolder_title;\' est \'off\',
+    <string name="pref_keepTimeStampOnBackup_summary">Si \'%1$s\' est \'off\',
         copier l\'horodatage du fichier source sur la copie dans le répertoire de sauvegarde.\n
-        Si \'&pref_writeThumbnailedToOriginalFolder_title;\' est \'on\', l\'horodatage est toujours conservé.</string>
+        Si \'%1$s\' est \'on\', l\'horodatage est toujours conservé.</string>
     <string name="pref_writeTmpToCacheDir_title">Ecrire les images temporaires dans le cache</string>
     <string name="pref_writeTmpToCacheDir_summaryOn">Ecrit les images temporaires crées pendant le traitement dans le répertoire cache de l\'application</string>
     <string name="pref_writeTmpToCacheDir_summaryOff">Ecrit les images temporaires crées pendant le traitement dans le répertoire de travail</string>
@@ -146,7 +146,7 @@
     <string name="pref_exifLibrary_cannotDisableSkipPicsHavingThumbnail">Impossible de désactiver \'%1$s\' avec Android-Exif-Extended. L\'option a été réactivée.</string>
 
     <string name="pref_categ_exiv2_settings">Paramètres Exiv2</string>
-    <string name="pref_exiv2SkipOnLogLevel_title">Sauter à partir du niveau d\'erreur exiv2</string>
+    <string name="pref_exiv2SkipOnLogLevel_title">Sauter à partir du niveau d\'erreur Exiv2</string>
 
     <string name="pref_categ_libexif_settings">Paramètres libexif</string>
     <string name="pref_libexifSkipOnError_title">Sauter en cas d\'erreur libexif</string>

@@ -2,7 +2,7 @@
     <!-- Settings: ListPreference: exiflib -->
     <string-array name="exif_library_entries">
         <item>Android-Exif-Extended</item>
-        <item>exiv2</item>
+        <item>Exiv2</item>
         <item>libexif (⚠️ supprime XMP, voir README)</item>
     </string-array>
 

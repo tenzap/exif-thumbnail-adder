@@ -60,6 +60,9 @@ import static com.exifthumbnailadder.app.MainApplication.TAG;
                 }
             });
 
+            Preference keepTimeStampOnBackupPref = findPreference("keepTimeStampOnBackup");
+            keepTimeStampOnBackupPref.setSummary(getString(R.string.pref_keepTimeStampOnBackup_summary, getString(R.string.pref_writeThumbnailedToOriginalFolder_title)));
+
             updatePathsSummary();
             setKeepTimeStampOnBackupEnabled();
             setAllFilesAccess();
