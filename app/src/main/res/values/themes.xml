@@ -12,6 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="customBgColor">@color/lightgrey</item>
     </style>
 
     <style name="Theme.ExifThumbnailAdder.NoActionBar">
@@ -19,7 +20,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="Theme.ExifThumbnailAdder.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="Theme.ExifThumbnailAdder.AppBarOverlay" parent="ThemeOverlay.AppCompat.DayNight.ActionBar" />
 
-    <style name="Theme.ExifThumbnailAdder.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="Theme.ExifThumbnailAdder.PopupOverlay" parent="ThemeOverlay.AppCompat.DayNight" />
 </resources>
