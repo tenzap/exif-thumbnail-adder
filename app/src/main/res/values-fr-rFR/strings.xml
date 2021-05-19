@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE resources [
-    <!ENTITY pref_writeThumbnailedToOriginalFolder_title "Modifier dans le dossier source">
-    ]>
-
 <resources>
     <string name="app_name">Exif Thumbnail Adder</string>
 
@@ -98,7 +94,7 @@
     <string name="frag1_log_cannot_move_to_backup">\u00A0Ne peut déplacer l\'image dans la sauvegarde. Le fichier existe. Saute.</string>
     <string name="frag1_log_ok">\u00A0OK</string>
     <string name="frag1_log_not_granted">\u00A0Non accordée. Veuillez à nouveau ajouter le dossier dans les paramètres.</string>
-    <string name="frag1_log_ko">\u00A0KO"</string>
+    <string name="frag1_log_ko">\u00A0KO</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr">N\'a pu copier l\'horodatage et les attributs de fichier: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">N\'a pu sauver l\'horodatage et les attributs de fichier: %1$s</string>
     <string name="frag1_log_error_moving_doc">ERREUR dans le déplacement du document: %1$s</string>
