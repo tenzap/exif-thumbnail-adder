@@ -109,13 +109,13 @@
     <string name="pref_skipPicsHavingThumbnail_summary">If picture already has a thumbnail, skip processing</string>
     <string name="pref_backupOriginalPic_title">Create backup of source picture</string>
     <string name="pref_backupOriginalPic_summary">Backup is placed in the working directory. If a file with same name exists, it is not overwritten</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_title">&amp;pref_writeThumbnailedToOriginalFolder_title;</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_title">Update in source location</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Add thumbnail to the picture of the source folder</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Add thumbnail to a copy of the source picture in the working directory (in \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
     <string name="pref_overwriteDestPic_title">Overwrite picture in destination</string>
     <string name="pref_overwriteDestPic_summary">Override file having same name in the working directory (this doesn\'t affect backups, which are never overwritten)</string>
     <string name="pref_keepTimeStampOnBackup_title">Copy timestamp to backup</string>
-    <string name="pref_keepTimeStampOnBackup_summary">If \'&amp;pref_writeThumbnailedToOriginalFolder_title;\' is \'off\', copy the timestamp of the source picture to its copy in the backup directory.\nIf \'&amp;pref_writeThumbnailedToOriginalFolder_title;\' is \'on\', the timestamp of the backup is always kept.</string>
+    <string name="pref_keepTimeStampOnBackup_summary">If \'%1$s\' is \'off\', copy the timestamp of the source picture to its copy in the backup directory.\nIf \'%1$s\' is \'on\', the timestamp of the backup is always kept.</string>
     <string name="pref_writeTmpToCacheDir_title">Write tmp images to cache dir</string>
     <string name="pref_writeTmpToCacheDir_summaryOn">Write temporary images created during processing to the cache directory of the application</string>
     <string name="pref_writeTmpToCacheDir_summaryOff">Write temporary images created during processing to the working directory</string>
@@ -123,7 +123,7 @@
     <string name="pref_exifLibrary_title">Write EXIF thumbnails with</string>
     <string name="pref_exifLibrary_cannotDisableSkipPicsHavingThumbnail">Cannot disable option \'%1$s\' when using Android-Exif-Extended. Turning it back on.</string>
     <string name="pref_categ_exiv2_settings">Exiv2 settings</string>
-    <string name="pref_exiv2SkipOnLogLevel_title">Skip from exiv2 error level</string>
+    <string name="pref_exiv2SkipOnLogLevel_title">Skip from Exiv2 error level</string>
     <string name="pref_categ_libexif_settings">libexif settings</string>
     <string name="pref_libexifSkipOnError_title">Skip in case of libexif error</string>
     <string name="pref_libexifSkipOnError_summary">Skip picture if libexif reports an error</string>
