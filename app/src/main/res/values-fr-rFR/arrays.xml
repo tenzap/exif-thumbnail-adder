@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Settings: ListPreference: exiflib -->
     <string-array name="exif_library_entries">
@@ -5,11 +6,9 @@
         <item>Exiv2</item>
         <item>libexif (⚠️ supprime XMP, voir README)</item>
     </string-array>
-
     <string-array name="exif_library_pixymeta_entries">
         <item>pixymeta-android (⚠️ problèmes avec InteropIFD,️ voir README)</item>
     </string-array>
-
     <!-- Settings: ListPreference: exiv2SkipOnLogLevel -->
     <string-array name="exiv2SkipLevel_entries">
         <item>Avertissement</item>
