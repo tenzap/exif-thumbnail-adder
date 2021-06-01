@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AndroidManifest.xml -->
+    <!--    <string name="title_activity_settings">Settings</string>-->
+    <!--    <string name="title_activity_sync">Sync. deletions</string>-->
+    <!-- Toolbar action menu labels -->
+    <!-- About Activity -->
+    <!-- Working dir perm activity -->
+    <!-- First Fragment -->
+    <!-- Settings -->
+    <!-- Sync Activity -->
+</resources>
