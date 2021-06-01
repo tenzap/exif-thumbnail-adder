@@ -1,0 +1,1 @@
+Add thumbnail in the EXIF tag of JPEG picture not having one (batch processing)
