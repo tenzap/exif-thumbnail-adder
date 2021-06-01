@@ -1,52 +1,52 @@
-Cette application pour appareils Android cherche les images (JPEG) et <b>ajoute une vignette</b> s'il n'y en a pas encore. Les vignettes sont ajoutées à la structure de métadonnées EXIF.
+This application for android devices searches for pictures (JPEG) on your device and <b>adds a thumbnail</b> if they don't have one yet. Thumbnails are added to the EXIF metadata structure.
 
-Elle fonctionne depuis Android Oreo (android 8, SDK 26) et a été testée sur un appareil réel avec android 10 et sur un appareil virtuel avec android 8 et 11.
+It is designed to work from android Oreo (android 8, SDK 26) and was tested on real device running Android 10 and virtual device running android 8 and 11.
 
 Signalez les erreurs ici: <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnail-adder/issues</a>
 
-Plus d'informations, certains faits connus et comment contribuer, sont sur la [page d'accueil du projet][1].
+For more information, some know facts and how you may contribute, refer to the [project homepage][1].
 
-<b>Licence</b>
+<b>Rationale</b>
 
-Avec mon smartphone (Xiaomi Redmi Note 9S), quand je souhaite importer mes images dans Windows (ou tout autre système d'exploitation prenant en charge les protocoles MTP ou PTP), j'ai remarqué que les vignettes ne sont pas affichées par l'outil d'importation (que ce soit avec l'app 'Photos' ou via la fonctionnalité d'import de Windows Explorer). Ceci est dû au fait que mon téléphone ne met pas les vignettes sur les photos prises avec le smartphone.
+Avec mon smartphone (Xiaomi Redmi Note 9S), quand je souhaite importer mes images dans Windows (ou tout autre système d'exploitation prenant en charge les protocoles MTP ou PTP), j'ai remarqué que les vignettes ne sont pas affichées par l'outil d'importation (que ce soit avec l'app 'Photos' ou via la fonctionnalité d'import de Windows Explorer). This is because my phone didn't add the thumbnail to the pictures I took with the camera.
 
-<b>Fonctionnalités</b>
+<b>Features</b>
 
-- Ajout de vignette aux images (JPEG) qui n'en ont pas
+- Add thumbnail to pictures (JPEG) that don't yet have one
 - Algorithme Lanczos pour redimensionner les images grâce à la [bibliothèque swscale de FFmpeg][2] pour un meilleur résultat.
-- Sélection d'un ou plusieurs dossiers à scanner. Par exemple DCIM, Pictures...
-- Exclusion d'un sous-dossier des dossiers sélectionnés
-- Conservation de l'horodatage des images
-- Journal de traitement
-- Synchronisation des fichiers supprimés dans les dossiers source vers le répertoire de sauvegarde et de travail (pour ne pas conserver dans la sauvegarde des fichiers que vous n'avez plus dans les dossiers source)
-- Options par défaut conservatrices (sauvegarde, saute les fichiers corrompus)
+- Sélection d'un ou plusieurs dossiers à scanner. For example DCIM, Pictures...
+- Exclude one subdirectory from selected directories
+- Preserve timestamps of the pictures
+- Processing log
+- Synchronize deleted files in the source directory to the backup and working directory (so that you don't keep in the backup folder pictures you don't have anymore in the source folder)
+- Conservative default options (backup pictures, skip corrupt files)
 - Installation de l'app dans le stockage interne ou externe
 - Bibliothèque EXIF par défaut: [Exiv2][3].
-- Bibliothèques alternatives: Android-Exif-Extended (intégré), libexif (intégré), pixymeta-android (requiert la compilation manuelle depuis les sources). Cf "known facts" sur la page du projet pour connaître les avantages et inconvénients de chacun.
+- Bibliothèques alternatives: Android-Exif-Extended (intégré), libexif (intégré), pixymeta-android (requiert la compilation manuelle depuis les sources). See known facts on project page to learn more on benefits and drawbacks of each library.
 - Paramètres 
-&emsp;- Rotation des vignettes
-&emsp;- Remplacement de la vignette existante
+&emsp;- Rotate the thumbnail
+&emsp;- Replace existing thumbnail
 &emsp;- Sauvegarde de l'image originale
 &emsp;- Saute les images ayant des métadonnées malformées (désactivable, afin de traiter aussi les fichiers avec étiquettes corrompues)
-&emsp;- Modifie les images à leur emplacement ou ajoute la vignette à une copie dans un autre dossier
+&emsp;- Replace picture inplace or write new picture to another directory
 
-<b>Permissions demandées</b>
+<b>Requested permissions</b>
 
-- <i>READ_EXTERNAL_STORAGE</i> et <i>WRITE_EXTERNAL_STORAGE</i>
-&emsp;- pour garder l'horodatage des images
+- <i>READ_EXTERNAL_STORAGE</i> and <i>WRITE_EXTERNAL_STORAGE</i>
+&emsp;- to keep the timestamp of the pictures
 - <i>MANAGE_EXTERNAL_STORAGE</i>
-&emsp;- demandé seulement avec le 'flavor' <i>standard</i> qui est livré sur F-Droid pour les appareils avec Android 11 et supérieur pour conserver l'horodatage des fichiers
-- obtenez plus de détails sur la page du projet
+&emsp;- requested only with the <i>standard</i> flavor that is shipped on F-Droid for devices running Android 11 and above to keep the timestamp of the pictures
+- get more details on the project homepage
 
 <b>Installation</b>
 
-- Prérequis: minimum android Oreo (android 8, SDK 26). App testée jusqu'à Android 11.
+- Prerequisites: minimum android Oreo (android 8, SDK 26). App was tested up to Android 11.
 - Télécharger via l'app F-Droid [ici][4]
-- Télécharger le fichier APK depuis la [page des 'releases'][5]
+- Download the APK from the [release page][5]
 
-<b>Logique/raisonnement</b>
+<b>License</b>
 
-GPL-3.0 (cf "COPYING" sur la page du projet)
+GPL-3.0 (see "COPYING" file on project homepage)
 
 <b>URLs</b>
 
