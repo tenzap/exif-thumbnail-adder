@@ -95,7 +95,7 @@
     <string name="frag1_log_could_not_store_timestamp_and_attr">Could not store file timestamps &amp; attributes: %1$s</string>
     <string name="frag1_log_error_moving_doc">ERROR moving document: %1$s</string>
     <string name="frag1_log_error_copying_doc">ERROR copying document: %1$s</string>
-    <string name="frag1_log_count_files_to_process">%1$d file(s) to process."</string>
+    <string name="frag1_log_count_files_to_process">%1$d file(s) to process.</string>
     <string name="frag1_log_error">ERROR: %1$s</string>
 
     <!-- Settings -->
