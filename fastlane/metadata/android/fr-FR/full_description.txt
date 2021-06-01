@@ -14,7 +14,7 @@ Avec mon smartphone (Xiaomi Redmi Note 9S), quand je souhaite importer mes image
 
 - Ajout de vignette aux images (JPEG) qui n'en ont pas
 - Algorithme Lanczos pour redimensionner les images grâce à la [bibliothèque swscale de FFmpeg][2] pour un meilleur résultat.
-- Sélection d'un ou plusieurs dossiers à scanner. Par exemple DCIM, Pictures... (sur stockage interne, carte SD...)
+- Sélection d'un ou plusieurs dossiers à scanner (sur stockage interne, carte SD...). Par exemple DCIM, Pictures...
 - Exclusion d'un sous-dossier des dossiers sélectionnés
 - Conservation de l'horodatage des images
 - Journal de traitement
