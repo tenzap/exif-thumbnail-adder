@@ -21,9 +21,9 @@ Avec mon smartphone (Xiaomi Redmi Note 9S), quand je souhaite importer mes image
 - Synchronisation des fichiers supprimés dans les dossiers source vers le répertoire de sauvegarde et de travail (pour ne pas conserver dans la sauvegarde des fichiers que vous n'avez plus dans les dossiers source)
 - Options par défaut conservatrices (sauvegarde, saute les fichiers corrompus)
 - Installation de l'app dans le stockage interne ou externe
-- Bibliothèque EXIF par défaut: [exiv2][3].
-- Bibliothèques alternatives: Android-Exif-Extended (intégré), libexif (intégré), pixymeta-android (requiert la compilation manuelle depuis les sources). Cf "known facts" sur la page du projet pour connaître les avantages et inconvients de chacun.
-- Paramètres
+- Bibliothèque EXIF par défaut: [Exiv2][3].
+- Bibliothèques alternatives: Android-Exif-Extended (intégré), libexif (intégré), pixymeta-android (requiert la compilation manuelle depuis les sources). Cf "known facts" sur la page du projet pour connaître les avantages et inconvénients de chacun.
+- Paramètres 
 &emsp;- Rotation des vignettes
 &emsp;- Remplacement de la vignette existante
 &emsp;- Sauvegarde de l'image originale
@@ -55,3 +55,4 @@ GPL-3.0 (cf "COPYING" sur la page du projet)
 - [3]: <a href="https://www.exiv2.org">https://www.exiv2.org</a>
 - [4]: <a href="https://f-droid.org/packages/com.exifthumbnailadder.app">https://f-droid.org/packages/com.exifthumbnailadder.app</a>
 - [5]: <a href="https://github.com/tenzap/exif-thumbnail-adder/releases">https://github.com/tenzap/exif-thumbnail-adder/releases</a>
+
