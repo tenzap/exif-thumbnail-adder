@@ -13,6 +13,6 @@
     <string-array name="exiv2SkipLevel_entries">
         <item>Avertissement</item>
         <item>Erreur</item>
-        <item>Ne jamais sauter, même en cas d\'erreur</item>
+        <item>Never skip, even in case of error</item>
     </string-array>
 </resources>
