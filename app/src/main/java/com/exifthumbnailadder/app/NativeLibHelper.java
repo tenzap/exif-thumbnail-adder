@@ -23,6 +23,10 @@ package com.exifthumbnailadder.app;
 import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.exifthumbnailadder.app.exception.Exiv2ErrorException;
+import com.exifthumbnailadder.app.exception.Exiv2WarnException;
+import com.exifthumbnailadder.app.exception.LibexifException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;

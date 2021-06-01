@@ -56,6 +56,13 @@ import androidx.exifinterface.media.ExifInterface;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import com.exifthumbnailadder.app.exception.BadOriginalImageException;
+import com.exifthumbnailadder.app.exception.CopyAttributesFailedException;
+import com.exifthumbnailadder.app.exception.DestinationFileExistsException;
+import com.exifthumbnailadder.app.exception.Exiv2ErrorException;
+import com.exifthumbnailadder.app.exception.Exiv2WarnException;
+import com.exifthumbnailadder.app.exception.LibexifException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -1060,16 +1067,5 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                     hasWriteExternalStoragePermission = false;
                 }
             });
-
-    public static class BadOriginalImageException extends Exception {}
-    public static class DestinationFileExistsException extends Exception {}
-    public static class CopyAttributesFailedException extends Exception {
-        public CopyAttributesFailedException(Throwable err) {
-            super(err);
-        }
-        public CopyAttributesFailedException(String msg) {
-            super(msg);
-        }
-    }
 
 }

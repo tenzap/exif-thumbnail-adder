@@ -1,4 +1,4 @@
-package com.exifthumbnailadder.app;
+package com.exifthumbnailadder.app.exception;
 
 public class Exiv2WarnException extends Exception {
     public Exiv2WarnException() {}

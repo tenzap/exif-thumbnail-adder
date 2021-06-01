@@ -35,6 +35,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.exifthumbnailadder.app.exception.CopyAttributesFailedException;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -428,7 +430,7 @@ public class ETADocDf extends ETADoc {
     }
 
     void copyAttributesTo(Object doc) throws Exception {
-        if (!attributesAreSet) throw new AddThumbsFragment.CopyAttributesFailedException("Attributes have not been stored with storeFileAttributes");
+        if (!attributesAreSet) throw new CopyAttributesFailedException("Attributes have not been stored with storeFileAttributes");
 
         Path outFilePath;
         if (doc instanceof Uri)
@@ -448,7 +450,7 @@ public class ETADocDf extends ETADoc {
             Files.setPosixFilePermissions(outFilePath, attributePosix);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AddThumbsFragment.CopyAttributesFailedException(e);
+            throw new CopyAttributesFailedException(e);
         }
     }
 }

@@ -190,7 +190,7 @@ jint Exiv2Helper::throwExiv2ErrorException( JNIEnv *env, const char *message ) c
     }
 
     jclass exClass;
-    const char *className = "com/exifthumbnailadder/app/Exiv2ErrorException" ;
+    const char *className = "com/exifthumbnailadder/app/exception/Exiv2ErrorException" ;
 
     exClass = (env)->FindClass( const_cast<char *>(className) );
     if ( exClass == NULL ) {
@@ -207,7 +207,7 @@ jint Exiv2Helper::throwExiv2WarnException( JNIEnv *env, const char *message ) co
     }
 
     jclass exClass;
-    const char *className = "com/exifthumbnailadder/app/Exiv2WarnException" ;
+    const char *className = "com/exifthumbnailadder/app/exception/Exiv2WarnException" ;
 
     exClass = (env)->FindClass( const_cast<char *>(className) );
     if ( exClass == NULL ) {

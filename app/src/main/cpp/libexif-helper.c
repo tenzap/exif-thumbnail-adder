@@ -657,7 +657,7 @@ jint throwLibexifException( JNIEnv *env, char *message )
     }
 
     jclass exClass;
-    char *className = "com/exifthumbnailadder/app/LibexifException" ;
+    char *className = "com/exifthumbnailadder/app/exception/LibexifException" ;
 
     exClass = (*env)->FindClass( env, className );
     if ( exClass == NULL ) {
@@ -674,7 +674,7 @@ jint throwLibexifHelperException( JNIEnv *env, char *message )
     }
 
     jclass exClass;
-    char *className = "com/exifthumbnailadder/app/LibexifHelperException" ;
+    char *className = "com/exifthumbnailadder/app/exception/LibexifHelperException" ;
 
     exClass = (*env)->FindClass( env, className );
     if ( exClass == NULL ) {

@@ -32,6 +32,7 @@ import android.util.Size;
 
 import androidx.preference.PreferenceManager;
 
+import com.exifthumbnailadder.app.exception.BadOriginalImageException;
 import com.schokoladenbrown.Smooth;
 
 import java.io.ByteArrayOutputStream;
@@ -227,10 +228,10 @@ public abstract class ETADoc {
         return Bitmap.createBitmap(tb_bitmap, 0, 0, tb_bitmap.getWidth(), tb_bitmap.getHeight(), matrix, true);
     }
 
-    public Bitmap getThumbnail(String lib, boolean rotateThumbnail, int degrees) throws Exception, AddThumbsFragment.BadOriginalImageException {
+    public Bitmap getThumbnail(String lib, boolean rotateThumbnail, int degrees) throws Exception, BadOriginalImageException {
         Bitmap original = toBitmap();
         if (original == null) {
-            throw new AddThumbsFragment.BadOriginalImageException();
+            throw new BadOriginalImageException();
         }
         int imageWidth = original.getWidth();
         int imageHeight = original.getHeight();
