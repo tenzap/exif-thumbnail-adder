@@ -4,22 +4,22 @@
     <!-- AndroidManifest.xml -->
     <!--    <string name="title_activity_settings">Settings</string>-->
     <!--    <string name="title_activity_sync">Sync. deletions</string>-->
-    <string name="title_activity_about">A propos de</string>
-    <string name="title_activity_working_dir_perm">Permissions du répertoire de travail</string>
+    <string name="title_activity_about">About</string>
+    <string name="title_activity_working_dir_perm">Working dir permissions</string>
     <!-- Toolbar action menu labels -->
-    <string name="action_settings">Paramètres</string>
-    <string name="action_sync">Sync. les suppressions</string>
-    <string name="action_about">A propos de</string>
-    <string name="action_add_thumbs">Ajouter les vignettes</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_sync">Sync. deletions</string>
+    <string name="action_about">About</string>
+    <string name="action_add_thumbs">Add thumbnails</string>
     <!-- About Activity -->
-    <string name="about_about_title">A propos de</string>
-    <string name="about_content">A propos de…</string>
+    <string name="about_about_title">About</string>
+    <string name="about_content">About…</string>
     <string name="about_version">Version</string>
-    <string name="about_homepage_source">Page d\'accueil du projet &amp; code source:</string>
-    <string name="about_license">Licence:</string>
-    <string name="about_external_libraries">Bibliothèques externes</string>
+    <string name="about_homepage_source">Project homepage &amp; source code:</string>
+    <string name="about_license">License:</string>
+    <string name="about_external_libraries">External libraries</string>
     <!-- Working dir perm activity -->
-    <string name="working_dir_perm_permissions_set_retry">Les permissions du répertoire de travail sont accordées, vous pouvez ressayer.</string>
+    <string name="working_dir_perm_permissions_set_retry">WorkingDir permissions set, please retry.</string>
     <string name="working_dir_button_create_dir_and_set_permissions">Créer le répertoire et accorder les permissions</string>
     <string name="working_dir_text_you_don_t_have_the_permission_to_write">    Vous n\'avez par la permission d\'écrire dans le répertoire de travail ou il n\'existe pas.\n
     \n
@@ -43,113 +43,113 @@
     Une fois les permissions accordées, vous serez renvoyé vers l\'écran principal et
         pourrez relancer le traitement.\n</string>
     <!-- First Fragment -->
-    <string name="frag1_text_description">Ajoute des vignettes aux images des dossiers sélectionnés</string>
-    <string name="frag1_text_list_of_dirs_to_process">Liste des dossiers à traiter</string>
-    <string name="frag1_text_no_dir_selected">Pas de dossier sélectionné. Allez dans les paramètres pour en sélectionner.</string>
+    <string name="frag1_text_description">Add thumbnails to pictures from the selected source folders</string>
+    <string name="frag1_text_list_of_dirs_to_process">List of source folders to process</string>
+    <string name="frag1_text_no_dir_selected">No folder selected. Go to Settings to select.</string>
     <string name="frag1_text_all_files_access_permissions_is_not_granted">La permission \'Accès à tous les fichiers\'
         n\'est pas accordée sur votre appareil. Vous pouvez tout de même utiliser l\'appli mais les date et heure de
         fichier seront l\'heure actuelle. Ceci n\'affecte pas les date/heure stockées dans les données EXIF de vos
         images. Vous pouvez accorder les permissions dans les paramètres.</string>
-    <string name="frag1_button_settings">Paramètres</string>
-    <string name="frag1_button_start_processing">Démarrer le traitement</string>
-    <string name="stop">Arrêter</string>
-    <string name="frag1_text_processing_log">Journal du traitement</string>
+    <string name="frag1_button_settings">Settings</string>
+    <string name="frag1_button_start_processing">Start processing</string>
+    <string name="stop">Stop</string>
+    <string name="frag1_text_processing_log">Processing Log</string>
     <string name="frag1_perm_request_title">Demande de permission</string>
-    <string name="frag1_perm_request_message_timestamp">La permission pour le stockage externe est nécessaire pour conserver l\'horodatage des fichiers.\n
-        Si vous refusez, le traitement se fera sans conserver l\'horodatage.\n
-        Une fois la permission accordée, vous devez relancer le traitement.</string>
-    <string name="frag1_perm_request_deny">Refuser la permission</string>
-    <string name="frag1_perm_request_message_Files">La permission pour le stockage externe est nécessaire. Après accord vous devez relancer le traitement.</string>
-    <string name="frag1_check_write_perm">Vérification de la permission WRITE_EXTERNAL_STORAGE…</string>
-    <string name="frag1_continue_without_timestamps">\u00A0Permission non accordée. Poursuite sans conservation de l\'horodatage.</string>
+    <string name="frag1_perm_request_message_timestamp">External storage permission is necessary to keep timestamps of files.\n
+        If you deny permission, processing will be done without keeping timestamps.\n
+        After permission is given, you need to restart processing.</string>
+    <string name="frag1_perm_request_deny">Deny permission</string>
+    <string name="frag1_perm_request_message_Files">External storage permission is necessary. After permission is given, you need to restart processing.</string>
+    <string name="frag1_check_write_perm">Checking WRITE_EXTERNAL_STORAGE permission…</string>
+    <string name="frag1_continue_without_timestamps">\u00A0Permission not given, continuing without keeping timestamps.</string>
     <string name="frag1_log_skipping_excluded_dir">Saute le rép. %1$s dans %2$s</string>
-    <string name="frag1_log_copying_attr">Copie des attributs…</string>
-    <string name="frag1_log_starting">Démarre…\n</string>
-    <string name="frag1_log_stopped_by_user">Arrêté par l\'utilisateur.</string>
-    <string name="frag1_log_processing_dir">Traitement de %1$s</string>
-    <string name="frag1_log_processing_path_filename">Traite… Chemin: %1$s Fichier: %2$s</string>
-    <string name="frag1_log_skipping_path_filename">Saute… Chemin: %1$s Fichier: %2$s</string>
-    <string name="frag1_log_checking_workingdir_perm">Vérification des permissions du répertoire de travail…</string>
-    <string name="frag1_log_checking_perm">Vérification des permissions…</string>
-    <string name="frag1_log_skipping_file_missing">Saute (fichier manquant)</string>
-    <string name="frag1_log_skipping_not_jpeg">Saute (pas JPEG)\n</string>
-    <string name="frag1_log_skipping_empty_file">Saute (fichier vide)\n</string>
-    <string name="frag1_log_skipping_has_thumbnail">Saute (contient vignette)\n</string>
-    <string name="frag1_log_skipping_bad_image">Saute (mauvaise image?)\n</string>
-    <string name="frag1_log_skipping_error">Saute (ERREUR): %1$s</string>
-    <string name="frag1_log_continue_despite_error_as_per_setting">Continue tel que demandé dans les paramètres…</string>
-    <string name="frag1_log_file_exists">Fichier existe déjà : %1$s</string>
-    <string name="frag1_log_finished">\nTerminé.</string>
+    <string name="frag1_log_copying_attr">Copying attributes…</string>
+    <string name="frag1_log_starting">Starting…\n</string>
+    <string name="frag1_log_stopped_by_user">Stopped by user.</string>
+    <string name="frag1_log_processing_dir">Processing %1$s</string>
+    <string name="frag1_log_processing_path_filename">Processing… Path: %1$s Filename: %2$s</string>
+    <string name="frag1_log_skipping_path_filename">Skipping… Path: %1$s Filename: %2$s</string>
+    <string name="frag1_log_checking_workingdir_perm">Checking working directory permissions…</string>
+    <string name="frag1_log_checking_perm">Checking permissions…</string>
+    <string name="frag1_log_skipping_file_missing">Skipping (file missing)</string>
+    <string name="frag1_log_skipping_not_jpeg">Skipping (not JPEG)\n</string>
+    <string name="frag1_log_skipping_empty_file">Skipping (empty file)\n</string>
+    <string name="frag1_log_skipping_has_thumbnail">Skipping (has thumbnail)\n</string>
+    <string name="frag1_log_skipping_bad_image">Skipping (bad image?)\n</string>
+    <string name="frag1_log_skipping_error">Skipping (ERROR): %1$s</string>
+    <string name="frag1_log_continue_despite_error_as_per_setting">Continue processing as per settings…</string>
+    <string name="frag1_log_file_exists">File already exists: %1$s</string>
+    <string name="frag1_log_finished">\nFinished.</string>
     <string name="frag1_log_pixymeta_missing">La bibliothèque pixymeta-android n\'est pas disponible dans cette version. Sélectionnez en une autre dans les paramètres.</string>
-    <string name="frag1_log_done">\u00A0Fait</string>
-    <string name="frag1_log_overwrite_not_allowed">\u00A0Ecraser l\'image dans le répertoire de destination n\'est pas permis (cf paramètres). Le fichier cible existe. Saute.</string>
-    <string name="frag1_log_cannot_move_to_backup">\u00A0Ne peut déplacer l\'image dans la sauvegarde. Le fichier existe. Saute.</string>
+    <string name="frag1_log_done">\u00A0Done</string>
+    <string name="frag1_log_overwrite_not_allowed">\u00A0Overwriting picture in destination dir not allowed (see settings). Destination file exists. Skipping.</string>
+    <string name="frag1_log_cannot_move_to_backup">\u00A0Cannot move picture to backup. File exists. Skipping.</string>
     <string name="frag1_log_ok">\u00A0OK</string>
-    <string name="frag1_log_not_granted">\u00A0Non accordée. Veuillez à nouveau ajouter le dossier dans les paramètres.</string>
+    <string name="frag1_log_not_granted">\u00A0Not granted. Please add the folder again in Settings.</string>
     <string name="frag1_log_ko">\u00A0KO</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr">N\'a pu copier l\'horodatage et les attributs de fichier: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">N\'a pu sauver l\'horodatage et les attributs de fichier: %1$s</string>
-    <string name="frag1_log_error_moving_doc">ERREUR dans le déplacement du document: %1$s</string>
-    <string name="frag1_log_error_copying_doc">ERREUR dans la copie du document: %1$s</string>
-    <string name="frag1_log_count_files_to_process">%1$d fichiers(s) à traiter.\"</string>
-    <string name="frag1_log_error">ERREUR: %1$s</string>
+    <string name="frag1_log_error_moving_doc">ERROR moving document: %1$s</string>
+    <string name="frag1_log_error_copying_doc">ERROR copying document: %1$s</string>
+    <string name="frag1_log_count_files_to_process">%1$d file(s) to process.\"</string>
+    <string name="frag1_log_error">ERROR: %1$s</string>
     <!-- Settings -->
-    <string name="settings_dialog_all_files_access_not_supported">Votre appareil ne prend pas en charge l\'accès à tous les fichiers</string>
-    <string name="settings_button_remove_all_dirs">Supprimer tous les dossiers</string>
-    <string name="settings_button_add_dir">Ajouter</string>
-    <string name="pref_categ_folders">Dossiers</string>
-    <string name="pref_dirToProcess_title">Dossiers à traiter</string>
-    <string name="pref_workingDir_title"><![CDATA[Répertoire de sauvegarde et de travail]]></string>
+    <string name="settings_dialog_all_files_access_not_supported">Your device does not support all files access</string>
+    <string name="settings_button_remove_all_dirs">Remove all folders</string>
+    <string name="settings_button_add_dir">Add</string>
+    <string name="pref_categ_folders">Folders</string>
+    <string name="pref_dirToProcess_title">Folders to process</string>
+    <string name="pref_workingDir_title"><![CDATA[Backup & working directory]]></string>
     <string name="pref_workingDir_dialogMessage"><![CDATA[Ce répertoire contient la sauvegarde des images originales
      et quelques fichiers temporaires crées pendant le traitement. Il est placé à la racine de chaque volume (téléphone, carte SD…).\n
      Par exemple avec la valeur par défaut, les fichiers sont placés dans <CARTE_SD>/ThumbAdder/DCIM.bak ou <STOCKAGE_TEL>/ThumbAdder/DCIM.bak]]></string>
-    <string name="pref_allFilesAccess_title">Accès à tous les fichiers (pour Android 11+ uniquement)</string>
+    <string name="pref_allFilesAccess_title">All files access (for Android 11+ only)</string>
     <string name="pref_allFilesAccess_summary">Donne accès à tous les fichiers de votre appareil. Cela permet de conserver l\'horodatage des fichiers traités.
         L\'horodatage de vos images stockés dans les étiquettes EXIF n\'est pas
         affecté quelque soit la valeur de cette option.</string>
     <string name="pref_categ_options">Options</string>
-    <string name="pref_rotateThumbnail_title">Pivoter la vignette</string>
+    <string name="pref_rotateThumbnail_title">Rotate thumbnails</string>
     <string name="pref_rotateThumbnail_summary">Pivote la vignette pour correspondre à l\'image. La plupart des programmes nécessitent une vignette pivotée (par ex. l\'outil d\'import de photos de Win10)</string>
-    <string name="pref_skipPicsHavingThumbnail_title">Sauter les fichiers avec vignette</string>
-    <string name="pref_skipPicsHavingThumbnail_summary">Si le fichier a déjà une vignette ne pas la traiter</string>
-    <string name="pref_backupOriginalPic_title">Faire une sauvegarde de l\'image source</string>
-    <string name="pref_backupOriginalPic_summary">La sauvegarde est placée dans le répertoire de travail. Si un fichier de même nom existe il n\'est pas écrasé</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_title">Modifier dans le dossier source</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ajoute la vignette dans l\'image du dossier source</string>
+    <string name="pref_skipPicsHavingThumbnail_title">Skip pictures with thumbnail</string>
+    <string name="pref_skipPicsHavingThumbnail_summary">If picture already has a thumbnail, skip processing</string>
+    <string name="pref_backupOriginalPic_title">Create backup of source picture</string>
+    <string name="pref_backupOriginalPic_summary">Backup is placed in the working directory. If a file with same name exists, it is not overwritten</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_title">Update in source location</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Add thumbnail to the picture of the source folder</string>
     <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Ajoute la vignette à une copie de l\'image source dans le répertoire de travail (dans \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
     <string name="pref_overwriteDestPic_title">Ecraser l\'image du répertoire cible</string>
     <string name="pref_overwriteDestPic_summary">Ecrase le fichier de même nom dans le répertoire de travail (les sauvegardes ne sont pas concernées et ne sont jamais écrasés)</string>
-    <string name="pref_keepTimeStampOnBackup_title">Copier l\'horodatage sur la sauvegarde</string>
+    <string name="pref_keepTimeStampOnBackup_title">Copy timestamp to backup</string>
     <string name="pref_keepTimeStampOnBackup_summary">Si \'%1$s\' est \'off\',
         copier l\'horodatage du fichier source sur la copie dans le répertoire de sauvegarde.\n
         Si \'%1$s\' est \'on\', l\'horodatage est toujours conservé.</string>
     <string name="pref_writeTmpToCacheDir_title">Ecrire les images temporaires dans le cache</string>
     <string name="pref_writeTmpToCacheDir_summaryOn">Ecrit les images temporaires crées pendant le traitement dans le répertoire cache de l\'application</string>
     <string name="pref_writeTmpToCacheDir_summaryOff">Ecrit les images temporaires crées pendant le traitement dans le répertoire de travail</string>
-    <string name="pref_categ_backend">Bibliothèque</string>
+    <string name="pref_categ_backend">Backend/Library</string>
     <string name="pref_exifLibrary_title">Ecrire les vignettes EXIF avec</string>
     <string name="pref_exifLibrary_cannotDisableSkipPicsHavingThumbnail">Impossible de désactiver \'%1$s\' avec Android-Exif-Extended. L\'option a été réactivée.</string>
-    <string name="pref_categ_exiv2_settings">Paramètres Exiv2</string>
-    <string name="pref_exiv2SkipOnLogLevel_title">Sauter à partir du niveau d\'erreur Exiv2</string>
+    <string name="pref_categ_exiv2_settings">Exiv2 settings</string>
+    <string name="pref_exiv2SkipOnLogLevel_title">Skip from Exiv2 error level</string>
     <string name="pref_categ_libexif_settings">Paramètres libexif</string>
     <string name="pref_libexifSkipOnError_title">Sauter en cas d\'erreur libexif</string>
     <string name="pref_libexifSkipOnError_summary">Sauter l\'image en cas d\'erreur remontée par libexif</string>
-    <string name="pref_categ_extra">Suppléments</string>
-    <string name="pref_excludedSecVolPrefix_title">Préfixe du dossier exclu</string>
+    <string name="pref_categ_extra">Extra</string>
+    <string name="pref_excludedSecVolPrefix_title">Prefix for excluded folder</string>
     <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[On peut définir un sous dossier qui doit être exclu
     du traitement. La valeur donnée ici préfixe l\'id du volume pour former un nom de dossier exclu sous la forme \'<préfixe><volId>\'.
     Par exemple \'copie_de_XXXX-XXXX\'.\nL\'id du volume (par ex d\'une une carte SD) peut se voir dans la liste des dossiers à traiter
     sous la forme XXXX-XXXX.]]></string>
-    <string name="pref_excludedSecVolPrefix_defaultValue">copie_de_</string>
-    <string name="pref_categ_debug">Options de débogage</string>
-    <string name="pref_useSAF_title">utiliser le \"Storage Access Framework\"</string>
-    <string name="pref_useSAF_summary">ON=\'utiliser SAF\' ; OFF=\'utiliser Files\'</string>
+    <string name="pref_excludedSecVolPrefix_defaultValue">copy_of_</string>
+    <string name="pref_categ_debug">Debug options</string>
+    <string name="pref_useSAF_title">use Storage Access Framework</string>
+    <string name="pref_useSAF_summary">ON=\'use SAF\' ; OFF=\'use Files\'</string>
     <!-- Sync Activity -->
-    <string name="sync_text_description"><![CDATA[Synchronise les suppressions de fichiers du dossier source vers le répertoire de sauvegarde et de travail]]></string>
+    <string name="sync_text_description"><![CDATA[Synchronize deletions made in source folders to files in backup & working directory]]></string>
     <string name="sync_log_content"></string>
-    <string name="sync_button_del_files">Supprimer</string>
-    <string name="sync_button_list_files">Lister</string>
-    <string name="sync_log_checking">Vérification de : %1$s</string>
-    <string name="sync_log_failure_to_delete_file">Erreur à la suppression</string>
-    <string name="sync_log_files_to_remove">Fichiers à supprimer (ils ne sont plus dans la source) :</string>
+    <string name="sync_button_del_files">Delete</string>
+    <string name="sync_button_list_files">List</string>
+    <string name="sync_log_checking">Checking: %1$s</string>
+    <string name="sync_log_failure_to_delete_file">Failure to delete file</string>
+    <string name="sync_log_files_to_remove">Files to remove (not in source anymore):</string>
 </resources>
