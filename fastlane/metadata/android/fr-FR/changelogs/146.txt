@@ -1,0 +1,2 @@
+- corrections pour le thème sombre
+- app traduisible sur crowdin https://crowdin.com/project/exif-thumbnail-adder
