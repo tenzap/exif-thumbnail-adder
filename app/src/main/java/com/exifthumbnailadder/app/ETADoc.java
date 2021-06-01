@@ -23,7 +23,6 @@ package com.exifthumbnailadder.app;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
@@ -228,10 +227,10 @@ public abstract class ETADoc {
         return Bitmap.createBitmap(tb_bitmap, 0, 0, tb_bitmap.getWidth(), tb_bitmap.getHeight(), matrix, true);
     }
 
-    public Bitmap getThumbnail(String lib, boolean rotateThumbnail, int degrees) throws Exception, FirstFragment.BadOriginalImageException {
+    public Bitmap getThumbnail(String lib, boolean rotateThumbnail, int degrees) throws Exception, AddThumbsFragment.BadOriginalImageException {
         Bitmap original = toBitmap();
         if (original == null) {
-            throw new FirstFragment.BadOriginalImageException();
+            throw new AddThumbsFragment.BadOriginalImageException();
         }
         int imageWidth = original.getWidth();
         int imageHeight = original.getHeight();

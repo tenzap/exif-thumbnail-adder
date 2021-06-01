@@ -64,14 +64,6 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        view.findViewById(R.id.button_second).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                NavHostFragment.findNavController(SecondFragment_.this)
-//                        .navigate(R.id.action_SecondFragment_to_FirstFragment);
-//            }
-//        });
-
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         view.findViewById(R.id.sync_button_list_files).setOnClickListener(new View.OnClickListener() {
@@ -104,13 +96,13 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
         textViewLog = (TextView)view.findViewById(R.id.sync_textview_log);
         textViewDirList = (TextView)view.findViewById(R.id.sync_textview_dir_list);
         scrollview = ((ScrollView)view.findViewById(R.id.sync_scrollview));
-        FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
+        AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
 
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if ( key.equals("srcUris")) {
-            FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
+            AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
         }
     }
 
@@ -119,12 +111,12 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
         super.onResume();
         getActivity().setTitle(R.string.action_sync);
         textViewLog.setText(log);
-        FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
+        AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
         scrollDown();
     }
 
     private void setBottomBarMenuItemsEnabled(boolean enabled) {
-        MenuView.ItemView item1 = getActivity().findViewById(R.id.FirstFragment);
+        MenuView.ItemView item1 = getActivity().findViewById(R.id.AddThumbsFragment);
         item1.setEnabled(enabled);
         MenuView.ItemView item2 = getActivity().findViewById(R.id.SyncFragment);
         item2.setEnabled(enabled);

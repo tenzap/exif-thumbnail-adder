@@ -42,7 +42,7 @@
     \n
     Une fois les permissions accordées, vous serez renvoyé vers l\'écran principal et
         pourrez relancer le traitement.\n</string>
-    <!-- First Fragment -->
+    <!-- AddThumbs Fragment -->
     <string name="frag1_text_description">Ajoute des vignettes aux images des dossiers sélectionnés</string>
     <string name="frag1_text_list_of_dirs_to_process">Liste des dossiers à traiter</string>
     <string name="frag1_text_no_dir_selected">Pas de dossier sélectionné. Allez dans les paramètres pour en sélectionner.</string>

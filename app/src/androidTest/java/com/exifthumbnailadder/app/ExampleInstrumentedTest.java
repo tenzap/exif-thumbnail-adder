@@ -38,7 +38,6 @@ import androidx.test.uiautomator.UiSelector;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.pressBack;
 import static androidx.test.espresso.action.ViewActions.swipeDown;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.matcher.ViewMatchers.hasContentDescription;
@@ -239,7 +238,7 @@ public class ExampleInstrumentedTest {
         deleteDirectory(Paths.get("/storage/emulated/0/ThumbAdder-sg").toFile());
 
         // Go to "Add thumbnails" fragment
-        onView(withId(R.id.FirstFragment)).perform(click());
+        onView(withId(R.id.AddThumbsFragment)).perform(click());
 
         // Run "Add thumbnails" which brings us to the WorkingDirPermActivity
         onView(withId(R.id.button_addThumbs)).perform(click());

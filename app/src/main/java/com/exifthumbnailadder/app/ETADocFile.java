@@ -415,7 +415,7 @@ public class ETADocFile extends ETADoc {
     }
 
     void copyAttributesTo(Object doc) throws Exception {
-        if (!attributesAreSet) throw new FirstFragment.CopyAttributesFailedException("Attributes have not been stored with storeFileAttributes");
+        if (!attributesAreSet) throw new AddThumbsFragment.CopyAttributesFailedException("Attributes have not been stored with storeFileAttributes");
 
         Path outFilePath;
         if (doc instanceof Path)
@@ -435,7 +435,7 @@ public class ETADocFile extends ETADoc {
             Files.setPosixFilePermissions(outFilePath, attributePosix);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new FirstFragment.CopyAttributesFailedException(e);
+            throw new AddThumbsFragment.CopyAttributesFailedException(e);
         }
     }
 }

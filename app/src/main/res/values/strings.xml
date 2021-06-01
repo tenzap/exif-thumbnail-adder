@@ -47,7 +47,7 @@
     \n
     Once permissions are set you are redirected to the main screen, and you can start again.\n</string>
 
-    <!-- First Fragment -->
+    <!-- AddThumbs Fragment -->
     <string name="frag1_text_description">Add thumbnails to pictures from the selected source folders</string>
     <string name="frag1_text_list_of_dirs_to_process">List of source folders to process</string>
     <string name="frag1_text_no_dir_selected">No folder selected. Go to Settings to select.</string>

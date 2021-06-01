@@ -84,7 +84,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static com.exifthumbnailadder.app.MainApplication.enableLog;
 import static com.exifthumbnailadder.app.MainApplication.TAG;
 
-public class FirstFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class AddThumbsFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     SharedPreferences prefs = null;
     TextView textViewLog, textViewDirList;
@@ -101,7 +101,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
             Bundle savedInstanceState
     ) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_first, container, false);
+        return inflater.inflate(R.layout.fragment_add_thumbs, container, false);
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -110,13 +110,6 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         Context fragmentContext = (MainActivity) view.getContext();
 
-        /*view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(FirstFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
-            }
-        });*/
         view.findViewById(R.id.button_addThumbs).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,7 +138,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         textViewLog = (TextView)view.findViewById(R.id.textview_log);
         textViewDirList = (TextView)view.findViewById(R.id.textview_dir_list);
         scrollview = ((NestedScrollView)  view.findViewById(R.id.scrollview));
-        FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
+        AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
 
         LinearLayout ll = (LinearLayout)view.findViewById(R.id.block_allFilesAccess);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play")) {
@@ -162,7 +155,7 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if ( key.equals("srcUris")) {
-            FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
+            AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
         }
     }
 
@@ -171,12 +164,12 @@ public class FirstFragment extends Fragment implements SharedPreferences.OnShare
         super.onResume();
         getActivity().setTitle(R.string.action_add_thumbs);
         textViewLog.setText(log);
-        FirstFragment.updateTextViewDirList(getContext(), textViewDirList);
+        AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
         scrollDown();
     }
 
     private void setBottomBarMenuItemsEnabled(boolean enabled) {
-        MenuView.ItemView item1 = getActivity().findViewById(R.id.FirstFragment);
+        MenuView.ItemView item1 = getActivity().findViewById(R.id.AddThumbsFragment);
         item1.setEnabled(enabled);
         MenuView.ItemView item2 = getActivity().findViewById(R.id.SyncFragment);
         item2.setEnabled(enabled);

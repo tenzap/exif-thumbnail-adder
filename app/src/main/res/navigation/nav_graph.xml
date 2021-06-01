@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/AddThumbsFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="com.exifthumbnailadder.app.FirstFragment"
+        android:id="@+id/AddThumbsFragment"
+        android:name="com.exifthumbnailadder.app.AddThumbsFragment"
         android:label="@string/action_add_thumbs"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/fragment_add_thumbs">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SyncFragment"
+            android:id="@+id/action_AddThumbsFragment_to_SyncFragment"
             app:destination="@id/SyncFragment" />
         <action
-            android:id="@+id/action_FirstFragment_to_SettingsFragment"
+            android:id="@+id/action_AddThumbsFragment_to_SettingsFragment"
             app:destination="@id/SettingsFragment" />
     </fragment>
     <fragment
@@ -25,8 +25,8 @@
         tools:layout="@layout/fragment_sync">
 
         <action
-            android:id="@+id/action_SyncFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_SyncFragment_to_AddThumbsFragment"
+            app:destination="@id/AddThumbsFragment" />
         <action
             android:id="@+id/action_SyncFragment_to_SettingsFragment"
             app:destination="@id/SettingsFragment" />
@@ -38,8 +38,8 @@
         tools:layout="@layout/fragment_settings">
 
         <action
-            android:id="@+id/action_SettingsFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_SettingsFragment_to_AddThumbsFragment"
+            app:destination="@id/AddThumbsFragment" />
         <action
             android:id="@+id/action_SettingsFragment_to_SyncFragment"
             app:destination="@id/SyncFragment" />
