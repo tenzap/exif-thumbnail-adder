@@ -60,10 +60,10 @@ GPL-3.0 (see "COPYING" file on project homepage)
     - Translation
         - through [crowdin project page](https://crowdin.com/project/exif-thumbnail-adder). If you want a language that is not listed on crowdin, please ask for it so that I make it available.
         - or translate the following files and submit a pull request/issue with the translated files
-            - [app/src/main/res/values/arrays.xml](raw/master/app/src/main/res/values/arrays.xml)
-            - [app/src/main/res/values/strings.xml](raw/master/app/src/main/res/values/strings.xml)
-            - [fastlane/metadata/android/en-US/full_description.txt](raw/master/fastlane/metadata/android/en-US/full_description.txt)
-            - [fastlane/metadata/android/en-US/short_description.txt](raw/master/fastlane/metadata/android/en-US/short_description.txt)
+            - [app/src/main/res/values/arrays.xml](../../raw/master/app/src/main/res/values/arrays.xml)
+            - [app/src/main/res/values/strings.xml](../../raw/master/app/src/main/res/values/strings.xml)
+            - [fastlane/metadata/android/en-US/full_description.txt](../../raw/master/fastlane/metadata/android/en-US/full_description.txt)
+            - [fastlane/metadata/android/en-US/short_description.txt](../../raw/master/fastlane/metadata/android/en-US/short_description.txt)
     - Improve theme/layout
     - Implement other backends and/or fix [pixymeta bug report](https://github.com/dragon66/pixymeta-android/issues/10)
 
