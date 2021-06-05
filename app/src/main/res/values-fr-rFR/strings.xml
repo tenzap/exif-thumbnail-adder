@@ -21,7 +21,7 @@
     <!-- Working dir perm activity -->
     <string name="working_dir_perm_permissions_set_retry">Les permissions du répertoire de travail sont accordées, vous pouvez ressayer.</string>
     <string name="working_dir_button_create_dir_and_set_permissions">Créer le répertoire et accorder les permissions</string>
-    <string name="working_dir_text_you_don_t_have_the_permission_to_write">    Vous n\'avez par la permission d\'écrire dans le répertoire de travail ou il n\'existe pas.\n
+    <string name="working_dir_text_you_don_t_have_the_permission_to_write">    Vous n\'avez pas la permission d\'écrire dans le répertoire de travail ou il n\'existe pas.\n
     \n
     Pour sauvegarder vos images et stocker quelques fichiers temporaires, cette application
         utilise un répertoire à la racine du volume qui stocke les images à traiter.\n
