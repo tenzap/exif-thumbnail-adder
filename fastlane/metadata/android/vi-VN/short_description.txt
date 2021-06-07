@@ -1,0 +1,1 @@
+Thêm hình thu nhỏ trong thẻ EXIF của ảnh JPEG không có nó (xử lý hàng loạt)
