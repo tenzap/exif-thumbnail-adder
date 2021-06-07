@@ -1,9 +1,9 @@
 - nouvelles bibliothèques:
-  - exiv2
+  - Exiv2
   - libexif
-- changement de la bibliothèque par défaut à exiv2
+- changement de la bibliothèque par défaut à Exiv2
 - paramètres:
   - nouvelle option: remplacer la vignette des fichiers qui en ont déjà
-  - nouvelle option: options pour exiv2 et libexif
+  - nouvelle option: options pour Exiv2 et libexif
   - améliore certains libellés
 - corrige quelques bugs/plantages

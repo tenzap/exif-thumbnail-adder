@@ -1,9 +1,9 @@
 - new libraries:
-  - exiv2
+  - Exiv2
   - libexif
-- update default library to exiv2
+- update default library to Exiv2
 - settings:
   - new option: replace thumbnail of files already having one
-  - new option: options for exiv2 and libexif
-  - improve come labels
+  - new option: options for Exiv2 and libexif
+  - improve some labels
 - fix some bugs/crashes

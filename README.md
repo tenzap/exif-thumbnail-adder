@@ -24,7 +24,7 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 - Synchronize deleted files in the source directory to the backup and working directory (so that you don't keep in the backup folder pictures you don't have anymore in the source folder)
 - Conservative default options (backup pictures, skip corrupt files)
 - Install app on internal storage or external storage
-- Default EXIF library: [exiv2](https://www.exiv2.org).
+- Default EXIF library: [Exiv2](https://www.exiv2.org).
 - Alternative libraries: Android-Exif-Extended (built-in), libexif (built-in), pixymeta-android (needs manual compilation from sources). See known facts on project page to learn more on benefits and drawbacks of each library.
 - Settings:
     - Rotate the thumbnail
@@ -76,10 +76,10 @@ GPL-3.0 (see "COPYING" file on project homepage)
 - this means that all EXIF tags will be duplicate if checked by exiftool
 - Any other tags (XMP for example) are kept
 
-### exiv2
-- on some Canon pictures some tags of [Canon] group might be stripped. See [exiv2 bugreport](https://github.com/Exiv2/exiv2/issues/1589)
+### Exiv2
+- on some Canon pictures some tags of [Canon] group might be stripped. See [Exiv2 bugreport](https://github.com/Exiv2/exiv2/issues/1589)
 - [XMP*] is kept
-- If exiv2 detects some problems (errors) in your files, the file are skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
+- If Exiv2 detects some problems (errors) in your files, the file are skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
 
 ### libexif
 - All [XMP*] metadata groups and tags get deleted.
