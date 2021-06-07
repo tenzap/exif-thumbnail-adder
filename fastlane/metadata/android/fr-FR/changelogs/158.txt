@@ -1,0 +1,2 @@
+- ajout de la traduction en vietnamien
+- mention des auteurs et traducteurs dans "A propos de"
