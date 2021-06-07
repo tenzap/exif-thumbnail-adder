@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Trình thêm hình thu nhỏ Exif</string>
+    <!-- AndroidManifest.xml -->
+    <!--    <string name="title_activity_settings">Settings</string>-->
+    <!--    <string name="title_activity_sync">Sync. deletions</string>-->
+    <string name="title_activity_about">Giới thiệu</string>
+    <string name="title_activity_working_dir_perm">Quyền thư mục hoạt động</string>
+    <!-- Toolbar action menu labels -->
+    <string name="action_settings">Cài đặt</string>
+    <string name="action_sync">Đồng bộ việc xoá</string>
+    <string name="action_about">Giới thiệu</string>
+    <string name="action_add_thumbs">Thêm hình thu nhỏ</string>
+    <!-- About Activity -->
+    <string name="about_about_title">Giới thiệu</string>
+    <string name="about_content">Về…</string>
+    <string name="about_version">Phiên bản</string>
+    <string name="about_homepage_source">Trang chủ dự án &amp; mã nguồn:</string>
+    <string name="about_license">Giấy phép:</string>
+    <string name="about_external_libraries">Các thư viện ngoài</string>
+    <!-- Working dir perm activity -->
+    <string name="working_dir_perm_permissions_set_retry">Đã đặt quyền thư mục hoạt động, vui lòng thử lại.</string>
+    <string name="working_dir_button_create_dir_and_set_permissions">Tạo thư mục &amp; đặt các quyền</string>
+    <string name="working_dir_text_you_don_t_have_the_permission_to_write">    Bạn không có quyền ghi vào Thư mục hoạt động hoặc nó không tồn tại.\n
+    \n
+    Để lưu bản sao lưu các bức ảnh và lưu trữ một số tệp tạm, ứng dụng này sử dụng một thư mục
+    tại gốc của các kho chứa các bức ảnh bạn muốn xử lý.\n
+    Theo mặc định, nó có tên là \'ThumbAdder\' (việc này có thể được thay đổi trong cài đặt).\n
+    Để việc này hoạt động được, thư mục đó phải tồn tại và có quyền đọc &amp; ghi.
+    Việc này có thể đạt được chỉ khi bạn cho ứng dụng quyền đó.
+    Nút ở dưới sẽ giúp bạn làm việc này dễ dàng.\n
+    \n
+    Khi bạn nhấn nút đó, một số màn hình sẽ hiện ra và hỏi bạn cấp quyền truy cập.
+    Tất cả những gì bạn phải làm là xác nhận mọi bước.\n
+    1. Bạn được hỏi xác nhận tên thư mục và thư mục nơi nó được tạo
+    (giữ giá trị mặc định)\n
+    2. Bạn cho quyền truy cập đọc &amp; ghi vĩnh viễn cho thư mục hoạt động.\n
+    \n
+    \n
+    Bạn chỉ phải xác nhận mọi màn hình thôi.\n
+    Các giá trị bắt buộc đã được đặt sẵn cho bạn.\n
+    \n
+    Khi các quyền đã được đặt, bạn được chuyển hướng đến màn hình chính, và bạn có thể bắt đầu lại.\n</string>
+    <!-- AddThumbs Fragment -->
+    <string name="frag1_text_description">Thêm hình thu nhỏ vào các bức ảnh từ các thư mục nguồn đã chọn</string>
+    <string name="frag1_text_list_of_dirs_to_process">Danh sách các thư mục nguồn để xử lý</string>
+    <string name="frag1_text_no_dir_selected">Chưa chọn thư mục nào. Hãy đi đến Cài đặt để chọn.</string>
+    <string name="frag1_text_all_files_access_permissions_is_not_granted">Quyền \'Truy cập tất cả tệp\' chưa được cấp trên thiết bị. Bạn vẫn có thể sử dụng ứng dụng này bình thường nhưng hãy vui lòng hiểu rằng ngày và giờ của các tệp sẽ được đặt làm thời gian hiện tại. Việc này không ảnh hưởng đến ngày/giờ được lưu trữ trong thẻ EXIF của các bức ảnh. Bạn có thể cấp quyền này trong cài đặt.</string>
+    <string name="frag1_button_settings">Cài đặt</string>
+    <string name="frag1_button_start_processing">Bắt đầu xử lý</string>
+    <string name="stop">Dừng</string>
+    <string name="frag1_text_processing_log">Nhật ký xử lý</string>
+    <string name="frag1_perm_request_title">Yêu cầu quyền</string>
+    <string name="frag1_perm_request_message_timestamp">Quyền bộ nhớ ngoài là cần thiết để giữ dấu thời gian của tệp.\n
+        Nếu bạn từ chối quyền, việc xử lý sẽ được thực hiện mà không giữ dấu thời gian.\n
+        Sau khi quyền được cấp, bạn cần bắt đầu lại việc xử lý.</string>
+    <string name="frag1_perm_request_deny">Từ chối quyền</string>
+    <string name="frag1_perm_request_message_Files">Quyền bộ nhớ ngoài là cần thiết. Sau khi quyền được cấp, bạn cần bắt đầu lại việc xử lý.</string>
+    <string name="frag1_check_write_perm">Đang kiểm tra quyền WRITE_EXTERNAL_STORAGE…</string>
+    <string name="frag1_continue_without_timestamps">\u00A0Quyền chưa được cấp, sẽ tiếp tục mà không giữ dấu thời gian.</string>
+    <string name="frag1_log_skipping_excluded_dir">Đang bỏ qua thư mục đã loại trừ %1$s trong %2$s</string>
+    <string name="frag1_log_copying_attr">Đang sao chép thuộc tính…</string>
+    <string name="frag1_log_starting">Đang bắt đầu…\n</string>
+    <string name="frag1_log_stopped_by_user">Đã bị người dùng dừng.</string>
+    <string name="frag1_log_processing_dir">Đang xử lý %1$s</string>
+    <string name="frag1_log_processing_path_filename">Đang xử lý… Đường dẫn: %1$s Tên tệp: %2$s</string>
+    <string name="frag1_log_skipping_path_filename">Đang bỏ qua… Đường dẫn: %1$s Tên tệp: %2$s</string>
+    <string name="frag1_log_checking_workingdir_perm">Đang kiểm tra quyền thư mục hoạt động…</string>
+    <string name="frag1_log_checking_perm">Đang kiểm tra quyền…</string>
+    <string name="frag1_log_skipping_file_missing">Đang bỏ qua (tệp bị thiếu)</string>
+    <string name="frag1_log_skipping_not_jpeg">Đang bỏ qua (không phải JPEG)\n</string>
+    <string name="frag1_log_skipping_empty_file">Đang bỏ qua (tệp trống)\n</string>
+    <string name="frag1_log_skipping_has_thumbnail">Đang bỏ qua (có hình thu nhỏ)\n</string>
+    <string name="frag1_log_skipping_bad_image">Đang bỏ qua (hình ảnh bị lỗi?)\n</string>
+    <string name="frag1_log_skipping_error">Đang bỏ qua (LỖI): %1$s</string>
+    <string name="frag1_log_continue_despite_error_as_per_setting">Tiếp tục xử lý theo như cài đặt…</string>
+    <string name="frag1_log_file_exists">Tệp đã tồn tại: %1$s</string>
+    <string name="frag1_log_finished">\nHoàn tất.</string>
+    <string name="frag1_log_pixymeta_missing">Thư viện pixymeta-android không có sẵn trong bản dựng này. Hãy chọn một thư viện khác trong cài đặt.</string>
+    <string name="frag1_log_done">\u00A0Xong</string>
+    <string name="frag1_log_overwrite_not_allowed">\u00A0Việc ghi đè lên ảnh trong thư mục đích không được cho phép (hãy xem cài đặt). Tệp đích đã tồn tại. Đang bỏ qua.</string>
+    <string name="frag1_log_cannot_move_to_backup">\u00A0Không thể di chuyển ảnh vào bản sao lưu. Tệp đã tồn tại. Đang bỏ qua.</string>
+    <string name="frag1_log_ok">\u00A0OK</string>
+    <string name="frag1_log_not_granted">\u00A0Chưa được cấp. Vui lòng thêm lại thư mục đó trong Cài đặt.</string>
+    <string name="frag1_log_ko">\u00A0KO</string>
+    <string name="frag1_log_could_not_copy_timestamp_and_attr">Không thể sao chép dấu thời gian &amp; thuộc tính tệp: %1$s</string>
+    <string name="frag1_log_could_not_store_timestamp_and_attr">Không thể lưu trữ dấu thời gian &amp; thuộc tính tệp: %1$s</string>
+    <string name="frag1_log_error_moving_doc">LỖI khi di chuyển tài liệu: %1$s</string>
+    <string name="frag1_log_error_copying_doc">LỖI khi sao chép tài liệu: %1$s</string>
+    <string name="frag1_log_count_files_to_process">%1$d tệp để xử lý.</string>
+    <string name="frag1_log_error">LỖI: %1$s</string>
+    <!-- Settings -->
+    <string name="settings_dialog_all_files_access_not_supported">Thiết bị không hỗ trợ truy cập tất cả tệp</string>
+    <string name="settings_button_remove_all_dirs">Xóa tất cả thư mục</string>
+    <string name="settings_button_add_dir">Thêm</string>
+    <string name="pref_categ_folders">Thư mục</string>
+    <string name="pref_dirToProcess_title">Thư mục để xử lý</string>
+    <string name="pref_workingDir_title"><![CDATA[Thư mục sao lưu & hoạt động]]></string>
+    <string name="pref_workingDir_dialogMessage"><![CDATA[Thư mục này chứa bản sao lưu của các bức ảnh nguồn và cũng chứa một số tệp tạm được tạo trong khi xử lý. Nó được đặt ở gốc của mỗi kho (điện thoại, thẻ sd…).\nVí dụ, với giá trị mặc định, các tệp được đặt vào <SDCARD>/ThumbAdder/DCIM.bak hoặc <PHONE_STORAGE>/ThumbAdder/DCIM.bak]]></string>
+    <string name="pref_allFilesAccess_title">Truy cập tất cả tệp (chỉ dành cho Android 11+)</string>
+    <string name="pref_allFilesAccess_summary">Cấp quyền truy cập tất cả tệp trên thiết bị. Việc này cho phép bạn giữ dấu thời gian của các tệp đã xử lý. Dấu thời gian của các bức ảnh được lưu trữ trong EXIF không bị sửa đổi cho dù tuỳ chọn này có giá trị nào.</string>
+    <string name="pref_categ_options">Tùy chọn</string>
+    <string name="pref_rotateThumbnail_title">Xoay hình thu nhỏ</string>
+    <string name="pref_rotateThumbnail_summary">Xoay hình thu nhỏ để tương ứng với ảnh. Đa số ứng dụng cần hình thu nhỏ được xoay (vd: Tính năng nhập ảnh của Win10)</string>
+    <string name="pref_skipPicsHavingThumbnail_title">Bỏ qua ảnh có hình thu nhỏ</string>
+    <string name="pref_skipPicsHavingThumbnail_summary">Nếu ảnh đã có hình thu nhỏ, thì bỏ qua việc xử lý</string>
+    <string name="pref_backupOriginalPic_title">Tạo bản sao lưu ảnh gốc</string>
+    <string name="pref_backupOriginalPic_summary">Bản sao lưu được đặt trong thư mục hoạt động. Nếu một tệp có cùng tên đã tồn tại, nó sẽ không bị ghi đè lên</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_title">Cập nhật trong vị trí nguồn</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Thêm hình thu nhỏ vào ảnh của thư mục nguồn</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Thêm hình thu nhỏ vào một bản sao của ảnh nguồn trong thư mục hoạt động (trong \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
+    <string name="pref_overwriteDestPic_title">Ghi đè lên ảnh ở đích đến</string>
+    <string name="pref_overwriteDestPic_summary">Ghi đè lên tệp có cùng tên trong thư mục hoạt động (việc này không ảnh hưởng đến các bản sao lưu, chúng không bao giờ bị ghi đè)</string>
+    <string name="pref_keepTimeStampOnBackup_title">Sao chép dấu thời gian vào bản sao lưu</string>
+    <string name="pref_keepTimeStampOnBackup_summary">Nếu \'%1$s\' được \'tắt\', sao chép dấu thời gian của ảnh nguồn vào bản sao của nó trong thư mục sao lưu.\nNếu \'%1$s\' được \'bật\', dấu thời gian của bản sao lưu luôn được giữ lại.</string>
+    <string name="pref_writeTmpToCacheDir_title">Ghi hình ảnh tạm vào thư mục bộ nhớ đệm</string>
+    <string name="pref_writeTmpToCacheDir_summaryOn">Ghi các hình ảnh tạm được tạo trong khi xử lý vào thư mục bộ nhớ đệm của ứng dụng</string>
+    <string name="pref_writeTmpToCacheDir_summaryOff">Ghi các hình ảnh tạm được tạo trong khi xử lý vào thư mục hoạt động</string>
+    <string name="pref_categ_backend">Backend/Thư viện</string>
+    <string name="pref_exifLibrary_title">Ghi hình thu nhỏ EXIF bằng</string>
+    <string name="pref_exifLibrary_cannotDisableSkipPicsHavingThumbnail">Không thể tắt tuỳ chọn \'%1$s\' khi sử dụng Android-Exif-Extended. Đang bật lại nó.</string>
+    <string name="pref_categ_exiv2_settings">Cài đặt Exiv2</string>
+    <string name="pref_exiv2SkipOnLogLevel_title">Bỏ qua từ cấp độ lỗi Exiv2</string>
+    <string name="pref_categ_libexif_settings">Cài đặt libexif</string>
+    <string name="pref_libexifSkipOnError_title">Bỏ qua trong trường hợp có lỗi libexif</string>
+    <string name="pref_libexifSkipOnError_summary">Bỏ qua ảnh nếu libexif báo cáo lỗi</string>
+    <string name="pref_categ_extra">Bổ sung</string>
+    <string name="pref_excludedSecVolPrefix_title">Tiền tố cho thư mục được loại trừ</string>
+    <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[Bạn có thể chỉ định một thư mục con nên được loại trừ khỏi việc xử lý. Giá trị này sẽ đặt tiền tố cho ID kho để tạo thành một thư mục được loại trừ có tên là \'<prefix><volId>\'. Ví dụ \'bản sao_của_XXXX-XXXX\'.\nID kho của kho (điển hình là thẻ SD) có thể được tìm thấy trong danh sách các thư mục để xử lý dưới dạng XXXX-XXXX.]]></string>
+    <string name="pref_excludedSecVolPrefix_defaultValue">bản sao_của_</string>
+    <string name="pref_categ_debug">Tuỳ chọn gỡ lỗi</string>
+    <string name="pref_useSAF_title">sử dụng Storage Access Framework</string>
+    <string name="pref_useSAF_summary">BẬT=\'sử dụng SAF\' ; TẮT=\'sử dụng Tệp\'</string>
+    <!-- Sync Activity -->
+    <string name="sync_text_description"><![CDATA[Đồng bộ hoá các việc xoá đã làm trong các thư mục nguồn đến các tệp trong thư mục sao lưu & hoạt động]]></string>
+    <string name="sync_button_del_files">Xoá</string>
+    <string name="sync_button_list_files">Danh sách</string>
+    <string name="sync_log_checking">Đang kiểm tra: %1$s</string>
+    <string name="sync_log_failure_to_delete_file">Xoá tệp thất bại</string>
+    <string name="sync_log_files_to_remove">Các tệp để xoá (không còn ở trong nguồn):</string>
+</resources>
