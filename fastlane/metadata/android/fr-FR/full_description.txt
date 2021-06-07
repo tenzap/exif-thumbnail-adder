@@ -6,7 +6,7 @@ Signalez les erreurs ici: <a href="https://github.com/tenzap/exif-thumbnail-adde
 
 Plus d'informations, certains faits connus et comment contribuer, sont sur la [page d'accueil du projet][1].
 
-<b>Licence</b>
+<b>Logique/raisonnement</b>
 
 Avec mon smartphone (Xiaomi Redmi Note 9S), quand je souhaite importer mes images dans Windows (ou tout autre système d'exploitation prenant en charge les protocoles MTP ou PTP), j'ai remarqué que les vignettes ne sont pas affichées par l'outil d'importation (que ce soit avec l'app 'Photos' ou via la fonctionnalité d'import de Windows Explorer). Ceci est dû au fait que mon téléphone ne met pas les vignettes sur les photos prises avec le smartphone.
 
@@ -44,7 +44,7 @@ Avec mon smartphone (Xiaomi Redmi Note 9S), quand je souhaite importer mes image
 - Télécharger via l'app F-Droid [ici][4]
 - Télécharger le fichier APK depuis la [page des 'releases'][5]
 
-<b>Logique/raisonnement</b>
+<b>Licence</b>
 
 GPL-3.0 (cf "COPYING" sur la page du projet)
 
