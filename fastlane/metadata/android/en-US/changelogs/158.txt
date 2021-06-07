@@ -1,2 +1,2 @@
-- add vietnamese translation
+- add vietnamese translation (thanks to bruhwut)
 - mention authors & translators in 'About'

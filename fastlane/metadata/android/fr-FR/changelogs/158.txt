@@ -1,2 +1,2 @@
-- ajout de la traduction en vietnamien
+- ajout de la traduction en vietnamien (merci à bruhwut)
 - mention des auteurs et traducteurs dans "A propos de"
