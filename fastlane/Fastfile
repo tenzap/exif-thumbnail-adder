@@ -91,7 +91,8 @@ platform :android do
     capture_android_screenshots(
       use_timestamp_suffix: false,
       clear_previous_screenshots: true,
-      locales: ["en-US", "fr-FR"],
+      locales: ["en-US", "fr-FR", "vi-VN"],
+      ending_locale: "en-US",
       reinstall_app: true,
       app_apk_path: "app/build/outputs/apk/standard/debug/exifthumbnailadder-standard-debug.apk",
       tests_apk_path: "app/build/outputs/apk/androidTest/standard/debug/exifthumbnailadder-standard-debug-androidTest.apk",
