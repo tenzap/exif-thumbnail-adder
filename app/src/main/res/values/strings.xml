@@ -20,6 +20,8 @@
     <string name="about_version">Version</string>
     <string name="about_homepage_source">Project homepage &amp; source code:</string>
     <string name="about_license">License:</string>
+    <string name="about_authors">Authors:</string>
+    <string name="about_translations">Translations</string>
     <string name="about_external_libraries">External libraries</string>
 
     <!-- Working dir perm activity -->

@@ -30,6 +30,8 @@ import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 public class AboutActivity extends AppCompatActivity {
 
     private final String homepage_url = "https://github.com/tenzap/exif-thumbnail-adder";
@@ -62,6 +64,13 @@ public class AboutActivity extends AppCompatActivity {
         text.append("</p><p>");
         text.append("</p><p>");
         text.append("<u><strong>" + getString(R.string.about_license) + "</strong></u> <a href='https://www.gnu.org/licenses/gpl-3.0.html'>GNU General Public License, version 3</a>");
+        text.append("</p><p>");
+        text.append("<u><strong>" + getString(R.string.about_authors) + "</strong></u> tenzap (@github)");
+        text.append("</p><p>");
+        text.append("<u><strong>" + getString(R.string.about_translations) + "</strong></u>");
+        text.append("<br>⋅ " + new Locale("en").getDisplayName() + ": tenzap (@github)");
+        text.append("<br>⋅ " + new Locale("fr").getDisplayName() + ": tenzap (@github)");
+        text.append("<br>⋅ " + new Locale("vi").getDisplayName() + ": bruhwut (@crowdin)");
         text.append("</p><p>");
         text.append("<u><strong>" + getString(R.string.about_external_libraries) + "</strong></u>");
         text.append("</p>");

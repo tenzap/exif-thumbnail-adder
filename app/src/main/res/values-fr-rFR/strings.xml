@@ -17,6 +17,8 @@
     <string name="about_version">Version</string>
     <string name="about_homepage_source">Page d\'accueil du projet &amp; code source:</string>
     <string name="about_license">Licence:</string>
+    <string name="about_authors">Auteurs:</string>
+    <string name="about_translations">Traductions</string>
     <string name="about_external_libraries">Bibliothèques externes</string>
     <!-- Working dir perm activity -->
     <string name="working_dir_perm_permissions_set_retry">Les permissions du répertoire de travail sont accordées, vous pouvez ressayer.</string>
