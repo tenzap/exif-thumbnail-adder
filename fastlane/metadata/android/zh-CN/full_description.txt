@@ -8,13 +8,13 @@
 
 <b>功能</b>
 
-在我的手机 (小米红米Note 9S) 上，当我想要将图片导入Windows(或任何支持MTP或PTP协议的设备/操作系统) 时，我注意到图片在导入向导中没有显示缩略图(无论是通过照片应用，还是Windows Explorer 导入功能)。 这是因为我的手机没有将缩略图添加到我用相机拍摄的照片中。 这是因为我的手机没有将缩略图添加到我用相机拍摄的照片中。
+在我的手机 (小米红米Note 9S) 上，当我想要将图片导入Windows(或任何支持MTP或PTP协议的设备/操作系统) 时，我注意到图片在导入向导中没有显示缩略图(无论是通过照片应用，还是Windows Explorer 导入功能)。 这是因为我的手机没有将缩略图添加到我用相机拍摄的照片中。
 
 <b>URL</b>
 
 - 将缩略图添加到尚无缩略图的图片 (JPEG)
 - 通过 Lanczos 算法降低图片像素采样频率，使用 [FFmpeg 的 swscale 库][2] 获取最佳结果
-- 从任何存储中选择一个或多个要扫描的文件夹 (内部存储，SD卡...)。 例如，DCIM, Pictures... 例如，DCIM, Pictures...
+- 从任何存储中选择一个或多个要扫描的文件夹 (内部存储，SD卡...)。 例如，DCIM, Pictures...
 - 从选定的目录排除一个子目录
 - 保存图片的时间戳
 - 处理日志
@@ -40,7 +40,7 @@
 
 <b>安装</b>
 
-- 前提：最低运行 android Oreo (android 8, SDK 26) 测试过本应用的系统的最高版本是 Android 11 测试过本应用的系统的最高版本是 Android 11
+- 前提：最低运行 android Oreo (android 8, SDK 26) 测试过本应用的系统的最高版本是 Android 11
 - 通过 F-Droid 应用程序下载 [here][4]
 - 从 [发行页面] 下载 APK[5]
 
@@ -48,7 +48,7 @@
 
 GPL-3.0 (见项目主页上的“COPYING”文件)
 
-<b>基本原理</b>
+<b>URL</b>
 
 - [1]: <a href="https://github.com/tenzap/exif-thumbnail-adder">https://github.com/tenzap/exif-thumbnail-adder</a>
 - [2]: <a href="https://ffmpeg.org/libswscale.html">https://ffmpeg.org/libswscale.html</a>
