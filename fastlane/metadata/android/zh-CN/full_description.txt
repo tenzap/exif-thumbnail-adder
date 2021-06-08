@@ -1,0 +1,58 @@
+这个安卓设备应用在你的设备上搜索图片 (JPEG) 并<b>添加缩略图</b>，如果它们还没有的话 缩略图将添加到 EXIF 元数据结构。
+
+它被设计在 android Oreo (android 8, SDK 26) 上工作，并在运行android 10的真实设备和运行android 8和11的虚拟设备上进行了测试。
+
+请在这里报告问题： <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnail-adder/issues</a>
+
+欲了解更多信息，一些已知事实及如何作贡献，请参阅[项目主页][1]。
+
+<b>基本原理</b>
+
+在我的手机 (小米红米Note 9S) 上，当我想要将图片导入Windows(或任何支持MTP或PTP协议的设备/操作系统) 时，我注意到图片在导入向导中没有显示缩略图(无论是通过照片应用，还是Windows Explorer 导入功能)。 这是因为我的手机没有将缩略图添加到我用相机拍摄的照片中。
+
+<b>功能</b>
+
+- 将缩略图添加到尚无缩略图的图片 (JPEG)
+- 通过 Lanczos 算法降低图片像素采样频率，使用 [FFmpeg 的 swscale 库][2] 获取最佳结果
+- 从任何存储中选择一个或多个要扫描的文件夹 (内部存储，SD卡...)。 例如，DCIM, Pictures...
+- 从选定的目录排除一个子目录
+- 保存图片的时间戳
+- 处理日志
+- 将源目录中已删除的文件同步到备份和工作目录(这样您就不会在备份文件夹中保存在源文件夹中再也不存在的照片)
+- 保守的默认选项 (备份图片，跳过损坏的文件)
+- 在内部存储或外部存储上安装应用程序
+- 默认 EXIF 库： [Exiv2][3]。
+- 替代库：Android-Exif-Exif-Extended(内置)、libexif(内置)、pixymeta-android (需要从源代码手动编译)。 查看项目页面上已知的事实以了解更多每个库的好处和缺点。
+- 设置: 
+&emsp;- 旋转缩略图
+&emsp;- 替换现有缩略图
+&emsp;- 备份原始图片(备份一旦创建，应用将永远不会覆盖它们，如果你选择将缩略图添加到初始位置的输入文件)
+&emsp;- 跳过有错误格式元数据的图片 (可以禁用此选项来处理有损坏标签的文件)
+&emsp;- 替换现有图片或将新的图片写入到另一个目录
+
+<b>请求的权限</b>
+
+- <i>READ_EXTERNAL_STORAGE</i> 和 <i>WRITE_EXTERNAL_STORAGE</i>
+&emsp;- 保留图片的时间戳
+<i>MANAGE_EXTERNAL_STORAGE</i>
+&emsp;- 只有当发布于F-Driod 上的<i>标准</i> Apk 安装在运行Android 11及以上设备时才会请求该权限，目的是保留图片的时间戳。
+- 在项目主页获取更多详细信息
+
+<b>安装</b>
+
+- 前提：最低运行 android Oreo (android 8, SDK 26) 测试过本应用的系统的最高版本是 Android 11
+- 通过 F-Droid 应用程序下载 [here][4]
+- 从 [发行页面] 下载 APK[5]
+
+<b>许可证</b>
+
+GPL-3.0 (见项目主页上的“COPYING”文件)
+
+<b>URL</b>
+
+- [1]: <a href="https://github.com/tenzap/exif-thumbnail-adder">https://github.com/tenzap/exif-thumbnail-adder</a>
+- [2]: <a href="https://ffmpeg.org/libswscale.html">https://ffmpeg.org/libswscale.html</a>
+- [3]: <a href="https://www.exiv2.org">https://www.exiv2.org</a>
+- [4]: <a href="https://f-droid.org/packages/com.exifthumbnailadder.app">https://f-droid.org/packes/com.exifthumbnailadder.app</a>
+- [5]: <a href="https://github.com/tenzap/exif-thumbnail-adder/releases">https://github.com/tenzap/exif-thumbnail-adder/releases</a>
+
