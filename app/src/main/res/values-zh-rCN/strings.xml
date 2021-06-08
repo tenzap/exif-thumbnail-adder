@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Exif Thumbnail Adder</string>
+    <!-- AndroidManifest.xml -->
+    <!--    <string name="title_activity_settings">Settings</string>-->
+    <!--    <string name="title_activity_sync">Sync. deletions</string>-->
+    <string name="title_activity_about">关于</string>
+    <string name="title_activity_working_dir_perm">工作目录权限</string>
+    <!-- Toolbar action menu labels -->
+    <string name="action_settings">设置</string>
+    <string name="action_sync">同步删除操作</string>
+    <string name="action_about">关于</string>
+    <string name="action_add_thumbs">添加缩略图</string>
+    <!-- About Activity -->
+    <string name="about_about_title">关于</string>
+    <string name="about_content">关于…</string>
+    <string name="about_version">版本</string>
+    <string name="about_homepage_source">项目主页 &amp; 源代码：</string>
+    <string name="about_license">授权协议</string>
+    <string name="about_authors">作者</string>
+    <string name="about_translations">翻译</string>
+    <string name="about_external_libraries">外部库</string>
+    <!-- Working dir perm activity -->
+    <string name="working_dir_perm_permissions_set_retry">WorkingDir 权限设置，请重试。</string>
+    <string name="working_dir_button_create_dir_and_set_permissions">创建目录 &amp; 设置权限</string>
+    <string name="working_dir_text_you_don_t_have_the_permission_to_write">你没有写入工作目录的权限或它并不存在。\n
+    \n
+    为了保存图片的备份和存储一些临时文件，这个应用程序使用一个目录
+    这个目录位于装有你想要处理的图片的卷的根目录。\n
+    这个目录默认名称为\'ThumbAdder\' (你可以在设置中进行更改)\n
+    要实现这一点，目录必须存在，并且必须允许它读取&amp; 写入
+    这只有在你给予应用程序权限的情况下才能实现。
+    下面的按钮可以帮助你轻松做到这一点。\n
+    \n
+    一旦你点击按钮，一些屏幕将出现并要求您提供访问权限。
+    你所要做的就是确认每一步。\n
+    1. 你将被要求确认目录名称和创建目录
+    (保留默认值)\n
+    你给予对工作目录永久读取&amp; 写入权限\n
+    \n
+    \n
+    你只需要确认每一个屏幕。\n
+    所需的值已经为你设置好了。\n
+    \n
+    设置权限后，你将被重定向到主屏幕，你可以重新开始。\n</string>
+    <!-- AddThumbs Fragment -->
+    <string name="frag1_text_description">将缩略图添加到所选源文件夹的图片</string>
+    <string name="frag1_text_list_of_dirs_to_process">要处理的源文件夹列表</string>
+    <string name="frag1_text_no_dir_selected">未选择文件夹，请前往设置选择。</string>
+    <string name="frag1_text_all_files_access_permissions_is_not_granted">你没有授予“所有文件访问”权限。你仍然可以正常使用这个应用程序，但请理解，你的文件的时间和日期将设置为当前时间。这不会影响存储在你图片EXIF标签中的时间/日期。你可以在设置中给予权限。</string>
+    <string name="frag1_button_settings">设置</string>
+    <string name="frag1_button_start_processing">开始处理</string>
+    <string name="stop">停止</string>
+    <string name="frag1_text_processing_log">处理日志</string>
+    <string name="frag1_perm_request_title">权限请求</string>
+    <string name="frag1_perm_request_message_timestamp">需要外部存储权限来保留文件的时间戳\n
+        如果拒绝权限，处理将在不保留时间戳的情况下进行。\n
+        授予权限之后，你需要重新开始处理。</string>
+    <string name="frag1_perm_request_deny">拒绝权限</string>
+    <string name="frag1_perm_request_message_Files">外部存储权限是必需的。授予权限之后，你需要重新开始处理。</string>
+    <string name="frag1_check_write_perm">正在检查WRITE_EXTERNAL_STORAGE 权限…</string>
+    <string name="frag1_continue_without_timestamps">\u00A0权限未被授予，可以继续操作但应用将不会保留时间戳</string>
+    <string name="frag1_log_skipping_excluded_dir">正跳过已排除目录 %1$s ，其位于 %2$s</string>
+    <string name="frag1_log_copying_attr">正在复制属性…</string>
+    <string name="frag1_log_starting">正在启动…\n</string>
+    <string name="frag1_log_stopped_by_user">被用户停止</string>
+    <string name="frag1_log_processing_dir">正在处理 %1$s</string>
+    <string name="frag1_log_processing_path_filename">正在处理… 路径: %1$s 文件名: %2$s</string>
+    <string name="frag1_log_skipping_path_filename">正在跳过… 路径： %1$s 文件名： %2$s</string>
+    <string name="frag1_log_checking_workingdir_perm">检查工作目录权限…</string>
+    <string name="frag1_log_checking_perm">正在检查权限...</string>
+    <string name="frag1_log_skipping_file_missing">正在跳过(文件缺失)</string>
+    <string name="frag1_log_skipping_not_jpeg">跳过(不是 JPEG)\n</string>
+    <string name="frag1_log_skipping_empty_file">跳过 (空文件)\n</string>
+    <string name="frag1_log_skipping_has_thumbnail">跳过 (有缩略图)\n</string>
+    <string name="frag1_log_skipping_bad_image">跳过 (图片损坏？)\n</string>
+    <string name="frag1_log_skipping_error">跳过(错误): %1$s</string>
+    <string name="frag1_log_continue_despite_error_as_per_setting">按设置继续处理…</string>
+    <string name="frag1_log_file_exists">文件已存在: %1$s</string>
+    <string name="frag1_log_finished">\n已完成。</string>
+    <string name="frag1_log_pixymeta_missing">这个版本中没有 Pixymeta-android 库。在设置中选择另一个库。</string>
+    <string name="frag1_log_done">\u00A0完成</string>
+    <string name="frag1_log_overwrite_not_allowed">\u00A0覆盖目标目录中的图片不被允许 (见设置)。目标文件存在。跳过。</string>
+    <string name="frag1_log_cannot_move_to_backup">\u00A0无法将图片移动到备份。文件存在。跳过。</string>
+    <string name="frag1_log_ok">\u00A0成功</string>
+    <string name="frag1_log_not_granted">\u00A0未授予。请在设置中再次添加文件夹。</string>
+    <string name="frag1_log_ko">\u00A0KO</string>
+    <string name="frag1_log_could_not_copy_timestamp_and_attr">无法复制文件时间戳 &amp; 属性: %1$s</string>
+    <string name="frag1_log_could_not_store_timestamp_and_attr">无法存储文件时间戳 &amp; 属性： %1$s</string>
+    <string name="frag1_log_error_moving_doc">移动文档时出错： %1$s</string>
+    <string name="frag1_log_error_copying_doc">复制文档时出错： %1$s</string>
+    <string name="frag1_log_count_files_to_process">有 %1$d 个文件要处理</string>
+    <string name="frag1_log_error">错误： %1$s</string>
+    <!-- Settings -->
+    <string name="settings_dialog_all_files_access_not_supported">你的设备不支持所有文件访问</string>
+    <string name="settings_button_remove_all_dirs">删除所有文件夹</string>
+    <string name="settings_button_add_dir">添加</string>
+    <string name="pref_categ_folders">文件夹</string>
+    <string name="pref_dirToProcess_title">要处理的文件夹</string>
+    <string name="pref_workingDir_title"><![CDATA[备份和工作目录]]></string>
+    <string name="pref_workingDir_dialogMessage"><![CDATA[这个目录包含源图片的备份，以及在过程中创建的一些临时文件。它位于每个卷的根目录 (phone、sdcard…)。\n例如，使用默认值，文件将被放置到<SDCARD>/ThumbAdder/DCIM.bak 或 <PHONE_STORAGE>/ThumbAdder/DCIM.bak]]></string>
+    <string name="pref_allFilesAccess_title">所有文件访问权限 (仅供Android 11+)</string>
+    <string name="pref_allFilesAccess_summary">允许访问你设备上的所有文件。这允许保留已处理文件的时间戳。存储在EXIF中的图片的时间戳不会被更改，无论该选项的值是多少。</string>
+    <string name="pref_categ_options">选项</string>
+    <string name="pref_rotateThumbnail_title">旋转缩略图</string>
+    <string name="pref_rotateThumbnail_summary">旋转缩略图以对应图片。大多数应用程序需要旋转缩略图。(如，Win10 照片导入)</string>
+    <string name="pref_skipPicsHavingThumbnail_title">跳过带缩略图图片</string>
+    <string name="pref_skipPicsHavingThumbnail_summary">如果图片已经有缩略图，跳过处理</string>
+    <string name="pref_backupOriginalPic_title">创建源图片备份</string>
+    <string name="pref_backupOriginalPic_summary">备份被放置在工作目录中。如果存在相同名称的文件，它不会被覆盖</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_title">更新源位置</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">将缩略图添加到源文件夹的图片</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[将缩略图添加到工作目录中源图片的副本中 (\'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
+    <string name="pref_overwriteDestPic_title">覆盖目标图片</string>
+    <string name="pref_overwriteDestPic_summary">覆盖工作目录中同名的文件(这不会影响备份，备份永远不会被覆盖)</string>
+    <string name="pref_keepTimeStampOnBackup_title">复制时间戳到备份</string>
+    <string name="pref_keepTimeStampOnBackup_summary">如果\'%1$s\' 是“off”，将源图片的时间戳复制到备份目录的副本中。\n如果\'%1$s\' 是\'on\', 备份的时间戳总是被保存。</string>
+    <string name="pref_writeTmpToCacheDir_title">将临时图像写入缓存目录</string>
+    <string name="pref_writeTmpToCacheDir_summaryOn">将处理期间创建的临时图像写入应用程序的缓存目录</string>
+    <string name="pref_writeTmpToCacheDir_summaryOff">将处理过程中创建的临时图像写入工作目录</string>
+    <string name="pref_categ_backend">后台/媒体库</string>
+    <string name="pref_exifLibrary_title">写入 EXIF 缩略图的工具</string>
+    <string name="pref_exifLibrary_cannotDisableSkipPicsHavingThumbnail">使用 Android-Exif-Exif-Extended 时无法禁用选项 \'%1$s\'。重新打开它。</string>
+    <string name="pref_categ_exiv2_settings">Exiv2 设置</string>
+    <string name="pref_exiv2SkipOnLogLevel_title">跳过 Exiv2 错误级别</string>
+    <string name="pref_categ_libexif_settings">libexif 设置</string>
+    <string name="pref_libexifSkipOnError_title">Libexif 出错时跳过</string>
+    <string name="pref_libexifSkipOnError_summary">如 libexif 报告错误则跳过图片</string>
+    <string name="pref_categ_extra">额外设置</string>
+    <string name="pref_excludedSecVolPrefix_title">已排除文件夹的前缀</string>
+    <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[可以指定应该排除在处理之外的子文件夹。这个值将作为卷id的前缀，以形成一个以\'<prefix><volId> \'命名的被排除目录。比如，\'copy_of_XXXX-XXXX\'。\n你可以在要处理文件夹的列表中找到 XXXX-XXXX 格式命名的卷(通常是一张 sd 卡) 的卷 id]]></string>
+    <string name="pref_excludedSecVolPrefix_defaultValue">copy_of_</string>
+    <string name="pref_categ_debug">调试选项</string>
+    <string name="pref_useSAF_title">使用存储访问框架</string>
+    <string name="pref_useSAF_summary">ON=\'使用 SAF\'; OFF=\'使用文件\'</string>
+    <!-- Sync Activity -->
+    <string name="sync_text_description"><![CDATA[将源文件夹中的删除内容同步到备份和工作目录中的文件中]]></string>
+    <string name="sync_button_del_files">删除</string>
+    <string name="sync_button_list_files">列表</string>
+    <string name="sync_log_checking">正在检查：%1$s</string>
+    <string name="sync_log_failure_to_delete_file">删除文件失败</string>
+    <string name="sync_log_files_to_remove">要删除的文件 (不再在源中)：</string>
+</resources>
