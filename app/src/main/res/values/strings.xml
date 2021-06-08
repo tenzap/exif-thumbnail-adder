@@ -22,6 +22,7 @@
     <string name="about_license">License:</string>
     <string name="about_authors">Authors:</string>
     <string name="about_translations">Translations</string>
+    <string name="about_anonymous">anonymous</string>
     <string name="about_external_libraries">External libraries</string>
 
     <!-- Working dir perm activity -->
