@@ -19,6 +19,7 @@
     <string name="about_license">授权协议</string>
     <string name="about_authors">作者</string>
     <string name="about_translations">翻译</string>
+    <string name="about_anonymous">无名氏</string>
     <string name="about_external_libraries">外部库</string>
     <!-- Working dir perm activity -->
     <string name="working_dir_perm_permissions_set_retry">WorkingDir 权限设置，请重试。</string>
