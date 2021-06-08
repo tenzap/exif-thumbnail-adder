@@ -1,0 +1,2 @@
+- corrige un plantage avec les binaires de type "release" (bug #16)
+- rappel: app traduisible sur crowdin https://crowdin.com/project/exif-thumbnail-adder

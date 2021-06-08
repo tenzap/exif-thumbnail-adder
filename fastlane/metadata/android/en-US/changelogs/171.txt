@@ -1,0 +1,2 @@
+- fix crash with build type "release" (issue #16)
+- reminder: translate the app on crowdin https://crowdin.com/project/exif-thumbnail-adder
