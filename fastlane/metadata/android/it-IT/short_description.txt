@@ -1,0 +1,1 @@
+Aggiunge miniatura nel tag EXIF dell'immagine JPEG che non ha una (batch)
