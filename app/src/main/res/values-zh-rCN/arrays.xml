@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Settings: ListPreference: exiflib -->
+    <string-array name="exif_library_entries">
+        <item>Android-Exif-Extended</item>
+        <item>Exiv2</item>
+        <item>libexif (⚠️ 剥离 XMP, 见 README)</item>
+    </string-array>
+    <string-array name="exif_library_pixymeta_entries">
+        <item>pixymeta-android (⚠️ 有 InteropIFD 相关的问题，见 README)</item>
+    </string-array>
+    <!-- Settings: ListPreference: exiv2SkipOnLogLevel -->
+    <string-array name="exiv2SkipLevel_entries">
+        <item>警告</item>
+        <item>出错</item>
+        <item>永不跳过，即使发生错误</item>
+    </string-array>
+</resources>
