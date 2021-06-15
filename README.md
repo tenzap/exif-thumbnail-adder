@@ -53,7 +53,7 @@ GPL-3.0 (see "COPYING" file on project homepage)
 
 
 ## Contribute
-- You are very welcome to contribute to the project either by testing, reporting bugs, developing, creating pull requests with fixes and features.
+- You are very welcome to contribute to the project either by translating, testing, reporting bugs, developing, creating pull requests with fixes and features.
 - Suggestions for contribution
     - If you have a google developer account, you may contact me to see how you could publish the app to the play store
     - Transform the batch processing into a "Service" so that it doesn't stop when the user leaves the main "Activity"
@@ -65,7 +65,9 @@ GPL-3.0 (see "COPYING" file on project homepage)
             - [fastlane/metadata/android/en-US/full_description.txt](../../raw/master/fastlane/metadata/android/en-US/full_description.txt)
             - [fastlane/metadata/android/en-US/short_description.txt](../../raw/master/fastlane/metadata/android/en-US/short_description.txt)
     - Improve theme/layout
-    - Implement other backends and/or fix [pixymeta bug report](https://github.com/dragon66/pixymeta-android/issues/10)
+    - Implement other backends
+    - keep [XMP*] metadata when using libexif. See these posts [a](https://stackoverflow.com/q/67264563/15401262), [b](https://sourceforge.net/p/libexif/bugs/121/), [c](https://stackoverflow.com/a/22504601/15401262).
+    - fix [pixymeta bug report](https://github.com/dragon66/pixymeta-android/issues/10)
 
 
 ## Known facts
@@ -77,21 +79,20 @@ GPL-3.0 (see "COPYING" file on project homepage)
 - Any other tags (XMP for example) are kept
 
 ### Exiv2
-- on some Canon pictures some tags of [Canon] group might be stripped. See [Exiv2 bugreport](https://github.com/Exiv2/exiv2/issues/1589)
 - [XMP*] is kept
-- If Exiv2 detects some problems (errors) in your files, the file are skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
+- If Exiv2 detects some problems (errors) in a file, it is skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
 
 ### libexif
-- All [XMP*] metadata groups and tags get deleted.
-- Some or all tags of [Olympus] [Canon] group get deleted.
-- The tags supported by libexif and exif structure are rewritten.
+- **All [XMP\*] metadata groups and tags get deleted.**
+- Some or all tags of [Olympus] [Canon] group might be deleted.
+- The tags supported by libexif and exif structure are rewritten from what libexif could read.
 - It is almost like running "exif --create-exif --remove-thumbnail --insert-thumbnail tb.jpg" from the exif command line.
-- If libexif detects some problems (errors) in your files, the file are skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
+- If libexif detects some problems (errors) in a file, it is skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
 
 ### pixymeta-android
 - please note that at the time of writing this, pixymeta-android is licensed under EPL-1.0 which is not compatible with GPL. You may compile the app yourself to use pixymeta-android. See below for more info.
 - **usage is discouraged** until pixymeta bug is fixed
-- the existing EXIF tags are copied and things a rewritten from scratch. 
+- the existing EXIF tags are read and metadata is rewritten from scratch using what was read
 - [XMP*] tags are kept
 - [InteropIFD] directory is not correctly rewritten leading to problems such as "Bad InteropIFD directory" or "IFD1 pointer references previous InteropIFD directory" or "GPS pointer references previous InteropIFD directory". See [pixymeta bug report](https://github.com/dragon66/pixymeta-android/issues/10).
 
