@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH EXIV2 1 "May 12, 2020"
+.TH EXIV2 1 "Mar 10, 2021"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -39,31 +39,35 @@ lB lB lB lB lB lB
 _	_	_	_	_	_
 l l l l l l.
 Type	Exif	IPTC	XMP	Image Comments	ICC Profile
-JPEG	Read/Write	Read/Write	Read/Write	Read/Write	Read/Write
-EXV	Read/Write	Read/Write	Read/Write	Read/Write Read/Write
-CR2	Read/Write	Read/Write	Read/Write	-	Read/Write
-CRW	Read/Write	-	-	Read/Write	-
-MRW	Read	Read	Read	-	-
-TIFF	Read/Write	Read/Write	Read/Write	-	Read/Write
-WEBP	Read/Write	-	Read/Write	-	Read/Write
-DNG	Read/Write	Read/Write	Read/Write	-	Read/Write
-NEF	Read/Write	Read/Write	Read/Write	-	Read/Write
-PEF	Read/Write	Read/Write	Read/Write	-	Read/Write
 ARW	Read	Read	Read	-	-
+AVIF	Read	Read	Read	-	-
+BMP	-	-	-	-	-
+CR2	Read/Write	Read/Write	Read/Write	-	Read/Write
+CR3	Read	Read	Read	-	Read
+CRW	Read/Write	-	-	Read/Write	-
+DNG	Read/Write	Read/Write	Read/Write	-	Read/Write
+EPS	-	-	Read/Write	-	-
+EXV	Read/Write	Read/Write	Read/Write	Read/Write Read/Write
+GIF	-	-	-	-	-
+HEIC	Read	Read	Read	-	-
+HEIF	Read	Read	Read	-	-
+JP2	Read/Write	Read/Write	Read/Write	-	Read/Write
+JPEG	Read/Write	Read/Write	Read/Write	Read/Write	Read/Write
+MRW	Read	Read	Read	-	-
+NEF	Read/Write	Read/Write	Read/Write	-	Read/Write
+ORF	Read/Write	Read/Write	Read/Write	-	-
+PEF	Read/Write	Read/Write	Read/Write	-	Read/Write
+PGF	Read/Write	Read/Write	Read/Write	Read/Write	Read/Write
+PNG	Read/Write	Read/Write	Read/Write	Read/Write	Read/Write
+PSD	Read/Write	Read/Write	Read/Write	-	-
+RAF	Read	Read	Read	-	-
 RW2	Read	Read	Read	-	-
 SR2	Read	Read	Read	-	-
 SRW	Read/Write	Read/Write	Read/Write	-	-
-ORF	Read/Write	Read/Write	Read/Write	-	-
-PNG	Read/Write	Read/Write	Read/Write	Read/Write	Read/Write
-PGF	Read/Write	Read/Write	Read/Write	Read/Write	Read/Write
-RAF	Read	Read	Read	-	-
-EPS	-	-	Read/Write	-	-
-XMP	-	-	Read/Write	-	-
-GIF	-	-	-	-	-
-PSD	Read/Write	Read/Write	Read/Write	-	-
 TGA	-	-	-	-	-
-BMP	-	-	-	-	-
-JP2	Read/Write	Read/Write	Read/Write	-	Read/Write
+TIFF	Read/Write	Read/Write	Read/Write	-	Read/Write
+WEBP	Read/Write	-	Read/Write	-	Read/Write
+XMP	-	-	Read/Write	-	-
 .TE
 .IP \(bu 2
 Support for GIF, TGA and BMP images is minimal: the image format is
@@ -132,7 +136,7 @@ exiv2 [ opt [arg] ]+ [ act ] file ...
 .sp 1
 option [arg]	long option	description
 -a	tim	--adjust	Modify time stamps.  [+|-]HH[:MM[:SS[.mmm]]]
--b		--binary	Show large binary values (default is to restrict them).
+-b		--binary	This option is obsolete and should not be used.  Reserved for test suite (with option -pC)
 -c	txt	--comment	JPEG comment string to set in the image ('modify' action).  ...
 -d	tgt	--delete	Delete target(s) for the 'delete' action. ...
 -D	+-n	--days	Time  adjustment by a positive or negative number of days ...
@@ -209,9 +213,6 @@ used at the same time.
 Set the log-level to 'd'(ebug), 'i'(nfo), 'w'(arning), 'e'(rror)
 or 'm'(ute). The default log-level is 'w'. \fB\-Qm\fP is equivalent
 to \fB\-q\fP. All log messages are written to standard error.
-.TP
-.B \-b
-The output from large binary values is to restricted by default.  When outputting the value of a large value such as MakerNote, the default behaviour is to restrict the data and end with "...".  The option --binary enables you to see all the data.
 .TP
 .B \-u
 Show unknown tags (default is to suppress tags which don't have a name).
@@ -587,12 +588,16 @@ The format of XMP \fBLangAlt\fP values includes an optional language qualifier:
 .B lang="\fIlanguage-code\fP\fI" text\fP
 .fi
 .sp
-lang="x-default" is used if the value doesn't start with a language qualifier.
+The double quotes around the \fIlanguage-code\fP are optional. If no languge qualifier
+is supplied, then the value of "x-default" is used. More information 
+on the language format can be found at: https://www.ietf.org/rfc/rfc3066.txt
 .sp 1
 .nf
 $ exiv2 -M'set Xmp.dc.title lang="de-DE" Euros' X.jpg
 $ exiv2 -M'set Xmp.dc.title lang="en-GB" Pounds' X.jpg
 $ exiv2 -M'set Xmp.dc.title lang="en-US" In God We Trust' X.jpg
+$ exiv2 -M'set Xmp.dc.title lang=fr-FR Euros' X.jpg
+$ exiv2 -M'set Xmp.dc.title lang=jp Yen' X.jpg
 $ exiv2 -M'set Xmp.dc.title All others pay cash' X.jpg
 .fi
 .sp 1
@@ -622,7 +627,7 @@ The tag is a triplet of Family.Group.Tagname.  The following groups are defined 
 GPSInfo           Canon           Fujifilm      NikonLd1      OlympusFe1     Pentax
 Image             CanonCf                       NikonLd2      OlympusFe2     PentaxDng
 Image2            CanonCs         Nikon1        NikonLd3      OlympusFe3
-Image3            CanonF1         Nikon2        NikonMe       OlympusFe4     Samsung2
+Image3            CanonFi         Nikon2        NikonMe       OlympusFe4     Samsung2
 Iop               CanonPa         Nikon3        NikonPc       OlympusFe5     SamsungPictureWizard
 MakerNote         CanonPi         NikonAFT      NikonPreview  OlympusFe6     SamsungPreview
 MpfInfo           CanonPr         NikonAf       NikonSi01xx   OlympusFe7
@@ -778,7 +783,7 @@ and GPSLatitudeRef contains either 'N' or 'S' for north or south
 latitude respectively.
 .sp 1
 .nf
-$ exiv2 insert \-l/tmp -S.CRW /data/*.JPG
+$ exiv2 \-l/tmp -S.CRW insert /data/*.JPG
 .fi
 Copy all metadata from CRW files in the /tmp directory to JPG files
 with corresponding basenames in the /data directory. Note that this

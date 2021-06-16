@@ -1,3 +1,23 @@
+// ***************************************************************** -*- C++ -*-
+/*
+ * Copyright (C) 2004-2021 Exiv2 authors
+ * This program is part of the Exiv2 distribution.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, 5th Floor, Boston, MA 02110-1301 USA.
+ */
+
 #include "crwimage_int.hpp"
 #include "canonmn_int.hpp"
 #include "i18n.h"                // NLS support.
@@ -559,7 +579,7 @@ namespace Exiv2 {
     void CiffComponent::setValue(DataBuf buf)
     {
         if (isAllocated_) {
-            delete pData_;
+            delete[] pData_;
             pData_ = 0;
             size_ = 0;
         }
@@ -1167,7 +1187,11 @@ namespace Exiv2 {
                                                  pCrwMapping->crwDir_);
         if (edX != edEnd || edY != edEnd || edO != edEnd) {
             uint32_t size = 28;
-            if (cc && cc->size() > size) size = cc->size();
+            if (cc) {
+              if (cc->size() < size)
+                throw Error(kerCorruptedMetadata);
+              size = cc->size();
+            }
             DataBuf buf(size);
             std::memset(buf.pData_, 0x0, buf.size_);
             if (cc) std::memcpy(buf.pData_ + 8, cc->pData() + 8, cc->size() - 8);

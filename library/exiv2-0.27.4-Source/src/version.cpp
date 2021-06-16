@@ -1,6 +1,6 @@
 // ***************************************************************** -*- C++ -*-
 /*
- * Copyright (C) 2004-2018 Exiv2 authors
+ * Copyright (C) 2004-2021 Exiv2 authors
  * This program is part of the Exiv2 distribution.
  *
  * This program is free software; you can redistribute it and/or
@@ -345,6 +345,7 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
     int have_unistd      =0;
     int have_unicode_path=0;
 
+    int enable_bmff      =0;
     int enable_video     =0;
     int enable_webready  =0;
     int enable_nls       =0;
@@ -391,9 +392,7 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
     have_stdbool=1;
 #endif
 
-#ifdef EXV_HAVE_STDINT_H
     have_stdint=1;
-#endif
 
 #ifdef EXV_HAVE_STDLIB_H
     have_stdlib=1;
@@ -463,6 +462,10 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
      have_unicode_path=1;
 #endif
 
+#ifdef EXV_ENABLE_BMFF
+     enable_bmff=1;
+#endif
+
 #ifdef EXV_ENABLE_VIDEO
      enable_video=1;
 #endif
@@ -518,7 +521,6 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
             output(os,keys,"library",*lib);
     }
 
-    output(os,keys,"have_strerror_r"   ,have_strerror_r  );
     output(os,keys,"have_inttypes"     ,have_inttypes    );
     output(os,keys,"have_libintl"      ,have_libintl     );
     output(os,keys,"have_lensdata"     ,have_lensdata    );
@@ -546,6 +548,7 @@ void Exiv2::dumpLibraryInfo(std::ostream& os,const exv_grep_keys_t& keys)
     output(os,keys,"have_sys_types"    ,have_sys_types   );
     output(os,keys,"have_unistd"       ,have_unistd      );
     output(os,keys,"have_unicode_path" ,have_unicode_path);
+    output(os,keys,"enable_bmff"       ,enable_bmff      );
     output(os,keys,"enable_video"      ,enable_video     );
     output(os,keys,"enable_webready"   ,enable_webready  );
     output(os,keys,"enable_nls"        ,enable_nls       );

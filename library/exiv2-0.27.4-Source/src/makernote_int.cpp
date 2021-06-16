@@ -1,6 +1,6 @@
 // ***************************************************************** -*- C++ -*-
 /*
- * Copyright (C) 2004-2018 Exiv2 authors
+ * Copyright (C) 2004-2021 Exiv2 authors
  * This program is part of the Exiv2 distribution.
  *
  * This program is free software; you can redistribute it and/or
@@ -1171,6 +1171,8 @@ namespace Exiv2 {
         { 0x0098, "0202",    0, 1,   4 },
         { 0x0098, "0203",    0, 1,   4 },
         { 0x0098, "0204",    0, 2,   4 },
+        { 0x0098, "0800",    0, 3,   4 }, // for e.g. Z6/7
+        { 0x0098, "0801",    0, 3,   4 }, // for e.g. Z6/7
         // NikonFl
         { 0x00a8, "0100",    0, 0,  NA },
         { 0x00a8, "0101",    0, 0,  NA },

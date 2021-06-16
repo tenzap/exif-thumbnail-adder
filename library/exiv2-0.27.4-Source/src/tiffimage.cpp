@@ -1,6 +1,6 @@
 // ***************************************************************** -*- C++ -*-
 /*
- * Copyright (C) 2004-2018 Exiv2 authors
+ * Copyright (C) 2004-2021 Exiv2 authors
  * This program is part of the Exiv2 distribution.
  *
  * This program is free software; you can redistribute it and/or
@@ -16,9 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, 5th Floor, Boston, MA 02110-1301 USA.
- */
-/*
-  File:      tiffimage.cpp
  */
 // *****************************************************************************
 // included header files
@@ -256,12 +253,22 @@ namespace Exiv2 {
               uint32_t  size
     )
     {
+        uint32_t root = Tag::root;
+
+        // #1402  Fujifilm RAF. Change root when parsing embedded tiff
+        Exiv2::ExifKey key("Exif.Image.Make");
+        if (exifData.findKey(key) != exifData.end()) {
+            if ( exifData.findKey(key)->toString() == "FUJIFILM" ) {
+                root = Tag::fuji;
+            }
+        }
+
         return TiffParserWorker::decode(exifData,
                                         iptcData,
                                         xmpData,
                                         pData,
                                         size,
-                                        Tag::root,
+                                        root,
                                         TiffMapping::findDecoder);
     } // TiffParser::decode
 

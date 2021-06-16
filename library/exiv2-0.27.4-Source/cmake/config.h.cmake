@@ -18,6 +18,9 @@
 // Define if you want translation of program messages to the user's native language
 #cmakedefine EXV_ENABLE_NLS
 
+// Define if you want BMFF support.
+#cmakedefine EXV_ENABLE_BMFF
+
 // Define if you want video support.
 #cmakedefine EXV_ENABLE_VIDEO
 
@@ -46,9 +49,6 @@
 
 // Define if stdbool.h conforms to C99.
 #cmakedefine EXV_HAVE_STDBOOL_H
-
-// Define if you have the <stdint.h> header file.
-#cmakedefine EXV_HAVE_STDINT_H
 
 // Define if you have the <strings.h> header file.
 #cmakedefine EXV_HAVE_STRINGS_H

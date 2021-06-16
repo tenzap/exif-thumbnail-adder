@@ -1,6 +1,6 @@
 // ***************************************************************** -*- C++ -*-
 /*
- * Copyright (C) 2004-2018 Exiv2 authors
+ * Copyright (C) 2004-2021 Exiv2 authors
  * This program is part of the Exiv2 distribution.
  *
  * This program is free software; you can redistribute it and/or
@@ -16,14 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, 5th Floor, Boston, MA 02110-1301 USA.
- */
-/*!
-  @file    tags_int.hpp
-  @brief   Internal Exif tag and type information
-  @author  Andreas Huggel (ahu)
-           <a href="mailto:ahuggel@gmx.net">ahuggel@gmx.net</a>
-  @date    15-Jan-04, ahu: created<BR>
-           11-Feb-04, ahu: isolated as a component
  */
 #ifndef TAGS_INT_HPP_
 #define TAGS_INT_HPP_
@@ -74,14 +66,40 @@ namespace Exiv2 {
         panaRawId,
         mnId,
         canonId,
+        canonAf2Id,
+        canonAf3Id,
+        canonAfCId,
+        canonAfMiAdjId,
+        canonAmId,
+        canonAsId,
+        canonCbId,
+        canonCiId,
         canonCsId,
+        canonFilId,
+        canonFlId,
+        canonHdrId,
+        canonLeId,
+        canonMeId,
+        canonMoID,
+        canonMvId,
+        canonRawBId,
         canonSiId,
-        canonCfId,
+        canonCfId,             
+        canonContrastId,
+        canonFcd1Id,
+        canonFcd2Id,
+        canonFcd3Id,
+        canonLiOpId,
+        canonMyColorID,
         canonPiId,
         canonPaId,
         canonTiId,
         canonFiId,
         canonPrId,
+        canonPreID,
+        canonVigCorId,
+        canonVigCor2Id,
+        canonWbId,
         casioId,
         casio2Id,
         fujiId,
@@ -116,6 +134,7 @@ namespace Exiv2 {
         nikonLd1Id,
         nikonLd2Id,
         nikonLd3Id,
+        nikonLd4Id,
         nikonCb1Id,
         nikonCb2Id,
         nikonCb2aId,
@@ -160,6 +179,7 @@ namespace Exiv2 {
         sony1MltCsOldId,
         sony1MltCsNewId,
         sony1MltCsA100Id,
+        tagInfoMvId,
         lastId,
         ignoreId = lastId
     };
@@ -169,10 +189,26 @@ namespace Exiv2 {
              of nothing more than a name, based on the Exif standard.
      */
     enum SectionId { sectionIdNotSet,
-                     imgStruct, recOffset, imgCharacter, otherTags, exifFormat,
-                     exifVersion, imgConfig, userInfo, relatedFile, dateTime,
-                     captureCond, gpsTags, iopTags, mpfTags, makerTags, dngTags, panaRaw,
-                     tiffEp, tiffPm6, adobeOpi,
+                     imgStruct,     // 4.6.4 A
+                     recOffset,     // 4.6.4 B
+                     imgCharacter,  // 4.6.4 C
+                     otherTags,     // 4.6.4 D
+                     exifFormat,    // 4.6.3
+                     exifVersion,   // 4.6.5 A
+                     imgConfig,     // 4.6.5 C
+                     userInfo,      // 4.6.5 D
+                     relatedFile,   // 4.6.5 E
+                     dateTime,      // 4.6.5 F
+                     captureCond,   // 4.6.5 G
+                     gpsTags,       // 4.6.6
+                     iopTags,       // 4.6.7
+                     mpfTags,
+                     makerTags,     // MakerNote
+                     dngTags,       // DNG Spec
+                     panaRaw,
+                     tiffEp,        // TIFF-EP Spec
+                     tiffPm6,
+                     adobeOpi,
                      lastSectionId };
 
     //! The details of a section.

@@ -1,13 +1,13 @@
 cmake_minimum_required( VERSION 3.3.2 )
 
 project(exiv2          # use TWEAK to categorize the build
-    VERSION 0.27.3     # 0.27.3    = GM
-                       # 0.27.3.00 = GM Preview
-                       # 0.27.3.09 = Not For Release
-                       # 0.27.3.2  = RC2
-                       # 0.27.3.20 = RC2 Preview
-                       # 0.27.3.29 = RC2 Not for release
-    LANGUAGES CXX C
+    VERSION 0.27.4     # 0.27.4    = GM               (tagged and released)
+                       # 0.27.4.9  = 27.4.9 Development
+                       # 0.27.4.00 = GM Preview
+                       # 0.27.4.3  = RC3              (tagged and released)
+                       # 0.27.4.30 = RC2 Preview
+                       # 0.27.4.39 = RC2 Development
+    LANGUAGES CXX
 )
 include(cmake/mainSetup.cmake  REQUIRED)
 
@@ -25,6 +25,7 @@ option( EXIV2_ENABLE_WIN_UNICODE      "Use Unicode paths (wstring) on Windows"  
 option( EXIV2_ENABLE_WEBREADY         "Build webready support into library"                   OFF )
 option( EXIV2_ENABLE_CURL             "USE Libcurl for HttpIo (WEBREADY)"                     OFF )
 option( EXIV2_ENABLE_SSH              "USE Libssh for SshIo (WEBREADY)"                       OFF )
+option( EXIV2_ENABLE_BMFF             "Build with BMFF support"                               OFF )
 
 option( EXIV2_BUILD_SAMPLES           "Build sample applications"                             ON  )
 option( EXIV2_BUILD_EXIV2_COMMAND     "Build exiv2 command-line executable"                   ON  )
@@ -50,8 +51,8 @@ option( BUILD_WITH_CCACHE             "Use ccache to speed up compilations"     
 option( BUILD_WITH_COVERAGE           "Add compiler flags to generate coverage stats"         OFF )
 
 set( PACKAGE_BUGREPORT                "http://github.com/exiv2/exiv2" )
-set( PACKAGE_URL                      "http://exiv2.dyndns.org")
-set( PROJECT_DESCRIPTION              "Exif and IPTC metadata library and tools")
+set( PACKAGE_URL                      "https://exiv2.org")
+set( PROJECT_DESCRIPTION              "Exif/IPTC/Xmp C++ metadata library and tools plus ICC Profiles, Previews and more.")
 
 if ( EXIV2_ENABLE_EXTERNAL_XMP )
     set(EXIV2_ENABLE_XMP OFF)
@@ -85,43 +86,43 @@ add_subdirectory( src )
 if( EXIV2_BUILD_UNIT_TESTS )
     add_subdirectory ( unitTests )
     add_custom_target(unit_test
-        COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" make unit_test
-        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test"
+        COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/unit_test.py
+        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
     )
 endif()
 
 add_custom_target(version_test
-	COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" make version_test
-	WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test"
+    COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/version_test.py
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
 )
 
 if( EXIV2_BUILD_SAMPLES )
     ##
     # tests
     if( EXIV2_BUILD_UNIT_TESTS )
-		add_custom_target(tests
-			COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" make unit_test
-			COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" make bash_tests
-		    COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" make python_tests
-		    COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" make version_test
-			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test"
-		)
+        add_custom_target(tests
+            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/unit_test.py
+            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/testcases.py --verbose
+            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py 
+            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/version_test.py
+            WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
+        )
     else()
-		add_custom_target(tests
-			COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" make bash_tests
-		    COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" make python_tests
-		    COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" make version_test
-			WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test"
-		)
+        add_custom_target(tests
+            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/testcases.py --verbose
+            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py
+            COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/version_test.py
+            WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
+        )
     endif()
-	add_custom_target(python_tests
-		COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" make python_tests
-		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test"
-	)
-	add_custom_target(bash_tests
-		COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" make bash_tests
-		WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/test"
-	)
+    add_custom_target(python_tests
+        COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py
+        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
+    )
+    add_custom_target(bash_tests
+        COMMAND env EXIV2_BINDIR="${CMAKE_RUNTIME_OUTPUT_DIRECTORY}" python3 runner.py bash_tests/testcases.py --verbose
+        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/tests"
+    )
     add_subdirectory( samples )
     get_directory_property(SAMPLES DIRECTORY samples DEFINITION APPLICATIONS)
     add_dependencies(tests exiv2lib exiv2 ${SAMPLES})
@@ -135,6 +136,8 @@ if (EXIV2_TEAM_PACKAGING)
     include(cmake/packaging.cmake)
 endif()
 
+join_paths(libdir_for_pc_file "\${prefix}" "${CMAKE_INSTALL_LIBDIR}")
+join_paths(includedir_for_pc_file "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 configure_file(cmake/exiv2.pc.in exiv2.pc @ONLY)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/exiv2.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 

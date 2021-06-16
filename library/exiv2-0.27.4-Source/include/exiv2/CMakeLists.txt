@@ -1,7 +1,7 @@
 install(FILES
             asfvideo.hpp
             basicio.hpp
-            bigtiffimage.hpp
+            bmffimage.hpp
             bmpimage.hpp
             config.h
             convert.hpp

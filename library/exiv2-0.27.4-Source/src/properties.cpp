@@ -1,6 +1,6 @@
 // ***************************************************************** -*- C++ -*-
 /*
- * Copyright (C) 2004-2018 Exiv2 authors
+ * Copyright (C) 2004-2021 Exiv2 authors
  * This program is part of the Exiv2 distribution.
  *
  * This program is free software; you can redistribute it and/or
@@ -16,12 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, 5th Floor, Boston, MA 02110-1301 USA.
- */
-/*
-  File:      properties.cpp
-  Author(s): Andreas Huggel (ahu) <ahuggel@gmx.net>
-             Gilles Caulier (cgilles) <caulier dot gilles at gmail dot com>
-  History:   13-July-07, ahu: created
  */
 // *****************************************************************************
 // included header files
@@ -986,7 +980,7 @@ namespace Exiv2 {
         { "RegItemId",               N_("Registry Entry-Item Identifier"),  "Text",                       xmpText, xmpExternal, N_("A unique identifier created by a registry and applied by the creator of the digital image. This value shall not be changed after being applied. This identifier is linked to a corresponding Registry Organisation Identifier.") },
         { "RegOrgId",                N_("Registry Entry-Organisation Identifier"), "Text",                xmpText, xmpExternal, N_("An identifier for the registry which issued the corresponding Registry Image Id.") },
         { "IptcLastEdited",          N_("IPTC Fields Last Edited"),         "Date",                       xmpText, xmpExternal, N_("The date and optionally time when any of the IPTC photo metadata fields has been last edited.") },
-        { "LocationShown",           N_("Location shown"),                  "bag LocationDetails",        xmpBag,  xmpExternal, N_("A location shown in the image.") },
+        { "LocationShown",           N_("Location Shown"),                  "bag LocationDetails",        xmpBag,  xmpExternal, N_("A location shown in the image.") },
         { "LocationCreated",         N_("Location Created"),                "bag LocationDetails",        xmpBag,  xmpExternal, N_("The location the photo was taken.") },
         { "City",                    N_("Location-City"),                   "Text",                       xmpText, xmpExternal, N_("Name of the city of a location.") },
         { "CountryCode",             N_("Location-Country ISO-Code"),       "Text",                       xmpText, xmpExternal, N_("The ISO code of a country of a location.") },
@@ -2839,14 +2833,25 @@ namespace Exiv2 {
 
     // *************************************************************************
     // free functions
+    // *************************************************************************
+    // free functions
     std::ostream& operator<<(std::ostream& os, const XmpPropertyInfo& property)
     {
-        return os << property.name_                       << ",\t"
-                  << property.title_                      << ",\t"
-                  << property.xmpValueType_               << ",\t"
-                  << TypeInfo::typeName(property.typeId_) << ",\t"
-                  << ( property.xmpCategory_ == xmpExternal ? "External" : "Internal" ) << ",\t"
-                  << property.desc_                       << "\n";
+        os << property.name_                       << ","
+           << property.title_                      << ","
+           << property.xmpValueType_               << ","
+           << TypeInfo::typeName(property.typeId_) << ","
+           << ( property.xmpCategory_ == xmpExternal ? "External" : "Internal" ) << ",";
+        // CSV encoded I am \"dead\" beat" => "I am ""dead"" beat"
+        char Q = '"';
+        os << Q;
+        for ( size_t i = 0 ; i < ::strlen(property.desc_) ; i++ ) {
+            char c = property.desc_[i];
+            if ( c == Q ) os << Q;
+            os << c;
+        }
+        os << Q << std::endl;
+        return os;
     }
     //! @endcond
 

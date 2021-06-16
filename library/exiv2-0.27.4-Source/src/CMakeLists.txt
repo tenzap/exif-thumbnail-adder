@@ -46,7 +46,6 @@ add_library( exiv2lib
     ../include/exiv2/rwlock.hpp
     ../include/exiv2/slice.hpp
     basicio.cpp             ../include/exiv2/basicio.hpp
-    bigtiffimage.cpp
     bmpimage.cpp            ../include/exiv2/bmpimage.hpp
     convert.cpp             ../include/exiv2/convert.hpp
     cr2image.cpp            ../include/exiv2/cr2image.hpp
@@ -119,6 +118,10 @@ if( EXIV2_ENABLE_VIDEO )
     )
 endif()
 
+target_sources(exiv2lib PRIVATE
+    bmffimage.cpp           ../include/exiv2/bmffimage.hpp
+)
+
 # Other library target properties
 # ---------------------------------------------------------
 
@@ -145,7 +148,10 @@ set_target_properties( exiv2lib_int PROPERTIES
 )
 
 target_include_directories(exiv2lib_int PRIVATE ${ZLIB_INCLUDE_DIR})
-target_include_directories(exiv2lib PRIVATE ${ZLIB_INCLUDE_DIR})
+target_include_directories(exiv2lib PRIVATE 
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/xmpsdk/include>
+    ${ZLIB_INCLUDE_DIR}
+)
 
 if (EXIV2_ENABLE_XMP)
     target_link_libraries(exiv2lib PRIVATE exiv2-xmp)
@@ -159,7 +165,7 @@ endif()
 target_include_directories(exiv2lib PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/exiv2>
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 target_include_directories(exiv2lib_int PUBLIC
@@ -189,7 +195,9 @@ if (EXIV2_ENABLE_WEBREADY)
 endif()
 
 if (WIN32)
-    target_compile_definitions(exiv2lib PRIVATE PSAPI_VERSION=1) # to be compatible with <= WinVista (#905)
+    target_compile_definitions(exiv2lib PRIVATE PSAPI_VERSION=1)    # to be compatible with <= WinVista (#905)
+    # Since windows.h is included in some headers, we need to propagate this definition
+    target_compile_definitions(exiv2lib PUBLIC WIN32_LEAN_AND_MEAN) 
 endif()
 
 if (NOT MSVC)
@@ -207,7 +215,7 @@ else()
 endif()
 
 if( EXIV2_ENABLE_PNG )
-    target_link_libraries( exiv2lib PRIVATE ${ZLIB_LIBRARIES} )
+    target_link_libraries( exiv2lib PRIVATE $<BUILD_INTERFACE:${ZLIB_LIBRARIES}>)
 endif()
 
 if( EXIV2_ENABLE_NLS )
@@ -215,7 +223,8 @@ if( EXIV2_ENABLE_NLS )
     target_include_directories(exiv2lib PRIVATE ${Intl_INCLUDE_DIRS})
     target_include_directories(exiv2lib_int PRIVATE ${Intl_INCLUDE_DIRS})
     # Definition needed for translations
-    target_compile_definitions(exiv2lib PUBLIC EXV_LOCALEDIR="/../${CMAKE_INSTALL_LOCALEDIR}")
+    join_paths(EXV_LOCALEDIR ".." "${CMAKE_INSTALL_LOCALEDIR}")
+    target_compile_definitions(exiv2lib PUBLIC EXV_LOCALEDIR="${EXV_LOCALEDIR}")
 endif()
 
 if( ICONV_FOUND )

@@ -1,6 +1,6 @@
 // ***************************************************************** -*- C++ -*-
 /*
- * Copyright (C) 2004-2018 Exiv2 authors
+ * Copyright (C) 2004-2021 Exiv2 authors
  * This program is part of the Exiv2 distribution.
  *
  * This program is free software; you can redistribute it and/or
@@ -17,9 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, 5th Floor, Boston, MA 02110-1301 USA.
  */
-/*
-  File:      image.cpp
- */
 // *****************************************************************************
 // included header files
 #include "config.h"
@@ -31,20 +28,22 @@
 #include "safe_op.hpp"
 #include "slice.hpp"
 
+#ifdef   EXV_ENABLE_BMFF
+#include "bmffimage.hpp"
+#endif// EXV_ENABLE_BMFF
 #include "cr2image.hpp"
 #include "crwimage.hpp"
 #include "epsimage.hpp"
 #include "jpgimage.hpp"
 #include "mrwimage.hpp"
-#ifdef EXV_HAVE_LIBZ
+#ifdef   EXV_HAVE_LIBZ
 # include "pngimage.hpp"
-#endif // EXV_HAVE_LIBZ
+#endif// EXV_HAVE_LIBZ
 #include "rafimage.hpp"
 #include "tiffimage.hpp"
 #include "tiffimage_int.hpp"
 #include "tiffcomposite_int.hpp"
 #include "tiffvisitor_int.hpp"
-#include "bigtiffimage.hpp"
 #include "webpimage.hpp"
 #include "orfimage.hpp"
 #include "gifimage.hpp"
@@ -54,12 +53,12 @@
 #include "jp2image.hpp"
 #include "nikonmn_int.hpp"
 
-#ifdef EXV_ENABLE_VIDEO
+#ifdef   EXV_ENABLE_VIDEO
 #include "matroskavideo.hpp"
 #include "quicktimevideo.hpp"
 #include "riffvideo.hpp"
 #include "asfvideo.hpp"
-#endif // EXV_ENABLE_VIDEO
+#endif// EXV_ENABLE_VIDEO
 #include "rw2image.hpp"
 #include "pgfimage.hpp"
 #include "xmpsidecar.hpp"
@@ -111,7 +110,6 @@ namespace {
         { ImageType::crw,  newCrwInstance,  isCrwType,  amReadWrite, amNone,      amNone,      amReadWrite },
         { ImageType::mrw,  newMrwInstance,  isMrwType,  amRead,      amRead,      amRead,      amNone      },
         { ImageType::tiff, newTiffInstance, isTiffType, amReadWrite, amReadWrite, amReadWrite, amNone      },
-        { ImageType::bigtiff, newBigTiffInstance, isBigTiffType, amRead, amRead,  amRead,      amNone      },
         { ImageType::webp, newWebPInstance, isWebPType, amReadWrite, amNone,      amReadWrite, amNone      },
         { ImageType::dng,  newTiffInstance, isTiffType, amReadWrite, amReadWrite, amReadWrite, amNone      },
         { ImageType::nef,  newTiffInstance, isTiffType, amReadWrite, amReadWrite, amReadWrite, amNone      },
@@ -129,10 +127,13 @@ namespace {
         { ImageType::eps,  newEpsInstance,  isEpsType,  amNone,      amNone,      amReadWrite, amNone      },
         { ImageType::xmp,  newXmpInstance,  isXmpType,  amReadWrite, amReadWrite, amReadWrite, amNone      },
         { ImageType::gif,  newGifInstance,  isGifType,  amNone,      amNone,      amNone,      amNone      },
-        { ImageType::psd,  newPsdInstance,  isPsdType,  amRead,      amRead,      amRead,      amNone      },
+        { ImageType::psd,  newPsdInstance,  isPsdType,  amReadWrite, amReadWrite, amReadWrite, amNone      },
         { ImageType::tga,  newTgaInstance,  isTgaType,  amNone,      amNone,      amNone,      amNone      },
         { ImageType::bmp,  newBmpInstance,  isBmpType,  amNone,      amNone,      amNone,      amNone      },
         { ImageType::jp2,  newJp2Instance,  isJp2Type,  amReadWrite, amReadWrite, amReadWrite, amNone      },
+#ifdef EXV_ENABLE_BMFF
+        { ImageType::bmff, newBmffInstance, isBmffType, amRead,      amRead,      amRead,      amNone      },
+#endif // EXV_ENABLE_BMFF
 #ifdef EXV_ENABLE_VIDEO
         { ImageType::qtime,newQTimeInstance,isQTimeType,amRead,      amNone,      amRead,      amNone      },
         { ImageType::riff, newRiffInstance, isRiffType, amRead,      amNone,      amRead,      amNone      },

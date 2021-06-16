@@ -1,6 +1,6 @@
 // ***************************************************************** -*- C++ -*-
 /*
- * Copyright (C) 2004-2018 Exiv2 authors
+ * Copyright (C) 2004-2021 Exiv2 authors
  * This program is part of the Exiv2 distribution.
  *
  * This program is free software; you can redistribute it and/or
@@ -17,11 +17,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, 5th Floor, Boston, MA 02110-1301 USA.
  */
-/*
-  File:      tiffvisitor.cpp
-  Author(s): Andreas Huggel (ahu) <ahuggel@gmx.net>
-  History:   11-Apr-06, ahu: created
- */
 // *****************************************************************************
 // included header files
 #include "config.h"
@@ -29,6 +24,7 @@
 #include "tiffcomposite_int.hpp" // Do not change the order of these 2 includes,
 #include "tiffvisitor_int.hpp"   // see bug #487
 #include "tiffimage_int.hpp"
+#include "image_int.hpp"
 #include "makernote_int.hpp"
 #include "exif.hpp"
 #include "enforce.hpp"
@@ -292,16 +288,19 @@ namespace Exiv2 {
     {
         assert(pRoot != 0);
 
-        exifData_.clear();
-        iptcData_.clear();
-        xmpData_.clear();
-
-        // Find camera make
-        TiffFinder finder(0x010f, ifd0Id);
-        pRoot_->accept(finder);
-        TiffEntryBase* te = dynamic_cast<TiffEntryBase*>(finder.result());
-        if (te && te->pValue()) {
-            make_ = te->pValue()->toString();
+        // #1402 Fujifilm RAF. Search for the make
+        // Find camera make in existing metadata (read from the JPEG)
+        ExifKey key("Exif.Image.Make");
+        if ( exifData_.findKey(key) != exifData_.end( ) ){
+            make_ = exifData_.findKey(key)->toString();
+        } else {
+            // Find camera make by looking for tag 0x010f in IFD0
+            TiffFinder finder(0x010f, ifd0Id);
+            pRoot_->accept(finder);
+            TiffEntryBase* te = dynamic_cast<TiffEntryBase*>(finder.result());
+            if (te && te->pValue()) {
+                make_ = te->pValue()->toString();
+            }
         }
     }
 
@@ -329,7 +328,7 @@ namespace Exiv2 {
         decodeTiffEntry(object);
     }
 
-    void TiffDecoder::visitDirectory(TiffDirectory* /*object*/)
+    void TiffDecoder::visitDirectory(TiffDirectory* /* object */ )
     {
         // Nothing to do
     }

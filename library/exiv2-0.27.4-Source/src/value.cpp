@@ -1,6 +1,6 @@
 // ***************************************************************** -*- C++ -*-
 /*
- * Copyright (C) 2004-2018 Exiv2 authors
+ * Copyright (C) 2004-2021 Exiv2 authors
  * This program is part of the Exiv2 distribution.
  *
  * This program is free software; you can redistribute it and/or
@@ -16,13 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, 5th Floor, Boston, MA 02110-1301 USA.
- */
-/*
-  File:      value.cpp
-  Author(s): Andreas Huggel (ahu) <ahuggel@gmx.net>
-  History:   26-Jan-04, ahu: created
-             11-Feb-04, ahu: isolated as a component
-             31-Jul-04, brad: added Time, Date and String values
  */
 // *****************************************************************************
 // included header files
@@ -410,7 +403,8 @@ namespace Exiv2 {
     int AsciiValue::read(const std::string& buf)
     {
         value_ = buf;
-        if (value_.size() > 0 && value_[value_.size()-1] != '\0') value_ += '\0';
+        // ensure count>0 and nul terminated # https://github.com/Exiv2/exiv2/issues/1484
+        if (value_.size() == 0 || value_[value_.size()-1] != '\0') value_ += '\0';
         return 0;
     }
 
@@ -555,18 +549,6 @@ namespace Exiv2 {
         return os << comment();
     }
 
-    // test string for printable ascii-7 (' ' .. '~')
-    static bool isBinary(const std::string& s)
-    {
-        bool result = false ;
-        size_t i = 0;
-        while ( !result && i < s.length() ) {
-            unsigned char c = (unsigned char) s[i++];
-            result = c < 32 || c > 127 ;
-        }
-        return result;
-    }
-
     std::string CommentValue::comment(const char* encoding) const
     {
         std::string c;
@@ -577,12 +559,11 @@ namespace Exiv2 {
         if (charsetId() == unicode) {
             const char* from = encoding == 0 || *encoding == '\0' ? detectCharset(c) : encoding;
             convertStringCharset(c, from, "UTF-8");
-        } else {
-            // charset=undefined reports "binary comment" if it contains non-printable bytes
-            // this is to ensure no binary bytes in the output stream.
-            if ( isBinary(c) ) {
-                c = "binary comment" ;
-            }
+        }
+        bool bAscii = charsetId() == undefined || charsetId() == ascii ;
+        // # 1266 Remove trailing nulls
+        if ( bAscii && c.find('\0') != c.std::string::npos) {
+            c = c.substr(0,c.find('\0'));
         }
         return c;
     }
@@ -869,18 +850,38 @@ namespace Exiv2 {
     }
 
     int LangAltValue::read(const std::string& buf)
-    {
+    {        
         std::string b = buf;
         std::string lang = "x-default";
         if (buf.length() > 5 && buf.substr(0, 5) == "lang=") {
+            static const char* ALPHA = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            static const char* ALPHA_NUM = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            
             std::string::size_type pos = buf.find_first_of(' ');
             lang = buf.substr(5, pos-5);
             // Strip quotes (so you can also specify the language without quotes)
-            if (lang[0] == '"') lang = lang.substr(1);
-            if (lang[lang.length()-1] == '"') lang = lang.substr(0, lang.length()-1);
+            if (lang[0] == '"') {
+                lang = lang.substr(1);
+
+                if (lang == "" || lang.find('"') != lang.length()-1)
+                    throw Error(kerInvalidLangAltValue, buf);
+            
+                lang = lang.substr(0, lang.length()-1);
+            }
+            
+            if (lang == "") throw Error(kerInvalidLangAltValue, buf);
+
+            // Check language is in the correct format (see https://www.ietf.org/rfc/rfc3066.txt)
+            std::string::size_type charPos = lang.find_first_not_of(ALPHA);
+            if (charPos != std::string::npos) {
+                if (lang[charPos] != '-' || lang.find_first_not_of(ALPHA_NUM, charPos+1) != std::string::npos)
+                    throw Error(kerInvalidLangAltValue, buf);
+            }
+            
             b.clear();
             if (pos != std::string::npos) b = buf.substr(pos+1);
         }
+
         value_[lang] = b;
         return 0;
     }
