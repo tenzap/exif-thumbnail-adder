@@ -3,7 +3,7 @@ include(ExternalProject)
 #set(CMAKE_CXX_STANDARD 11)             # Uncommenting this line leads to "no stop on breakpoints in C++ code in Android Studio"
 #set(CMAKE_CXX_FLAGS -Wno-deprecated)   # Uncommenting this line leads to "no stop on breakpoints in C++ code in Android Studio"
 ExternalProject_Add(exiv2_external
-        URL ${CMAKE_CURRENT_SOURCE_DIR}/library/exiv2-0.27.3-Source
+        URL ${CMAKE_CURRENT_SOURCE_DIR}/library/exiv2-0.27.4-Source
         CMAKE_ARGS
             ${CL_ARGS}                                         # Copies the cmake arguments (all parameters for android) to the package
             -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR} # Sets dir where cmake will install the files of the package
