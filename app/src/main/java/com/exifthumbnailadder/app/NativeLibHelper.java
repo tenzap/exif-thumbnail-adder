@@ -103,7 +103,15 @@ public class NativeLibHelper {
         try {
             int result = writeThumbnailWithExiv2ThroughFile(output, tbFilename, 72);
             if (result != 0) throw new RuntimeException("exiv2 return value different from 0: " + result);
-        } catch (Exiv2ErrorException | Exiv2WarnException e) {
+        } catch (Exiv2WarnException e) {
+            switch (exiv2SkipOnLogLevel) {
+                case "warn":
+                    //Delete output file
+                    new File(output).delete();
+                    break;
+            }
+            throw e;
+        } catch (Exiv2ErrorException e) {
             switch (exiv2SkipOnLogLevel) {
                 case "warn":
                 case "error":

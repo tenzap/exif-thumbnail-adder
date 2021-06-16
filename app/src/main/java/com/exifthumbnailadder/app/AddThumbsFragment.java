@@ -606,7 +606,19 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                                                 outFilepath,
                                                 thumbnail,
                                                 prefs.getString("exiv2SkipOnLogLevel", "warn"));
-                                    } catch (Exiv2ErrorException | Exiv2WarnException e) {
+                                    } catch (Exiv2WarnException e) {
+                                        e.printStackTrace();
+                                        switch (prefs.getString("exiv2SkipOnLogLevel", "warn")) {
+                                            case "warn":
+                                                if (doc instanceof ETADocFile) { doc.deleteOutputInTmp(); }
+                                                updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                                continue;
+                                            case "error":
+                                            case "none":
+                                                updateUiLog(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
+                                                updateUiLog(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
+                                        }
+                                    } catch (Exiv2ErrorException e) {
                                         e.printStackTrace();
                                         switch (prefs.getString("exiv2SkipOnLogLevel", "warn")) {
                                             case "warn":
