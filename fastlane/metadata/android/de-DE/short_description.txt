@@ -1,1 +1,1 @@
-Miniaturbildhinzufügung in das EXIF-Tag von JPEG-Bilder ohne eines.
+Miniaturbildhinzufügung in das EXIF-Tag von JPEG-Bilder ohne eines. Batchbetrieb
