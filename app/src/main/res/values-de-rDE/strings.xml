@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Exif Thumbnail Adder</string>
+    <!-- AndroidManifest.xml -->
+    <!--    <string name="title_activity_settings">Settings</string>-->
+    <!--    <string name="title_activity_sync">Sync. deletions</string>-->
+    <string name="title_activity_about">Info</string>
+    <string name="title_activity_working_dir_perm">Arbeitsverzeichnis-Berechtigungen</string>
+    <!-- Toolbar action menu labels -->
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_sync">Löschungen synchronisieren</string>
+    <string name="action_about">Info</string>
+    <string name="action_add_thumbs">Miniaturbilder hinzufügen</string>
+    <!-- About Activity -->
+    <string name="about_about_title">App-Info</string>
+    <string name="about_content">Info…</string>
+    <string name="about_version">Version</string>
+    <string name="about_homepage_source">Projektseite &amp; Quellcode:</string>
+    <string name="about_license">Lizenz:</string>
+    <string name="about_authors">Autoren:</string>
+    <string name="about_translations">Übersetzungen</string>
+    <string name="about_anonymous">anonym</string>
+    <string name="about_external_libraries">Externe Bibliotheken</string>
+    <!-- Working dir perm activity -->
+    <string name="working_dir_perm_permissions_set_retry">Arbeitsverzeichnis-Berechtigungen festgelegt, bitte neu versuchen.</string>
+    <string name="working_dir_button_create_dir_and_set_permissions">Verzeichnis erstellen und Berechtigungen festlegen</string>
+    <string name="working_dir_text_you_don_t_have_the_permission_to_write">    Du hast keine Berechtigung, in das Arbeitsverzeichnis zu schreiben oder es ist nicht vorhanden.\n
+    \n
+    Um eine Sicherung deiner Bilder und einige temporäre Dateien zu speichern, verwendet diese Anwendung ein Verzeichnis 
+    im Wurzelverzeichnis des Speichermediums, das die Bilder enthält, die du verarbeiten möchtest.\n
+    Standardmäßig ist er mit \'ThumbAdder\' benannt (das kann in den Einstellungen geändert werden).\n
+    Damit das funktioniert, muss das Verzeichnis existieren und benötigt Lese- &amp; Schreibrechte.
+    Dies lässt sich nur erreichen, wenn du der App die Berechtigung dafür erteilst.
+    Der Schalter unten wird dir dabei helfen, das leicht zu erledigen.\n
+    \n
+    Sobald du den Schalter gedrückt hast, werden einige Bildschirme erscheinen und dich bitten, den Zugriff freizugeben.
+    Alles, was du tun musst, ist jeden Schritt zu bestätigen.\n
+    1. Du wirst gebeten, den Namen des Verzeichnisses und den Ort, wo es erstellt wird, zu bestätigen
+    (belasse die Voreinstellung)\n
+    2. Du gewährst dauerhaften Lese- &amp; Schreibzugriff auf das Arbeitsverzeichnis.\n
+    \n
+    \n
+    Du musst lediglich jeden Bildschirm bestätigen.\n
+    Die erforderlichen Werte sind bereits für dich festgelegt.\n
+    \n
+    Sobald die Berechtigungen eingerichtet sind, wirst du zum Hauptbildschirm zurück geleitet und du kannst neu beginnen.\n</string>
+    <!-- AddThumbs Fragment -->
+    <string name="frag1_text_description">Miniaturbilder zu Bildern aus den ausgewählten Quellordnern hinzufügen</string>
+    <string name="frag1_text_list_of_dirs_to_process">Liste der zu verarbeitenden Ordner</string>
+    <string name="frag1_text_no_dir_selected">Keine Ordner ausgewählt. Gehe zu den Einstellungen, um welche auszuwählen.</string>
+    <string name="frag1_text_all_files_access_permissions_is_not_granted">\'Zugriff auf alle Dateien\' ist auf deinem Gerät nicht gewährt. Du kannst diese App immer noch normal nutzen, bitte verstehe aber, dass Uhrzeit und Datum deiner Dateien auf die aktuelle Zeit umgestellt werden. Das beeinträchtigt nicht die in den EXIF-Tags gespeicherten Zeiten/Daten deiner Bilder. Du kannst die Berechtigung in den Einstellungen vergeben.</string>
+    <string name="frag1_button_settings">Einstellungen</string>
+    <string name="frag1_button_start_processing">Verarbeitung beginnen</string>
+    <string name="stop">Anhalten</string>
+    <string name="frag1_text_processing_log">Verarbeitungsprotokoll</string>
+    <string name="frag1_perm_request_title">Berechtigungsabfrage</string>
+    <string name="frag1_perm_request_message_timestamp">Die Berechtigung für den externen Speicher ist notwendig, um die Zeitstempel der Dateien zu erhalten.\n
+        Wenn du die Berechtigung verweigerst, erfolgt die Verarbeitung ohne den Erhalt der Zeitstempel.\n
+        Nach Erteilung der Berechtigung muss die Verarbeitung neu gestartet werden.</string>
+    <string name="frag1_perm_request_deny">Berechtigung verweigern</string>
+    <string name="frag1_perm_request_message_Files">Die Berechtigung für den externen Speicher ist notwendig. Nach Erteilung der Berechtigung muss die Verarbeitung neu gestartet werden.</string>
+    <string name="frag1_check_write_perm">Überprüfung der Berechtigung WRITE_EXTERNAL_STORAGE…</string>
+    <string name="frag1_continue_without_timestamps">\u00A0Berechtigung nicht erteilt, ohne Erhalt der Zeitstempel weitermachen.</string>
+    <string name="frag1_log_skipping_excluded_dir">Ausgeschlossenes Verzeichnis %1$s in %2$s überspringen</string>
+    <string name="frag1_log_copying_attr">Attribute kopieren…</string>
+    <string name="frag1_log_starting">Beginnen…\n</string>
+    <string name="frag1_log_stopped_by_user">Vom Benutzer angehalten.</string>
+    <string name="frag1_log_processing_dir">Verarbeitung von %1$s</string>
+    <string name="frag1_log_processing_path_filename">Verarbeiten… Pfad: %1$s Dateiname: %2$s</string>
+    <string name="frag1_log_skipping_path_filename">Überspringen… Pfad: %1$s Dateiname: %2$s</string>
+    <string name="frag1_log_checking_workingdir_perm">Prüfen der Arbeitsverzeichnis-Berechtigungen…</string>
+    <string name="frag1_log_checking_perm">Prüfen der Berechtigungen…</string>
+    <string name="frag1_log_skipping_file_missing">Überspringen (Datei fehlt)</string>
+    <string name="frag1_log_skipping_not_jpeg">Überspringen (nicht JPEG)\n</string>
+    <string name="frag1_log_skipping_empty_file">Überspringen (leere Datei)\n</string>
+    <string name="frag1_log_skipping_has_thumbnail">Überspringen (Minibild vorhanden)\n</string>
+    <string name="frag1_log_skipping_bad_image">Überspringen (Bild beschädigt?)\n</string>
+    <string name="frag1_log_skipping_error">Überspringen (Fehler): %1$s</string>
+    <string name="frag1_log_continue_despite_error_as_per_setting">Verarbeitung gemäß den Einstellungen fortsetzen…</string>
+    <string name="frag1_log_file_exists">Datei bereits vorhanden: %1$s</string>
+    <string name="frag1_log_finished">\nabgeschlossen.</string>
+    <string name="frag1_log_pixymeta_missing">Die Pixymeta-android-Bibliothek ist in diesem Build nicht enthalten. Wähle in den Einstellungen eine andere Bibliothek aus.</string>
+    <string name="frag1_log_done">\u00A0Fertig</string>
+    <string name="frag1_log_overwrite_not_allowed">\u00A0Überschreiben des Bildes im Zielverzeichnis nicht gestattet (siehe Einstellungen). Zieldatei bereits vorhanden. Überspringen.</string>
+    <string name="frag1_log_cannot_move_to_backup">\u00A0Bild kann nicht gesichert werden. Datei bereit vorhanden. Überspringen.</string>
+    <string name="frag1_log_ok">\u00A0OK</string>
+    <string name="frag1_log_not_granted">\u00A0Nicht genehmigt. Bitte den Ordner in den Einstellungen erneut hinzufügen.</string>
+    <string name="frag1_log_ko">\u00A0KO</string>
+    <string name="frag1_log_could_not_copy_timestamp_and_attr">Zeitstempel und Attribute der Datei konnten nicht kopiert werden: %1$s</string>
+    <string name="frag1_log_could_not_store_timestamp_and_attr">Zeitstempel und Attribute der Datei konnten nicht gespeichert werden: %1$s</string>
+    <string name="frag1_log_error_moving_doc">FEHLER beim Verschieben des Dokuments: %1$s</string>
+    <string name="frag1_log_error_copying_doc">FEHLER beim Kopieren des Dokuments: %1$s</string>
+    <string name="frag1_log_count_files_to_process">%1$d zu verarbeitende Datei(en).</string>
+    <string name="frag1_log_error">Fehler: %1$s</string>
+    <!-- Settings -->
+    <string name="settings_dialog_all_files_access_not_supported">Dein Gerät unterstützt keinen Zugriff auf alle Dateien</string>
+    <string name="settings_button_remove_all_dirs">Alle Ordner entfernen</string>
+    <string name="settings_button_add_dir">Hinzufügen</string>
+    <string name="pref_categ_folders">Ordner</string>
+    <string name="pref_dirToProcess_title">Zu verarbeitende Ordner</string>
+    <string name="pref_workingDir_title"><![CDATA[Sicherungs- und Arbeitsverzeichnis]]></string>
+    <string name="pref_workingDir_dialogMessage"><![CDATA[Dieses Verzeichnis enthält die Sicherung der Quellbilder und auch einige temporäre Dateien, die während des Vorgangs entstehen. Es befindet sich im Wurzelverzeichnis eines jeden Speichermediums (Telefon, SD-Karte…).\nMit dem Standardwert würden die Dateien zum Beispiel in <SDCARD>/ThumbAdder/DCIM.bak oder <PHONE_STORAGE>/ThumbAdder/DCIM.bak untergebracht.]]></string>
+    <string name="pref_allFilesAccess_title">Zugriff auf alle Dateien (nur für Android 11+)</string>
+    <string name="pref_allFilesAccess_summary">Erteilt Zugriff auf alle Dateien auf deinem Gerät. Das ermöglicht den Erhalt der Zeitstempel der verarbeiteten Dateien. Die Zeitstempel deiner Bilder, die in EXIF gespeichert sind, werden nicht geändert, welchen Wert diese Option auch immer hat.</string>
+    <string name="pref_categ_options">Optionen</string>
+    <string name="pref_rotateThumbnail_title">Miniaturbilder drehen</string>
+    <string name="pref_rotateThumbnail_summary">Miniaturbilder drehen, um dem Bild zu entsprechen. Die meisten Apps benötigen die Drehung des Miniaturbildes (z. B. beim Win10-Fotoimport)</string>
+    <string name="pref_skipPicsHavingThumbnail_title">Bilder mit Miniaturbild überspringen</string>
+    <string name="pref_skipPicsHavingThumbnail_summary">Wenn das Bild bereits ein Miniaturbild hat, Verarbeitung überspringen</string>
+    <string name="pref_backupOriginalPic_title">Sicherung des Quellbildes erstellen</string>
+    <string name="pref_backupOriginalPic_summary">Sicherung wird im Arbeitsverzeichnis abgelegt. Wenn eine Datei mit demselben Namen existiert, wird sie nicht überschrieben.</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_title">Im Quellverzeichnis aktualisieren</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Miniaturbild dem Bild im Quellordner hinzufügen</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Miniaturbild einer Kopie des Quellbildes im Arbeitsverzeichnis hinzufügen (in \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
+    <string name="pref_overwriteDestPic_title">Bild im Zielverzeichnis überschreiben</string>
+    <string name="pref_overwriteDestPic_summary">Datei mit gleichem Namen im Arbeitsverzeichnis überschreiben (dies wirkt sich nicht auf Sicherungen aus, die nie überschrieben werden)</string>
+    <string name="pref_keepTimeStampOnBackup_title">Zeitstempel in Sicherung kopieren</string>
+    <string name="pref_keepTimeStampOnBackup_summary">Wenn \'%1$s\' \'aus\' ist, den Zeitstempel des Quellbildes zu seiner Kopie im Sicherungsverzeichnis kopieren.\nWenn \'%1$s\' \'an\' ist, wird der Zeitstempel der Sicherung immer beibehalten.</string>
+    <string name="pref_writeTmpToCacheDir_title">Temporäre Bilder in Cache schreiben</string>
+    <string name="pref_writeTmpToCacheDir_summaryOn">Temporäre Bilder, die während der Verarbeitung entstehen, in den Cache der Anwendung schreiben</string>
+    <string name="pref_writeTmpToCacheDir_summaryOff">Temporäre Bilder, die während der Verarbeitung entstehen, ins Arbeitsverzeichnis schreiben</string>
+    <string name="pref_categ_backend">Backend / Bibliothek</string>
+    <string name="pref_exifLibrary_title">EXIF-Miniaturbilder schreiben mit</string>
+    <string name="pref_exifLibrary_cannotDisableSkipPicsHavingThumbnail">Option \'%1$s\' kann nicht deaktiviert werden, wenn Android-Exif-Extended verwendet wird. Wird wieder eingeschaltet.</string>
+    <string name="pref_categ_exiv2_settings">Exiv2-Einstellungen</string>
+    <string name="pref_exiv2SkipOnLogLevel_title">Überspringen ab Exiv2-Fehlerlevel</string>
+    <string name="pref_categ_libexif_settings">libexif-Einstellungen</string>
+    <string name="pref_libexifSkipOnError_title">Überspringen bei libexif-Fehler</string>
+    <string name="pref_libexifSkipOnError_summary">Bild überspringen, wenn libexif einen Fehler meldet</string>
+    <string name="pref_categ_extra">Extra</string>
+    <string name="pref_excludedSecVolPrefix_title">Präfix für ausgeschlossenen Ordner</string>
+    <string name="pref_excludedSecVolPrefix_dialogMessage"><![CDATA[Es ist möglich, einen Unterordner anzugeben, der von der Verarbeitung ausgeschlossen werden soll. Dieser Wert wird der Volume-ID vorangestellt, um ein auszuschließendes Verzeichnis namens \'<prefix><volId>\' zu bilden. Zum Beispiel \'copy_of_XXXX-XXXX\'.\nDie Volume-ID des Speichers (typischerweise einer SD-Karte) findest du in der Liste der zu verarbeitenden Ordner in der Form XXXX-XXXX.]]></string>
+    <string name="pref_excludedSecVolPrefix_defaultValue">Kopie_von_</string>
+    <string name="pref_categ_debug">Debug-Optionen</string>
+    <string name="pref_useSAF_title">\"Storage Access Framework\" verwenden</string>
+    <string name="pref_useSAF_summary">AN=\'SAF verwenden\' ; AUS=\'Dateien verwenden\'</string>
+    <!-- Sync Activity -->
+    <string name="sync_text_description"><![CDATA[Löschungen in Quellordnern mit Dateien im Sicherungs- und Arbeitsverzeichnis synchronisieren]]></string>
+    <string name="sync_button_del_files">Löschen</string>
+    <string name="sync_button_list_files">Auflisten</string>
+    <string name="sync_log_checking">Überprüfung: %1$s</string>
+    <string name="sync_log_failure_to_delete_file">Löschen der Datei fehlgeschlagen</string>
+    <string name="sync_log_files_to_remove">Zu entfernende Dateien (nicht mehr in der Quelle):</string>
+</resources>
