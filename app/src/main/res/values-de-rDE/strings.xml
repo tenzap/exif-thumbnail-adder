@@ -83,17 +83,17 @@
     <string name="frag1_log_done">\u00A0Fertig</string>
     <string name="frag1_log_overwrite_not_allowed">\u00A0Überschreiben des Bildes im Zielverzeichnis nicht gestattet (siehe Einstellungen). Zieldatei bereits vorhanden. Überspringen.</string>
     <string name="frag1_log_cannot_move_to_backup">\u00A0Bild kann nicht gesichert werden. Datei bereit vorhanden. Überspringen.</string>
-    <string name="frag1_log_ok">\u00A0OK</string>
+    <string name="frag1_log_ok" comment="frag1_log_ok (Used in the app to indicate that a check was successful (mainly permission checks). OK/KO can also be seen as &quot;Success/Failure&quot;)">\u00A0OK</string>
     <string name="frag1_log_not_granted">\u00A0Nicht genehmigt. Bitte den Ordner in den Einstellungen erneut hinzufügen.</string>
-    <string name="frag1_log_ko">\u00A0KO</string>
-    <string name="frag1_log_could_not_copy_timestamp_and_attr">Zeitstempel und Attribute der Datei konnten nicht kopiert werden: %1$s</string>
+    <string name="frag1_log_ko" comment="frag1_log_ko (KO is the contrary of OK. Used in the app to indicate that a check failed (mainly permission checks). OK/KO can also be seen as &quot;Success/Failure&quot;)">\u00A0KO</string>
+    <string name="frag1_log_could_not_copy_timestamp_and_attr" comment="frag1_log_could_not_copy_timestamp_and_attr&#10;&#10;&amp;quot;%1$s&amp;quot; is the error message reported by the program">Zeitstempel und Attribute der Datei konnten nicht kopiert werden: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">Zeitstempel und Attribute der Datei konnten nicht gespeichert werden: %1$s</string>
     <string name="frag1_log_error_moving_doc">FEHLER beim Verschieben des Dokuments: %1$s</string>
     <string name="frag1_log_error_copying_doc">FEHLER beim Kopieren des Dokuments: %1$s</string>
     <string name="frag1_log_count_files_to_process">%1$d zu verarbeitende Datei(en).</string>
     <string name="frag1_log_error">Fehler: %1$s</string>
     <!-- Settings -->
-    <string name="settings_dialog_all_files_access_not_supported">Dein Gerät unterstützt keinen Zugriff auf alle Dateien</string>
+    <string name="settings_dialog_all_files_access_not_supported" comment="settings_dialog_all_files_access_not_supported&#10;&#10;&quot;All files access&quot; is the name of a feature in Android">Dein Gerät unterstützt keinen Zugriff auf alle Dateien</string>
     <string name="settings_button_remove_all_dirs">Alle Ordner entfernen</string>
     <string name="settings_button_add_dir">Hinzufügen</string>
     <string name="pref_categ_folders">Ordner</string>
@@ -133,7 +133,7 @@
     <string name="pref_excludedSecVolPrefix_defaultValue">Kopie_von_</string>
     <string name="pref_categ_debug">Debug-Optionen</string>
     <string name="pref_useSAF_title">\"Storage Access Framework\" verwenden</string>
-    <string name="pref_useSAF_summary">AN=\'SAF verwenden\' ; AUS=\'Dateien verwenden\'</string>
+    <string name="pref_useSAF_summary" comment="pref_useSAF_summary&#10;&#10;SAF = Storage Access Framework&#10;Files = Don't use Storage Access Framework but direct File access through &quot;Files&quot; classes">AN=\'SAF verwenden\' ; AUS=\'Dateien verwenden\'</string>
     <!-- Sync Activity -->
     <string name="sync_text_description"><![CDATA[Löschungen in Quellordnern mit Dateien im Sicherungs- und Arbeitsverzeichnis synchronisieren]]></string>
     <string name="sync_button_del_files">Löschen</string>
