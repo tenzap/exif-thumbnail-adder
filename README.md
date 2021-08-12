@@ -6,7 +6,7 @@ It is designed to work from android Oreo (android 8, SDK 26) and was tested on r
 
 Please report issues here: [https://github.com/tenzap/exif-thumbnail-adder/issues](https://github.com/tenzap/exif-thumbnail-adder/issues).
 
-For more information, some know facts and how you may contribute, refer to the [project homepage](https://github.com/tenzap/exif-thumbnail-adder).
+For more information, some known facts and how you may contribute, refer to the [project homepage](https://github.com/tenzap/exif-thumbnail-adder).
 
 
 ## Rationale
@@ -29,9 +29,9 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 - Settings:
     - Rotate the thumbnail
     - Replace existing thumbnail
-    - Backup of original pictures (backup is never overwritten by the app once created if you choose to add the thumbnail to the input file in it initial location)
+    - Backup of original pictures (backup is never overwritten by the app once created if you choose to add the thumbnail to the input file in its initial location)
     - Skip pictures having malformed metadata (this can be disabled to process also files having corrupt tags)
-    - Replace picture inplace or write new picture to another directory
+    - Replace picture in place or write new picture to another directory
 
 
 ## Requested permissions

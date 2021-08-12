@@ -4,7 +4,7 @@ It is designed to work from android Oreo (android 8, SDK 26) and was tested on r
 
 Please report issues here: <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnail-adder/issues</a>
 
-For more information, some know facts and how you may contribute, refer to the [project homepage][1].
+For more information, some known facts and how you may contribute, refer to the [project homepage][1].
 
 <b>Rationale</b>
 
@@ -26,9 +26,9 @@ On my phone (Xiaomi Redmi Note 9S), when wanting to import my pictures to Window
 - Settings: 
 &emsp;- Rotate the thumbnail
 &emsp;- Replace existing thumbnail
-&emsp;- Backup of original pictures (backup is never overwritten by the app once created if you choose to add the thumbnail to the input file in it initial location)
+&emsp;- Backup of original pictures (backup is never overwritten by the app once created if you choose to add the thumbnail to the input file in its initial location)
 &emsp;- Skip pictures having malformed metadata (this can be disabled to process also files having corrupt tags)
-&emsp;- Replace picture inplace or write new picture to another directory
+&emsp;- Replace picture in place or write new picture to another directory
 
 <b>Requested permissions</b>
 

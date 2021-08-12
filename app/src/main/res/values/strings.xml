@@ -36,11 +36,11 @@
     By default it is named \'ThumbAdder\' (this can be changed in the settings).\n
     For this to work, the directory has to exist and it must be permitted to read &amp; write.
     This can be achieved only if you give the application the permission.
-    The button bellow will help you to do this easily.\n
+    The button below will help you to do this easily.\n
     \n
     Once you click the button some screens will appear and ask you to give access.
     All you have to do is confirm every step.\n
-    1. You are asked to confirm the directory name and the directory where it is created
+    1. You are asked to confirm the directory name and the location where it is created
     (keep default value)\n
     2. You give permanent read &amp; write access to the working directory.\n
     \n
