@@ -87,17 +87,17 @@
     <string name="frag1_log_done">\u00A0Fait</string>
     <string name="frag1_log_overwrite_not_allowed">\u00A0Ecraser l\'image dans le répertoire de destination n\'est pas permis (cf paramètres). Le fichier cible existe. Saute.</string>
     <string name="frag1_log_cannot_move_to_backup">\u00A0Ne peut déplacer l\'image dans la sauvegarde. Le fichier existe. Saute.</string>
-    <string name="frag1_log_ok">\u00A0OK</string>
+    <string name="frag1_log_ok" comment="frag1_log_ok (Used in the app to indicate that a check was successful (mainly permission checks). OK/KO can also be seen as &quot;Success/Failure&quot;)">\u00A0OK</string>
     <string name="frag1_log_not_granted">\u00A0Non accordée. Veuillez à nouveau ajouter le dossier dans les paramètres.</string>
-    <string name="frag1_log_ko">\u00A0KO</string>
-    <string name="frag1_log_could_not_copy_timestamp_and_attr">N\'a pu copier l\'horodatage et les attributs de fichier: %1$s</string>
+    <string name="frag1_log_ko" comment="frag1_log_ko (KO is the contrary of OK. Used in the app to indicate that a check failed (mainly permission checks). OK/KO can also be seen as &quot;Success/Failure&quot;)">\u00A0KO</string>
+    <string name="frag1_log_could_not_copy_timestamp_and_attr" comment="frag1_log_could_not_copy_timestamp_and_attr&#10;&#10;&amp;quot;%1$s&amp;quot; is the error message reported by the program">N\'a pu copier l\'horodatage et les attributs de fichier: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">N\'a pu sauver l\'horodatage et les attributs de fichier: %1$s</string>
     <string name="frag1_log_error_moving_doc">ERREUR dans le déplacement du document: %1$s</string>
     <string name="frag1_log_error_copying_doc">ERREUR dans la copie du document: %1$s</string>
     <string name="frag1_log_count_files_to_process">%1$d fichier(s) à traiter.</string>
     <string name="frag1_log_error">ERREUR: %1$s</string>
     <!-- Settings -->
-    <string name="settings_dialog_all_files_access_not_supported">Votre appareil ne prend pas en charge l\'accès à tous les fichiers</string>
+    <string name="settings_dialog_all_files_access_not_supported" comment="settings_dialog_all_files_access_not_supported&#10;&#10;&quot;All files access&quot; is the name of a feature in Android">Votre appareil ne prend pas en charge l\'accès à tous les fichiers</string>
     <string name="settings_button_remove_all_dirs">Supprimer tous les dossiers</string>
     <string name="settings_button_add_dir">Ajouter</string>
     <string name="pref_categ_folders">Dossiers</string>
@@ -146,7 +146,7 @@
     <string name="pref_excludedSecVolPrefix_defaultValue">copie_de_</string>
     <string name="pref_categ_debug">Options de débogage</string>
     <string name="pref_useSAF_title">utiliser le \"Storage Access Framework\"</string>
-    <string name="pref_useSAF_summary">ON=\'utiliser SAF\' ; OFF=\'utiliser Files\'</string>
+    <string name="pref_useSAF_summary" comment="pref_useSAF_summary&#10;&#10;SAF = Storage Access Framework&#10;Files = Don't use Storage Access Framework but direct File access through &quot;Files&quot; classes">ON=\'utiliser SAF\' ; OFF=\'utiliser Files\'</string>
     <!-- Sync Activity -->
     <string name="sync_text_description"><![CDATA[Synchronise les suppressions de fichiers du dossier source vers le répertoire de sauvegarde et de travail]]></string>
     <string name="sync_button_del_files">Supprimer</string>
