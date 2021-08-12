@@ -1,0 +1,58 @@
+Diese Anwendung für Android-Geräte sucht nach Bildern (JPEG) auf deinem Gerät und <b>ergänzt ein Miniaturbild</b>, falls sie noch keines haben. Die Miniaturbilder werden den EXIF-Metadaten hinzugefügt.
+
+Ausgelegt, um ab Android Oreo (Android 8, SDK 26) zu funktionieren, wurde sie auf einem reellen Gerät, auf dem Android 10 läuft, sowie virtuellen Geräten mit Android 8 und 11 getestet.
+
+Bitte melde Probleme hier: <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnail-adder/issues</a>
+
+Weitere Informationen, einige bekannte Fakten und Möglichkeiten zur Mitarbeit findest du auf der [project homepage][1].
+
+<b>Erklärung</b>
+
+Wenn ich meine Bilder in Windows (oder jedes andere Gerät/Betriebssystem mit MTP- oder PTP-Protokoll) importieren wollte, bemerkte ich bei meinem Telefon (Xiaomi Redmi Note 9S), dass die Bilder im Importassistenten (der Photos-App oder der Funktion des Windows Explorer) kein Minibild anzeigen. Der Grund dafür ist, dass mein Telefon den Bildern, die ich mit meiner Kamera aufnahm, kein Miniaturbild hinzufügte.
+
+<b>Funktionen</b>
+
+- Minibild bei Bildern (JPEG) ergänzen, die noch keines haben
+- Bestmögliche Ergebnisse durch den Lanczos-Algorithmus zum Downsampling der Bilder dank [FFmpeg's swscale library][2].
+- Auswahl einzelner oder mehrerer zu durchsuchender Ordner in jedem Speicher (intern, SD-Karte...). Zum Beispiel DCIM, Pictures ...
+- Einzelne Unterverzeichnisse in ausgewählten Verzeichnissen ausschließen
+- Zeitstempel der Bilder erhalten
+- Verarbeitungsprotokoll
+- Im Quellverzeichnis gelöschte Dateien mit dem Sicherungs- und Arbeitsverzeichnis synchronisieren (damit du in der Sicherung keine Bilder aufhebst, die du im Quellordner nicht mehr hast)
+- Zurückhaltende Standardoptionen (Bilder sichern, beschädigte Dateien überspringen)
+- Installation der App im internen oder externen Speicher
+- Vorgegebene EXIF-Bibliothek: [Exiv2][3].
+- Alternative Bibliotheken: Android-Exif-Extended (vorinstalliert), libexif (vorinstalliert), pixymeta-android (manuelle Kompilation aus der Quelle nötig). Sieh dir die bekannten Fakten auf der Projektseite an, um mehr über die Vor- und Nachteile jeder Bibliothek zu erfahren.
+- Ausstattung: 
+&emsp;- Minibild drehen
+&emsp;- Vorhandenes Minibild ersetzen
+&emsp;- Sicherung der Originalbilder (die Sicherung wird, sobald sie erstellt wurde, niemals durch die App überschrieben, falls du dich entscheidest, der eingelesenen Datei an ihrem Ursprungsort ein Minibild hinzuzufügen)
+&emsp;- Bilder mit fehlerhaften Metadaten überspringen (dies kann deaktiviert werden, um auch Dateien mit beschädigten Tags zu verarbeiten)
+&emsp;- Bild an Ort und Stelle ersetzen oder als neues Bild in ein anderes Verzeichnis schreiben
+
+<b>Geforderte Berechtigungen</b>
+
+- <i>READ_EXTERNAL_STORAGE</i> und <i>WRITE_EXTERNAL_STORAGE</i>
+&emsp;- um die Zeitstempel der Bilder zu erhalten
+- <i>MANAGE_EXTERNAL_STORAGE</i>
+&emsp;- nur beim <i>standard</i>-Flavor gefordert, der auf F-Droid für Geräte ausgeliefert wird, auf denen Android 11 oder höher läuft, um den Zeitstempel der Bilder zu erhalten
+- Weitere Einzelheiten dazu auf der Homepage des Projekts
+
+<b>Installation</b>
+
+- Voraussetzungen: mindestens Android Oreo (android 8, SDK 26). Die App wurde bis Android 11 getestet.
+- Download über die F-Droid-App [here][4]
+- APK-Download von der [release page][5]
+
+<b>Lizenz</b>
+
+GPL-3.0 (siehe Datei "COPYING" auf der Projekt-Homepage)
+
+<b>URLs</b>
+
+- [1]: <a href="https://github.com/tenzap/exif-thumbnail-adder">https://github.com/tenzap/exif-thumbnail-adder</a>
+- [2]: <a href="https://ffmpeg.org/libswscale.html">https://ffmpeg.org/libswscale.html</a>
+- [3]: <a href="https://www.exiv2.org">https://www.exiv2.org</a>
+- [4]: <a href="https://f-droid.org/packages/com.exifthumbnailadder.app">https://f-droid.org/packages/com.exifthumbnailadder.app</a>
+- [5]: <a href="https://github.com/tenzap/exif-thumbnail-adder/releases">https://github.com/tenzap/exif-thumbnail-adder/releases</a>
+
