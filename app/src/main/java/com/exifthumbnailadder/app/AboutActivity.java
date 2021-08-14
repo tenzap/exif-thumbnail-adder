@@ -68,6 +68,7 @@ public class AboutActivity extends AppCompatActivity {
         text.append("<u><strong>" + getString(R.string.about_authors) + "</strong></u> tenzap (@github)");
         text.append("</p><p>");
         text.append("<u><strong>" + getString(R.string.about_translations) + "</strong></u>");
+        text.append("<br>⋅ " + new Locale("de").getDisplayName() + ": franconian (@crowdin)");
         text.append("<br>⋅ " + new Locale("en").getDisplayName() + ": tenzap (@github)");
         text.append("<br>⋅ " + new Locale("fr").getDisplayName() + ": tenzap (@github)");
         text.append("<br>⋅ " + new Locale("vi").getDisplayName() + ": bruhwut (@crowdin)");

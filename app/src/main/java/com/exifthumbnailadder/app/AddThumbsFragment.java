@@ -363,24 +363,24 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                     if  (prefs.getBoolean("useSAF", true) && continueWithoutWriteExternalStoragePermission) {
                         updateUiLog(Html.fromHtml("<span style='color:blue'>"+getString(R.string.frag1_continue_without_timestamps)+"</span><br>", 1));
                     } else if (!hasWriteExternalStorage()) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_ko)+"</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
                         setIsProcessFalse(view);
                         stopProcessing = false;
                         return;
                     } else {
-                        updateUiLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_ok) + "</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_successful) + "</span><br>", 1));
                     }
                 }
 
                 {
                     updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
                     if (!WorkingDirPermActivity.isWorkingDirPermOk(getContext())) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_ko)+"</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
                         setIsProcessFalse(view);
                         stopProcessing = false;
                         return;
                     }
-                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
+                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
                 }
 
                 InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
@@ -409,7 +409,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                         updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
                         continue;
                     }
-                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
+                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
 
                     // 1. build list of files to process
                     TreeSet<Object> docs = (TreeSet<Object>) etaSrcDir.getDocsSet();
