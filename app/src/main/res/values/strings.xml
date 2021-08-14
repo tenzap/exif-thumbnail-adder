@@ -91,9 +91,9 @@
     <string name="frag1_log_done">\u00A0Done</string>
     <string name="frag1_log_overwrite_not_allowed">\u00A0Overwriting picture in destination dir not allowed (see settings). Destination file exists. Skipping.</string>
     <string name="frag1_log_cannot_move_to_backup">\u00A0Cannot move picture to backup. File exists. Skipping.</string>
-    <string name="frag1_log_successful">\\u00A0Successful</string>
+    <string name="frag1_log_successful">\u00A0Successful</string>
     <string name="frag1_log_not_granted">\u00A0Not granted. Please add the folder again in Settings.</string>
-    <string name="frag1_log_unsuccessful">\\u00A0Failed</string>
+    <string name="frag1_log_unsuccessful">\u00A0Failed</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr">Could not copy file timestamps &amp; attributes: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">Could not store file timestamps &amp; attributes: %1$s</string>
     <string name="frag1_log_error_moving_doc">ERROR moving document: %1$s</string>
