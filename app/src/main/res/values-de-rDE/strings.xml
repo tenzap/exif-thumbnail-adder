@@ -83,9 +83,9 @@
     <string name="frag1_log_done">\u00A0Fertig</string>
     <string name="frag1_log_overwrite_not_allowed">\u00A0Überschreiben des Bildes im Zielverzeichnis nicht gestattet (siehe Einstellungen). Zieldatei bereits vorhanden. Überspringen.</string>
     <string name="frag1_log_cannot_move_to_backup">\u00A0Bild kann nicht gesichert werden. Datei bereit vorhanden. Überspringen.</string>
-    <string name="frag1_log_ok" comment="frag1_log_ok">\u00A0erfolgreich</string>
+    <string name="frag1_log_ok">\u00A0erfolgreich</string>
     <string name="frag1_log_not_granted">\u00A0Nicht genehmigt. Bitte den Ordner in den Einstellungen erneut hinzufügen.</string>
-    <string name="frag1_log_ko" comment="frag1_log_ko">\u00A0gescheitert</string>
+    <string name="frag1_log_ko">\u00A0gescheitert</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr" comment="frag1_log_could_not_copy_timestamp_and_attr&#10;&#10;&amp;quot;%1$s&amp;quot; is the error message reported by the program">Zeitstempel und Attribute der Datei konnten nicht kopiert werden: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">Zeitstempel und Attribute der Datei konnten nicht gespeichert werden: %1$s</string>
     <string name="frag1_log_error_moving_doc">FEHLER beim Verschieben des Dokuments: %1$s</string>
