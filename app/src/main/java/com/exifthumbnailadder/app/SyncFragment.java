@@ -161,12 +161,12 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
                 {
                     updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
                     if (!WorkingDirPermActivity.isWorkingDirPermOk(getContext())) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_ko)+"</span><br>", 1));
+                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
                         setIsProcessFalse();
                         stopProcessing = false;
                         return;
                     }
-                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
+                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
                 }
 
                 InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
@@ -196,7 +196,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
                         updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
                         continue;
                     }
-                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_ok)+"</span><br>", 1));
+                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
 
 
                     ETADoc etaDocSrc = null;

@@ -83,9 +83,9 @@
     <string name="frag1_log_done">\u00A0完成</string>
     <string name="frag1_log_overwrite_not_allowed">\u00A0覆盖目标目录中的图片不被允许 (见设置)。目标文件存在。跳过。</string>
     <string name="frag1_log_cannot_move_to_backup">\u00A0无法将图片移动到备份。文件存在。跳过。</string>
-    <string name="frag1_log_ok">\u00A0成功</string>
+    <string name="frag1_log_successful">\u00A0成功</string>
     <string name="frag1_log_not_granted">\u00A0未授予。请在设置中再次添加文件夹。</string>
-    <string name="frag1_log_ko">\u00A0KO</string>
+    <string name="frag1_log_unsuccessful">\u00A0KO</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr">无法复制文件时间戳 &amp; 属性: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">无法存储文件时间戳 &amp; 属性： %1$s</string>
     <string name="frag1_log_error_moving_doc">移动文档时出错： %1$s</string>
