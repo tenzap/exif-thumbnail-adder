@@ -87,9 +87,9 @@
     <string name="frag1_log_done">\u00A0Fait</string>
     <string name="frag1_log_overwrite_not_allowed">\u00A0Ecraser l\'image dans le répertoire de destination n\'est pas permis (cf paramètres). Le fichier cible existe. Saute.</string>
     <string name="frag1_log_cannot_move_to_backup">\u00A0Ne peut déplacer l\'image dans la sauvegarde. Le fichier existe. Saute.</string>
-    <string name="frag1_log_ok" comment="frag1_log_ok (Used in the app to indicate that a check was successful (mainly permission checks). OK/KO can also be seen as &quot;Success/Failure&quot;)">\u00A0OK</string>
+    <string name="frag1_log_ok" comment="frag1_log_ok">\u00A0OK</string>
     <string name="frag1_log_not_granted">\u00A0Non accordée. Veuillez à nouveau ajouter le dossier dans les paramètres.</string>
-    <string name="frag1_log_ko" comment="frag1_log_ko (KO is the contrary of OK. Used in the app to indicate that a check failed (mainly permission checks). OK/KO can also be seen as &quot;Success/Failure&quot;)">\u00A0KO</string>
+    <string name="frag1_log_ko" comment="frag1_log_ko">\u00A0KO</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr" comment="frag1_log_could_not_copy_timestamp_and_attr&#10;&#10;&amp;quot;%1$s&amp;quot; is the error message reported by the program">N\'a pu copier l\'horodatage et les attributs de fichier: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">N\'a pu sauver l\'horodatage et les attributs de fichier: %1$s</string>
     <string name="frag1_log_error_moving_doc">ERREUR dans le déplacement du document: %1$s</string>
