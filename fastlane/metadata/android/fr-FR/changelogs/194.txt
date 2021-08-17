@@ -1,0 +1,2 @@
+- ajout de la traduction en allemand (merci à franconian)
+- rappel: app traduisible sur crowdin https://crowdin.com/project/exif-thumbnail-adder
