@@ -165,7 +165,7 @@ public class ExampleInstrumentedTest {
                 allow = resources.getString(resId);
                 resId = resources.getIdentifier("open_tree_button", "string", documentsUiPackageName);
                 allowAccessTo = resources.getString(resId);
-                allowAccessTo = allowAccessTo.replaceFirst(".%1\\$s.", ""); //remove "%1$s"
+                allowAccessTo = allowAccessTo.replaceFirst(".%1\\$s..*", ""); //remove "%1$s"
 
             } else {
                 resId = resources.getIdentifier("button_select", "string", documentsUiPackageName);
