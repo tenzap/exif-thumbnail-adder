@@ -31,6 +31,16 @@ Submit a new Beta Build to Crashlytics Beta
 fastlane android deploy
 ```
 Deploy a new version to the Google Play
+### android build_signed_apk_standard_release
+```
+fastlane android build_signed_apk_standard_release
+```
+Build signed APK (flavor: standard ; type: Release)
+### android build_amazon_apk
+```
+fastlane android build_amazon_apk
+```
+Build amazon app store APK
 ### android build_for_screengrab
 ```
 fastlane android build_for_screengrab
