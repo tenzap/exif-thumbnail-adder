@@ -33,8 +33,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,15 +51,11 @@ import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 
 import java.io.File;
 import java.io.FilenameFilter;
-
-import static com.exifthumbnailadder.app.MainApplication.enableLog;
-import static com.exifthumbnailadder.app.MainApplication.TAG;
 
 public class AddThumbsFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -177,7 +171,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
             }
         };
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        LogLiveData.get().observe(getViewLifecycleOwner(), ETAObserver);
+        AddThumbsLogLiveData.get().observe(getViewLifecycleOwner(), ETAObserver);
 
     }
 
@@ -198,7 +192,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         }
 
         getActivity().setTitle(R.string.action_add_thumbs);
-        textViewLog.setText(LogLiveData.get().getValue());
+        textViewLog.setText(AddThumbsLogLiveData.get().getValue());
         AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
         scrollDown();
     }
@@ -323,34 +317,34 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         new Thread(new Runnable() {
             @Override
             public void run() {
-                LogLiveData.get().clear();
-                LogLiveData.get().appendLog(getString(R.string.frag1_log_starting));
+                AddThumbsLogLiveData.get().clear();
+                AddThumbsLogLiveData.get().appendLog(getString(R.string.frag1_log_starting));
 
                 if (!prefs.getBoolean("useSAF", true) || BuildConfig.FLAVOR.equals("google_play")
                         || BuildConfig.FLAVOR.equals("standard") && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
                 {
-                    LogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_check_write_perm), 1));
+                    AddThumbsLogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_check_write_perm), 1));
                     if  (prefs.getBoolean("useSAF", true) && continueWithoutWriteExternalStoragePermission) {
-                        LogLiveData.get().appendLog(Html.fromHtml("<span style='color:blue'>"+getString(R.string.frag1_continue_without_timestamps)+"</span><br>", 1));
+                        AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:blue'>"+getString(R.string.frag1_continue_without_timestamps)+"</span><br>", 1));
                     } else if (!hasWriteExternalStorage()) {
-                        LogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
+                        AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
                         setIsProcessFalse(view);
                         stopProcessing = false;
                         return;
                     } else {
-                        LogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_successful) + "</span><br>", 1));
+                        AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_successful) + "</span><br>", 1));
                     }
                 }
 
                 {
-                    LogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
+                    AddThumbsLogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
                     if (!WorkingDirPermActivity.isWorkingDirPermOk(getContext())) {
-                        LogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
+                        AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
                         setIsProcessFalse(view);
                         stopProcessing = false;
                         return;
                     }
-                    LogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+                    AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
                 }
 
                 getContext().startForegroundService(ETAServiceIntent);

@@ -33,8 +33,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -121,7 +119,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
             }
         };
         // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
-        LogLiveDataSync.get().observe(getViewLifecycleOwner(), ETAObserver);
+        SyncLogLiveData.get().observe(getViewLifecycleOwner(), ETAObserver);
 
     }
 
@@ -135,7 +133,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.action_sync);
-        textViewLog.setText(LogLiveDataSync.get().getValue());
+        textViewLog.setText(SyncLogLiveData.get().getValue());
         AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
         scrollDown();
     }
@@ -180,18 +178,18 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
         new Thread(new Runnable() {
             @Override
             public void run() {
-                LogLiveDataSync.get().clear();
-                LogLiveDataSync.get().appendLog(getString(R.string.frag1_log_starting));
+                SyncLogLiveData.get().clear();
+                SyncLogLiveData.get().appendLog(getString(R.string.frag1_log_starting));
 
                 {
-                    LogLiveDataSync.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
+                    SyncLogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
                     if (!WorkingDirPermActivity.isWorkingDirPermOk(getContext())) {
-                        LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
+                        SyncLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
                         setIsProcessFalse();
                         stopProcessing = false;
                         return;
                     }
-                    LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+                    SyncLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
                 }
 
                 InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
@@ -212,16 +210,16 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
                     }
                     if (etaSrcDir == null) throw new UnsupportedOperationException();
 
-                    LogLiveDataSync.get().appendLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, etaSrcDir.getFSPath()) + "</b></u><br>",1));
+                    SyncLogLiveData.get().appendLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, etaSrcDir.getFSPath()) + "</b></u><br>",1));
 
                     // Check permission in case we use SAF...
                     // If we don't have permission, continue to next srcDir
-                    LogLiveDataSync.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
+                    SyncLogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
                     if (! etaSrcDir.isPermOk()) {
-                        LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
+                        SyncLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
                         continue;
                     }
-                    LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+                    SyncLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
 
 
                     ETADoc etaDocSrc = null;
@@ -248,7 +246,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
 
                     // Process outputUri
                     if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("writeThumbnailedToOriginalFolder", false)) {
-                        LogLiveDataSync.get().appendLog(Html.fromHtml("<br>",1));
+                        SyncLogLiveData.get().appendLog(Html.fromHtml("<br>",1));
                         ETASrcDir etaSrcDirDest = null;
                         if (etaDocSrc instanceof ETADocDf) {
                             etaSrcDirDest = new ETASrcDirUri(
@@ -263,7 +261,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
                     }
                 }
 
-                LogLiveDataSync.get().appendLog(getString(R.string.frag1_log_finished));
+                SyncLogLiveData.get().appendLog(getString(R.string.frag1_log_finished));
 
                 setIsProcessFalse();
             }
@@ -274,9 +272,9 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
 
         TreeSet<Object> docsInWorkingDir = (TreeSet<Object>)workingDirDocs.getDocsSet();
 
-        LogLiveDataSync.get().appendLog(getString(R.string.sync_log_checking, workingDirDocs.getFSPathWithoutRoot()));
-        LogLiveDataSync.get().appendLog("\n");
-        LogLiveDataSync.get().appendLog(Html.fromHtml("<u>" + getString(R.string.sync_log_files_to_remove) + "</u><br>",1));
+        SyncLogLiveData.get().appendLog(getString(R.string.sync_log_checking, workingDirDocs.getFSPathWithoutRoot()));
+        SyncLogLiveData.get().appendLog("\n");
+        SyncLogLiveData.get().appendLog(Html.fromHtml("<u>" + getString(R.string.sync_log_files_to_remove) + "</u><br>",1));
 
         for (Object _doc : docsInWorkingDir) {
 
@@ -292,7 +290,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
             if (stopProcessing) {
                 setIsProcessFalse();
                 stopProcessing = false;
-                LogLiveDataSync.get().appendLog(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
+                SyncLogLiveData.get().appendLog(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
                 return;
             }
 
@@ -313,22 +311,22 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
                     srcFileExists = srcFile.exists();
                 }
             } catch (Exception e) {
-                LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
+                SyncLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
                 e.printStackTrace();
                 continue;
             }
 
             // Delete file if it doesn't exist in source directory
             if (!srcFileExists) {
-                LogLiveDataSync.get().appendLog("⋅ " + doc.getDPath() + "... ");
+                SyncLogLiveData.get().appendLog("⋅ " + doc.getDPath() + "... ");
                 if (!dryRun) {
                     boolean deleted = doc.delete();
                     if (deleted)
-                        LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_done)+"</span>",1));
+                        SyncLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_done)+"</span>",1));
                     else
-                        LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.sync_log_failure_to_delete_file)+"</span>",1));
+                        SyncLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.sync_log_failure_to_delete_file)+"</span>",1));
                 }
-                LogLiveDataSync.get().appendLog(Html.fromHtml("<br>",1));
+                SyncLogLiveData.get().appendLog(Html.fromHtml("<br>",1));
             }
         }
     }

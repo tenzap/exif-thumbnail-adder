@@ -154,12 +154,12 @@ public class ETAService extends Service {
 
     public void sendResult(String message) {
         updateNotification(message);
-        LogLiveData.get().appendLog(message);
+        AddThumbsLogLiveData.get().appendLog(message);
     }
 
     public void sendResult(Spanned message) {
         updateNotification(message.toString());
-        LogLiveData.get().appendLog(message);
+        AddThumbsLogLiveData.get().appendLog(message);
     }
 
     public void sendFinished() {

@@ -10,19 +10,19 @@ import androidx.lifecycle.LiveData;
 import static com.exifthumbnailadder.app.MainApplication.TAG;
 import static com.exifthumbnailadder.app.MainApplication.enableLog;
 
-public class LogLiveData extends LiveData<SpannableStringBuilder> {
-    private static LogLiveData sInstance;
+public class AddThumbsLogLiveData extends LiveData<SpannableStringBuilder> {
+    private static AddThumbsLogLiveData sInstance;
     private final static SpannableStringBuilder log = new SpannableStringBuilder("");
 
     @MainThread
-    public static LogLiveData get() {
+    public static AddThumbsLogLiveData get() {
         if (sInstance == null) {
-            sInstance = new LogLiveData();
+            sInstance = new AddThumbsLogLiveData();
         }
         return sInstance;
     }
 
-    private LogLiveData() {
+    private AddThumbsLogLiveData() {
     }
 
     public void appendLog(String text) {
