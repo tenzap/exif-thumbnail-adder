@@ -112,7 +112,7 @@ public class AddThumbsService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Notification ID cannot be 0.
-        startForeground(NOTIFICATION_ID, getMyActivityNotification("Service started successfully"));
+        startForeground(NOTIFICATION_ID, getMyActivityNotification(""));
 
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
@@ -166,8 +166,8 @@ public class AddThumbsService extends Service {
                 PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "channel_name";
-            String description = "channel_description";
+            CharSequence name = getText(R.string.frag1_text_processing_log);
+            String description = getText(R.string.frag1_text_processing_log).toString();
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
@@ -179,12 +179,12 @@ public class AddThumbsService extends Service {
 
         Notification notification =
                 new Notification.Builder(this , CHANNEL_ID)
-                        .setContentTitle("Processing 'Add thumbnails'")
+                        .setContentTitle(getString(R.string.frag1_log_processing_dir, "'" + getString(R.string.action_add_thumbs) + "'"))
                         .setContentText(text)
                         .setOnlyAlertOnce(true)
                         .setSmallIcon(R.drawable.ic_notif_status_bar)
                         .setContentIntent(pendingIntent)
-                        .setTicker("ticker_text")
+                        .setTicker(getText(R.string.frag1_text_processing_log))
                         .build();
 
         return notification;
