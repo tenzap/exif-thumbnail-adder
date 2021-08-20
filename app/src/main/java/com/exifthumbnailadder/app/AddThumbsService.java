@@ -63,7 +63,7 @@ import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-public class ETAService extends Service {
+public class AddThumbsService extends Service {
 
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
@@ -95,7 +95,7 @@ public class ETAService extends Service {
         }
     }
 
-    public ETAService() {
+    public AddThumbsService() {
     }
 
 
@@ -898,7 +898,7 @@ public class ETAService extends Service {
      * This is the method that can be called to update the Notification
      */
     private void updateNotification(String text){
-        if (ServiceUtil.isServiceRunning(getApplicationContext(), ETAService.class)) {
+        if (ServiceUtil.isServiceRunning(getApplicationContext(), AddThumbsService.class)) {
             Notification notification = getMyActivityNotification(text);
 
             NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

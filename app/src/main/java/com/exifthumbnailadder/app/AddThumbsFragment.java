@@ -72,7 +72,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
 
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
-        ETAServiceIntent = new Intent(getContext(), ETAService.class);
+        ETAServiceIntent = new Intent(getContext(), AddThumbsService.class);
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -185,7 +185,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
     public void onResume() {
         super.onResume();
 
-        if (ServiceUtil.isServiceRunning(getContext(), ETAService.class)) {
+        if (ServiceUtil.isServiceRunning(getContext(), AddThumbsService.class)) {
             displayStopButton();
         } else {
             displayStartButton();
