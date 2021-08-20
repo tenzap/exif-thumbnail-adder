@@ -114,6 +114,8 @@ public class AddThumbsService extends Service {
         // Notification ID cannot be 0.
         startForeground(NOTIFICATION_ID, getMyActivityNotification(""));
 
+        LastServiceLiveData.get().setLastService(this.getClass().getName());
+
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
         Message msg = serviceHandler.obtainMessage();
