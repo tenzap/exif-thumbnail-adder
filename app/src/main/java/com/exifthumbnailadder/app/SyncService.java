@@ -8,7 +8,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -17,60 +16,27 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.text.Html;
 import android.text.Spanned;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.documentfile.provider.DocumentFile;
-import androidx.exifinterface.media.ExifInterface;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 
-import com.exifthumbnailadder.app.exception.BadOriginalImageException;
-import com.exifthumbnailadder.app.exception.CopyAttributesFailedException;
-import com.exifthumbnailadder.app.exception.DestinationFileExistsException;
-import com.exifthumbnailadder.app.exception.Exiv2ErrorException;
-import com.exifthumbnailadder.app.exception.Exiv2WarnException;
-import com.exifthumbnailadder.app.exception.LibexifException;
-
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.AtomicMoveNotSupportedException;
-import java.nio.file.FileAlreadyExistsException;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributeView;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.UserPrincipal;
-import java.util.Set;
 import java.util.TreeSet;
 
-import it.sephiroth.android.library.exif2.IfdId;
-import it.sephiroth.android.library.exif2.Rational;
-
-import static com.exifthumbnailadder.app.MainApplication.TAG;
-import static com.exifthumbnailadder.app.MainApplication.enableLog;
-import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
-import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-
 public class SyncService extends Service {
-
-    private Looper serviceLooper;
-    private SyncService.ServiceHandler serviceHandler;
-    LocalBroadcastManager broadcaster;
-    boolean stopProcessing = false;
-    boolean dryRun;
     private final static int NOTIFICATION_ID = 99999;
     private final static String CHANNEL_ID = "1";
+
+    private Looper serviceLooper;
+    private ServiceHandler serviceHandler;
+    private LocalBroadcastManager broadcaster;
+    private boolean stopProcessing = false;
+
+    private boolean dryRun;
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -83,12 +49,6 @@ public class SyncService extends Service {
             // For our sample, we just sleep for 5 seconds.
             doProcessing();
 
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                // Restore interrupt status.
-                Thread.currentThread().interrupt();
-            }
             // Stop the service using the startId, so that we don't stop
             // the service in the middle of handling another job
             stopSelf(msg.arg1);
@@ -117,13 +77,10 @@ public class SyncService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
         dryRun = intent.getBooleanExtra("dryRun", true);
 
         // Notification ID cannot be 0.
         startForeground(NOTIFICATION_ID, getMyActivityNotification("Service started successfully"));
-
-        //doProcessing();
 
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
@@ -131,7 +88,7 @@ public class SyncService extends Service {
         msg.arg1 = startId;
         serviceHandler.sendMessage(msg);
 
-        // If we get killed, after returning from here, restart
+        // If we get killed, after returning from here, don't restart
         return START_NOT_STICKY;
     }
 
@@ -144,20 +101,20 @@ public class SyncService extends Service {
     @Override
     public void onDestroy() {
         stopProcessing = true;
-        Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
     }
 
-    public void sendResult(String message) {
+    private void sendResult(String message) {
         updateNotification(message);
         SyncLogLiveData.get().appendLog(message);
     }
 
-    public void sendResult(Spanned message) {
+    private void sendResult(Spanned message) {
         updateNotification(message.toString());
         SyncLogLiveData.get().appendLog(message);
     }
 
-    public void sendFinished() {
+    private void sendFinished() {
         Intent intent = new Intent("com.exifthumbnailadder.app.SYNC_SERVICE_RESULT_FINISHED");
         broadcaster.sendBroadcast(intent);
     }
@@ -182,8 +139,6 @@ public class SyncService extends Service {
 
         Notification notification =
                 new Notification.Builder(this , CHANNEL_ID)
-//                        .setContentTitle("Exif Thumbnail Adder")
-//                        .setContentText("Adding thumbnails...")
                         .setContentTitle("Processing 'Sync deletions'")
                         .setContentText(text)
                         .setOnlyAlertOnce(true)
@@ -354,5 +309,4 @@ public class SyncService extends Service {
         }
         return true;
     }
-
 }

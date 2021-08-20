@@ -64,13 +64,13 @@ import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class AddThumbsService extends Service {
+    private final static int NOTIFICATION_ID = 99999;
+    private final static String CHANNEL_ID = "1";
 
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
-    LocalBroadcastManager broadcaster;
-    boolean stopProcessing = false;
-    private final static int NOTIFICATION_ID = 99999;
-    private final static String CHANNEL_ID = "1";
+    private LocalBroadcastManager broadcaster;
+    private boolean stopProcessing = false;
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -83,12 +83,6 @@ public class AddThumbsService extends Service {
             // For our sample, we just sleep for 5 seconds.
             doProcessing();
 
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                // Restore interrupt status.
-                Thread.currentThread().interrupt();
-            }
             // Stop the service using the startId, so that we don't stop
             // the service in the middle of handling another job
             stopSelf(msg.arg1);
@@ -97,7 +91,6 @@ public class AddThumbsService extends Service {
 
     public AddThumbsService() {
     }
-
 
     @Override
     public void onCreate() {
@@ -118,12 +111,8 @@ public class AddThumbsService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
-
         // Notification ID cannot be 0.
         startForeground(NOTIFICATION_ID, getMyActivityNotification("Service started successfully"));
-
-        //doProcessing();
 
         // For each start request, send a message to start a job and deliver the
         // start ID so we know which request we're stopping when we finish the job
@@ -131,7 +120,7 @@ public class AddThumbsService extends Service {
         msg.arg1 = startId;
         serviceHandler.sendMessage(msg);
 
-        // If we get killed, after returning from here, restart
+        // If we get killed, after returning from here, don't restart
         return START_NOT_STICKY;
     }
 
@@ -140,374 +129,283 @@ public class AddThumbsService extends Service {
         // We don't provide binding, so return null
         return null;
     }
-//    @Override
-//    public IBinder onBind(Intent intent) {
-//        // TODO: Return the communication channel to the service.
-//        throw new UnsupportedOperationException("Not yet implemented");
-//    }
 
     @Override
     public void onDestroy() {
         stopProcessing = true;
-        Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
     }
 
-    public void sendResult(String message) {
+    private void sendResult(String message) {
         updateNotification(message);
         AddThumbsLogLiveData.get().appendLog(message);
     }
 
-    public void sendResult(Spanned message) {
+    private void sendResult(Spanned message) {
         updateNotification(message.toString());
         AddThumbsLogLiveData.get().appendLog(message);
     }
 
-    public void sendFinished() {
+    private void sendFinished() {
         Intent intent = new Intent("com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED");
         broadcaster.sendBroadcast(intent);
     }
 
-    void doProcessing() {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
+    // https://stackoverflow.com/questions/5528288/how-do-i-update-the-notification-text-for-a-foreground-service-in-android
+    private Notification getMyActivityNotification(String text) {
+        Intent notificationIntent = new Intent(this, AddThumbsFragment.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "channel_name";
+            String description = "channel_description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
 
+            // Don't see these lines in your code...
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        Notification notification =
+                new Notification.Builder(this , CHANNEL_ID)
+                        .setContentTitle("Processing 'Add thumbnails'")
+                        .setContentText(text)
+                        .setOnlyAlertOnce(true)
+                        .setSmallIcon(R.drawable.ic_add)
+                        .setContentIntent(pendingIntent)
+                        .setTicker("ticker_text")
+                        .build();
+
+        return notification;
+    }
+
+    /**
+     * This is the method that can be called to update the Notification
+     */
+    private void updateNotification(String text){
+        if (ServiceUtil.isServiceRunning(getApplicationContext(), AddThumbsService.class)) {
+            Notification notification = getMyActivityNotification(text);
+
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(NOTIFICATION_ID, notification);
+        }
+    }
+
+    private void doProcessing() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
-                Object[] srcDirs;
-                if (prefs.getBoolean("useSAF", true)) {
-                    srcDirs = inputDirs.toUriArray(); // Uri[]
-                } else {
-                    srcDirs = inputDirs.toFileArray(getApplicationContext()); // File[]
+        InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
+        Object[] srcDirs;
+        if (prefs.getBoolean("useSAF", true)) {
+            srcDirs = inputDirs.toUriArray(); // Uri[]
+        } else {
+            srcDirs = inputDirs.toFileArray(getApplicationContext()); // File[]
+        }
+
+        // Iterate on folders containing source images
+        for (int j = 0; j < srcDirs.length; j++) {
+            ETASrcDir etaSrcDir = null;
+            if (srcDirs[j] instanceof Uri) {
+                etaSrcDir = new ETASrcDirUri(getApplicationContext(), (Uri)srcDirs[j]);
+            } else if (srcDirs[j] instanceof File) {
+                etaSrcDir = new ETASrcDirFile(getApplicationContext(), (File)srcDirs[j]);
+            }
+
+            sendResult(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, etaSrcDir.getFSPath()) + "</b></u><br>",1));
+
+            // Check permission in case we use SAF...
+            // If we don't have permission, continue to next srcDir
+            sendResult(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
+            if (! etaSrcDir.isPermOk()) {
+                sendResult(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
+                continue;
+            }
+            sendResult(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+
+            // 1. build list of files to process
+            TreeSet<Object> docs = (TreeSet<Object>) etaSrcDir.getDocsSet();
+            sendResult(Html.fromHtml(getString(R.string.frag1_log_count_files_to_process, docs.size() ) + "<br>",1));
+
+            // 1. Iterate on all files
+            int i = 0;
+            for (Object _doc : docs) {
+                i++;
+
+                // Convert (Object)_doc to (Uri)doc or (File)doc
+                ETADoc doc = null;
+                if (etaSrcDir instanceof ETASrcDirUri) {
+                    doc = new ETADocDf((DocumentFile) _doc, getApplicationContext(), (ETASrcDirUri)etaSrcDir, false);
+                } else if (etaSrcDir instanceof ETASrcDirFile) {
+                    doc = new ETADocFile((File) _doc, getApplicationContext(), (ETASrcDirFile)etaSrcDir, true);
+                }
+                if (doc == null) throw new UnsupportedOperationException();
+
+                if (stopProcessing) {
+                    stopProcessing = false;
+                    sendResult(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
+                    stopSelf();
+                    return;
                 }
 
-                // Iterate on folders containing source images
-                for (int j = 0; j < srcDirs.length; j++) {
-                    ETASrcDir etaSrcDir = null;
-                    if (srcDirs[j] instanceof Uri) {
-                        etaSrcDir = new ETASrcDirUri(getApplicationContext(), (Uri)srcDirs[j]);
-                    } else if (srcDirs[j] instanceof File) {
-                        etaSrcDir = new ETASrcDirFile(getApplicationContext(), (File)srcDirs[j]);
+                String subDir = doc.getSubDir();
+
+                sendResult("⋅ [" + i + "/" + docs.size() + "] " +
+                        subDir + (subDir.isEmpty() ? "" : File.separator) +
+                        doc.getName() + "... ");
+
+                if (!doc.exists()) {
+                    sendResult(getString(R.string.frag1_log_skipping_file_missing));
+                    continue;
+                }
+
+                if (!doc.isJpeg()) {
+                    sendResult(getString(R.string.frag1_log_skipping_not_jpeg));
+                    continue;
+                }
+
+                if (doc.length() == 0) {
+                    sendResult(getString(R.string.frag1_log_skipping_empty_file));
+                    continue;
+                }
+
+                // a. check if sourceFile already has Exif Thumbnail
+                ExifInterface srcImgExifInterface = null;
+                InputStream srcImgIs = null;
+                ByteArrayOutputStream newImgOs = new ByteArrayOutputStream();
+
+                boolean srcImgHasThumbnail = false;
+                int srcImgDegrees = 0;
+
+                try {
+                    srcImgIs = doc.inputStream();
+                    srcImgExifInterface = new ExifInterface(srcImgIs);
+                    if (srcImgExifInterface != null) {
+                        srcImgHasThumbnail = srcImgExifInterface.hasThumbnail();
+                        srcImgDegrees = srcImgExifInterface.getRotationDegrees();
                     }
+                    srcImgIs.close();
+                    srcImgExifInterface = null;
 
-                    sendResult(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, etaSrcDir.getFSPath()) + "</b></u><br>",1));
-
-                    // Check permission in case we use SAF...
-                    // If we don't have permission, continue to next srcDir
-                    sendResult(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
-                    if (! etaSrcDir.isPermOk()) {
-                        sendResult(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
+                    if (srcImgHasThumbnail && prefs.getBoolean("skipPicsHavingThumbnail", true)) {
+                        sendResult(getString(R.string.frag1_log_skipping_has_thumbnail));
                         continue;
                     }
-                    sendResult(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+                } catch (Exception e) {
+                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                    e.printStackTrace();
+                    continue;
+                }
 
-                    // 1. build list of files to process
-                    TreeSet<Object> docs = (TreeSet<Object>) etaSrcDir.getDocsSet();
-                    sendResult(Html.fromHtml(getString(R.string.frag1_log_count_files_to_process, docs.size() ) + "<br>",1));
+                Bitmap thumbnail;
+                // a. extract thumbnail & write to output stream
+                try {
+                    //if (enableLog) Log.i(TAG, "Creating thumbnail");
+                    thumbnail = doc.getThumbnail(
+                            "ffmpeg",
+                            prefs.getBoolean("rotateThumbnails", true),
+                            srcImgDegrees);
+                    srcImgIs = doc.inputStream();
 
-                    // 1. Iterate on all files
-                    int i = 0;
-                    for (Object _doc : docs) {
-                        i++;
-
-                        // Convert (Object)_doc to (Uri)doc or (File)doc
-                        ETADoc doc = null;
-                        if (etaSrcDir instanceof ETASrcDirUri) {
-                            doc = new ETADocDf((DocumentFile) _doc, getApplicationContext(), (ETASrcDirUri)etaSrcDir, false);
-                        } else if (etaSrcDir instanceof ETASrcDirFile) {
-                            doc = new ETADocFile((File) _doc, getApplicationContext(), (ETASrcDirFile)etaSrcDir, true);
-                        }
-                        if (doc == null) throw new UnsupportedOperationException();
-
-                        if (stopProcessing) {
-                            stopProcessing = false;
-                            sendResult(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
-                            stopSelf();
-                            return;
-                        }
-
-                        String subDir = doc.getSubDir();
-
-                        sendResult("⋅ [" + i + "/" + docs.size() + "] " +
-                                subDir + (subDir.isEmpty() ? "" : File.separator) +
-                                doc.getName() + "... ");
-
-                        if (!doc.exists()) {
-                            sendResult(getString(R.string.frag1_log_skipping_file_missing));
-                            continue;
-                        }
-
-                        if (!doc.isJpeg()) {
-                            sendResult(getString(R.string.frag1_log_skipping_not_jpeg));
-                            continue;
-                        }
-
-                        if (doc.length() == 0) {
-                            sendResult(getString(R.string.frag1_log_skipping_empty_file));
-                            continue;
-                        }
-
-                        // a. check if sourceFile already has Exif Thumbnail
-                        ExifInterface srcImgExifInterface = null;
-                        InputStream srcImgIs = null;
-                        ByteArrayOutputStream newImgOs = new ByteArrayOutputStream();
-
-                        boolean srcImgHasThumbnail = false;
-                        int srcImgDegrees = 0;
-
-                        try {
-                            srcImgIs = doc.inputStream();
-                            srcImgExifInterface = new ExifInterface(srcImgIs);
-                            if (srcImgExifInterface != null) {
-                                srcImgHasThumbnail = srcImgExifInterface.hasThumbnail();
-                                srcImgDegrees = srcImgExifInterface.getRotationDegrees();
+                    switch (prefs.getString("exif_library", "exiflib_exiv2")) {
+                        case "exiflib_android-exif-extended":
+                            writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, doc, thumbnail);
+                            break;
+                        case "exiflib_pixymeta":
+                            if (!PixymetaInterface.hasPixymetaLib()) {
+                                sendResult(Html.fromHtml("<br><br><span style='color:red'>" + getString(R.string.frag1_log_pixymeta_missing) + "</span><br>", 1));
+                                sendFinished();
+                                stopSelf();
+                                return;
                             }
-                            srcImgIs.close();
-                            srcImgExifInterface = null;
+                            PixymetaInterface.writeThumbnailWithPixymeta(srcImgIs, newImgOs, thumbnail);
+                            break;
+                    }
 
-                            if (srcImgHasThumbnail && prefs.getBoolean("skipPicsHavingThumbnail", true)) {
-                                sendResult(getString(R.string.frag1_log_skipping_has_thumbnail));
+                    // Close Streams
+                    srcImgIs.close();
+                    newImgOs.close();
+                } catch (BadOriginalImageException e) {
+                    sendResult(getString(R.string.frag1_log_skipping_bad_image));
+                    e.printStackTrace();
+                    continue;
+                } catch (Exception e) {
+                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                    e.printStackTrace();
+                    continue;
+                } catch (AssertionError e) {
+                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
+                    e.printStackTrace();
+                    continue;
+                }
+
+                // a. create output dirs
+                doc.createDirForTmp();
+                doc.createDirForBackup();
+                doc.createDirForDest();
+
+                try {
+                    doc.storeFileAttributes();
+                } catch (Exception e) {
+                    sendResult(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_store_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
+                    e.printStackTrace();
+                }
+
+                // a. write outputstream to disk
+                try  {
+                    doc.writeInTmp(newImgOs);
+                } catch (Exception e) {
+                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                    e.printStackTrace();
+                    continue;
+                }
+
+                if (thumbnail != null) {
+                    switch (prefs.getString("exif_library", "exiflib_exiv2")) {
+                        case "exiflib_libexif":
+                            try {
+                                String outFilepath = doc.getTmpFSPathWithFilename();
+
+                                new NativeLibHelper().writeThumbnailWithLibexifThroughFile(
+                                        doc.getFullFSPath(),
+                                        outFilepath,
+                                        thumbnail,
+                                        prefs.getBoolean("libexifSkipOnError", true));
+                            } catch (LibexifException e) {
+                                e.printStackTrace();
+                                if (prefs.getBoolean("libexifSkipOnError", true)) {
+                                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                    continue;
+                                } else {
+                                    sendResult(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
+                                    sendResult(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
+                                }
+                            } catch (Exception e) {
+                                sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                e.printStackTrace();
                                 continue;
                             }
-                        } catch (Exception e) {
-                            sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                            e.printStackTrace();
-                            continue;
-                        }
+                            break;
 
-                        Bitmap thumbnail;
-                        // a. extract thumbnail & write to output stream
-                        try {
-                            //if (enableLog) Log.i(TAG, "Creating thumbnail");
-                            thumbnail = doc.getThumbnail(
-                                    "ffmpeg",
-                                    prefs.getBoolean("rotateThumbnails", true),
-                                    srcImgDegrees);
-                            srcImgIs = doc.inputStream();
+                        case "exiflib_exiv2":
+                            try {
+                                String outFilepath = doc.getTmpFSPathWithFilename();
 
-                            switch (prefs.getString("exif_library", "exiflib_exiv2")) {
-                                case "exiflib_android-exif-extended":
-                                    writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, doc, thumbnail);
-                                    break;
-                                case "exiflib_pixymeta":
-                                    if (!PixymetaInterface.hasPixymetaLib()) {
-                                        sendResult(Html.fromHtml("<br><br><span style='color:red'>" + getString(R.string.frag1_log_pixymeta_missing) + "</span><br>", 1));
-                                        sendFinished();
-                                        stopSelf();
-                                        return;
-                                    }
-                                    PixymetaInterface.writeThumbnailWithPixymeta(srcImgIs, newImgOs, thumbnail);
-                                    break;
-                            }
-
-                            // Close Streams
-                            srcImgIs.close();
-                            newImgOs.close();
-                        } catch (BadOriginalImageException e) {
-                            sendResult(getString(R.string.frag1_log_skipping_bad_image));
-                            e.printStackTrace();
-                            continue;
-                        } catch (Exception e) {
-                            sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                            e.printStackTrace();
-                            continue;
-                        } catch (AssertionError e) {
-                            sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
-                            e.printStackTrace();
-                            continue;
-                        }
-
-                        // a. create output dirs
-                        doc.createDirForTmp();
-                        doc.createDirForBackup();
-                        doc.createDirForDest();
-
-                        try {
-                            doc.storeFileAttributes();
-                        } catch (Exception e) {
-                            sendResult(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_store_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
-                            e.printStackTrace();
-                        }
-
-                        // a. write outputstream to disk
-                        try  {
-                            doc.writeInTmp(newImgOs);
-                        } catch (Exception e) {
-                            sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                            e.printStackTrace();
-                            continue;
-                        }
-
-                        if (thumbnail != null) {
-                            switch (prefs.getString("exif_library", "exiflib_exiv2")) {
-                                case "exiflib_libexif":
-                                    try {
-                                        String outFilepath = doc.getTmpFSPathWithFilename();
-
-                                        new NativeLibHelper().writeThumbnailWithLibexifThroughFile(
-                                                doc.getFullFSPath(),
-                                                outFilepath,
-                                                thumbnail,
-                                                prefs.getBoolean("libexifSkipOnError", true));
-                                    } catch (LibexifException e) {
-                                        e.printStackTrace();
-                                        if (prefs.getBoolean("libexifSkipOnError", true)) {
-                                            sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                                            continue;
-                                        } else {
-                                            sendResult(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
-                                            sendResult(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
-                                        }
-                                    } catch (Exception e) {
-                                        sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                                        e.printStackTrace();
-                                        continue;
-                                    }
-                                    break;
-
-                                case "exiflib_exiv2":
-                                    try {
-                                        String outFilepath = doc.getTmpFSPathWithFilename();
-
-                                        // copy original picture to location of tmp picture on which exiv2 will operate.
-                                        Uri targetUri = null;
-                                        try {
-                                            if (doc instanceof ETADocDf) {
-                                                targetUri = copyDocument(
-                                                        doc.getUri(),
-                                                        doc.getTmpUri(),
-                                                        true,
-                                                        false);
-                                            } else if (doc instanceof ETADocFile) {
-                                                Files.copy(
-                                                        doc.toPath(),
-                                                        doc.getTmpPath().resolve(doc.getName()),
-                                                        REPLACE_EXISTING);
-                                            }
-                                        } catch (CopyAttributesFailedException e) {
-                                            sendResult(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
-                                            e.printStackTrace();
-                                        } catch (Exception e) {
-                                            sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
-                                            e.printStackTrace();
-                                            continue;
-                                        }
-
-                                        new NativeLibHelper().writeThumbnailWithExiv2ThroughFile(
-                                                outFilepath,
-                                                thumbnail,
-                                                prefs.getString("exiv2SkipOnLogLevel", "warn"));
-                                    } catch (Exiv2WarnException e) {
-                                        e.printStackTrace();
-                                        switch (prefs.getString("exiv2SkipOnLogLevel", "warn")) {
-                                            case "warn":
-                                                if (doc instanceof ETADocFile) { doc.deleteOutputInTmp(); }
-                                                sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                                                continue;
-                                            case "error":
-                                            case "none":
-                                                sendResult(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
-                                                sendResult(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
-                                        }
-                                    } catch (Exiv2ErrorException e) {
-                                        e.printStackTrace();
-                                        switch (prefs.getString("exiv2SkipOnLogLevel", "warn")) {
-                                            case "warn":
-                                            case "error":
-                                                if (doc instanceof ETADocFile) { doc.deleteOutputInTmp(); }
-                                                sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                                                continue;
-                                            case "none":
-                                                sendResult(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
-                                                sendResult(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
-                                        }
-                                    } catch (Exception e) {
-                                        sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                                        e.printStackTrace();
-                                        continue;
-                                    }
-                                    break;
-                            }
-                        }
-
-                        // a. We don't copy attributes from original file to tmp file because from Android 11
-                        // it may fail on setOwner when tmp file is put in Cache Dir
-                        // We set the attributes on the output files another way
-
-                        Uri outputUri = null; // Uri returned by "copyDocument" to dest
-                        Uri originalImageUri = null; // Uri returned by "moveDocument", file in bak.
-                        Path outputPath = null;
-                        Path originalImagePath = null;
-
-                        // a. Move or copy original files (from DCIM) to backup dir (DCIM.bak)
-                        if (prefs.getBoolean("backupOriginalPic", true)) {
-                            if (prefs.getBoolean("writeThumbnailedToOriginalFolder", false)) {
-                                // We do a move (so that the file with a thumbnail can be placed to the original dir)
+                                // copy original picture to location of tmp picture on which exiv2 will operate.
+                                Uri targetUri = null;
                                 try {
                                     if (doc instanceof ETADocDf) {
-                                        originalImageUri = moveDocument(
+                                        targetUri = copyDocument(
                                                 doc.getUri(),
-                                                UriUtil.buildDParentAsUri(doc.getUri()),
-                                                doc.getBackupUri(),
-                                                false);
-                                    } else if (doc instanceof ETADocFile) {
-                                        if (etaSrcDir.getVolumeName() == MediaStore.VOLUME_EXTERNAL_PRIMARY) {
-                                            Path backupFile = doc.getBackupPath().resolve(doc.getName());
-                                            if (backupFile.toFile().exists())
-                                                throw new FileAlreadyExistsException(backupFile.toString());
-                                            try {
-                                                originalImagePath = Files.move(
-                                                    doc.toPath(),
-                                                    backupFile,
-                                                    ATOMIC_MOVE);
-                                            } catch (AtomicMoveNotSupportedException e) {
-                                                if (enableLog) Log.i(TAG, "Error moving document. Trying 'move' without ATOMIC_MOVE option. " + e.getMessage());
-                                                originalImagePath = Files.move(
-                                                        doc.toPath(),
-                                                        backupFile);
-                                                doc.copyAttributesTo(originalImagePath);
-                                            }
-                                        } else {
-                                            // Do nothing
-                                        }
-                                    }
-                                } catch (DestinationFileExistsException | FileAlreadyExistsException e) {
-                                    sendResult(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_cannot_move_to_backup)+"</span><br>",1));
-                                    e.printStackTrace();
-                                    continue;
-                                } catch (CopyAttributesFailedException e) {
-                                    sendResult(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
-                                    e.printStackTrace();
-                                } catch (Exception e) {
-                                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_moving_doc, e.getMessage()) + "</span><br>", 1));
-                                    e.printStackTrace();
-                                    continue;
-                                }
-                            } else {
-                                // We do a copy
-                                try {
-                                    if (doc instanceof ETADocDf) {
-                                        originalImageUri = copyDocument(
-                                                doc.getUri(),
-                                                doc.getBackupUri(),
+                                                doc.getTmpUri(),
                                                 true,
                                                 false);
-                                        if (prefs.getBoolean("keepTimeStampOnBackup", true))
-                                            doc.copyAttributesTo(originalImageUri);
                                     } else if (doc instanceof ETADocFile) {
-                                        if (prefs.getBoolean("keepTimeStampOnBackup", true)) {
-                                            originalImagePath = Files.copy(
-                                                    doc.toPath(),
-                                                    doc.getBackupPath().resolve(doc.getName()),
-                                                    REPLACE_EXISTING,
-                                                    COPY_ATTRIBUTES);
-                                        } else {
-                                            originalImagePath = Files.copy(
-                                                    doc.toPath(),
-                                                    doc.getBackupPath().resolve(doc.getName()),
-                                                    REPLACE_EXISTING);
-                                        }
+                                        Files.copy(
+                                                doc.toPath(),
+                                                doc.getTmpPath().resolve(doc.getName()),
+                                                REPLACE_EXISTING);
                                     }
                                 } catch (CopyAttributesFailedException e) {
                                     sendResult(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
@@ -517,59 +415,87 @@ public class AddThumbsService extends Service {
                                     e.printStackTrace();
                                     continue;
                                 }
+
+                                new NativeLibHelper().writeThumbnailWithExiv2ThroughFile(
+                                        outFilepath,
+                                        thumbnail,
+                                        prefs.getString("exiv2SkipOnLogLevel", "warn"));
+                            } catch (Exiv2WarnException e) {
+                                e.printStackTrace();
+                                switch (prefs.getString("exiv2SkipOnLogLevel", "warn")) {
+                                    case "warn":
+                                        if (doc instanceof ETADocFile) { doc.deleteOutputInTmp(); }
+                                        sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                        continue;
+                                    case "error":
+                                    case "none":
+                                        sendResult(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
+                                        sendResult(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
+                                }
+                            } catch (Exiv2ErrorException e) {
+                                e.printStackTrace();
+                                switch (prefs.getString("exiv2SkipOnLogLevel", "warn")) {
+                                    case "warn":
+                                    case "error":
+                                        if (doc instanceof ETADocFile) { doc.deleteOutputInTmp(); }
+                                        sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                        continue;
+                                    case "none":
+                                        sendResult(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
+                                        sendResult(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
+                                }
+                            } catch (Exception e) {
+                                sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                e.printStackTrace();
+                                continue;
                             }
-                        }
+                            break;
+                    }
+                }
 
-                        // a. Move new file (having Thumbnail) from tmp folder to its final folder
-                        // final folder depends on the setting: "writeThumbnailedToOriginalFolder"
-                        boolean replaceExising = false;
-                        if ( prefs.getBoolean("overwriteDestPic", false)) {
-                            replaceExising = true;
-                        }
+                // a. We don't copy attributes from original file to tmp file because from Android 11
+                // it may fail on setOwner when tmp file is put in Cache Dir
+                // We set the attributes on the output files another way
 
+                Uri outputUri = null; // Uri returned by "copyDocument" to dest
+                Uri originalImageUri = null; // Uri returned by "moveDocument", file in bak.
+                Path outputPath = null;
+                Path originalImagePath = null;
+
+                // a. Move or copy original files (from DCIM) to backup dir (DCIM.bak)
+                if (prefs.getBoolean("backupOriginalPic", true)) {
+                    if (prefs.getBoolean("writeThumbnailedToOriginalFolder", false)) {
+                        // We do a move (so that the file with a thumbnail can be placed to the original dir)
                         try {
                             if (doc instanceof ETADocDf) {
-                                outputUri = moveDocument(
-                                        (Uri)doc.getOutputInTmp(),
-                                        doc.getTmpUri(),
-                                        doc.getDestUri(),
-                                        replaceExising);
-                                doc.copyAttributesTo(outputUri);
+                                originalImageUri = moveDocument(
+                                        doc.getUri(),
+                                        UriUtil.buildDParentAsUri(doc.getUri()),
+                                        doc.getBackupUri(),
+                                        false);
                             } else if (doc instanceof ETADocFile) {
-                                Path destFile = doc.getDestPath().resolve(doc.getName());
-                                if (replaceExising) {
+                                if (etaSrcDir.getVolumeName() == MediaStore.VOLUME_EXTERNAL_PRIMARY) {
+                                    Path backupFile = doc.getBackupPath().resolve(doc.getName());
+                                    if (backupFile.toFile().exists())
+                                        throw new FileAlreadyExistsException(backupFile.toString());
                                     try {
-                                        outputPath = Files.move(
-                                                ((File) doc.getOutputInTmp()).toPath(),
-                                                destFile,
-                                                REPLACE_EXISTING, ATOMIC_MOVE);
-                                    } catch (AtomicMoveNotSupportedException e) {
-                                        if (enableLog) Log.i(TAG, "Error moving document. Trying 'move' without ATOMIC_MOVE option. " + e.getMessage());
-                                        outputPath = Files.move(
-                                                ((File) doc.getOutputInTmp()).toPath(),
-                                                destFile,
-                                                REPLACE_EXISTING);
-                                    }
-                                } else {
-                                    if (destFile.toFile().exists())
-                                        throw new FileAlreadyExistsException(destFile.toString());
-                                    try {
-                                        outputPath = Files.move(
-                                                ((File) doc.getOutputInTmp()).toPath(),
-                                                destFile,
+                                        originalImagePath = Files.move(
+                                                doc.toPath(),
+                                                backupFile,
                                                 ATOMIC_MOVE);
                                     } catch (AtomicMoveNotSupportedException e) {
                                         if (enableLog) Log.i(TAG, "Error moving document. Trying 'move' without ATOMIC_MOVE option. " + e.getMessage());
-                                        outputPath = Files.move(
-                                                ((File) doc.getOutputInTmp()).toPath(),
-                                                destFile);
+                                        originalImagePath = Files.move(
+                                                doc.toPath(),
+                                                backupFile);
+                                        doc.copyAttributesTo(originalImagePath);
                                     }
+                                } else {
+                                    // Do nothing
                                 }
-                                doc.copyAttributesTo(outputPath);
                             }
-                        } catch (DestinationFileExistsException | FileAlreadyExistsException e ) {
-                            sendResult(Html.fromHtml("<span style='color:red'>"+ getString(R.string.frag1_log_overwrite_not_allowed)+"</span><br>",1));
-                            doc.deleteOutputInTmp();
+                        } catch (DestinationFileExistsException | FileAlreadyExistsException e) {
+                            sendResult(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_cannot_move_to_backup)+"</span><br>",1));
                             e.printStackTrace();
                             continue;
                         } catch (CopyAttributesFailedException e) {
@@ -580,15 +506,109 @@ public class AddThumbsService extends Service {
                             e.printStackTrace();
                             continue;
                         }
-
-                        sendResult(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_done) + "</span><br>",1));
+                    } else {
+                        // We do a copy
+                        try {
+                            if (doc instanceof ETADocDf) {
+                                originalImageUri = copyDocument(
+                                        doc.getUri(),
+                                        doc.getBackupUri(),
+                                        true,
+                                        false);
+                                if (prefs.getBoolean("keepTimeStampOnBackup", true))
+                                    doc.copyAttributesTo(originalImageUri);
+                            } else if (doc instanceof ETADocFile) {
+                                if (prefs.getBoolean("keepTimeStampOnBackup", true)) {
+                                    originalImagePath = Files.copy(
+                                            doc.toPath(),
+                                            doc.getBackupPath().resolve(doc.getName()),
+                                            REPLACE_EXISTING,
+                                            COPY_ATTRIBUTES);
+                                } else {
+                                    originalImagePath = Files.copy(
+                                            doc.toPath(),
+                                            doc.getBackupPath().resolve(doc.getName()),
+                                            REPLACE_EXISTING);
+                                }
+                            }
+                        } catch (CopyAttributesFailedException e) {
+                            sendResult(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
+                            e.printStackTrace();
+                            continue;
+                        }
                     }
                 }
 
+                // a. Move new file (having Thumbnail) from tmp folder to its final folder
+                // final folder depends on the setting: "writeThumbnailedToOriginalFolder"
+                boolean replaceExising = false;
+                if ( prefs.getBoolean("overwriteDestPic", false)) {
+                    replaceExising = true;
+                }
+
+                try {
+                    if (doc instanceof ETADocDf) {
+                        outputUri = moveDocument(
+                                (Uri)doc.getOutputInTmp(),
+                                doc.getTmpUri(),
+                                doc.getDestUri(),
+                                replaceExising);
+                        doc.copyAttributesTo(outputUri);
+                    } else if (doc instanceof ETADocFile) {
+                        Path destFile = doc.getDestPath().resolve(doc.getName());
+                        if (replaceExising) {
+                            try {
+                                outputPath = Files.move(
+                                        ((File) doc.getOutputInTmp()).toPath(),
+                                        destFile,
+                                        REPLACE_EXISTING, ATOMIC_MOVE);
+                            } catch (AtomicMoveNotSupportedException e) {
+                                if (enableLog) Log.i(TAG, "Error moving document. Trying 'move' without ATOMIC_MOVE option. " + e.getMessage());
+                                outputPath = Files.move(
+                                        ((File) doc.getOutputInTmp()).toPath(),
+                                        destFile,
+                                        REPLACE_EXISTING);
+                            }
+                        } else {
+                            if (destFile.toFile().exists())
+                                throw new FileAlreadyExistsException(destFile.toString());
+                            try {
+                                outputPath = Files.move(
+                                        ((File) doc.getOutputInTmp()).toPath(),
+                                        destFile,
+                                        ATOMIC_MOVE);
+                            } catch (AtomicMoveNotSupportedException e) {
+                                if (enableLog) Log.i(TAG, "Error moving document. Trying 'move' without ATOMIC_MOVE option. " + e.getMessage());
+                                outputPath = Files.move(
+                                        ((File) doc.getOutputInTmp()).toPath(),
+                                        destFile);
+                            }
+                        }
+                        doc.copyAttributesTo(outputPath);
+                    }
+                } catch (DestinationFileExistsException | FileAlreadyExistsException e ) {
+                    sendResult(Html.fromHtml("<span style='color:red'>"+ getString(R.string.frag1_log_overwrite_not_allowed)+"</span><br>",1));
+                    doc.deleteOutputInTmp();
+                    e.printStackTrace();
+                    continue;
+                } catch (CopyAttributesFailedException e) {
+                    sendResult(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_moving_doc, e.getMessage()) + "</span><br>", 1));
+                    e.printStackTrace();
+                    continue;
+                }
+
+                sendResult(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_done) + "</span><br>",1));
+            }
+        }
+
         sendResult(getString(R.string.frag1_log_finished));
         sendFinished();
-//            }
-//        }).start();
     }
 
     private Uri copyDocument(Uri sourceUri, Uri targetParentUri, boolean replaceExisting, boolean copyFileAttributes)
@@ -859,50 +879,5 @@ public class AddThumbsService extends Service {
         }
 
         copyFileAttributes(inFilePath, outFilePath);
-    }
-
-    // https://stackoverflow.com/questions/5528288/how-do-i-update-the-notification-text-for-a-foreground-service-in-android
-    private Notification getMyActivityNotification(String text) {
-        Intent notificationIntent = new Intent(this, AddThumbsFragment.class);
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "channel_name";
-            String description = "channel_description";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-
-            // Don't see these lines in your code...
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
-
-        Notification notification =
-                new Notification.Builder(this , CHANNEL_ID)
-//                        .setContentTitle("Exif Thumbnail Adder")
-//                        .setContentText("Adding thumbnails...")
-                        .setContentTitle("Processing 'Add thumbnails'")
-                        .setContentText(text)
-                        .setOnlyAlertOnce(true)
-                        .setSmallIcon(R.drawable.ic_add)
-                        .setContentIntent(pendingIntent)
-                        .setTicker("ticker_text")
-                        .build();
-
-        return notification;
-    }
-
-    /**
-     * This is the method that can be called to update the Notification
-     */
-    private void updateNotification(String text){
-        if (ServiceUtil.isServiceRunning(getApplicationContext(), AddThumbsService.class)) {
-            Notification notification = getMyActivityNotification(text);
-
-            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(NOTIFICATION_ID, notification);
-        }
     }
 }
