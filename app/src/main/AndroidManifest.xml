@@ -5,11 +5,11 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <!-- Needed for Android 11 to be able to update timestamps of files.
          May result in rejection from google play store  -->
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
     <!-- For Android 10, we use android:requestLegacyExternalStorage="true" -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".MainApplication"
@@ -20,6 +20,15 @@
         android:roundIcon="@mipmap/ic_exif_thumbnails_adder_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ExifThumbnailAdder">
+        <service
+            android:name=".SyncService"
+            android:enabled="true"
+            android:exported="false"></service>
+        <service
+            android:name=".AddThumbsService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity android:name=".AboutActivity"
             android:label="@string/title_activity_about"
             android:parentActivityName=".MainActivity" />

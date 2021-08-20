@@ -112,6 +112,49 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     @Override
+    public void onResume(){
+        super.onResume();
+        displayFragmentOfLastService();
+    }
+
+    private void displayFragmentOfLastService() {
+        // Move to the fragment that ran the last service so that user can see the logs of that service.
+        String lastExecutedService = LastServiceLiveData.get().getValue();
+        if (lastExecutedService != null && !lastExecutedService.isEmpty()) {
+            NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().getPrimaryNavigationFragment();
+            if (navHostFragment != null) {
+                NavController navController = navHostFragment.getNavController();
+                Fragment foregroundFragment = navHostFragment.getChildFragmentManager().getFragments().get(0);
+                if (lastExecutedService.equals("com.exifthumbnailadder.app.AddThumbsService")) {
+                    if (foregroundFragment instanceof SyncFragment) {
+                        navController.navigate(R.id.action_SyncFragment_to_AddThumbsFragment);
+                    } else if (foregroundFragment instanceof SettingsFragment) {
+                        navController.navigate(R.id.action_SettingsFragment_to_AddThumbsFragment);
+                    }
+                    // reset lastService because we have brought the user to the correct fragment
+                    // of the last service that has run. Now navigation is again in the hands of the user.
+                    if (!ServiceUtil.isServiceRunning(this, SyncService.class) &&
+                            !ServiceUtil.isServiceRunning(this, AddThumbsService.class)) {
+                        LastServiceLiveData.get().setLastService("");
+                    }
+                } else if (lastExecutedService.equals("com.exifthumbnailadder.app.SyncService")) {
+                    if (foregroundFragment instanceof AddThumbsFragment) {
+                        navController.navigate(R.id.action_AddThumbsFragment_to_SyncFragment);
+                    } else if (foregroundFragment instanceof SettingsFragment) {
+                        navController.navigate(R.id.action_SettingsFragment_to_SyncFragment);
+                    }
+                    // reset lastService because we have brought the user to the correct fragment
+                    // of the last service that has run. Now navigation is again in the hands of the user.
+                    if (!ServiceUtil.isServiceRunning(this, SyncService.class) &&
+                            !ServiceUtil.isServiceRunning(this, AddThumbsService.class)) {
+                        LastServiceLiveData.get().setLastService("");
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 /*
         String k = key.toString();
