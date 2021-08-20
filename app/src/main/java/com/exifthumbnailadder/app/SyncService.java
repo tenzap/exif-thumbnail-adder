@@ -104,13 +104,21 @@ public class SyncService extends Service {
         //Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
     }
 
-    private void sendResult(String message) {
+    private void updateLogAndNotif(String message) {
         updateNotification(message);
+        updateLog(message);
+    }
+
+    private void updateLogAndNotif(Spanned message) {
+        updateNotification(message.toString());
+        updateLog(message);
+    }
+
+    private void updateLog(String message) {
         SyncLogLiveData.get().appendLog(message);
     }
 
-    private void sendResult(Spanned message) {
-        updateNotification(message.toString());
+    private void updateLog(Spanned message) {
         SyncLogLiveData.get().appendLog(message);
     }
 
@@ -183,16 +191,16 @@ public class SyncService extends Service {
             }
             if (etaSrcDir == null) throw new UnsupportedOperationException();
 
-            sendResult(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, etaSrcDir.getFSPath()) + "</b></u><br>",1));
+            updateLogAndNotif(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, etaSrcDir.getFSPath()) + "</b></u><br>",1));
 
             // Check permission in case we use SAF...
             // If we don't have permission, continue to next srcDir
-            sendResult(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
+            updateLogAndNotif(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
             if (! etaSrcDir.isPermOk()) {
-                sendResult(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
+                updateLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
                 continue;
             }
-            sendResult(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+            updateLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
 
 
             ETADoc etaDocSrc = null;
@@ -223,7 +231,7 @@ public class SyncService extends Service {
 
             // Process outputUri
             if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("writeThumbnailedToOriginalFolder", false)) {
-                sendResult(Html.fromHtml("<br>",1));
+                updateLog(Html.fromHtml("<br>",1));
                 ETASrcDir etaSrcDirDest = null;
                 if (etaDocSrc instanceof ETADocDf) {
                     etaSrcDirDest = new ETASrcDirUri(
@@ -242,7 +250,7 @@ public class SyncService extends Service {
             }
         }
 
-        sendResult(getString(R.string.frag1_log_finished));
+        updateLogAndNotif(getString(R.string.frag1_log_finished));
         sendFinished();
     }
 
@@ -251,9 +259,9 @@ public class SyncService extends Service {
 
         TreeSet<Object> docsInWorkingDir = (TreeSet<Object>)workingDirDocs.getDocsSet();
 
-        sendResult(getString(R.string.sync_log_checking, workingDirDocs.getFSPathWithoutRoot()));
-        sendResult("\n");
-        sendResult(Html.fromHtml("<u>" + getString(R.string.sync_log_files_to_remove) + "</u><br>",1));
+        updateLogAndNotif(getString(R.string.sync_log_checking, workingDirDocs.getFSPathWithoutRoot()));
+        updateLog("\n");
+        updateLog(Html.fromHtml("<u>" + getString(R.string.sync_log_files_to_remove) + "</u><br>",1));
 
         for (Object _doc : docsInWorkingDir) {
 
@@ -268,7 +276,7 @@ public class SyncService extends Service {
 
             if (stopProcessing) {
                 stopProcessing = false;
-                sendResult(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
+                updateLogAndNotif(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
                 return false;
             }
 
@@ -289,22 +297,22 @@ public class SyncService extends Service {
                     srcFileExists = srcFile.exists();
                 }
             } catch (Exception e) {
-                sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
+                updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
                 e.printStackTrace();
                 continue;
             }
 
             // Delete file if it doesn't exist in source directory
             if (!srcFileExists) {
-                sendResult("⋅ " + doc.getDPath() + "... ");
+                updateLogAndNotif("⋅ " + doc.getDPath() + "... ");
                 if (!dryRun) {
                     boolean deleted = doc.delete();
                     if (deleted)
-                        sendResult(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_done)+"</span>",1));
+                        updateLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_done)+"</span>",1));
                     else
-                        sendResult(Html.fromHtml("<span style='color:green'>"+getString(R.string.sync_log_failure_to_delete_file)+"</span>",1));
+                        updateLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.sync_log_failure_to_delete_file)+"</span>",1));
                 }
-                sendResult(Html.fromHtml("<br>",1));
+                updateLog(Html.fromHtml("<br>",1));
             }
         }
         return true;

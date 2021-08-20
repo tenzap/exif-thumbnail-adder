@@ -136,13 +136,21 @@ public class AddThumbsService extends Service {
         //Toast.makeText(this, "service done", Toast.LENGTH_SHORT).show();
     }
 
-    private void sendResult(String message) {
+    private void updateLogAndNotif(String message) {
         updateNotification(message);
+        updateLog(message);
+    }
+
+    private void updateLogAndNotif(Spanned message) {
+        updateNotification(message.toString());
+        updateLog(message);
+    }
+
+    private void updateLog(String message) {
         AddThumbsLogLiveData.get().appendLog(message);
     }
 
-    private void sendResult(Spanned message) {
-        updateNotification(message.toString());
+    private void updateLog(Spanned message) {
         AddThumbsLogLiveData.get().appendLog(message);
     }
 
@@ -213,20 +221,20 @@ public class AddThumbsService extends Service {
                 etaSrcDir = new ETASrcDirFile(getApplicationContext(), (File)srcDirs[j]);
             }
 
-            sendResult(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, etaSrcDir.getFSPath()) + "</b></u><br>",1));
+            updateLogAndNotif(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, etaSrcDir.getFSPath()) + "</b></u><br>",1));
 
             // Check permission in case we use SAF...
             // If we don't have permission, continue to next srcDir
-            sendResult(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
+            updateLogAndNotif(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
             if (! etaSrcDir.isPermOk()) {
-                sendResult(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
+                updateLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
                 continue;
             }
-            sendResult(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+            updateLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
 
             // 1. build list of files to process
             TreeSet<Object> docs = (TreeSet<Object>) etaSrcDir.getDocsSet();
-            sendResult(Html.fromHtml(getString(R.string.frag1_log_count_files_to_process, docs.size() ) + "<br>",1));
+            updateLogAndNotif(Html.fromHtml(getString(R.string.frag1_log_count_files_to_process, docs.size() ) + "<br>",1));
 
             // 1. Iterate on all files
             int i = 0;
@@ -244,29 +252,29 @@ public class AddThumbsService extends Service {
 
                 if (stopProcessing) {
                     stopProcessing = false;
-                    sendResult(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
+                    updateLogAndNotif(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
                     stopSelf();
                     return;
                 }
 
                 String subDir = doc.getSubDir();
 
-                sendResult("⋅ [" + i + "/" + docs.size() + "] " +
+                updateLogAndNotif("⋅ [" + i + "/" + docs.size() + "] " +
                         subDir + (subDir.isEmpty() ? "" : File.separator) +
                         doc.getName() + "... ");
 
                 if (!doc.exists()) {
-                    sendResult(getString(R.string.frag1_log_skipping_file_missing));
+                    updateLog(getString(R.string.frag1_log_skipping_file_missing));
                     continue;
                 }
 
                 if (!doc.isJpeg()) {
-                    sendResult(getString(R.string.frag1_log_skipping_not_jpeg));
+                    updateLog(getString(R.string.frag1_log_skipping_not_jpeg));
                     continue;
                 }
 
                 if (doc.length() == 0) {
-                    sendResult(getString(R.string.frag1_log_skipping_empty_file));
+                    updateLog(getString(R.string.frag1_log_skipping_empty_file));
                     continue;
                 }
 
@@ -289,11 +297,11 @@ public class AddThumbsService extends Service {
                     srcImgExifInterface = null;
 
                     if (srcImgHasThumbnail && prefs.getBoolean("skipPicsHavingThumbnail", true)) {
-                        sendResult(getString(R.string.frag1_log_skipping_has_thumbnail));
+                        updateLog(getString(R.string.frag1_log_skipping_has_thumbnail));
                         continue;
                     }
                 } catch (Exception e) {
-                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                    updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                     e.printStackTrace();
                     continue;
                 }
@@ -314,7 +322,7 @@ public class AddThumbsService extends Service {
                             break;
                         case "exiflib_pixymeta":
                             if (!PixymetaInterface.hasPixymetaLib()) {
-                                sendResult(Html.fromHtml("<br><br><span style='color:red'>" + getString(R.string.frag1_log_pixymeta_missing) + "</span><br>", 1));
+                                updateLog(Html.fromHtml("<br><br><span style='color:red'>" + getString(R.string.frag1_log_pixymeta_missing) + "</span><br>", 1));
                                 sendFinished();
                                 stopSelf();
                                 return;
@@ -327,15 +335,15 @@ public class AddThumbsService extends Service {
                     srcImgIs.close();
                     newImgOs.close();
                 } catch (BadOriginalImageException e) {
-                    sendResult(getString(R.string.frag1_log_skipping_bad_image));
+                    updateLog(getString(R.string.frag1_log_skipping_bad_image));
                     e.printStackTrace();
                     continue;
                 } catch (Exception e) {
-                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                    updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                     e.printStackTrace();
                     continue;
                 } catch (AssertionError e) {
-                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
+                    updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
                     e.printStackTrace();
                     continue;
                 }
@@ -348,7 +356,7 @@ public class AddThumbsService extends Service {
                 try {
                     doc.storeFileAttributes();
                 } catch (Exception e) {
-                    sendResult(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_store_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
+                    updateLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_store_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                     e.printStackTrace();
                 }
 
@@ -356,7 +364,7 @@ public class AddThumbsService extends Service {
                 try  {
                     doc.writeInTmp(newImgOs);
                 } catch (Exception e) {
-                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                    updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                     e.printStackTrace();
                     continue;
                 }
@@ -375,14 +383,14 @@ public class AddThumbsService extends Service {
                             } catch (LibexifException e) {
                                 e.printStackTrace();
                                 if (prefs.getBoolean("libexifSkipOnError", true)) {
-                                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                    updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                                     continue;
                                 } else {
-                                    sendResult(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
-                                    sendResult(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
+                                    updateLog(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
+                                    updateLog(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
                                 }
                             } catch (Exception e) {
-                                sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                                 e.printStackTrace();
                                 continue;
                             }
@@ -408,10 +416,10 @@ public class AddThumbsService extends Service {
                                                 REPLACE_EXISTING);
                                     }
                                 } catch (CopyAttributesFailedException e) {
-                                    sendResult(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
+                                    updateLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                                     e.printStackTrace();
                                 } catch (Exception e) {
-                                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
+                                    updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
                                     e.printStackTrace();
                                     continue;
                                 }
@@ -425,12 +433,12 @@ public class AddThumbsService extends Service {
                                 switch (prefs.getString("exiv2SkipOnLogLevel", "warn")) {
                                     case "warn":
                                         if (doc instanceof ETADocFile) { doc.deleteOutputInTmp(); }
-                                        sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                        updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                                         continue;
                                     case "error":
                                     case "none":
-                                        sendResult(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
-                                        sendResult(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
+                                        updateLog(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
+                                        updateLog(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
                                 }
                             } catch (Exiv2ErrorException e) {
                                 e.printStackTrace();
@@ -438,14 +446,14 @@ public class AddThumbsService extends Service {
                                     case "warn":
                                     case "error":
                                         if (doc instanceof ETADocFile) { doc.deleteOutputInTmp(); }
-                                        sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                        updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                                         continue;
                                     case "none":
-                                        sendResult(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
-                                        sendResult(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
+                                        updateLog(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
+                                        updateLog(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
                                 }
                             } catch (Exception e) {
-                                sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                                 e.printStackTrace();
                                 continue;
                             }
@@ -495,14 +503,14 @@ public class AddThumbsService extends Service {
                                 }
                             }
                         } catch (DestinationFileExistsException | FileAlreadyExistsException e) {
-                            sendResult(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_cannot_move_to_backup)+"</span><br>",1));
+                            updateLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_cannot_move_to_backup)+"</span><br>",1));
                             e.printStackTrace();
                             continue;
                         } catch (CopyAttributesFailedException e) {
-                            sendResult(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
+                            updateLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                         } catch (Exception e) {
-                            sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_moving_doc, e.getMessage()) + "</span><br>", 1));
+                            updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_moving_doc, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                             continue;
                         }
@@ -532,10 +540,10 @@ public class AddThumbsService extends Service {
                                 }
                             }
                         } catch (CopyAttributesFailedException e) {
-                            sendResult(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
+                            updateLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                         } catch (Exception e) {
-                            sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
+                            updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_copying_doc, e.getMessage()) + "</span><br>", 1));
                             e.printStackTrace();
                             continue;
                         }
@@ -590,24 +598,24 @@ public class AddThumbsService extends Service {
                         doc.copyAttributesTo(outputPath);
                     }
                 } catch (DestinationFileExistsException | FileAlreadyExistsException e ) {
-                    sendResult(Html.fromHtml("<span style='color:red'>"+ getString(R.string.frag1_log_overwrite_not_allowed)+"</span><br>",1));
+                    updateLog(Html.fromHtml("<span style='color:red'>"+ getString(R.string.frag1_log_overwrite_not_allowed)+"</span><br>",1));
                     doc.deleteOutputInTmp();
                     e.printStackTrace();
                     continue;
                 } catch (CopyAttributesFailedException e) {
-                    sendResult(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
+                    updateLog(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_log_could_not_copy_timestamp_and_attr, e.getMessage()) + "</span><br>", 1));
                     e.printStackTrace();
                 } catch (Exception e) {
-                    sendResult(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_moving_doc, e.getMessage()) + "</span><br>", 1));
+                    updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_error_moving_doc, e.getMessage()) + "</span><br>", 1));
                     e.printStackTrace();
                     continue;
                 }
 
-                sendResult(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_done) + "</span><br>",1));
+                updateLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_done) + "</span><br>",1));
             }
         }
 
-        sendResult(getString(R.string.frag1_log_finished));
+        updateLogAndNotif(getString(R.string.frag1_log_finished));
         sendFinished();
     }
 
