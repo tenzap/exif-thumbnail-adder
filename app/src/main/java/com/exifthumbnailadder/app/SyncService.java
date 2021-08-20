@@ -142,7 +142,7 @@ public class SyncService extends Service {
                         .setContentTitle("Processing 'Sync deletions'")
                         .setContentText(text)
                         .setOnlyAlertOnce(true)
-                        .setSmallIcon(R.drawable.ic_add)
+                        .setSmallIcon(R.drawable.ic_notif_status_bar)
                         .setContentIntent(pendingIntent)
                         .setTicker("ticker_text")
                         .build();

@@ -174,7 +174,7 @@ public class AddThumbsService extends Service {
                         .setContentTitle("Processing 'Add thumbnails'")
                         .setContentText(text)
                         .setOnlyAlertOnce(true)
-                        .setSmallIcon(R.drawable.ic_add)
+                        .setSmallIcon(R.drawable.ic_notif_status_bar)
                         .setContentIntent(pendingIntent)
                         .setTicker("ticker_text")
                         .build();
