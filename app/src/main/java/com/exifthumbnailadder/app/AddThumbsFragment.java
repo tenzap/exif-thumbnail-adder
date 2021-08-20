@@ -134,13 +134,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         view.findViewById(R.id.button_addThumbs).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Button start = (Button) getView().findViewById(R.id.button_addThumbs);
-                Button stop = (Button) getView().findViewById(R.id.button_stopProcess);
-
-                start.setVisibility(Button.GONE);
-                stop.setVisibility(Button.VISIBLE);
-
-                setBottomBarMenuItemsEnabled(false);
+                displayStopButton();
                 addThumbsUsingTreeUris(view);
             }
         });
@@ -149,11 +143,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
             public void onClick(View view) {
                 stopProcessing = true;
                 getContext().stopService(ETAServiceIntent);
-                Button start = (Button) getView().findViewById(R.id.button_addThumbs);
-                Button stop = (Button) getView().findViewById(R.id.button_stopProcess);
-                start.setVisibility(Button.VISIBLE);
-                stop.setVisibility(Button.GONE);
-                setBottomBarMenuItemsEnabled(true);
+                displayStartButton();
             }
         });
 
@@ -184,6 +174,13 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
     @Override
     public void onResume() {
         super.onResume();
+
+        if (ServiceUtil.isServiceRunning(getContext(), ETAService.class)) {
+            displayStopButton();
+        } else {
+            displayStartButton();
+        }
+
         getActivity().setTitle(R.string.action_add_thumbs);
         textViewLog.setText(log);
         AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
@@ -414,4 +411,19 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                 }
             });
 
+    private void displayStartButton() {
+        Button start = (Button) getView().findViewById(R.id.button_addThumbs);
+        Button stop = (Button) getView().findViewById(R.id.button_stopProcess);
+        start.setVisibility(Button.VISIBLE);
+        stop.setVisibility(Button.GONE);
+        setBottomBarMenuItemsEnabled(true);
+    }
+
+    private void displayStopButton() {
+        Button start = (Button) getView().findViewById(R.id.button_addThumbs);
+        Button stop = (Button) getView().findViewById(R.id.button_stopProcess);
+        start.setVisibility(Button.GONE);
+        stop.setVisibility(Button.VISIBLE);
+        setBottomBarMenuItemsEnabled(false);
+    }
 }
