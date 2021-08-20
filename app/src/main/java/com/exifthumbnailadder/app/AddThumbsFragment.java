@@ -46,11 +46,14 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.menu.MenuView;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 
@@ -64,7 +67,6 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
 
     SharedPreferences prefs = null;
     TextView textViewLog, textViewDirList;
-    public final static SpannableStringBuilder log = new SpannableStringBuilder("");
     NestedScrollView scrollview = null;
     private boolean stopProcessing = false;
     private boolean isProcessing = false;
@@ -81,14 +83,6 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
             @Override
             public void onReceive(Context context, Intent intent) {
                 switch (intent.getAction()) {
-                    case "com.exifthumbnailadder.app.SERVICE_RESULT_STRING":
-                        String string = intent.getStringExtra("com.exifthumbnailadder.app.SERVICE_MESSAGE");
-                        updateUiLog(string);
-                        break;
-                    case "com.exifthumbnailadder.app.SERVICE_RESULT_SPANNED":
-                        Spanned spanned = (Spanned)intent.getCharSequenceExtra("com.exifthumbnailadder.app.SERVICE_MESSAGE");
-                        updateUiLog(spanned);
-                        break;
                     case "com.exifthumbnailadder.app.SERVICE_RESULT_FINISHED":
                         setIsProcessFalse(null);
                         break;
@@ -112,8 +106,6 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
     public void onStart() {
         super.onStart();
         IntentFilter filter = new IntentFilter();
-        filter.addAction("com.exifthumbnailadder.app.SERVICE_RESULT_STRING");
-        filter.addAction("com.exifthumbnailadder.app.SERVICE_RESULT_SPANNED");
         filter.addAction("com.exifthumbnailadder.app.SERVICE_RESULT_FINISHED");
         LocalBroadcastManager.getInstance(getContext())
                 .registerReceiver(receiver, filter);
@@ -163,6 +155,30 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         } else {
             ll.setVisibility(View.GONE);
         }
+
+        // Create the observer which updates the UI.
+        final Observer<SpannableStringBuilder> ETAObserver = new Observer<SpannableStringBuilder>() {
+            @Override
+            public void onChanged(@Nullable final SpannableStringBuilder spannableLog) {
+                // Update the UI, in this case, a TextView.
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        textViewLog.setText(spannableLog);
+                        // Stuff that updates the UI
+                        scrollview.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollview.fullScroll(ScrollView.FOCUS_DOWN);
+                            }
+                        });
+                    }
+                });
+            }
+        };
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        LogLiveData.get().observe(getViewLifecycleOwner(), ETAObserver);
+
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -182,7 +198,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         }
 
         getActivity().setTitle(R.string.action_add_thumbs);
-        textViewLog.setText(log);
+        textViewLog.setText(LogLiveData.get().getValue());
         AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
         scrollDown();
     }
@@ -307,34 +323,34 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         new Thread(new Runnable() {
             @Override
             public void run() {
-                log.clear();
-                updateUiLog(getString(R.string.frag1_log_starting));
+                LogLiveData.get().clear();
+                LogLiveData.get().appendLog(getString(R.string.frag1_log_starting));
 
                 if (!prefs.getBoolean("useSAF", true) || BuildConfig.FLAVOR.equals("google_play")
                         || BuildConfig.FLAVOR.equals("standard") && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
                 {
-                    updateUiLog(Html.fromHtml(getString(R.string.frag1_check_write_perm), 1));
+                    LogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_check_write_perm), 1));
                     if  (prefs.getBoolean("useSAF", true) && continueWithoutWriteExternalStoragePermission) {
-                        updateUiLog(Html.fromHtml("<span style='color:blue'>"+getString(R.string.frag1_continue_without_timestamps)+"</span><br>", 1));
+                        LogLiveData.get().appendLog(Html.fromHtml("<span style='color:blue'>"+getString(R.string.frag1_continue_without_timestamps)+"</span><br>", 1));
                     } else if (!hasWriteExternalStorage()) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
+                        LogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
                         setIsProcessFalse(view);
                         stopProcessing = false;
                         return;
                     } else {
-                        updateUiLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_successful) + "</span><br>", 1));
+                        LogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_successful) + "</span><br>", 1));
                     }
                 }
 
                 {
-                    updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
+                    LogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
                     if (!WorkingDirPermActivity.isWorkingDirPermOk(getContext())) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
+                        LogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
                         setIsProcessFalse(view);
                         stopProcessing = false;
                         return;
                     }
-                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+                    LogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
                 }
 
                 getContext().startForegroundService(ETAServiceIntent);
@@ -352,52 +368,12 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         }
     }
 
-    public void updateUiLog(String text) {
-        if (enableLog) Log.i(TAG, text);
-        log.append(text);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                textViewLog.setText(log);
-                // Stuff that updates the UI
-                scrollview.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollview.fullScroll(ScrollView.FOCUS_DOWN);
-                    }
-                });
-            }
-        });
-
-    }
-    public void updateUiLog(Spanned text) {
-        if (enableLog) Log.i(TAG, text.toString());
-        log.append(text);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                textViewLog.setText(log);
-                // Stuff that updates the UI
-                scrollview.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollview.fullScroll(ScrollView.FOCUS_DOWN);
-                    }
-                });
-            }
-        });
-    }
-
     public void setIsProcessFalse(View view) {
         isProcessing = false;
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Button start = (Button)getView().findViewById(R.id.button_addThumbs);
-                Button stop =  (Button)getView().findViewById(R.id.button_stopProcess);
-                start.setVisibility(Button.VISIBLE);
-                stop.setVisibility(Button.GONE);
-                setBottomBarMenuItemsEnabled(true);
+                displayStartButton();
             }
         });
     }

@@ -154,18 +154,12 @@ public class ETAService extends Service {
 
     public void sendResult(String message) {
         updateNotification(message);
-        Intent intent = new Intent("com.exifthumbnailadder.app.SERVICE_RESULT_STRING");
-        if(message != null)
-            intent.putExtra("com.exifthumbnailadder.app.SERVICE_MESSAGE", message);
-        broadcaster.sendBroadcast(intent);
+        LogLiveData.get().appendLog(message);
     }
 
     public void sendResult(Spanned message) {
         updateNotification(message.toString());
-        Intent intent = new Intent("com.exifthumbnailadder.app.SERVICE_RESULT_SPANNED");
-        if(message != null)
-            intent.putExtra("com.exifthumbnailadder.app.SERVICE_MESSAGE", message);
-        broadcaster.sendBroadcast(intent);
+        LogLiveData.get().appendLog(message);
     }
 
     public void sendFinished() {
