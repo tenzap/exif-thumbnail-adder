@@ -260,7 +260,11 @@ public class SyncService extends Service {
                         getApplicationContext(),
                         etaDocSrc.getBackupPath().toFile());
             }
-            doSyncForUri(etaSrcDirBackup, etaDocSrc, dryRun);
+            boolean finished = doSyncForUri(etaSrcDirBackup, etaDocSrc, dryRun);
+            if (!finished) {
+                stopSelf();
+                return;
+            }
 
             // Process outputUri
             if (!PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getBoolean("writeThumbnailedToOriginalFolder", false)) {
@@ -275,7 +279,11 @@ public class SyncService extends Service {
                             getApplicationContext(),
                             etaDocSrc.getDestPath().toFile());
                 }
-                doSyncForUri(etaSrcDirDest, etaDocSrc, dryRun);
+                finished = doSyncForUri(etaSrcDirDest, etaDocSrc, dryRun);
+                if (!finished) {
+                    stopSelf();
+                    return;
+                }
             }
         }
 
@@ -284,7 +292,7 @@ public class SyncService extends Service {
     }
 
 
-    private void doSyncForUri(ETASrcDir workingDirDocs, ETADoc srcDirEtaDoc, boolean dryRun ) {
+    private boolean doSyncForUri(ETASrcDir workingDirDocs, ETADoc srcDirEtaDoc, boolean dryRun ) {
 
         TreeSet<Object> docsInWorkingDir = (TreeSet<Object>)workingDirDocs.getDocsSet();
 
@@ -306,8 +314,7 @@ public class SyncService extends Service {
             if (stopProcessing) {
                 stopProcessing = false;
                 sendResult(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
-                stopSelf();
-                return;
+                return false;
             }
 
             // Skip some files
@@ -345,6 +352,7 @@ public class SyncService extends Service {
                 sendResult(Html.fromHtml("<br>",1));
             }
         }
+        return true;
     }
 
 }
