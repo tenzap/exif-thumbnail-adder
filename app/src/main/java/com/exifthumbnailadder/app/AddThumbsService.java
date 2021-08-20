@@ -163,7 +163,7 @@ public class AddThumbsService extends Service {
     }
 
     public void sendFinished() {
-        Intent intent = new Intent("com.exifthumbnailadder.app.SERVICE_RESULT_FINISHED");
+        Intent intent = new Intent("com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED");
         broadcaster.sendBroadcast(intent);
     }
 

@@ -77,7 +77,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
             @Override
             public void onReceive(Context context, Intent intent) {
                 switch (intent.getAction()) {
-                    case "com.exifthumbnailadder.app.SERVICE_RESULT_FINISHED":
+                    case "com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED":
                         setIsProcessFalse(null);
                         break;
                     default:
@@ -100,7 +100,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
     public void onStart() {
         super.onStart();
         IntentFilter filter = new IntentFilter();
-        filter.addAction("com.exifthumbnailadder.app.SERVICE_RESULT_FINISHED");
+        filter.addAction("com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED");
         LocalBroadcastManager.getInstance(getContext())
                 .registerReceiver(receiver, filter);
     }
