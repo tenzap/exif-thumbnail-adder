@@ -21,9 +21,11 @@
 package com.exifthumbnailadder.app;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.view.menu.MenuView;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.preference.PreferenceManager;
 
 import android.content.SharedPreferences;
@@ -98,6 +100,29 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
         scrollview = ((ScrollView)view.findViewById(R.id.sync_scrollview));
         AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
 
+        // Create the observer which updates the UI.
+        final Observer<SpannableStringBuilder> ETAObserver = new Observer<SpannableStringBuilder>() {
+            @Override
+            public void onChanged(@Nullable final SpannableStringBuilder spannableLog) {
+                // Update the UI, in this case, a TextView.
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        textViewLog.setText(spannableLog);
+                        // Stuff that updates the UI
+                        scrollview.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollview.fullScroll(ScrollView.FOCUS_DOWN);
+                            }
+                        });
+                    }
+                });
+            }
+        };
+        // Observe the LiveData, passing in this activity as the LifecycleOwner and the observer.
+        LogLiveDataSync.get().observe(getViewLifecycleOwner(), ETAObserver);
+
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
@@ -110,7 +135,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
     public void onResume() {
         super.onResume();
         getActivity().setTitle(R.string.action_sync);
-        textViewLog.setText(log);
+        textViewLog.setText(LogLiveDataSync.get().getValue());
         AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
         scrollDown();
     }
@@ -155,18 +180,18 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
         new Thread(new Runnable() {
             @Override
             public void run() {
-                log.clear();
-                updateUiLog(getString(R.string.frag1_log_starting));
+                LogLiveDataSync.get().clear();
+                LogLiveDataSync.get().appendLog(getString(R.string.frag1_log_starting));
 
                 {
-                    updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
+                    LogLiveDataSync.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
                     if (!WorkingDirPermActivity.isWorkingDirPermOk(getContext())) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
+                        LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
                         setIsProcessFalse();
                         stopProcessing = false;
                         return;
                     }
-                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+                    LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
                 }
 
                 InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
@@ -187,16 +212,16 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
                     }
                     if (etaSrcDir == null) throw new UnsupportedOperationException();
 
-                    updateUiLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, etaSrcDir.getFSPath()) + "</b></u><br>",1));
+                    LogLiveDataSync.get().appendLog(Html.fromHtml("<br><u><b>"+getString(R.string.frag1_log_processing_dir, etaSrcDir.getFSPath()) + "</b></u><br>",1));
 
                     // Check permission in case we use SAF...
                     // If we don't have permission, continue to next srcDir
-                    updateUiLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
+                    LogLiveDataSync.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
                     if (! etaSrcDir.isPermOk()) {
-                        updateUiLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
+                        LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
                         continue;
                     }
-                    updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+                    LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
 
 
                     ETADoc etaDocSrc = null;
@@ -223,7 +248,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
 
                     // Process outputUri
                     if (!PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("writeThumbnailedToOriginalFolder", false)) {
-                        updateUiLog(Html.fromHtml("<br>",1));
+                        LogLiveDataSync.get().appendLog(Html.fromHtml("<br>",1));
                         ETASrcDir etaSrcDirDest = null;
                         if (etaDocSrc instanceof ETADocDf) {
                             etaSrcDirDest = new ETASrcDirUri(
@@ -238,7 +263,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
                     }
                 }
 
-                updateUiLog(getString(R.string.frag1_log_finished));
+                LogLiveDataSync.get().appendLog(getString(R.string.frag1_log_finished));
 
                 setIsProcessFalse();
             }
@@ -249,9 +274,9 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
 
         TreeSet<Object> docsInWorkingDir = (TreeSet<Object>)workingDirDocs.getDocsSet();
 
-        updateUiLog(getString(R.string.sync_log_checking, workingDirDocs.getFSPathWithoutRoot()));
-        updateUiLog("\n");
-        updateUiLog(Html.fromHtml("<u>" + getString(R.string.sync_log_files_to_remove) + "</u><br>",1));
+        LogLiveDataSync.get().appendLog(getString(R.string.sync_log_checking, workingDirDocs.getFSPathWithoutRoot()));
+        LogLiveDataSync.get().appendLog("\n");
+        LogLiveDataSync.get().appendLog(Html.fromHtml("<u>" + getString(R.string.sync_log_files_to_remove) + "</u><br>",1));
 
         for (Object _doc : docsInWorkingDir) {
 
@@ -267,7 +292,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
             if (stopProcessing) {
                 setIsProcessFalse();
                 stopProcessing = false;
-                updateUiLog(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
+                LogLiveDataSync.get().appendLog(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
                 return;
             }
 
@@ -288,60 +313,24 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
                     srcFileExists = srcFile.exists();
                 }
             } catch (Exception e) {
-                updateUiLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
+                LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
                 e.printStackTrace();
                 continue;
             }
 
             // Delete file if it doesn't exist in source directory
             if (!srcFileExists) {
-                updateUiLog("⋅ " + doc.getDPath() + "... ");
+                LogLiveDataSync.get().appendLog("⋅ " + doc.getDPath() + "... ");
                 if (!dryRun) {
                     boolean deleted = doc.delete();
                     if (deleted)
-                        updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_done)+"</span>",1));
+                        LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_done)+"</span>",1));
                     else
-                        updateUiLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.sync_log_failure_to_delete_file)+"</span>",1));
+                        LogLiveDataSync.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.sync_log_failure_to_delete_file)+"</span>",1));
                 }
-                updateUiLog(Html.fromHtml("<br>",1));
+                LogLiveDataSync.get().appendLog(Html.fromHtml("<br>",1));
             }
         }
-    }
-
-    public void updateUiLog(String text) {
-        if (MainApplication.enableLog) Log.i(MainApplication.TAG, text);
-        log.append(text);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                textViewLog.setText(log);
-                // Stuff that updates the UI
-                scrollview.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollview.fullScroll(ScrollView.FOCUS_DOWN);
-                    }
-                });
-            }
-        });
-    }
-
-    public void updateUiLog(Spanned text) {
-        if (MainApplication.enableLog) Log.i(MainApplication.TAG, text.toString());
-        log.append(text);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                textViewLog.setText(log);
-                // Stuff that updates the UI
-                scrollview.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        scrollview.fullScroll(ScrollView.FOCUS_DOWN);
-                    }
-                });
-            }
-        });
     }
 
     public void setIsProcessFalse() {
