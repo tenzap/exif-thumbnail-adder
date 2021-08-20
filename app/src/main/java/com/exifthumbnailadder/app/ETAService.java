@@ -5,10 +5,12 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -67,6 +69,8 @@ public class ETAService extends Service {
     private ServiceHandler serviceHandler;
     LocalBroadcastManager broadcaster;
     boolean stopProcessing = false;
+    private final static int NOTIFICATION_ID = 99999;
+    private final static String CHANNEL_ID = "1";
 
     // Handler that receives messages from the thread
     private final class ServiceHandler extends Handler {
@@ -116,34 +120,8 @@ public class ETAService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show();
 
-        Intent notificationIntent = new Intent(this, AddThumbsFragment.class);
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        String CHANNEL_ID = "1";
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = "channel_name";
-            String description = "channel_description";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-
-            // Don't see these lines in your code...
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-//        }
-
-        Notification notification =
-                new Notification.Builder(this , CHANNEL_ID)
-                        .setContentTitle("Exif Thumbnail Adder")
-                        .setContentText("Adding thumbnails...")
-                        .setSmallIcon(R.drawable.ic_add)
-                        .setContentIntent(pendingIntent)
-                        .setTicker("ticker_text")
-                        .build();
-
         // Notification ID cannot be 0.
-        startForeground(99999, notification);
+        startForeground(NOTIFICATION_ID, getMyActivityNotification("Service started successfully"));
 
         //doProcessing();
 
@@ -175,6 +153,7 @@ public class ETAService extends Service {
     }
 
     public void sendResult(String message) {
+        updateNotification(message);
         Intent intent = new Intent("com.exifthumbnailadder.app.SERVICE_RESULT_STRING");
         if(message != null)
             intent.putExtra("com.exifthumbnailadder.app.SERVICE_MESSAGE", message);
@@ -182,6 +161,7 @@ public class ETAService extends Service {
     }
 
     public void sendResult(Spanned message) {
+        updateNotification(message.toString());
         Intent intent = new Intent("com.exifthumbnailadder.app.SERVICE_RESULT_SPANNED");
         if(message != null)
             intent.putExtra("com.exifthumbnailadder.app.SERVICE_MESSAGE", message);
@@ -249,6 +229,7 @@ public class ETAService extends Service {
                         if (stopProcessing) {
                             stopProcessing = false;
                             sendResult(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
+                            stopSelf();
                             return;
                         }
 
@@ -886,4 +867,48 @@ public class ETAService extends Service {
         copyFileAttributes(inFilePath, outFilePath);
     }
 
+    // https://stackoverflow.com/questions/5528288/how-do-i-update-the-notification-text-for-a-foreground-service-in-android
+    private Notification getMyActivityNotification(String text) {
+        Intent notificationIntent = new Intent(this, AddThumbsFragment.class);
+        PendingIntent pendingIntent =
+                PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "channel_name";
+            String description = "channel_description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+
+            // Don't see these lines in your code...
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+
+        Notification notification =
+                new Notification.Builder(this , CHANNEL_ID)
+//                        .setContentTitle("Exif Thumbnail Adder")
+//                        .setContentText("Adding thumbnails...")
+                        .setContentTitle("Processing 'Add thumbnails'")
+                        .setContentText(text)
+                        .setOnlyAlertOnce(true)
+                        .setSmallIcon(R.drawable.ic_add)
+                        .setContentIntent(pendingIntent)
+                        .setTicker("ticker_text")
+                        .build();
+
+        return notification;
+    }
+
+    /**
+     * This is the method that can be called to update the Notification
+     */
+    private void updateNotification(String text){
+        if (ServiceUtil.isServiceRunning(getApplicationContext(), ETAService.class)) {
+            Notification notification = getMyActivityNotification(text);
+
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(NOTIFICATION_ID, notification);
+        }
+    }
 }
