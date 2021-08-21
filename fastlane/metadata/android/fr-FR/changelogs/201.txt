@@ -1,0 +1,4 @@
+- l'utilisateur peut quitter l'application pendant le traitement
+- l'avancement du traitement est désormais aussi affiché dans une notification
+- quelques mises à jour techniques (de la version des dépendances, du wrapper gradle, des fichiers gradle et Fastfile pour signer les APK de type 'release')
+- rappel: app traduisible sur crowdin https://crowdin.com/project/exif-thumbnail-adder

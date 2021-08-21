@@ -56,7 +56,6 @@ GPL-3.0 (see "COPYING" file on project homepage)
 - You are very welcome to contribute to the project either by translating, testing, reporting bugs, developing, creating pull requests with fixes and features.
 - Suggestions for contribution
     - If you have a google developer account, you may contact me to see how you could publish the app to the play store
-    - Transform the batch processing into a "Service" so that it doesn't stop when the user leaves the main "Activity"
     - Translation
         - through [crowdin project page](https://crowdin.com/project/exif-thumbnail-adder). If you want a language that is not listed on crowdin, please ask for it so that I make it available.
         - or translate the following files and submit a pull request/issue with the translated files
