@@ -10,7 +10,7 @@
     <string name="action_settings">Einstellungen</string>
     <string name="action_sync">Löschungen synchronisieren</string>
     <string name="action_about">Info</string>
-    <string name="action_add_thumbs">Miniaturbilder hinzufügen</string>
+    <string name="action_add_thumbs">Minibilder hinzufügen</string>
     <!-- About Activity -->
     <string name="about_about_title">App-Info</string>
     <string name="about_content">Info…</string>
