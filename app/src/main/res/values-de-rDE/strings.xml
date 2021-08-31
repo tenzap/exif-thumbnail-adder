@@ -8,7 +8,7 @@
     <string name="title_activity_working_dir_perm">Arbeitsverzeichnis-Berechtigungen</string>
     <!-- Toolbar action menu labels -->
     <string name="action_settings">Einstellungen</string>
-    <string name="action_sync">Löschungen synchronisieren</string>
+    <string name="action_sync">Löschen synchr.</string>
     <string name="action_about">Info</string>
     <string name="action_add_thumbs">Minibilder hinzufügen</string>
     <!-- About Activity -->
