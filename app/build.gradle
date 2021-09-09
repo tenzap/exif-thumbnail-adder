@@ -71,6 +71,7 @@ android {
             }
         }
         debug {
+            applicationIdSuffix ".debug"
             //minifyEnabled true
             //shrinkResources true
 
