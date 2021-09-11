@@ -150,5 +150,5 @@ echo "dependencies { pixymetaImplementation project(path: ':library:pixymeta-and
 ### To create screenshots
 From within the root directory of the project run:
 ```Shell
-ANDROID_SDK_ROOT=~/Android/Sdk/ fastlane screenshots
+ANDROID_SDK_ROOT=~/Android/Sdk/ bundle exec fastlane screenshots
 ```
