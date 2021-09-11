@@ -84,7 +84,11 @@ public class ExampleInstrumentedTest {
     public void useAppContext() {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        assertEquals("com.exifthumbnailadder.app", appContext.getPackageName());
+        String appIdSuffix = "";
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
+            appIdSuffix = ".debug";
+        }
+        assertEquals("com.exifthumbnailadder.app" + appIdSuffix, appContext.getPackageName());
     }
 
     static {

@@ -114,6 +114,8 @@ platform :android do
       locales: ["en-US", "de-DE", "fr-FR", "vi-VN", "zh-CN"],
       ending_locale: "en-US",
       reinstall_app: true,
+      app_package_name: "com.exifthumbnailadder.app.debug",
+      tests_package_name: "com.exifthumbnailadder.app.debug.test",
       app_apk_path: "app/build/outputs/apk/standard/debug/exifthumbnailadder-standard-debug.apk",
       tests_apk_path: "app/build/outputs/apk/androidTest/standard/debug/exifthumbnailadder-standard-debug-androidTest.apk",
       #specific_device: "emulator-5554"
