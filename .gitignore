@@ -22,6 +22,9 @@ library/exiv2-0.27.4-Source/po
 library/exiv2-0.27.4-Source/test
 library/exiv2-0.27.4-Source/tests
 
+# The directory that holds the config of "bundle" the Ruby Dependency Manager
+.bundle
+
 # fastlane specific
 **/fastlane/report.xml
 # deliver temporary files
