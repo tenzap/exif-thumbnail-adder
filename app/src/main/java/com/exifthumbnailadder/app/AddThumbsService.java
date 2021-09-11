@@ -38,6 +38,7 @@ import com.exifthumbnailadder.app.exception.LibexifException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.AtomicMoveNotSupportedException;
@@ -706,7 +707,23 @@ public class AddThumbsService extends Service {
             if (targetParentUri.getScheme().equals("file")) {
                 targetTmpFile.renameTo(targetFile);
             } else {
-                DocumentsContract.renameDocument(getContentResolver(), targetTmpUri, displayName);
+                try {
+                    DocumentsContract.renameDocument(getContentResolver(), targetTmpUri, displayName);
+                } catch (FileNotFoundException e) {
+                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.P) {
+                        // On Android P (API 28), there is a bug with renameDocument.
+                        // It throws a FileNotFoundException although the document is renamed.
+                        // This affects only API 28 and was fixed in API 29
+                        // Details here: https://issuetracker.google.com/issues/171286865
+                        // We silently skip this exception here.
+
+                        // Do nothing.
+                    } else {
+                        throw e;
+                    }
+                } catch (Exception e) {
+                    throw e;
+                }
             }
         }
         return targetUri;
