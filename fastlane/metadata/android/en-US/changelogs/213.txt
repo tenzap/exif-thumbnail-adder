@@ -1,0 +1,4 @@
+- Fix bug on Android 9 / API 28
+- Reduce app size (APK & used space)
+- Update German translation
+- Reminder: translate the app on crowdin https://crowdin.com/project/exif-thumbnail-adder
