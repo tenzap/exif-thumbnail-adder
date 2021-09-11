@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Permissions below are needed for fastlane/screengrab -->
 
@@ -17,4 +18,11 @@
         <package android:name="com.android.documentsui" />
         <package android:name="com.google.android.documentsui" />
     </queries>
+
+    <application
+        tools:replace="android:icon,android:roundIcon"
+        android:icon="@drawable/ic_exif_thumbnails_adder_debug"
+        android:roundIcon="@drawable/ic_exif_thumbnails_adder_debug">
+    </application>
+
 </manifest>
