@@ -259,6 +259,7 @@ public class SyncService extends Service {
 
     private boolean doSyncForUri(ETASrcDir workingDirDocs, ETADoc srcDirEtaDoc, boolean dryRun ) {
 
+        @SuppressWarnings("unchecked")
         TreeSet<Object> docsInWorkingDir = (TreeSet<Object>)workingDirDocs.getDocsSet();
 
         updateLogAndNotif(getString(R.string.sync_log_checking, workingDirDocs.getFSPathWithoutRoot()));

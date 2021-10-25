@@ -236,6 +236,7 @@ public class AddThumbsService extends Service {
             updateLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
 
             // 1. build list of files to process
+            @SuppressWarnings("unchecked")
             TreeSet<Object> docs = (TreeSet<Object>) etaSrcDir.getDocsSet();
             updateLogAndNotif(Html.fromHtml(getString(R.string.frag1_log_count_files_to_process, docs.size() ) + "<br>",1));
 
