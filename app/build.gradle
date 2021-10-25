@@ -141,3 +141,9 @@ dependencies {
 if (new File("enable-pixymeta-android.gradle").exists()) {
     apply from: 'enable-pixymeta-android.gradle'
 }
+
+allprojects {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
+}
