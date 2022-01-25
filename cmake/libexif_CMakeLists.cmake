@@ -132,7 +132,7 @@ check_function_exists(CFPreferencesCopyAppValue HAVE_CFPREFERENCESCOPYAPPVALUE)
 check_function_exists(dcgettext HAVE_DCGETTEXT)
 check_function_exists(gettext HAVE_GETTEXT)
 check_function_exists(iconv HAVE_ICONV)
-check_function_exists(localtime_r HAVE_DCGETTEXT)
+check_function_exists(localtime_r HAVE_LOCALTIME_R)
 
 check_include_file(dlfcn.h HAVE_DLFCN_H)
 check_include_file(inttypes.h HAVE_INTTYPES_H)
