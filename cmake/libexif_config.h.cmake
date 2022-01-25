@@ -4,6 +4,14 @@
    language is requested. */
 #cmakedefine ENABLE_NLS
 
+/* Define to 1 if you have the Mac OS X function CFLocaleCopyCurrent in the
+CoreFoundation framework. */
+#cmakedefine HAVE_CFLOCALECOPYCURRENT
+
+/* Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in
+the CoreFoundation framework. */
+#cmakedefine HAVE_CFPREFERENCESCOPYAPPVALUE
+
 /* Define if the GNU dcgettext() function is already present or preinstalled.
    */
 #cmakedefine HAVE_DCGETTEXT

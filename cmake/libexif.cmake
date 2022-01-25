@@ -2,7 +2,7 @@
 include(ExternalProject)
 
 ExternalProject_Add(libexif_external
-        URL ${CMAKE_CURRENT_SOURCE_DIR}/library/libexif-0.6.22
+        URL ${CMAKE_CURRENT_SOURCE_DIR}/library/libexif-0.6.24
         CMAKE_ARGS
             ${CL_ARGS}
             -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}
