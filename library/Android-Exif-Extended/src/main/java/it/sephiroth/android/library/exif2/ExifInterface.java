@@ -1581,7 +1581,7 @@ public class ExifInterface {
 		if( l == null || l.length <= 0 ) {
 			return null;
 		}
-		return new Byte( l[0] );
+		return l[0];
 	}
 
 	/**
