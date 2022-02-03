@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<project name= "pixymeta-android" default="compile" basedir="." xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+	<description>
+		Ant build.xml file for building the pixymeta-android library.
+	</description>
+	<!-- define Maven coordinates -->
+	<property name="groupId" value="com.github.dragon66" />
+	<property name="artifactId" value="pixymeta-android" />
+	<property name="version" value="1.0-SNAPSHOT" />
+	<!-- there server id in the Maven settings.xml -->
+  	<property name="ossrh-server-id" value="ossrh" />
+	<property name="ossrh-snapshots-repository-url" 
+    	value="https://oss.sonatype.org/content/repositories/snapshots" />
+	<!-- define artifacts' name, which follows the convention of Maven -->
+	<property name="jar" value="lib/${artifactId}-${version}.jar" />
+	<path id="pixymeta-android.classpath">
+	    <fileset dir="lib">
+	    	<include name="*.jar"/>
+	    	<exclude name="pixymeta.jar"/>
+	    </fileset>
+    </path>
+    <fileset id="pixymeta-android.source.path" dir="src" defaultexcludes="yes">
+        <include name="**/*.java"/>
+	</fileset>
+	<target name="init" depends="clean">
+		<mkdir dir="build/classes"/>
+		<mkdir dir="dist"/>
+		<mkdir dir="build/doc"/>
+		<copy includeemptydirs="false" todir="build/classes">
+            <fileset dir="src">
+                <include name="*"/>
+            </fileset>
+        </copy>
+	</target>
+	<target name="clean">
+		<delete dir="build"/>
+		<delete dir="dist"/>
+	</target>
+	<target name="doc" depends="init" >
+		<javadoc destdir="build/doc" classpathref="pixymeta-android.classpath" additionalparam="-notimestamp" packagenames="pixy.*">
+		    <fileset refid="pixymeta-android.source.path"/>		 	    
+		</javadoc>
+	</target>
+	<target name="compile" depends="init">
+		<echo message="${ant.project.name}: ${ant.file}"/>
+        <javac includeantruntime="false" srcdir="src" destdir="build/classes" 
+            encoding="UTF-8" classpathref="pixymeta-android.classpath">
+        </javac>
+	</target>
+	<target name="package" depends="compile, doc">
+		<jar destfile="dist/pixymeta-android.jar">
+		    <fileset dir="build/classes"/>
+		    <fileset dir="build">	
+		    	<include name="doc/**/*"/>
+		    </fileset>
+	    </jar>
+		<delete file="lib/pixymeta-android.jar"/>
+		<copy file="dist/pixymeta-android.jar" todir="lib"/>
+	</target>
+	<target name="package-snapshot">
+	    <jar destfile="dist/${artifactId}-${version}.jar">
+		    <fileset dir="build/classes"/>
+		</jar>
+		<delete file="{jar}"/>
+		<copy file="dist/${artifactId}-${version}.jar" todir="lib"/>
+	</target>
+	<target name="deploy" depends="package, package-snapshot" description="deploy snapshot version to Maven snapshot repository">
+   	    <artifact:mvn>
+   	        <arg value="org.apache.maven.plugins:maven-deploy-plugin:2.6:deploy-file" />
+     	    <arg value="-Durl=${ossrh-snapshots-repository-url}" />
+      		<arg value="-DrepositoryId=${ossrh-server-id}" />
+      		<arg value="-DpomFile=pom.xml" />
+      		<arg value="-Dfile=${jar}" />
+    	</artifact:mvn>
+  </target>
+</project>

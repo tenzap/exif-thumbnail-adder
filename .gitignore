@@ -15,9 +15,15 @@
 .cxx
 local.properties
 
-enable-pixymeta-android.gradle
-app/enable-pixymeta-android.gradle
-library/pixymeta-android
+library/pixymeta-android/.git
+library/pixymeta-android/bin
+library/pixymeta-android/build
+library/pixymeta-android/dist
+library/pixymeta-android/images
+library/pixymeta-android/lib
+library/pixymeta-android/.classpath
+library/pixymeta-android/.project
+library/pixymeta-android/.gitattributes
 library/exiv2-0.27.5-Source/contrib
 library/exiv2-0.27.5-Source/fuzz
 library/exiv2-0.27.5-Source/po

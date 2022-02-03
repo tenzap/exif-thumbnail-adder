@@ -1,0 +1,32 @@
+***************************
+Last modified on 06/21/2019
+***************************
+21Jun2019  Added code for JPGMeta to return the removed metadata as a map
+14May2019  Write IPTC to normal TIFF IPTC tag instead of PhotoShop IRB block
+13Feb2017  Fixed bug with JPEGTweaker.insertXMP
+16Aug2016  Added support for Unicode string data to IPTCDataSet
+07Apr2016  Moved XMP to new package and make it abstract
+30Mar2016  Added insertTextChunk() to PNGMeta
+30Mar2016  Rewrite JPEGMeta writeComment() to leverage COMBuilder
+07Nov2015  Added Metadata multiple comments support
+30Sep2015  Added mergesort() to ArrayUtils
+27Sep2015  Added shallowClose() to stream classes
+19Sep2015  Added closeAll() to random access stream
+16Sep2015  Added insertComment() to GIFMeta to insert comment block
+19Jul2015  Renamed MetadataType.PHOTOSHOP to MetadataType.PHOTOSHOP_IRB
+12Jul2015  Added Metadata support for JPEG APP0 (JFIF)
+12Jul2015  Fixed bug with JPEGTweaker removing APP13
+09Jul2015  Rewrote TextualChunks to work with multiple textual chunks
+09Jul2015  Added metadata support for PNG tIME chunk
+08Jul2015  Made Metadata implements MetadataReader directly
+08Jul2015  Removed unnecessary separate MetadataReader implementations
+06Jul2015  Added insertXMP(InputStream, OutputStream, XMP)
+05Jul2015  Added support or PNG Textual chunk
+03Jul2015  Removed NativeMetadata and related code
+02Jul2015  Added support for JPEG APP12 and APP14
+01Jul2015  Added support for non-standard XMP identifier
+12Jun2015  Added slf4j logging and ant buildfile
+29Apr2015  Renamed XMLUtils findAttribute() to getAttribute()
+10Apr2015  Meta data related changes
+07Apr2015  Merge Adobe IRB IPTC and TIFF IPTC if both exist 
+23Mar2015  Initial creation

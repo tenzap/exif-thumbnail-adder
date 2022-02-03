@@ -56,6 +56,14 @@ import java.util.TreeSet;
 
 import it.sephiroth.android.library.exif2.IfdId;
 import it.sephiroth.android.library.exif2.Rational;
+import pixy.image.tiff.IFD;
+import pixy.image.tiff.RationalField;
+import pixy.image.tiff.ShortField;
+import pixy.image.tiff.TiffFieldEnum;
+import pixy.image.tiff.TiffTag;
+import pixy.meta.Metadata;
+import pixy.meta.exif.ExifThumbnail;
+import pixy.meta.exif.JpegExif;
 
 import static com.exifthumbnailadder.app.MainApplication.enableLog;
 import static com.exifthumbnailadder.app.MainApplication.TAG;
@@ -325,13 +333,7 @@ public class AddThumbsService extends Service {
                             writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, doc, thumbnail);
                             break;
                         case "exiflib_pixymeta":
-                            if (!PixymetaInterface.hasPixymetaLib()) {
-                                updateLog(Html.fromHtml("<br><br><span style='color:red'>" + getString(R.string.frag1_log_pixymeta_missing) + "</span><br>", 1));
-                                sendFinished();
-                                stopSelf();
-                                return;
-                            }
-                            PixymetaInterface.writeThumbnailWithPixymeta(srcImgIs, newImgOs, thumbnail);
+                            writeThumbnailWithPixymeta(srcImgIs, newImgOs, thumbnail);
                             break;
                     }
 
@@ -846,6 +848,28 @@ public class AddThumbsService extends Service {
             // otherwise addition of tags will crash (internal_writer needs a base coming
             // from another file, ie. for the SOS tag
             sInExif.writeExif(srcImgIs, newImgOs);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    private void writeThumbnailWithPixymeta (
+            InputStream srcImgIs, OutputStream newImgOs, Bitmap thumbnail)
+            throws Exception {
+        // PixyMeta doesn't copy correctly the IFDInterop
+        try {
+            IFD tbIFD = new IFD();
+            ExifThumbnail exifTb = new ExifThumbnail(thumbnail.getWidth(), thumbnail.getHeight(), ExifThumbnail.DATA_TYPE_KJpegRGB, NativeLibHelper.bitmapToJPEGBytearray(thumbnail), tbIFD);
+            JpegExif jpegExif = new JpegExif();
+            jpegExif.setThumbnail(exifTb);
+
+            // set other mandatory tags for IFD1 (compression, resolution, res unit)
+            tbIFD.addField(new ShortField(TiffTag.COMPRESSION.getValue(), new short[]{(short) TiffFieldEnum.Compression.OLD_JPG.getValue()}));
+            tbIFD.addField(new ShortField(TiffTag.RESOLUTION_UNIT.getValue(), new short[]{2}));
+            tbIFD.addField(new RationalField(TiffTag.X_RESOLUTION.getValue(), new int[] {72,1}));
+            tbIFD.addField(new RationalField(TiffTag.Y_RESOLUTION.getValue(), new int[] {72,1}));
+
+            Metadata.insertExif(srcImgIs, newImgOs, jpegExif, true);
         } catch (Exception e) {
             throw e;
         }

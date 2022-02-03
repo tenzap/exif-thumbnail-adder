@@ -1,6 +1,4 @@
 include ':library:Android-Exif-Extended'
-if (new File("./enable-pixymeta-android.gradle").exists()) {
-    apply from: 'enable-pixymeta-android.gradle'
-}
+include ':library:pixymeta-android'
 include ':app'
 rootProject.name = "Exif Thumbnail Adder"

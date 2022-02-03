@@ -89,7 +89,6 @@ GPL-3.0 (see "COPYING" file on project homepage)
 - If libexif detects some problems (errors) in a file, it is skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
 
 ### pixymeta-android
-- please note that at the time of writing this, pixymeta-android is licensed under EPL-1.0 which is not compatible with GPL. You may compile the app yourself to use pixymeta-android. See below for more info.
 - **usage is discouraged** until pixymeta bug is fixed
 - the existing EXIF tags are read and metadata is rewritten from scratch using what was read
 - [XMP*] tags are kept
@@ -130,21 +129,6 @@ The app can be compiled in any of the following flavors:
 
 * *standard* (version shipped on F-Droid)
 * *google_play* (version shipped on Google Play). It is the same as "standard" except it has targetSdk 29 and doesn't request `MANAGE_EXTERNAL_STORAGE` permission.
-* *pixymeta* is not shipped on any store. For licensing reasons you have to compile it yourself for personal use only (pixymeta-android is licensed under EPL-1.0 which is not compatible with GPL-3.0). Compilation guidance for this flavor is detailed below.
-
-
-### To compile with pixymeta-android library
-1. create file `./enable-pixymeta-android.gradle` and add this line: `include ':library:pixymeta-android'`
-```Shell
-echo "include ':library:pixymeta-android'" > ./enable-pixymeta-android.gradle
-```
-1. create file `./app/enable-pixymeta-android.gradle` and add this line: `dependencies { pixymetaImplementation project(path: ':library:pixymeta-android') }`
-```Shell
-echo "dependencies { pixymetaImplementation project(path: ':library:pixymeta-android') }" > ./app/enable-pixymeta-android.gradle
-```
-1. place the `src` directory of pixymeta-android that you can get from the [pixymeta-android project page](https://github.com/dragon66/pixymeta-android) into `library/pixymeta-android`. It must be dated >= 2021-03-27 and >= commit 15a6f25d891593e5c6f85e542a55150b2947e7f5
-1. place files `build.gradle` and `AndroidManifest.xml` from pixymeta-android's root dir into `library/pixymeta-android`
-1. select the build variant having flavor `pixymeta`
 
 
 ### To create screenshots

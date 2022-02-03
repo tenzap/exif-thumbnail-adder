@@ -1,0 +1,24 @@
+apply plugin: 'com.android.library'
+
+dependencies {
+    //implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'org.slf4j:slf4j-log4j12:1.7.12'
+    implementation 'org.slf4j:slf4j-api:1.7.12'
+    implementation 'log4j:log4j:1.2.17'
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+    defaultConfig {
+        minSdkVersion 26
+        targetSdkVersion 30
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            res.srcDirs = ['src']
+        }
+    }
+}
