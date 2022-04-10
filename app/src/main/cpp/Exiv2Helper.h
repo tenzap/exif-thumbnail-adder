@@ -42,6 +42,8 @@ public:
     jint throwExiv2WarnException( JNIEnv *env, const char *message ) const;
 
     int insertThumbnail(const std::string& path,
+                        uint16_t width,
+                        uint16_t height,
                         const std::string& thumbPath,
                         Exiv2::URational xres,
                         Exiv2::URational yres,

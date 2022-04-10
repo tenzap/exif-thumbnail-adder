@@ -78,6 +78,9 @@ public abstract class ETADoc {
     Set<PosixFilePermission> attributePosix;
     boolean attributesAreSet = false;
 
+    int imageWidth = 0;
+    int imageHeight = 0;
+
     protected ETADoc(Context ctx, ETASrcDir root, String volumeName, String volumeRootPath, boolean withVolumeName) {
         this.ctx = ctx;
         this.root = root;
@@ -127,6 +130,8 @@ public abstract class ETADoc {
 
     abstract String getBaseDir(String dirId);
     abstract void copyAttributesTo(Object doc) throws Exception;
+
+    protected abstract void getWidthHeight() throws Exception;
 
     // ETADocUri only
     public abstract Uri getSrcUri(String srcDirMainDir, String srcDirTreeId) throws Exception;
@@ -313,5 +318,14 @@ public abstract class ETADoc {
             e.printStackTrace();
             throw e;
         }
+    }
+    public int getWidth() throws Exception {
+        getWidthHeight();
+        return this.imageWidth;
+    }
+
+    public int getHeight() throws Exception {
+        getWidthHeight();
+        return this.imageHeight;
     }
 }

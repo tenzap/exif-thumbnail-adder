@@ -224,7 +224,10 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
         jobject this /* this */,
         jstring jin,
         jstring jout,
-        jstring jtb)
+        jint width,
+        jint height,
+        jstring jtb,
+        jint resolution)
 {
 //    /* POPT_ARG_NONE needs an int, not char! */
 //    poptContext ctx;
@@ -521,7 +524,7 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
             // Since we don't use "fixup", write the other mandatory tags
             ExifEntry *entryX, *entryY;
             ExifRational r;
-            r.numerator = 72;
+            r.numerator = (int)resolution;
             r.denominator = 1;
             entryX = init_tag(ed, EXIF_IFD_1, EXIF_TAG_X_RESOLUTION);
             entryY = init_tag(ed, EXIF_IFD_1, EXIF_TAG_Y_RESOLUTION);
@@ -532,6 +535,18 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
             ExifEntry *entryUnit;
             entryUnit = init_tag(ed, EXIF_IFD_1, EXIF_TAG_RESOLUTION_UNIT);
             exif_set_short(entryUnit->data, exif_data_get_byte_order(ed), 2);
+
+            // EXIF_TAG_PIXEL_X_DIMENSION -  width
+            ExifEntry *entryXDim;
+            entryXDim = init_tag(ed, EXIF_IFD_EXIF, EXIF_TAG_PIXEL_X_DIMENSION);
+            unsigned int nativeUnsignedWidth = (unsigned int)width;
+            exif_set_long(entryXDim->data, exif_data_get_byte_order(ed), (ExifLong)nativeUnsignedWidth);
+
+            // EXIF_TAG_PIXEL_Y_DIMENSION -  height
+            ExifEntry *entryYDim;
+            entryYDim = init_tag(ed, EXIF_IFD_EXIF, EXIF_TAG_PIXEL_Y_DIMENSION);
+            unsigned int nativeUnsignedHeight = (unsigned int)height;
+            exif_set_long(entryYDim->data, exif_data_get_byte_order(ed), (ExifLong)nativeUnsignedHeight);
 
             // In case we would use fixup, we would have to do this:
             // Workaround so that THUMBNAIL_OFFSET and THUMBNAIL_LENGTH is not

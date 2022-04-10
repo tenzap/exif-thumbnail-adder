@@ -44,10 +44,10 @@ public class NativeLibHelper {
             byte[] thubmnail, int ntbNumBytes);
 
     native int writeThumbnailWithLibexifThroughFile(
-            String in, String out, String tb) throws Exception;
+            String in, String out, int width, int height, String tb, int resolution) throws Exception;
 
     native int writeThumbnailWithExiv2ThroughFile(
-            String out, String tb, int resolution) throws Exception;
+            String out, int width, int height, String tb, int resolution) throws Exception;
 
     public void writeThumbnailWithLibexif (
             InputStream srcImgIs, OutputStream newImgOs, Bitmap thumbnail)
@@ -56,7 +56,7 @@ public class NativeLibHelper {
         // writeThumbnailWithLibexif
     }
 
-    public void writeThumbnailWithLibexifThroughFile (String input, String output, Bitmap thumbnail, boolean libexifSkipOnError)
+    public void writeThumbnailWithLibexifThroughFile (String input, String output, int width, int height, Bitmap thumbnail, boolean libexifSkipOnError)
             throws Exception {
         String tbFilename = output+"_tb";
         File tbFile = new File(tbFilename);
@@ -69,7 +69,7 @@ public class NativeLibHelper {
         }
 
         try {
-            int result = writeThumbnailWithLibexifThroughFile(input, output, tbFilename);
+            int result = writeThumbnailWithLibexifThroughFile(input, output, width, height, tbFilename, 72);
             if (result != 0) throw new RuntimeException("libexif return value different from 0: " + result);
         } catch (LibexifException e) {
             if (libexifSkipOnError) {
@@ -87,7 +87,7 @@ public class NativeLibHelper {
         }
     }
 
-    public void writeThumbnailWithExiv2ThroughFile (String output, Bitmap thumbnail, String exiv2SkipOnLogLevel)
+    public void writeThumbnailWithExiv2ThroughFile (String output, int width, int height, Bitmap thumbnail, String exiv2SkipOnLogLevel)
             throws Exception {
         String tbFilename = output+"_tb";
         File tbFile = new File(tbFilename);
@@ -101,7 +101,7 @@ public class NativeLibHelper {
         }
 
         try {
-            int result = writeThumbnailWithExiv2ThroughFile(output, tbFilename, 72);
+            int result = writeThumbnailWithExiv2ThroughFile(output, width, height, tbFilename, 72);
             if (result != 0) throw new RuntimeException("exiv2 return value different from 0: " + result);
         } catch (Exiv2WarnException e) {
             switch (exiv2SkipOnLogLevel) {

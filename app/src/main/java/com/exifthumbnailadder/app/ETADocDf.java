@@ -453,4 +453,14 @@ public class ETADocDf extends ETADoc {
             throw new CopyAttributesFailedException(e);
         }
     }
+
+    protected void getWidthHeight() throws Exception {
+        if (this.imageWidth != 0 && this.imageWidth != 0) {
+            return;
+        }
+
+        Bitmap b = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), _uri);
+        this.imageWidth = b.getWidth();
+        this.imageHeight = b.getHeight();
+    }
 }

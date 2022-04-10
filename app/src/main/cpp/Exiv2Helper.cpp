@@ -26,6 +26,8 @@
 
 int Exiv2Helper::insertThumbnail(
         const std::string &path,
+        uint16_t width,
+        uint16_t height,
         const std::string &thumbPath,
         Exiv2::URational xres,
         Exiv2::URational yres,
@@ -80,13 +82,13 @@ int Exiv2Helper::insertThumbnail(
             pos = image->exifData().findKey(key);
             if (pos == image->exifData().end()) // Tag not found
                 // We add the tag
-                image->exifData()["Exif.Photo.PixelXDimension"] = 0;
+                image->exifData()["Exif.Photo.PixelXDimension"] = width;
 
             key = Exiv2::ExifKey("Exif.Photo.PixelYDimension");
             pos = image->exifData().findKey(key);
             if (pos == image->exifData().end()) // Tag not found
                 // We add the tag
-                image->exifData()["Exif.Photo.PixelYDimension"] = 0;
+                image->exifData()["Exif.Photo.PixelYDimension"] = height;
         }
 
         Exiv2::ExifThumb exifThumb(image->exifData());
@@ -225,6 +227,8 @@ extern "C" JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelpe
         JNIEnv *env,
         jobject /* this */,
         jstring joutput,
+        jint width,
+        jint height,
         jstring jtb,
         jint resolution) {
 
@@ -246,6 +250,8 @@ extern "C" JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelpe
 
         int ret = helper.insertThumbnail(
                 filePath,
+                (int)width,
+                (int)height,
                 tbPath,
                 res,
                 res,

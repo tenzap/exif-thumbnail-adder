@@ -440,4 +440,17 @@ public class ETADocFile extends ETADoc {
             throw new CopyAttributesFailedException(e);
         }
     }
+
+    protected void getWidthHeight() {
+        if (this.imageWidth != 0 && this.imageWidth != 0) {
+            return;
+        }
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeFile(etaDoc.toString(), options);
+        this.imageWidth = options.outWidth;
+        this.imageHeight = options.outHeight;
+    }
 }

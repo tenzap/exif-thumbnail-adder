@@ -61,7 +61,9 @@ import pixy.image.tiff.RationalField;
 import pixy.image.tiff.ShortField;
 import pixy.image.tiff.TiffFieldEnum;
 import pixy.image.tiff.TiffTag;
+import pixy.image.tiff.UndefinedField;
 import pixy.meta.Metadata;
+import pixy.meta.exif.ExifTag;
 import pixy.meta.exif.ExifThumbnail;
 import pixy.meta.exif.JpegExif;
 
@@ -297,6 +299,8 @@ public class AddThumbsService extends Service {
 
                 boolean srcImgHasThumbnail = false;
                 int srcImgDegrees = 0;
+                int srcImgWidth = 0;
+                int srcImgHeight = 0;
 
                 try {
                     srcImgIs = doc.inputStream();
@@ -304,6 +308,8 @@ public class AddThumbsService extends Service {
                     if (srcImgExifInterface != null) {
                         srcImgHasThumbnail = srcImgExifInterface.hasThumbnail();
                         srcImgDegrees = srcImgExifInterface.getRotationDegrees();
+                        srcImgWidth = srcImgExifInterface.getAttributeInt(ExifInterface.TAG_PIXEL_X_DIMENSION, 0);
+                        srcImgHeight = srcImgExifInterface.getAttributeInt(ExifInterface.TAG_PIXEL_Y_DIMENSION, 0);
                     }
                     srcImgIs.close();
                     srcImgExifInterface = null;
@@ -311,6 +317,13 @@ public class AddThumbsService extends Service {
                     if (srcImgHasThumbnail && prefs.getBoolean("skipPicsHavingThumbnail", true)) {
                         updateLog(getString(R.string.frag1_log_skipping_has_thumbnail));
                         continue;
+                    }
+
+                    if (srcImgWidth == 0) {
+                        srcImgWidth = doc.getWidth();
+                    }
+                    if (srcImgHeight == 0) {
+                        srcImgHeight = doc.getHeight();
                     }
                 } catch (Exception e) {
                     updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
@@ -333,7 +346,7 @@ public class AddThumbsService extends Service {
                             writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, doc, thumbnail);
                             break;
                         case "exiflib_pixymeta":
-                            writeThumbnailWithPixymeta(srcImgIs, newImgOs, thumbnail);
+                            writeThumbnailWithPixymeta(srcImgIs, newImgOs, doc, thumbnail);
                             break;
                     }
 
@@ -384,6 +397,8 @@ public class AddThumbsService extends Service {
                                 new NativeLibHelper().writeThumbnailWithLibexifThroughFile(
                                         doc.getFullFSPath(),
                                         outFilepath,
+                                        srcImgWidth,
+                                        srcImgHeight,
                                         thumbnail,
                                         prefs.getBoolean("libexifSkipOnError", true));
                             } catch (LibexifException e) {
@@ -432,6 +447,8 @@ public class AddThumbsService extends Service {
 
                                 new NativeLibHelper().writeThumbnailWithExiv2ThroughFile(
                                         outFilepath,
+                                        srcImgWidth,
+                                        srcImgHeight,
                                         thumbnail,
                                         prefs.getString("exiv2SkipOnLogLevel", "warn"));
                             } catch (Exiv2WarnException e) {
@@ -838,6 +855,22 @@ public class AddThumbsService extends Service {
             sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_X_RESOLUTION,IfdId.TYPE_IFD_1, new Rational(72,1)));
             sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_Y_RESOLUTION,IfdId.TYPE_IFD_1, new Rational(72,1)));
 
+            // set other mandatory tags on exifIfd
+            if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_EXIF_VERSION, IfdId.TYPE_IFD_EXIF) == null) {
+                sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_EXIF_VERSION, IfdId.TYPE_IFD_EXIF, new byte[]{48, 50, 50, 48}));
+            }
+            if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COMPONENTS_CONFIGURATION, IfdId.TYPE_IFD_EXIF) == null) {
+                sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COMPONENTS_CONFIGURATION, IfdId.TYPE_IFD_EXIF, new byte[]{1, 2, 3, 0}));
+            }
+            if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_FLASHPIX_VERSION, IfdId.TYPE_IFD_EXIF) == null) {
+                sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_FLASHPIX_VERSION, IfdId.TYPE_IFD_EXIF, new byte[]{48, 49, 48, 48}));
+            }
+            if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COLOR_SPACE, IfdId.TYPE_IFD_EXIF) == null) {
+                sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COLOR_SPACE, IfdId.TYPE_IFD_EXIF, 0xffff));
+            }
+            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_X_DIMENSION, IfdId.TYPE_IFD_EXIF, doc.getWidth()));
+            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_Y_DIMENSION, IfdId.TYPE_IFD_EXIF, doc.getHeight()));
+
             // Close & Reopen InputStream, otherwise writeExif will fail with an exception
             // because srcImgIs was already read
             srcImgIs.close();
@@ -854,7 +887,7 @@ public class AddThumbsService extends Service {
     }
 
     private void writeThumbnailWithPixymeta (
-            InputStream srcImgIs, OutputStream newImgOs, Bitmap thumbnail)
+            InputStream srcImgIs, OutputStream newImgOs, ETADoc doc, Bitmap thumbnail)
             throws Exception {
         // PixyMeta doesn't copy correctly the IFDInterop
         try {
@@ -868,6 +901,21 @@ public class AddThumbsService extends Service {
             tbIFD.addField(new ShortField(TiffTag.RESOLUTION_UNIT.getValue(), new short[]{2}));
             tbIFD.addField(new RationalField(TiffTag.X_RESOLUTION.getValue(), new int[] {72,1}));
             tbIFD.addField(new RationalField(TiffTag.Y_RESOLUTION.getValue(), new int[] {72,1}));
+
+            // set other mandatory tags on exifIfd
+            IFD exifIfd = jpegExif.getExifIFD();
+            if (exifIfd == null) {
+                exifIfd = new IFD();
+                exifIfd.addField(new UndefinedField(ExifTag.EXIF_VERSION.getValue(), new byte[]{48, 50, 50, 48}));
+                exifIfd.addField(new UndefinedField(ExifTag.COMPONENT_CONFIGURATION.getValue(), new byte[]{1, 2, 3, 0}));
+                exifIfd.addField(new UndefinedField(ExifTag.FLASH_PIX_VERSION.getValue(), new byte[]{48, 49, 48, 48}));
+                exifIfd.addField(new ShortField(ExifTag.COLOR_SPACE.getValue(), new short[]{(short)0xffff}));
+            }
+            exifIfd.removeField(ExifTag.EXIF_IMAGE_WIDTH);
+            exifIfd.addField(new ShortField(ExifTag.EXIF_IMAGE_WIDTH.getValue(), new short[]{(short)doc.getWidth()}));
+            exifIfd.removeField(ExifTag.EXIF_IMAGE_HEIGHT);
+            exifIfd.addField(new ShortField(ExifTag.EXIF_IMAGE_HEIGHT.getValue(), new short[]{(short)doc.getHeight()}));
+            jpegExif.setExifIFD(exifIfd);
 
             Metadata.insertExif(srcImgIs, newImgOs, jpegExif, true);
         } catch (Exception e) {
