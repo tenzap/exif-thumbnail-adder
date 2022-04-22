@@ -19,3 +19,13 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+#pixymeta uses reflection to get "fromShort" method.
+#So we have to disable minify for this method on the classes that have it
+-keep public class pixy.image.tiff.FieldType { public static ** fromShort(short); }
+-keep public class pixy.image.jpeg.Marker { public static ** fromShort(short); }
+-keep public class pixy.image.tiff.TiffTag { public static ** fromShort(short); }
+-keep public class pixy.meta.adobe.ImageResourceID { public static ** fromShort(short); }
+-keep public class pixy.meta.exif.ExifTag { public static ** fromShort(short); }
+-keep public class pixy.meta.exif.GPSTag { public static ** fromShort(short); }
+-keep public class pixy.meta.exif.InteropTag { public static ** fromShort(short); }
