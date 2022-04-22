@@ -70,11 +70,7 @@ import static com.exifthumbnailadder.app.MainApplication.TAG;
 
             SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
             String exif_library = prefs.getString("exif_library", "exiflib_exiv2");
-            if (exif_library.equals("exiflib_pixymeta") ||
-                    BuildConfig.FLAVOR.equals("pixymeta") ||
-                    BuildConfig.BUILD_TYPE.equals("debug")) {
-                addPixymetaToLibraryList();
-            }
+            addPixymetaToLibraryList();
 
             PreferenceCategory debugCategory = (PreferenceCategory) findPreference("categ_debug");
             if (!BuildConfig.BUILD_TYPE.equals("debug") || BuildConfig.IS_SCREENSHOTS.get()) {
