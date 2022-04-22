@@ -29,3 +29,6 @@
 -keep public class pixy.meta.exif.ExifTag { public static ** fromShort(short); }
 -keep public class pixy.meta.exif.GPSTag { public static ** fromShort(short); }
 -keep public class pixy.meta.exif.InteropTag { public static ** fromShort(short); }
+
+# Fix: java.lang.ClassNotFoundException: org.apache.log4j.helpers.Loader
+-keep class org.apache.log4j.helpers.Loader {*;}
