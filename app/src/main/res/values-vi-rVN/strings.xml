@@ -17,6 +17,9 @@
     <string name="about_version">Phiên bản</string>
     <string name="about_homepage_source">Trang chủ dự án &amp; mã nguồn:</string>
     <string name="about_license">Giấy phép:</string>
+    <string name="about_authors">Tác giả:</string>
+    <string name="about_translations">Bản dịch</string>
+    <string name="about_anonymous">ẩn danh</string>
     <string name="about_external_libraries">Các thư viện ngoài</string>
     <!-- Working dir perm activity -->
     <string name="working_dir_perm_permissions_set_retry">Đã đặt quyền thư mục hoạt động, vui lòng thử lại.</string>
@@ -80,9 +83,9 @@
     <string name="frag1_log_done">\u00A0Xong</string>
     <string name="frag1_log_overwrite_not_allowed">\u00A0Việc ghi đè lên ảnh trong thư mục đích không được cho phép (hãy xem cài đặt). Tệp đích đã tồn tại. Đang bỏ qua.</string>
     <string name="frag1_log_cannot_move_to_backup">\u00A0Không thể di chuyển ảnh vào bản sao lưu. Tệp đã tồn tại. Đang bỏ qua.</string>
-    <string name="frag1_log_successful">\u00A0OK</string>
+    <string name="frag1_log_successful">\u00A0Thành công</string>
     <string name="frag1_log_not_granted">\u00A0Chưa được cấp. Vui lòng thêm lại thư mục đó trong Cài đặt.</string>
-    <string name="frag1_log_unsuccessful">\u00A0KO</string>
+    <string name="frag1_log_unsuccessful">\u00A0Thất bại</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr">Không thể sao chép dấu thời gian &amp; thuộc tính tệp: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">Không thể lưu trữ dấu thời gian &amp; thuộc tính tệp: %1$s</string>
     <string name="frag1_log_error_moving_doc">LỖI khi di chuyển tài liệu: %1$s</string>
