@@ -74,6 +74,7 @@
     <string name="frag1_log_skipping_not_jpeg">Đang bỏ qua (không phải JPEG)\n</string>
     <string name="frag1_log_skipping_empty_file">Đang bỏ qua (tệp trống)\n</string>
     <string name="frag1_log_skipping_has_thumbnail">Đang bỏ qua (có hình thu nhỏ)\n</string>
+    <string name="frag1_log_fix_has_thumbnail_but_missing_tags">Có hình thu nhỏ nhưng một số trường bị thiếu. → Đang cập nhật hình thu nhỏ…</string>
     <string name="frag1_log_skipping_bad_image">Đang bỏ qua (hình ảnh bị lỗi?)\n</string>
     <string name="frag1_log_skipping_error">Đang bỏ qua (LỖI): %1$s</string>
     <string name="frag1_log_continue_despite_error_as_per_setting">Tiếp tục xử lý theo như cài đặt…</string>
@@ -107,6 +108,8 @@
     <string name="pref_rotateThumbnail_summary">Xoay hình thu nhỏ để tương ứng với ảnh. Đa số ứng dụng cần hình thu nhỏ được xoay (vd: Tính năng nhập ảnh của Win10)</string>
     <string name="pref_skipPicsHavingThumbnail_title">Bỏ qua ảnh có hình thu nhỏ</string>
     <string name="pref_skipPicsHavingThumbnail_summary">Nếu ảnh đã có hình thu nhỏ, thì bỏ qua việc xử lý</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_title">Sửa thẻ bị thiếu trong ảnh có hình thu nhỏ</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_summary">Nếu ảnh có hình thu nhỏ nhưng một số thẻ bắt buộc phải có đang bị thiếu thì xử lý ảnh. Việc này thay thế hình thu nhỏ hiện có kể cả khi bạn chọn bỏ qua tệp có hình thu nhỏ.</string>
     <string name="pref_backupOriginalPic_title">Tạo bản sao lưu ảnh gốc</string>
     <string name="pref_backupOriginalPic_summary">Bản sao lưu được đặt trong thư mục hoạt động. Nếu một tệp có cùng tên đã tồn tại, nó sẽ không bị ghi đè lên</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">Cập nhật trong vị trí nguồn</string>
