@@ -315,9 +315,13 @@ public class AddThumbsService extends Service {
                     srcImgExifInterface = null;
 
                     if (srcImgHasThumbnail && prefs.getBoolean("skipPicsHavingThumbnail", true)) {
-                        updateLog(getString(R.string.frag1_log_skipping_has_thumbnail));
-                        continue;
-                    }
+                        if (srcImgWidth == 0 && srcImgHeight == 0 && prefs.getBoolean("fixHavingThumbnailButMissingTags", false)) {
+                            updateLog(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_fix_has_thumbnail_but_missing_tags) + "</span>", 1));
+                        } else {
+                            updateLog(getString(R.string.frag1_log_skipping_has_thumbnail));
+                            continue;
+                        }
+                }
 
                     if (srcImgWidth == 0) {
                         srcImgWidth = doc.getWidth();

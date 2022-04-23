@@ -44,6 +44,12 @@
             app:summary="@string/pref_skipPicsHavingThumbnail_summary"/>
         <SwitchPreferenceCompat
             app:defaultValue="true"
+            app:key="fixHavingThumbnailButMissingTags"
+            app:singleLineTitle="false"
+            app:title="@string/pref_fixHavingThumbnailButMissingTags_title"
+            app:summary="@string/pref_fixHavingThumbnailButMissingTags_summary"/>
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
             app:key="backupOriginalPic"
             app:singleLineTitle="false"
             app:title="@string/pref_backupOriginalPic_title"

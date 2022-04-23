@@ -82,6 +82,7 @@
     <string name="frag1_log_skipping_not_jpeg">Skipping (not JPEG)\n</string>
     <string name="frag1_log_skipping_empty_file">Skipping (empty file)\n</string>
     <string name="frag1_log_skipping_has_thumbnail">Skipping (has thumbnail)\n</string>
+    <string name="frag1_log_fix_has_thumbnail_but_missing_tags">Thumbnail present but some fields are missing. → Updating thumbnail…</string>
     <string name="frag1_log_skipping_bad_image">Skipping (bad image?)\n</string>
     <string name="frag1_log_skipping_error">Skipping (ERROR): %1$s</string>
     <string name="frag1_log_continue_despite_error_as_per_setting">Continue processing as per settings…</string>
@@ -118,6 +119,8 @@
     <string name="pref_rotateThumbnail_summary">Rotate thumbnails to correspond to the picture. Most apps need the thumbnail to be rotated (eg. Win10 photo import)</string>
     <string name="pref_skipPicsHavingThumbnail_title">Skip pictures with thumbnail</string>
     <string name="pref_skipPicsHavingThumbnail_summary">If picture already has a thumbnail, skip processing</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_title">Fix missing tags in pictures with thumbnail</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_summary">If picture has thumbnail but some mandatory tags are missing, process the picture. This replaces the current thumbnail even though you chose to skip files having thumbnails.</string>
     <string name="pref_backupOriginalPic_title">Create backup of source picture</string>
     <string name="pref_backupOriginalPic_summary">Backup is placed in the working directory. If a file with same name exists, it is not overwritten</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">Update in source location</string>
