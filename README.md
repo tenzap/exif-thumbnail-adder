@@ -2,7 +2,7 @@
 
 This application for android devices searches for pictures (JPEG) on your device and __adds a thumbnail__ if they don't have one yet. Thumbnails are added to the EXIF metadata structure.
 
-It is designed to work from android Oreo (android 8, SDK 26) and was tested on real device running Android 10 and virtual device running android 8 and 11.
+It is designed to work from android Oreo (android 8, SDK 26).
 
 Please report issues here: [https://github.com/tenzap/exif-thumbnail-adder/issues](https://github.com/tenzap/exif-thumbnail-adder/issues).
 
@@ -10,8 +10,9 @@ For more information, some known facts and how you may contribute, refer to the 
 
 
 ## Rationale
-On my phone (Xiaomi Redmi Note 9S), when wanting to import my pictures to Windows (or any device/operating system supporting MTP or PTP protocols), I noticed the pictures don't display a thumbnail in the import wizard (whether through the Photos app, or through the Windows Explorer import feature).
-This is because my phone didn't add the thumbnail to the pictures I took with the camera.
+On some smartphones, when wanting to import pictures to Windows (or any device/operating system supporting MTP or PTP protocols), I noticed the pictures may not display a thumbnail in the import wizard (whether through the Photos app, or through the Windows Explorer import feature).
+
+This is because the thumbnail is not present in the picture or if there is a thumbnail, some EXIF tags are missing. This is usually because the app that created the picture didn't add a thumbnail.
 
 
 ## Features
@@ -25,7 +26,7 @@ This is because my phone didn't add the thumbnail to the pictures I took with th
 - Conservative default options (backup pictures, skip corrupt files)
 - Install app on internal storage or external storage
 - Default EXIF library: [Exiv2](https://www.exiv2.org).
-- Alternative libraries: Android-Exif-Extended (built-in), libexif (built-in), pixymeta-android (needs manual compilation from sources). See known facts on project page to learn more on benefits and drawbacks of each library.
+- Alternative libraries: Android-Exif-Extended, libexif, pixymeta-android. See known facts on project page to learn more on benefits and drawbacks of each library.
 - Settings:
     - Rotate the thumbnail
     - Replace existing thumbnail
@@ -55,7 +56,7 @@ GPL-3.0 (see "COPYING" file on project homepage)
 ## Contribute
 - You are very welcome to contribute to the project either by translating, testing, reporting bugs, developing, creating pull requests with fixes and features.
 - Suggestions for contribution
-    - If you have a google developer account, you may contact me to see how you could publish the app to the play store
+    - Help to ship the app on Google Play: either support financially by donating some money so that I can pay the 25 USD fee to have a Google developer account, or if you have a Google developer account you may contact me to see how you could publish the app to the play store.
     - Translation
         - through [crowdin project page](https://crowdin.com/project/exif-thumbnail-adder). If you want a language that is not listed on crowdin, please ask for it so that I make it available.
         - or translate the following files and submit a pull request/issue with the translated files
@@ -92,7 +93,7 @@ GPL-3.0 (see "COPYING" file on project homepage)
 - **usage is discouraged** until pixymeta bug is fixed
 - the existing EXIF tags are read and metadata is rewritten from scratch using what was read
 - [XMP*] tags are kept
-- [InteropIFD] directory is not correctly rewritten leading to problems such as "Bad InteropIFD directory" or "IFD1 pointer references previous InteropIFD directory" or "GPS pointer references previous InteropIFD directory". See [pixymeta bug report](https://github.com/dragon66/pixymeta-android/issues/10).
+- [InteropIFD] directory is not correctly rewritten leading to problems such as "Bad InteropIFD directory" or "IFD1 pointer references previous InteropIFD directory" or "GPS pointer references previous InteropIFD directory". See [pixymeta bug report](https://github.com/dragon66/pixymeta-android/issues/10). This issue may lead to problems and even crashes when the app or another reads the output picture because the EXIF metadata gets malformed.
 
 
 ## Concerning `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`
@@ -106,9 +107,9 @@ Since flavor `standard` uses targetSdk >= 30 (ie Android 11+), I needed to use t
 
 Some explanations:
 
-The app uses the Storage Access Framework to process the files. However, with Storage Access Framework, on copying files or modifying them, timestamps get updated. But when adding thumbnails we don't want them to change and thus I set them back to the original value. To set the values of timestamps back I use the BasicFileAttributesView class [3](https://developer.android.com/reference/java/nio/file/attribute/BasicFileAttributeView#setTimes(java.nio.file.attribute.FileTime,%20java.nio.file.attribute.FileTime,%20java.nio.file.attribute.FileTime)). This works fine until targetSdk 28 (=android 9). There is a workaround for targetSdk 29 (android 10) but from targetSdk 30 (Android 11) onwards, the method returns an "AccessDeniedException". So I ended up using `MANAGE_EXTERNAL_STORAGE` with targetSdk 30, see [4](https://stackoverflow.com/a/66681306/15401262).
+The app uses the Storage Access Framework to process the files. However, with Storage Access Framework, on copying files or modifying them, timestamps get updated. But when adding thumbnails we don't want them to change and thus I set them back to the original value. To set the values of timestamps back I use the BasicFileAttributesView class [3](https://developer.android.com/reference/java/nio/file/attribute/BasicFileAttributeView#setTimes(java.nio.file.attribute.FileTime,%20java.nio.file.attribute.FileTime,%20java.nio.file.attribute.FileTime)). This works fine until targetSdk 28 (=android 9). There is a workaround for targetSdk 29 (android 10) but from targetSdk 30 (Android 11) onwards, the method returns an "AccessDeniedException". So I ended up using `MANAGE_EXTERNAL_STORAGE` with targetSdk >= 30, see [4](https://stackoverflow.com/a/66681306/15401262).
 
-So in the App, when one is on Android 11+ with targetSdk 30 (which is the case of flavor `standard`), one is invited to give the "all files access" permissions through the settings. This is not mandatory. In case permission is not given, the user is informed that timestamps can't be kept during processing.
+So in the App, when one is on Android 11+ with targetSdk >= 30 (which is the case of flavor `standard`), one is invited to give the "all files access" permissions through the settings. This is not mandatory. In case permission is not given, the user is informed that timestamps can't be kept during processing.
 
 With flavor `google_play` targetSdk is set to 29. Hence it is still possible with Android 11 to not use `MANAGE_EXTERNAL_STORAGE`. For versions above 11 it is uncertain whether it will still work. To be sure to have all functionalities of the app if you run Android 11+ get the `standard` flavor from F-Droid.org
 
@@ -128,7 +129,7 @@ In addition to Android Studio you need these components (android studio can inst
 The app can be compiled in any of the following flavors:
 
 * *standard* (version shipped on F-Droid)
-* *google_play* (version shipped on Google Play). It is the same as "standard" except it has targetSdk 29 and doesn't request `MANAGE_EXTERNAL_STORAGE` permission.
+* *google_play* (version for Google Play). It is the same as "standard" except it has targetSdk 29 and doesn't request `MANAGE_EXTERNAL_STORAGE` permission.
 
 
 ### To create screenshots
