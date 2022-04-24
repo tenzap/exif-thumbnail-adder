@@ -12,7 +12,7 @@ For more information, some known facts and how you may contribute, refer to the 
 ## Rationale
 On some smartphones, when wanting to import pictures to Windows (or any device/operating system supporting MTP or PTP protocols), I noticed the pictures may not display a thumbnail in the import wizard (whether through the Photos app, or through the Windows Explorer import feature).
 
-This is because the thumbnail is not present in the picture or if there is a thumbnail, some EXIF tags are missing. This is usually because the app that created the picture didn't add a thumbnail.
+There are two possible reasons for that behaviour. First, the thumbnail is not present in the picture, usually because the app that created the picture didn't add a thumbnail. Second, there is a thumbnail but it is ignored because some EXIF tags are missing.
 
 
 ## Features
