@@ -108,8 +108,8 @@
     <string name="pref_rotateThumbnail_summary">Miniaturbilder drehen, um dem Bild zu entsprechen. Die meisten Apps benötigen die Drehung des Miniaturbildes (z. B. beim Win10-Fotoimport)</string>
     <string name="pref_skipPicsHavingThumbnail_title">Bilder mit Miniaturbild überspringen</string>
     <string name="pref_skipPicsHavingThumbnail_summary">Wenn das Bild bereits ein Miniaturbild hat, Verarbeitung überspringen</string>
-    <string name="pref_fixHavingThumbnailButMissingTags_title">Fehlende Kennzeichen in Bildern mit Minibildern korrigieren</string>
-    <string name="pref_fixHavingThumbnailButMissingTags_summary">Das Bild verarbeiten, wenn es ein Minibild besitzt aber einige obligatorische Kennzeichen fehlen. Dabei wird das aktuelle Minibild ersetzt, selbst wenn du entschieden hast, Dateien mit Minibildern zu überspringen.</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_title">Fehlende Tags in Bildern mit Minibildern korrigieren</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_summary">Das Bild verarbeiten, wenn es ein Minibild besitzt aber einige obligatorische Tags fehlen. Dabei wird das aktuelle Minibild ersetzt, selbst wenn du entschieden hast, Dateien mit Minibildern zu überspringen.</string>
     <string name="pref_backupOriginalPic_title">Sicherung des Quellbildes erstellen</string>
     <string name="pref_backupOriginalPic_summary">Sicherung wird im Arbeitsverzeichnis abgelegt. Wenn eine Datei mit demselben Namen existiert, wird sie nicht überschrieben.</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">Im Quellverzeichnis aktualisieren</string>
