@@ -1,6 +1,6 @@
 Diese Anwendung für Android-Geräte sucht nach Bildern (JPEG) auf deinem Gerät und <b>ergänzt ein Miniaturbild</b>, falls sie noch keines haben. Die Miniaturbilder werden den EXIF-Metadaten hinzugefügt.
 
-Ausgelegt, um ab Android Oreo (Android 8, SDK 26) zu funktionieren, wurde sie auf einem reellen Gerät, auf dem Android 10 läuft, sowie virtuellen Geräten mit Android 8 und 11 getestet.
+Sie ist so konzipiert, dass sie ab Android Oreo (Android 8, SDK 26) funktioniert.
 
 Bitte melde Probleme hier: <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnail-adder/issues</a>
 
@@ -8,7 +8,10 @@ Weitere Informationen, einige bekannte Fakten und Möglichkeiten zur Mitarbeit f
 
 <b>Erklärung</b>
 
-Wenn ich meine Bilder in Windows (oder jedes andere Gerät/Betriebssystem mit MTP- oder PTP-Protokoll) importieren wollte, bemerkte ich bei meinem Telefon (Xiaomi Redmi Note 9S), dass die Bilder im Importassistenten (der Photos-App oder der Funktion des Windows Explorer) kein Minibild anzeigen. Der Grund dafür ist, dass mein Telefon den Bildern, die ich mit meiner Kamera aufnahm, kein Miniaturbild hinzufügte.
+Beim Versuch Bilder in Windows (oder andere Betriebssysteme, die MTP- oder PTP-Protokolle unterstützen) zu importieren, habe ich auf manchen Smartphones festgestellt, dass für die Bilder im Importassistent (egal ob über die Foto-App oder über die Importfunktion des Windows Explorers) manchmal keine Miniaturansichten dargestellt werden.
+
+Es gibt zwei mögliche Gründe für dieses Verhalten. Erstens, die Miniaturansicht ist nicht im Bild enthalten, normalerweise weil die App, die das Bild erstellt hat, kein Minibild hinzugefügt hat. Zweitens, es gibt eine Miniaturansicht, die wird aber ignoriert, weil einige EXIF-Tags fehlen.
+
 
 <b>Funktionen</b>
 
@@ -22,7 +25,7 @@ Wenn ich meine Bilder in Windows (oder jedes andere Gerät/Betriebssystem mit MT
 - Zurückhaltende Standardoptionen (Bilder sichern, beschädigte Dateien überspringen)
 - Installation der App im internen oder externen Speicher
 - Vorgegebene EXIF-Bibliothek: [Exiv2][3].
-- Alternative Bibliotheken: Android-Exif-Extended (vorinstalliert), libexif (vorinstalliert), pixymeta-android (manuelle Kompilation aus der Quelle nötig). Sieh dir die bekannten Fakten auf der Projektseite an, um mehr über die Vor- und Nachteile jeder Bibliothek zu erfahren.
+- Alternative Bibliotheken: Android-Exif-Extended, libexif, pixymeta-android. Sieh dir die bekannten Fakten auf der Projektseite an, um mehr über die Vor- und Nachteile jeder Bibliothek zu erfahren.
 - Ausstattung: 
 &emsp;- Minibild drehen
 &emsp;- Vorhandenes Minibild ersetzen
