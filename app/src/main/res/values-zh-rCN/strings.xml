@@ -74,6 +74,7 @@
     <string name="frag1_log_skipping_not_jpeg">跳过(不是 JPEG)\n</string>
     <string name="frag1_log_skipping_empty_file">跳过 (空文件)\n</string>
     <string name="frag1_log_skipping_has_thumbnail">跳过 (有缩略图)\n</string>
+    <string name="frag1_log_fix_has_thumbnail_but_missing_tags">缩略图存在，但有些字段丢失。→ 正在更新缩略图…</string>
     <string name="frag1_log_skipping_bad_image">跳过 (图片损坏？)\n</string>
     <string name="frag1_log_skipping_error">跳过(错误): %1$s</string>
     <string name="frag1_log_continue_despite_error_as_per_setting">按设置继续处理…</string>
@@ -107,6 +108,8 @@
     <string name="pref_rotateThumbnail_summary">旋转缩略图以对应图片。大多数应用程序需要旋转缩略图。(如，Win10 照片导入)</string>
     <string name="pref_skipPicsHavingThumbnail_title">跳过带缩略图图片</string>
     <string name="pref_skipPicsHavingThumbnail_summary">如果图片已经有缩略图，跳过处理</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_title">修复带缩略图图片中的标签</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_summary">如果图片有缩略图，但缺少一些必填标签，则处理图片。 这将取代当前缩略图，即使您选择跳过带有缩略图的文件。</string>
     <string name="pref_backupOriginalPic_title">创建源图片备份</string>
     <string name="pref_backupOriginalPic_summary">备份被放置在工作目录中。如果存在相同名称的文件，它不会被覆盖</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">更新源位置</string>
