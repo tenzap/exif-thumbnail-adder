@@ -74,6 +74,7 @@
     <string name="frag1_log_skipping_not_jpeg">Überspringen (nicht JPEG)\n</string>
     <string name="frag1_log_skipping_empty_file">Überspringen (leere Datei)\n</string>
     <string name="frag1_log_skipping_has_thumbnail">Überspringen (Minibild vorhanden)\n</string>
+    <string name="frag1_log_fix_has_thumbnail_but_missing_tags">Minibild vorhanden, aber einige Felder fehlen. → Minibilder aktualisieren…</string>
     <string name="frag1_log_skipping_bad_image">Überspringen (Bild beschädigt?)\n</string>
     <string name="frag1_log_skipping_error">Überspringen (Fehler): %1$s</string>
     <string name="frag1_log_continue_despite_error_as_per_setting">Verarbeitung gemäß den Einstellungen fortsetzen…</string>
@@ -107,6 +108,8 @@
     <string name="pref_rotateThumbnail_summary">Miniaturbilder drehen, um dem Bild zu entsprechen. Die meisten Apps benötigen die Drehung des Miniaturbildes (z. B. beim Win10-Fotoimport)</string>
     <string name="pref_skipPicsHavingThumbnail_title">Bilder mit Miniaturbild überspringen</string>
     <string name="pref_skipPicsHavingThumbnail_summary">Wenn das Bild bereits ein Miniaturbild hat, Verarbeitung überspringen</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_title">Fehlende Tags in Bildern mit Minibildern korrigieren</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_summary">Das Bild verarbeiten, wenn es ein Minibild besitzt aber einige obligatorische Tags fehlen. Dabei wird das aktuelle Minibild ersetzt, selbst wenn du entschieden hast, Dateien mit Minibildern zu überspringen.</string>
     <string name="pref_backupOriginalPic_title">Sicherung des Quellbildes erstellen</string>
     <string name="pref_backupOriginalPic_summary">Sicherung wird im Arbeitsverzeichnis abgelegt. Wenn eine Datei mit demselben Namen existiert, wird sie nicht überschrieben.</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">Im Quellverzeichnis aktualisieren</string>

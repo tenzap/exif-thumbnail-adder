@@ -78,6 +78,7 @@
     <string name="frag1_log_skipping_not_jpeg">Saute (pas JPEG)\n</string>
     <string name="frag1_log_skipping_empty_file">Saute (fichier vide)\n</string>
     <string name="frag1_log_skipping_has_thumbnail">Saute (contient vignette)\n</string>
+    <string name="frag1_log_fix_has_thumbnail_but_missing_tags">Miniature présente mais certains champs sont manquants. → Mise à jour de la miniature…</string>
     <string name="frag1_log_skipping_bad_image">Saute (mauvaise image?)\n</string>
     <string name="frag1_log_skipping_error">Saute (ERREUR): %1$s</string>
     <string name="frag1_log_continue_despite_error_as_per_setting">Continue tel que demandé dans les paramètres…</string>
@@ -115,6 +116,8 @@
     <string name="pref_rotateThumbnail_summary">Pivote la vignette pour correspondre à l\'image. La plupart des programmes nécessitent une vignette pivotée (par ex. l\'outil d\'import de photos de Win10)</string>
     <string name="pref_skipPicsHavingThumbnail_title">Sauter les fichiers avec vignette</string>
     <string name="pref_skipPicsHavingThumbnail_summary">Si le fichier a déjà une vignette ne pas la traiter</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_title">Corriger les balises manquantes dans les images avec vignette</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_summary">Si l\'image a une vignette mais que des balises obligatoires sont manquantes, traiter l\'image. Cela remplace la vignette actuelle même si vous avez choisi de sauter les images avec vignette.</string>
     <string name="pref_backupOriginalPic_title">Faire une sauvegarde de l\'image source</string>
     <string name="pref_backupOriginalPic_summary">La sauvegarde est placée dans le répertoire de travail. Si un fichier de même nom existe il n\'est pas écrasé</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">Modifier dans le dossier source</string>

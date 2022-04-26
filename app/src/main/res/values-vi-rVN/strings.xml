@@ -17,6 +17,9 @@
     <string name="about_version">Phiên bản</string>
     <string name="about_homepage_source">Trang chủ dự án &amp; mã nguồn:</string>
     <string name="about_license">Giấy phép:</string>
+    <string name="about_authors">Tác giả:</string>
+    <string name="about_translations">Bản dịch</string>
+    <string name="about_anonymous">ẩn danh</string>
     <string name="about_external_libraries">Các thư viện ngoài</string>
     <!-- Working dir perm activity -->
     <string name="working_dir_perm_permissions_set_retry">Đã đặt quyền thư mục hoạt động, vui lòng thử lại.</string>
@@ -71,6 +74,7 @@
     <string name="frag1_log_skipping_not_jpeg">Đang bỏ qua (không phải JPEG)\n</string>
     <string name="frag1_log_skipping_empty_file">Đang bỏ qua (tệp trống)\n</string>
     <string name="frag1_log_skipping_has_thumbnail">Đang bỏ qua (có hình thu nhỏ)\n</string>
+    <string name="frag1_log_fix_has_thumbnail_but_missing_tags">Có hình thu nhỏ nhưng một số trường bị thiếu. → Đang cập nhật hình thu nhỏ…</string>
     <string name="frag1_log_skipping_bad_image">Đang bỏ qua (hình ảnh bị lỗi?)\n</string>
     <string name="frag1_log_skipping_error">Đang bỏ qua (LỖI): %1$s</string>
     <string name="frag1_log_continue_despite_error_as_per_setting">Tiếp tục xử lý theo như cài đặt…</string>
@@ -80,9 +84,9 @@
     <string name="frag1_log_done">\u00A0Xong</string>
     <string name="frag1_log_overwrite_not_allowed">\u00A0Việc ghi đè lên ảnh trong thư mục đích không được cho phép (hãy xem cài đặt). Tệp đích đã tồn tại. Đang bỏ qua.</string>
     <string name="frag1_log_cannot_move_to_backup">\u00A0Không thể di chuyển ảnh vào bản sao lưu. Tệp đã tồn tại. Đang bỏ qua.</string>
-    <string name="frag1_log_successful">\u00A0OK</string>
+    <string name="frag1_log_successful">\u00A0Thành công</string>
     <string name="frag1_log_not_granted">\u00A0Chưa được cấp. Vui lòng thêm lại thư mục đó trong Cài đặt.</string>
-    <string name="frag1_log_unsuccessful">\u00A0KO</string>
+    <string name="frag1_log_unsuccessful">\u00A0Thất bại</string>
     <string name="frag1_log_could_not_copy_timestamp_and_attr">Không thể sao chép dấu thời gian &amp; thuộc tính tệp: %1$s</string>
     <string name="frag1_log_could_not_store_timestamp_and_attr">Không thể lưu trữ dấu thời gian &amp; thuộc tính tệp: %1$s</string>
     <string name="frag1_log_error_moving_doc">LỖI khi di chuyển tài liệu: %1$s</string>
@@ -104,6 +108,8 @@
     <string name="pref_rotateThumbnail_summary">Xoay hình thu nhỏ để tương ứng với ảnh. Đa số ứng dụng cần hình thu nhỏ được xoay (vd: Tính năng nhập ảnh của Win10)</string>
     <string name="pref_skipPicsHavingThumbnail_title">Bỏ qua ảnh có hình thu nhỏ</string>
     <string name="pref_skipPicsHavingThumbnail_summary">Nếu ảnh đã có hình thu nhỏ, thì bỏ qua việc xử lý</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_title">Sửa thẻ bị thiếu trong ảnh có hình thu nhỏ</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_summary">Nếu ảnh có hình thu nhỏ nhưng một số thẻ bắt buộc phải có đang bị thiếu thì xử lý ảnh. Việc này thay thế hình thu nhỏ hiện có kể cả khi bạn chọn bỏ qua tệp có hình thu nhỏ.</string>
     <string name="pref_backupOriginalPic_title">Tạo bản sao lưu ảnh gốc</string>
     <string name="pref_backupOriginalPic_summary">Bản sao lưu được đặt trong thư mục hoạt động. Nếu một tệp có cùng tên đã tồn tại, nó sẽ không bị ghi đè lên</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">Cập nhật trong vị trí nguồn</string>
