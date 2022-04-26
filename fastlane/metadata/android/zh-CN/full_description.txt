@@ -1,6 +1,6 @@
 这个安卓设备应用在你的设备上搜索图片 (JPEG) 并<b>添加缩略图</b>，如果它们还没有的话。 缩略图将添加到 EXIF 元数据结构。
 
-它被设计在 android Oreo (android 8, SDK 26) 上工作，并在运行android 10的真实设备和运行android 8和11的虚拟设备上进行了测试。
+最低系统版本 Oreo (android 8, SDK 26)。
 
 请在这里报告问题： <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnail-adder/issues</a>
 
@@ -8,7 +8,10 @@
 
 <b>基本原理</b>
 
-在我的手机 (小米红米Note 9S) 上，当我想要将图片导入Windows(或任何支持MTP或PTP协议的设备/操作系统) 时，我注意到图片在导入向导中没有显示缩略图(无论是通过照片应用，还是Windows Explorer 导入功能)。 这是因为我的手机没有将缩略图添加到我用相机拍摄的照片中。
+在一些智能手机上，当想要导入图片到Windows(或任何支持MTP或PTP协议的设备/操作系统) 时，我注意到图片可能不会在导入向导中显示缩略图(无论是通过照片应用程序，还是通过Windows资源管理器导入功能)。
+
+这种行为有两个可能的原因。 首先，图片没有缩略图，通常是因为创建图片的应用程序没有添加缩略图。 其次，有缩略图，但它被忽略了，因为缺少一些EXIF标记。
+
 
 <b>功能</b>
 
@@ -22,7 +25,7 @@
 - 保守的默认选项 (备份图片，跳过损坏的文件)
 - 在内部存储或外部存储上安装应用程序
 - 默认 EXIF 库： [Exiv2][3]。
-- 替代库：Android-Exif-Exif-Extended(内置)、libexif(内置)、pixymeta-android (需要从源代码手动编译)。 查看项目页面上已知的事实以了解更多每个库的好处和缺点。
+- 备选库: Android-Exif-Extended, libexif, pixymeta-android. 查看项目页面上已知的事实以了解更多每个库的好处和缺点。
 - 设置: 
 &emsp;- 旋转缩略图
 &emsp;- 替换现有缩略图
