@@ -28,6 +28,7 @@ import android.os.Build;
 
 import androidx.preference.PreferenceManager;
 import androidx.test.espresso.Espresso;
+import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
@@ -38,9 +39,11 @@ import androidx.test.uiautomator.UiSelector;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeDown;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.matcher.ViewMatchers.hasContentDescription;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 import static org.hamcrest.core.AllOf.allOf;
@@ -121,8 +124,18 @@ public class ExampleInstrumentedTest {
         onView(withId(R.id.SettingsFragment)).perform(click());
         Screengrab.screenshot(String.format("%03d", ++i));
 
-        // Settings screen (got to bottom)
+        // Settings screen (got to bottom & scroll to "Options" category)
         onView(allOf(withId(R.id.nav_host_fragment), hasContentDescription())).perform(swipeUp());
+        onView(withId(androidx.preference.R.id.recycler_view))
+                .perform(RecyclerViewActions.actionOnItem(hasDescendant(withText(R.string.pref_backupOriginalPic_title)),
+                        scrollTo()));
+        Screengrab.screenshot(String.format("%03d", ++i));
+
+        // Settings screen (got to bottom & scroll to "Backend/Library" category)
+        onView(allOf(withId(R.id.nav_host_fragment), hasContentDescription())).perform(swipeUp());
+        onView(withId(androidx.preference.R.id.recycler_view))
+                .perform(RecyclerViewActions.actionOnItem(hasDescendant(withText(R.string.pref_categ_libexif_settings)),
+                        scrollTo()));
         Screengrab.screenshot(String.format("%03d", ++i));
 
         // Settings screen (return to top)
