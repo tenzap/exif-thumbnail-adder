@@ -21,7 +21,7 @@ buildscript {
         classpath "org.eclipse.jgit:org.eclipse.jgit:4.1.1.+"
     }
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
 
