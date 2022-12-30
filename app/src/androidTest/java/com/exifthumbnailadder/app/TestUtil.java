@@ -76,7 +76,7 @@ public class TestUtil {
         return resources.getString(resId);
     }
 
-    public static void addSourceFolder() {
+    public static void addSourceFolder(String dir) {
         DocUIStrings docUIStrings = new DocUIStrings();
 
         UiDevice device = UiDevice.getInstance(getInstrumentation());
@@ -107,13 +107,13 @@ public class TestUtil {
             catch (Exception e) { e.printStackTrace(); }
         }
 
-        uiElement = device.findObject(new UiSelector().textContains("DCIM"));
-        try { uiElement.clickAndWaitForNewWindow(); }
-        catch (Exception e) { e.printStackTrace(); }
-
-        uiElement = device.findObject(new UiSelector().textContains("sg"));
-        try { uiElement.clickAndWaitForNewWindow(); }
-        catch (Exception e) { e.printStackTrace(); }
+        // Select folder
+        String[] dirnames = dir.split(System.getProperty("file.separator"));
+        for (String basename: dirnames) {
+            uiElement = device.findObject(new UiSelector().textContains(basename));
+            try { uiElement.clickAndWaitForNewWindow(); }
+            catch (Exception e) { e.printStackTrace(); }
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             uiElement = device.findObject(new UiSelector().clickable(true).textContains(docUIStrings.getAllowAccessTo()));

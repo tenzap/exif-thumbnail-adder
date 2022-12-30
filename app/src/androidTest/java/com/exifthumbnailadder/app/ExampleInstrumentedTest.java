@@ -152,7 +152,7 @@ public class ExampleInstrumentedTest {
         Espresso.pressBack();
 
         // Add source folder
-        TestUtil.addSourceFolder();
+        TestUtil.addSourceFolder("DCIM/sg");
 
         // Set some preferences for screenshots
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
