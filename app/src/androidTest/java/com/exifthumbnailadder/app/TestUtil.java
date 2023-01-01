@@ -38,7 +38,7 @@ import androidx.test.uiautomator.UiSelector;
 
 public class TestUtil {
 
-    public static void requestAllFilesAccess() {
+    public static void requestAllFilesAccess() throws Exception {
         UiDevice device = UiDevice.getInstance(getInstrumentation());
 
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -47,37 +47,32 @@ public class TestUtil {
 
         PackageManager manager = context.getPackageManager();
 
-        try {
-            // Identifier names are taken here:
-            // https://cs.android.com/android/platform/superproject/+/master:packages/apps/Settings/res/values/strings.xml
-            Resources resources = manager.getResourcesForApplication("com.android.settings");
-            resId = resources.getIdentifier("permit_manage_external_storage", "string", "com.android.settings");
-            permit_manage_external_storage = resources.getString(resId);
-        } catch (Exception e) { e.printStackTrace(); }
+        // Identifier names are taken here:
+        // https://cs.android.com/android/platform/superproject/+/master:packages/apps/Settings/res/values/strings.xml
+        Resources resources = manager.getResourcesForApplication("com.android.settings");
+        resId = resources.getIdentifier("permit_manage_external_storage", "string", "com.android.settings");
+        permit_manage_external_storage = resources.getString(resId);
 
         onView(withText(R.string.pref_allFilesAccess_title)).perform(click());
 
         UiObject uiElement2 = device.findObject(new UiSelector().textMatches("(?i)" + permit_manage_external_storage));
-        try { uiElement2.click(); }
-        catch (Exception e) { e.printStackTrace(); }
+        uiElement2.click();
         device.pressBack();
     }
 
-    public static String getSdCardNameInFilePicker() {
+    public static String getSdCardNameInFilePicker() throws Exception {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         PackageManager manager = context.getPackageManager();
         int resId = 0;
         Resources resources = null;
-        try {
-            // Identifier names are taken here:
-            // https://cs.android.com/android/platform/superproject/+/master:packages/apps/Settings/res/values/strings.xml
-            resources = manager.getResourcesForApplication("com.android.settings");
-            resId = resources.getIdentifier("sdcard_setting", "string", "com.android.settings");
-        } catch (Exception e) { e.printStackTrace(); }
+        // Identifier names are taken here:
+        // https://cs.android.com/android/platform/superproject/+/master:packages/apps/Settings/res/values/strings.xml
+        resources = manager.getResourcesForApplication("com.android.settings");
+        resId = resources.getIdentifier("sdcard_setting", "string", "com.android.settings");
         return resources.getString(resId);
     }
 
-    public static void addSourceFolder(String dir) {
+    public static void addSourceFolder(String dir) throws Exception {
         String volumeNameInFilePicker = Build.MODEL;
         String sdCardNameInFilePicker = getSdCardNameInFilePicker();
 
@@ -87,14 +82,12 @@ public class TestUtil {
 
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        UiObject uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)"+context.getString(R.string.settings_button_add_dir)));
-        try { uiElement.clickAndWaitForNewWindow(); }
-        catch (Exception e) { e.printStackTrace(); }
+        UiObject uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + context.getString(R.string.settings_button_add_dir)));
+        uiElement.clickAndWaitForNewWindow();
 
         // Open "more options" menu to click on Show internal storage if it is there
         UiObject advancedMenu = device.findObject(new UiSelector().description(docUIStrings.getMoreOptions()));
-        try { advancedMenu.clickAndWaitForNewWindow(); }
-        catch (Exception e) { e.printStackTrace(); }
+        advancedMenu.clickAndWaitForNewWindow();
 
         // Click on "Show internal storage" if it is there, otherwise press back to quit the "More options" menu
         UiObject showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
@@ -114,34 +107,29 @@ public class TestUtil {
         // Select Root (volume)
         //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
         //uiElement = device.findObject(new UiSelector().textMatches("(?i)"+sdCardNameInFilePicker)); //DOESN'T WORK
-        uiElement = device.findObject(new UiSelector().textMatches("(?i)"+volumeNameInFilePicker));
-        try { uiElement.clickAndWaitForNewWindow(); }
-        catch (Exception e) { e.printStackTrace(); }
+        uiElement = device.findObject(new UiSelector().textMatches("(?i)" + volumeNameInFilePicker));
+        uiElement.clickAndWaitForNewWindow();
 
         // Select folder
         String[] dirnames = dir.split(System.getProperty("file.separator"));
-        for (String basename: dirnames) {
+        for (String basename : dirnames) {
             uiElement = device.findObject(new UiSelector().textContains(basename));
-            try { uiElement.clickAndWaitForNewWindow(); }
-            catch (Exception e) { e.printStackTrace(); }
+            uiElement.clickAndWaitForNewWindow();
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             uiElement = device.findObject(new UiSelector().clickable(true).textContains(docUIStrings.getAllowAccessTo()));
-            try { uiElement.clickAndWaitForNewWindow(); }
-            catch (Exception e) { e.printStackTrace(); }
+            uiElement.clickAndWaitForNewWindow();
 
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllow()));
-            try { uiElement.clickAndWaitForNewWindow(); }
-            catch (Exception e) { e.printStackTrace(); }
+            uiElement.clickAndWaitForNewWindow();
         } else {
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSelect()));
-            try { uiElement.clickAndWaitForNewWindow(); }
-            catch (Exception e) { e.printStackTrace(); }
+            uiElement.clickAndWaitForNewWindow();
         }
     }
 
-    public static void givePermissionToWorkingDir() {
+    public static void givePermissionToWorkingDir() throws Exception {
         UiObject uiElement;
 
         DocUIStrings docUIStrings = new DocUIStrings();
@@ -150,21 +138,16 @@ public class TestUtil {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSave()));
-            try { uiElement.clickAndWaitForNewWindow(); }
-            catch (Exception e) { e.printStackTrace(); }
+            uiElement.clickAndWaitForNewWindow();
             uiElement = device.findObject(new UiSelector().clickable(true).textContains(docUIStrings.getAllowAccessTo()));
-            try { uiElement.clickAndWaitForNewWindow(); }
-            catch (Exception e) { e.printStackTrace(); }
+            uiElement.clickAndWaitForNewWindow();
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllow()));
-            try { uiElement.clickAndWaitForNewWindow(); }
-            catch (Exception e) { e.printStackTrace(); }
+            uiElement.clickAndWaitForNewWindow();
         } else {
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSave()));
-            try { uiElement.clickAndWaitForNewWindow(); }
-            catch (Exception e) { e.printStackTrace(); }
+            uiElement.clickAndWaitForNewWindow();
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSelect()));
-            try { uiElement.clickAndWaitForNewWindow(); }
-            catch (Exception e) { e.printStackTrace(); }
+            uiElement.clickAndWaitForNewWindow();
         }
     }
 

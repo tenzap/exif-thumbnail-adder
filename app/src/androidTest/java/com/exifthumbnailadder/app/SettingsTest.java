@@ -54,7 +54,7 @@ public class SettingsTest {
     }
 
     @Test
-    public void addFolder_test_pics() {
+    public void addFolder_test_pics() throws Exception {
         // Go to Settings
         onView(withId(R.id.SettingsFragment)).perform(click());
 
