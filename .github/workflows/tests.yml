@@ -13,6 +13,7 @@ jobs:
         target: [google_apis]
         include:
           - arch: x86
+          - ram-size: 3072M
 # Re-enable below when default target is enabled again
 #          - api-level: 30
 #            target: default
@@ -56,6 +57,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
           arch: ${{ matrix.arch }}
+          ram-size: ${{ matrix.ram-size }}
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
@@ -68,6 +70,7 @@ jobs:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
           arch: ${{ matrix.arch }}
+          ram-size: ${{ matrix.ram-size }}
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
