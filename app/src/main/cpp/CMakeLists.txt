@@ -6,9 +6,13 @@ set(PACKAGE "exifThumbnailAdderHelpers")
 include(ExternalProject)
 
 # Fetch source location of exiv2 and store in "EXIV2_SOURCE_DIR"
-ExternalProject_Get_Property(exiv2_external SOURCE_DIR)
-set(EXIV2_SOURCE_DIR ${SOURCE_DIR})
-unset(SOURCE_DIR)
+if (USE_PREBUILT_LIB)
+    set(EXIV2_SOURCE_DIR ${CMAKE_SOURCE_DIR}/library/${EXIV2_SOURCE_DIRNAME})
+else()
+    ExternalProject_Get_Property(exiv2_external SOURCE_DIR)
+    set(EXIV2_SOURCE_DIR ${SOURCE_DIR})
+    unset(SOURCE_DIR)
+endif()
 
 set(SOURCES
         libexif-helper.c
@@ -54,20 +58,31 @@ add_library(exifThumbnailAdderHelpers
 
 target_include_directories(exifThumbnailAdderHelpers PRIVATE .)
 #target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include)
 
 # for libexif_helper
-target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include/libexif_app)
+if (USE_PREBUILT_LIB)
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/exif-${EXIF_VERSION_PREBUILT}/include)
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/libexif-${LIBEXIF_VERSION_PREBUILT}/include)
+else()
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include/libexif_app)
+endif()
 target_link_libraries(exifThumbnailAdderHelpers libexifLib exifLib)
 
 # for Exiv2Helper
-target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include/exiv2)
+if (USE_PREBUILT_LIB)
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/expat-${EXPAT_VERSION_PREBUILT}/include)
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/exiv2-${EXIV2_VERSION_PREBUILT}/include)
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/exiv2-${EXIV2_VERSION_PREBUILT}/include/exiv2)
+else()
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include)
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include/exiv2)
+endif()
 target_link_libraries(exifThumbnailAdderHelpers libexpatLib) # To be sure libexpat.so is added since it is needed by exiv2
 target_link_libraries(exifThumbnailAdderHelpers libexiv2Lib)
 
 # for ffmpeg_helper
-if (CMAKE_HOST_WIN32)
-    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/ffmpeg-4.4/include)
+if (USE_PREBUILT_LIB OR CMAKE_HOST_WIN32)
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/ffmpeg-${FFMPEG_VERSION_PREBUILT}/include)
 endif()
 target_link_libraries(exifThumbnailAdderHelpers libswscaleLib libavutilLib)
 target_link_libraries(exifThumbnailAdderHelpers log)         # for __android_log_print

@@ -1,7 +1,12 @@
 include(ExternalProject)
 
+set (EXIF_VERSION 0.6.22)
+set (EXIF_VERSION_PREBUILT 0.6.22)
+set (EXIF_DIR exif-${EXIF_VERSION})
+
+if(NOT USE_PREBUILT_LIB)
 ExternalProject_Add(exif_external
-        URL ${CMAKE_CURRENT_SOURCE_DIR}/library/exif-0.6.22
+        URL ${CMAKE_CURRENT_SOURCE_DIR}/library/${EXIF_DIR}
         BUILD_IN_SOURCE 1
         CMAKE_ARGS
             ${CL_ARGS}
@@ -29,14 +34,20 @@ ExternalProject_Add_Step(
         DEPENDERS update
         LOG 1
 )
+endif()
 
 add_library(exifLib SHARED IMPORTED)
-add_dependencies(exifLib exif_external libexifLib)
+if(USE_PREBUILT_LIB)
+    set (EXIF_LIBRARY_SO_PATH ${CMAKE_SOURCE_DIR}/libs.prebuilt/exif-${EXIF_VERSION_PREBUILT}/lib/${CMAKE_ANDROID_ARCH_ABI}/libexif_app.so)
+else()
+    add_dependencies(exifLib exif_external libexifLib)
+    set (EXIF_LIBRARY_SO_PATH ${CMAKE_BINARY_DIR}/lib/libexif_app.so)
+endif()
 set_target_properties(
         # Specifies the target library.
         exifLib
         # Specifies the parameter you want to define.
         PROPERTIES IMPORTED_LOCATION
         # Provides the path to the library you want to import.
-        ${CMAKE_BINARY_DIR}/lib/libexif_app.so
+        ${EXIF_LIBRARY_SO_PATH}
 )

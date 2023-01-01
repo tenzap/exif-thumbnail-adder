@@ -1,9 +1,15 @@
 include(ExternalProject)
 
+set (EXIV2_VERSION 0.27.5)
+set (EXIV2_VERSION_PREBUILT 0.27.5)
+set (EXIV2_DIR exiv2-${EXIV2_VERSION})
+set (EXIV2_SOURCE_DIRNAME ${EXIV2_DIR}-Source)
+
+if(NOT USE_PREBUILT_LIB)
 #set(CMAKE_CXX_STANDARD 11)             # Uncommenting this line leads to "no stop on breakpoints in C++ code in Android Studio"
 #set(CMAKE_CXX_FLAGS -Wno-deprecated)   # Uncommenting this line leads to "no stop on breakpoints in C++ code in Android Studio"
 ExternalProject_Add(exiv2_external
-        URL ${CMAKE_CURRENT_SOURCE_DIR}/library/exiv2-0.27.5-Source
+        URL ${CMAKE_CURRENT_SOURCE_DIR}/library/${EXIV2_SOURCE_DIRNAME}
         CMAKE_ARGS
             ${CL_ARGS}                                         # Copies the cmake arguments (all parameters for android) to the package
             -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR} # Sets dir where cmake will install the files of the package
@@ -25,14 +31,21 @@ ExternalProject_Add(exiv2_external
         LOG_INSTALL 1
         LOG_UPDATE 1
         )
+endif()
 
 add_library(libexiv2Lib SHARED IMPORTED)
-add_dependencies(libexiv2Lib exiv2_external libexpatLib)
+if(USE_PREBUILT_LIB)
+    set (EXIV2_LIBRARY_SO_PATH ${CMAKE_SOURCE_DIR}/libs.prebuilt/exiv2-${EXIV2_VERSION_PREBUILT}/lib/${CMAKE_ANDROID_ARCH_ABI}/libexiv2.so)
+else()
+    add_dependencies(libexiv2Lib exiv2_external)
+    set (EXIV2_LIBRARY_SO_PATH ${CMAKE_BINARY_DIR}/lib/libexiv2.so)
+endif()
+add_dependencies(libexiv2Lib libexpatLib)
 set_target_properties(
         # Specifies the target library.
         libexiv2Lib
         # Specifies the parameter you want to define.
         PROPERTIES IMPORTED_LOCATION
         # Provides the path to the library you want to import.
-        ${CMAKE_BINARY_DIR}/lib/libexiv2.so
+        ${EXIV2_LIBRARY_SO_PATH}
 )

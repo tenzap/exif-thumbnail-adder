@@ -9,9 +9,12 @@ include(ExternalProject)
 # FFMPEG FETCH SECTION: START
 
 set(FFMPEG_VERSION 4.4)
+set(FFMPEG_VERSION_PREBUILT 4.4)
 set(FFMPEG_NAME ffmpeg-${FFMPEG_VERSION})
 set(FFMPEG_URL https://ffmpeg.org/releases/${FFMPEG_NAME}.tar.bz2)
 
+# if CMAKE_HOST_WIN32 is true, then use precompiled library because we can't easily run "./configure" from win32 systems
+if(NOT (USE_PREBUILT_LIB OR CMAKE_HOST_WIN32))
 get_filename_component(FFMPEG_ARCHIVE_NAME ${FFMPEG_URL} NAME)
 
 IF (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME})
@@ -164,25 +167,36 @@ set(ffmpeg_src
         )
 
 # FFMPEG EXE SOURCES SECTION: END
+endif() # end of "if USE_PREBUILT_LIB"
 
 add_library(libavutilLib SHARED IMPORTED)
-add_dependencies(libavutilLib ffmpeg_target)
+if(USE_PREBUILT_LIB OR CMAKE_HOST_WIN32)
+    set (AVUTIL_LIBRARY_SO_PATH ${CMAKE_SOURCE_DIR}/libs.prebuilt/ffmpeg-${FFMPEG_VERSION_PREBUILT}/lib/${CMAKE_ANDROID_ARCH_ABI}/libavutil.so)
+else()
+    add_dependencies(libavutilLib ffmpeg_target)
+    set (AVUTIL_LIBRARY_SO_PATH ${CMAKE_BINARY_DIR}/lib/libavutil.so)
+endif()
 set_target_properties(
         # Specifies the target library.
         libavutilLib
         # Specifies the parameter you want to define.
         PROPERTIES IMPORTED_LOCATION
         # Provides the path to the library you want to import.
-        ${CMAKE_BINARY_DIR}/lib/libavutil.so
+        ${AVUTIL_LIBRARY_SO_PATH}
 )
 
 add_library(libswscaleLib SHARED IMPORTED)
-add_dependencies(libswscaleLib ffmpeg_target)
+if(USE_PREBUILT_LIB OR CMAKE_HOST_WIN32)
+    set (SWSCALE_LIBRARY_SO_PATH ${CMAKE_SOURCE_DIR}/libs.prebuilt/ffmpeg-${FFMPEG_VERSION_PREBUILT}/lib/${CMAKE_ANDROID_ARCH_ABI}/libswscale.so)
+else()
+    add_dependencies(libswscaleLib ffmpeg_target)
+    set (SWSCALE_LIBRARY_SO_PATH ${CMAKE_BINARY_DIR}/lib/libswscale.so)
+endif()
 set_target_properties(
         # Specifies the target library.
         libswscaleLib
         # Specifies the parameter you want to define.
         PROPERTIES IMPORTED_LOCATION
         # Provides the path to the library you want to import.
-        ${CMAKE_BINARY_DIR}/lib/libswscale.so
+        ${SWSCALE_LIBRARY_SO_PATH}
 )

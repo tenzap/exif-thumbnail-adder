@@ -53,6 +53,10 @@ android {
 //                abiFilters 'armeabi-v7a'
 //                abiFilters 'x86'
 //                abiFilters 'x86_64'
+
+                if (project.hasProperty('usePrebuiltLib') && usePrebuiltLib == "true") {
+                    arguments "-DUSE_PREBUILT_LIB=TRUE"
+                }
             }
         }
     }

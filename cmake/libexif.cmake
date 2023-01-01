@@ -1,8 +1,13 @@
 
 include(ExternalProject)
 
+set (LIBEXIF_VERSION 0.6.24)
+set (LIBEXIF_VERSION_PREBUILT 0.6.24)
+set (LIBEXIF_DIR libexif-${LIBEXIF_VERSION})
+
+if(NOT USE_PREBUILT_LIB)
 ExternalProject_Add(libexif_external
-        URL ${CMAKE_CURRENT_SOURCE_DIR}/library/libexif-0.6.24
+        URL ${CMAKE_CURRENT_SOURCE_DIR}/library/${LIBEXIF_DIR}
         CMAKE_ARGS
             ${CL_ARGS}
             -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}
@@ -29,14 +34,20 @@ ExternalProject_Add_Step(
         DEPENDERS update
         LOG 1
 )
+endif()
 
 add_library(libexifLib SHARED IMPORTED)
-add_dependencies(libexifLib libexif_external)
+if(USE_PREBUILT_LIB)
+    set (LIBEXIF_LIBRARY_SO_PATH ${CMAKE_SOURCE_DIR}/libs.prebuilt/libexif-${LIBEXIF_VERSION_PREBUILT}/lib/${CMAKE_ANDROID_ARCH_ABI}/libexif.so)
+else()
+    add_dependencies(libexifLib libexif_external)
+    set (LIBEXIF_LIBRARY_SO_PATH ${CMAKE_BINARY_DIR}/lib/libexif.so)
+endif()
 set_target_properties(
         # Specifies the target library.
         libexifLib
         # Specifies the parameter you want to define.
         PROPERTIES IMPORTED_LOCATION
         # Provides the path to the library you want to import.
-        ${CMAKE_BINARY_DIR}/lib/libexif.so
+        ${LIBEXIF_LIBRARY_SO_PATH}
     )
