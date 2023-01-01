@@ -123,4 +123,26 @@ platform :android do
     )
   end
 
+  desc "Prepare device for tests"
+  lane :prepare_device_for_tests do
+    adb(
+      #serial: 'emulator-5554',
+      command: 'shell mkdir -p /storage/emulated/0/DCIM/test_pics'
+    )
+    #adb(
+    #  #serial: 'emulator-5554',
+    #  command: 'push ../pic-exif-samples/jpg/ /storage/emulated/0/DCIM/test_pics'
+    #)
+  end
+
+  desc "Run tests"
+  lane :connectedCheck do
+    prepare_device_for_tests
+    gradle(
+      task: "connectedCheck",
+      properties: {
+        "excludeScreenshots" => "NULL",
+      }
+    )
+  end
 end
