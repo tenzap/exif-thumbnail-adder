@@ -33,8 +33,13 @@ import androidx.preference.PreferenceManager;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
+import androidx.test.uiautomator.UiSelector;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +56,20 @@ public class SettingsTest {
     public void init() {
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    // https://stackoverflow.com/a/54203607
+    @BeforeClass
+    public static void dismissANRSystemDialog() throws UiObjectNotFoundException {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        int resId = context.getResources().getIdentifier("wait", "string", "android");
+        String wait = context.getResources().getString(resId);
+        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+
+        UiObject waitButton = device.findObject(new UiSelector().textMatches("(?i)" + wait));
+        if (waitButton.exists()) {
+            waitButton.click();
+        }
     }
 
     @Test
