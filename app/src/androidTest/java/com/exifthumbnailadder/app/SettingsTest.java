@@ -57,7 +57,7 @@ public class SettingsTest {
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
-
+/*
     // https://stackoverflow.com/a/54203607
     @BeforeClass
     public static void dismissANRSystemDialog() throws UiObjectNotFoundException {
@@ -71,7 +71,7 @@ public class SettingsTest {
             waitButton.click();
         }
     }
-
+*/
     @Test
     public void addFolder_test_pics() throws Exception {
         // Go to Settings
