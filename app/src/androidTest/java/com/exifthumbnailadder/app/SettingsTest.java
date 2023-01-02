@@ -87,4 +87,46 @@ public class SettingsTest {
         assertEquals(1, inputDirs.size());
         assertEquals("content://com.android.externalstorage.documents/tree/primary%3ADCIM%2Ftest_pics/document/primary%3ADCIM%2Ftest_pics", inputDirs.get(0).toString());
     }
+
+    @Test
+    public void removeFolder() throws Exception {
+        // Go to Settings
+        onView(withId(R.id.SettingsFragment)).perform(click());
+
+        // Remove folders
+        onView(withId(R.id.del_path_button)).perform(click());
+
+        // Get preference value
+        SharedPreferences.Editor editor = prefs.edit();
+        InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
+
+        // Check that folder list is empty
+        assertEquals(0, inputDirs.size());
+    }
+
+    @Test
+    public void addThenRemoveFolder() throws Exception {
+        // Go to Settings
+        onView(withId(R.id.SettingsFragment)).perform(click());
+
+        // Add Folder in settings
+        TestUtil.addSourceFolder("DCIM/test_pics");
+
+        // Get preference value
+        SharedPreferences.Editor editor = prefs.edit();
+        InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
+
+        // Check that folder is in the list
+        assertEquals(1, inputDirs.size());
+
+        // Remove folders
+        onView(withId(R.id.del_path_button)).perform(click());
+
+        // Get preference value
+        inputDirs = new InputDirs(prefs.getString("srcUris", ""));
+
+        // Check that folder list is empty
+        assertEquals(0, inputDirs.size());
+    }
+
 }
