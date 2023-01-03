@@ -84,7 +84,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: fastlane connectedCheck
+          script: fastlane connectedCheck_with_screenrecord
 
       - name: run tests without avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
         if: ${{ env.with_avd_cache != 'true' }}
@@ -103,4 +103,6 @@ jobs:
         if: always()
         with:
           name: test-results-${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}
-          path: app/build/reports/
+          path: |
+            app/build/reports/
+            screenrecords/
