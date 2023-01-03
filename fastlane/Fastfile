@@ -116,6 +116,7 @@ platform :android do
       reinstall_app: true,
       app_package_name: "com.exifthumbnailadder.app.debug",
       tests_package_name: "com.exifthumbnailadder.app.debug.test",
+      use_tests_in_classes: "com.exifthumbnailadder.app.TakeScreenshots",
       app_apk_path: "app/build/outputs/apk/standard/debug/exifthumbnailadder-standard-debug.apk",
       tests_apk_path: "app/build/outputs/apk/androidTest/standard/debug/exifthumbnailadder-standard-debug-androidTest.apk",
       #specific_device: "emulator-5554"
