@@ -145,4 +145,22 @@ platform :android do
       }
     )
   end
+
+  desc "Run tests"
+  lane :connectedCheck_with_screenrecord do
+    begin
+      connectedCheck
+    rescue => ex
+      test_failed = true
+      UI.error(ex)
+    end
+
+    adb(
+      command: 'pull /data/local/tmp/screenrecords/',
+    )
+
+    if test_failed == true
+      UI.shell_error! "connectedCheck lane failed."
+    end
+  end
 end
