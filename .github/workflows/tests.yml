@@ -61,6 +61,7 @@ jobs:
           arch: ${{ matrix.arch }}
           ram-size: ${{ matrix.ram-size }}
           heap-size: 512M
+          disk-size: 8G
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
@@ -75,6 +76,7 @@ jobs:
           arch: ${{ matrix.arch }}
           ram-size: ${{ matrix.ram-size }}
           heap-size: 512M
+          disk-size: 8G
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
