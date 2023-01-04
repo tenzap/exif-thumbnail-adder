@@ -80,7 +80,6 @@ public class SettingsTest {
 */
     @Test
     public void addFolder_test_pics() throws Exception {
-        dismissANRSystemDialog();
         // Go to Settings
         onView(withId(R.id.SettingsFragment)).perform(click());
 
@@ -97,7 +96,6 @@ public class SettingsTest {
 
     @Test
     public void removeFolder() throws Exception {
-        dismissANRSystemDialog();
         // Go to Settings
         onView(withId(R.id.SettingsFragment)).perform(click());
 
@@ -114,7 +112,6 @@ public class SettingsTest {
 
     @Test
     public void addThenRemoveFolder() throws Exception {
-        dismissANRSystemDialog();
         // Go to Settings
         onView(withId(R.id.SettingsFragment)).perform(click());
 
