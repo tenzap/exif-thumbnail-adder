@@ -77,6 +77,9 @@ public class TestUtil {
     }
 
     public static void addSourceFolder(String dir) {
+        String volumeNameInFilePicker = Build.MODEL;
+        String sdCardNameInFilePicker = getSdCardNameInFilePicker();
+
         DocUIStrings docUIStrings = new DocUIStrings();
 
         UiDevice device = UiDevice.getInstance(getInstrumentation());
@@ -86,9 +89,6 @@ public class TestUtil {
         UiObject uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)"+context.getString(R.string.settings_button_add_dir)));
         try { uiElement.clickAndWaitForNewWindow(); }
         catch (Exception e) { e.printStackTrace(); }
-
-        String volumeNameInFilePicker = Build.MODEL;
-        String sdCardNameInFilePicker = getSdCardNameInFilePicker();
 
         //int iterations_count = (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) ? 2 : 1;
         int iterations_count = 1;
