@@ -91,10 +91,6 @@ public class TestUtil {
         try { uiElement.clickAndWaitForNewWindow(); }
         catch (Exception e) { e.printStackTrace(); }
 
-        // Wait a bit because window may not be fully displayed & ready before the next actions,
-        // especially when DocumentsUI (File picker) is launched for the first time on the device
-        device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 5000);
-
         // Open "more options" menu to click on Show internal storage if it is there
         UiObject advancedMenu = device.findObject(new UiSelector().description(docUIStrings.getMoreOptions()));
         try { advancedMenu.clickAndWaitForNewWindow(); }
