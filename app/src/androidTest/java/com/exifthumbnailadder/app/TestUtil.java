@@ -113,7 +113,7 @@ public class TestUtil {
         // Select folder
         String[] dirnames = dir.split(System.getProperty("file.separator"));
         for (String basename : dirnames) {
-            uiElement = device.findObject(new UiSelector().textContains(basename));
+            uiElement = device.findObject(new UiSelector().text(basename));
             uiElement.clickAndWaitForNewWindow();
         }
 
