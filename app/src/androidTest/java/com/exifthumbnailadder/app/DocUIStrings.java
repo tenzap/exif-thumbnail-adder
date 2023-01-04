@@ -37,6 +37,8 @@ public class DocUIStrings {
     String select = "";
     String save = "";
     String documentsUiPackageName = "";
+    String showInternalStorage;
+    String moreOptions;
 
     DocUIStrings() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -75,6 +77,12 @@ public class DocUIStrings {
             resId = resources.getIdentifier("menu_save", "string", documentsUiPackageName);
             save = resources.getString(resId);
 
+            resId = resources.getIdentifier("menu_advanced_show", "string", documentsUiPackageName);
+            showInternalStorage = resources.getString(resId);
+
+            resId = resources.getIdentifier("action_menu_overflow_description", "string", "android");
+            moreOptions = resources.getString(resId);
+
         } catch (Exception e) { e.printStackTrace(); }
     }
 
@@ -96,6 +104,14 @@ public class DocUIStrings {
 
     public String getDocumentsUiPackageName() {
         return documentsUiPackageName;
+    }
+
+    public String getShowInternalStorage() {
+        return showInternalStorage;
+    }
+
+    public String getMoreOptions() {
+        return moreOptions;
     }
 
 }

@@ -33,6 +33,7 @@ import android.os.Build;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 public class TestUtil {
@@ -89,6 +90,16 @@ public class TestUtil {
         UiObject uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)"+context.getString(R.string.settings_button_add_dir)));
         try { uiElement.clickAndWaitForNewWindow(); }
         catch (Exception e) { e.printStackTrace(); }
+
+        // Open "more options" menu to click on Show internal storage if it is there
+        UiObject advancedMenu = device.findObject(new UiSelector().description(docUIStrings.getMoreOptions()));
+        try { advancedMenu.clickAndWaitForNewWindow(); }
+        catch (Exception e) { e.printStackTrace(); }
+
+        // Click on "Show internal storage" if it is there, otherwise press back to quit the "More options" menu
+        UiObject showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
+        try { showInternalStorage.clickAndWaitForNewWindow(); }
+        catch (UiObjectNotFoundException e) { device.pressBack(); }
 
         //int iterations_count = (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) ? 2 : 1;
         int iterations_count = 1;
