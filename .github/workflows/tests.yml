@@ -4,6 +4,8 @@ jobs:
 
   test:
     #continue-on-error: true
+    env:
+      with_avd_cache: true
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -43,6 +45,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
 
       - name: AVD cache
+        if: ${{ env.with_avd_cache == 'true' }}
         uses: actions/cache@v3
         id: avd-cache
         with:
@@ -52,8 +55,7 @@ jobs:
           key: avd-${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}
 
       - name: create AVD and generate snapshot for caching (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
-        #if: false
-        if: steps.avd-cache.outputs.cache-hit != 'true'
+        if: ${{ env.with_avd_cache == 'true' &&  steps.avd-cache.outputs.cache-hit != 'true' }}
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
@@ -68,8 +70,8 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
-      - name: run tests (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
-        #if: false
+      - name: run tests with avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
+        if: ${{ env.with_avd_cache == 'true' }}
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
@@ -83,6 +85,19 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: fastlane connectedCheck
+
+      - name: run tests without avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
+        if: ${{ env.with_avd_cache != 'true' }}
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: ${{ matrix.target }}
+          arch: ${{ matrix.arch }}
+          ram-size: ${{ matrix.ram-size }}
+          heap-size: 512M
+          disk-size: 8G
+          sdcard-path-or-size: 200M
+          script: fastlane connectedCheck_with_screenrecord
 
       - uses: actions/upload-artifact@v3
         if: always()
