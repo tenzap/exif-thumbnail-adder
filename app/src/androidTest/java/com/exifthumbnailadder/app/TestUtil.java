@@ -103,8 +103,13 @@ public class TestUtil {
 
         // Open Drawer (aka Hamburger menu)
         UiObject hamburgerMenu = device.findObject(new UiSelector().description(docUIStrings.getShowRoots()));
-        try { hamburgerMenu.clickAndWaitForNewWindow(); }
-        catch (Exception e) { e.printStackTrace(); }
+        try {
+            hamburgerMenu.clickAndWaitForNewWindow();
+        } catch (UiObjectNotFoundException e) {
+            // In some cases (when there is no sdcard for example), the hamburger menu doesn't exist.
+            // So skip gracefully to the next step
+            e.printStackTrace();
+        }
 
         // Select Root (volume)
         //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
