@@ -148,6 +148,9 @@ platform :android do
 
   desc "Run tests"
   lane :connectedCheck_with_screenrecord do
+    # Pause (in seconds) to let the system image in the emulator finish booting.
+    sleep 60
+
     begin
       connectedCheck
     rescue => ex
