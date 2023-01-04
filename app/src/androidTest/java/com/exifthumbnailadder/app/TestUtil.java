@@ -86,7 +86,7 @@ public class TestUtil {
         uiElement.clickAndWaitForNewWindow();
 
         // Open "more options" menu to click on Show internal storage if it is there
-        UiObject advancedMenu = device.findObject(new UiSelector().description(docUIStrings.getMoreOptions()));
+        UiObject advancedMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getMoreOptions()));
         advancedMenu.clickAndWaitForNewWindow();
 
         // Click on "Show internal storage" if it is there, otherwise press back to quit the "More options" menu
@@ -95,7 +95,7 @@ public class TestUtil {
         catch (UiObjectNotFoundException e) { device.pressBack(); }
 
         // Open Drawer (aka Hamburger menu)
-        UiObject hamburgerMenu = device.findObject(new UiSelector().description(docUIStrings.getShowRoots()));
+        UiObject hamburgerMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getShowRoots()));
         try {
             hamburgerMenu.clickAndWaitForNewWindow();
         } catch (UiObjectNotFoundException e) {
