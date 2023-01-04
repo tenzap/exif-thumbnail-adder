@@ -107,7 +107,7 @@ public class TestUtil {
         // Select Root (volume)
         //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
         //uiElement = device.findObject(new UiSelector().textMatches("(?i)"+sdCardNameInFilePicker)); //DOESN'T WORK
-        uiElement = device.findObject(new UiSelector().textMatches("(?i)" + volumeNameInFilePicker));
+        uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker));
         uiElement.clickAndWaitForNewWindow();
 
         // Select folder
