@@ -107,13 +107,13 @@ public class TestUtil {
         // Select Root (volume)
         //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
         //uiElement = device.findObject(new UiSelector().textMatches("(?i)"+sdCardNameInFilePicker)); //DOESN'T WORK
-        uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker));
+        uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
         uiElement.clickAndWaitForNewWindow();
 
         // Select folder
         String[] dirnames = dir.split(System.getProperty("file.separator"));
         for (String basename : dirnames) {
-            uiElement = device.findObject(new UiSelector().text(basename));
+            uiElement = device.findObject(new UiSelector().text(basename).resourceId("android:id/title"));
             uiElement.clickAndWaitForNewWindow();
         }
 
