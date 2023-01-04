@@ -159,6 +159,10 @@ platform :android do
       command: 'pull /data/local/tmp/screenrecords/',
     )
 
+    adb(
+      command: 'shell rm -rf /data/local/tmp/screenrecords/',
+    )
+
     if test_failed == true
       UI.shell_error! "connectedCheck lane failed."
     end
