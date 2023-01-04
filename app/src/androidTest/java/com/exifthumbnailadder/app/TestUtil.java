@@ -101,22 +101,17 @@ public class TestUtil {
         try { showInternalStorage.clickAndWaitForNewWindow(); }
         catch (UiObjectNotFoundException e) { device.pressBack(); }
 
-        //int iterations_count = (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) ? 2 : 1;
-        int iterations_count = 1;
-        for (int j=0; j<iterations_count; j++) {
-            // Need to do it twice to be sure to catch the sd card. Sometimes it fails to do so.
-            UiObject drawer = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName()+":id/drawer_layout"));
-            try {
-                drawer.swipeRight(50);
-                drawer.waitForExists(250);
-            } catch (Exception e) { e.printStackTrace(); }
+        // Open Drawer (aka Hamburger menu)
+        UiObject hamburgerMenu = device.findObject(new UiSelector().description(docUIStrings.getShowRoots()));
+        try { hamburgerMenu.clickAndWaitForNewWindow(); }
+        catch (Exception e) { e.printStackTrace(); }
 
-            //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
-            //uiElement = device.findObject(new UiSelector().textMatches("(?i)"+sdCardNameInFilePicker)); //DOESN'T WORK
-            uiElement = device.findObject(new UiSelector().textMatches("(?i)"+volumeNameInFilePicker));
-            try { uiElement.clickAndWaitForNewWindow(); }
-            catch (Exception e) { e.printStackTrace(); }
-        }
+        // Select Root (volume)
+        //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
+        //uiElement = device.findObject(new UiSelector().textMatches("(?i)"+sdCardNameInFilePicker)); //DOESN'T WORK
+        uiElement = device.findObject(new UiSelector().textMatches("(?i)"+volumeNameInFilePicker));
+        try { uiElement.clickAndWaitForNewWindow(); }
+        catch (Exception e) { e.printStackTrace(); }
 
         // Select folder
         String[] dirnames = dir.split(System.getProperty("file.separator"));
@@ -166,5 +161,13 @@ public class TestUtil {
             try { uiElement.clickAndWaitForNewWindow(); }
             catch (Exception e) { e.printStackTrace(); }
         }
+    }
+
+    public void openHamburgerMenuBySwipe() throws Exception {
+        UiDevice device = UiDevice.getInstance(getInstrumentation());
+        DocUIStrings docUIStrings = new DocUIStrings();
+        UiObject drawer = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_layout"));
+        drawer.swipeRight(50);
+        drawer.waitForExists(250);
     }
 }

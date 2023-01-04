@@ -39,6 +39,8 @@ public class DocUIStrings {
     String documentsUiPackageName = "";
     String showInternalStorage;
     String moreOptions;
+    int hamburgerIconId;
+    String showRoots;
 
     DocUIStrings() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -83,6 +85,10 @@ public class DocUIStrings {
             resId = resources.getIdentifier("action_menu_overflow_description", "string", "android");
             moreOptions = resources.getString(resId);
 
+            hamburgerIconId = resources.getIdentifier("ic_hamburger", "drawable", documentsUiPackageName);
+
+            resId = resources.getIdentifier("drawer_open", "string", documentsUiPackageName);
+            showRoots = resources.getString(resId);
         } catch (Exception e) { e.printStackTrace(); }
     }
 
@@ -114,4 +120,11 @@ public class DocUIStrings {
         return moreOptions;
     }
 
+    public int getHamburgerIconId() {
+        return hamburgerIconId;
+    }
+
+    public String getShowRoots() {
+        return showRoots;
+    }
 }
