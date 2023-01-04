@@ -95,7 +95,7 @@ public class TestUtil {
         catch (UiObjectNotFoundException e) { device.pressBack(); }
 
         // Open Drawer (aka Hamburger menu)
-        UiObject hamburgerMenu = device.findObject(new UiSelector().descriptionMatches("(?i)" + docUIStrings.getShowRoots()));
+        UiObject hamburgerMenu = device.findObject(new UiSelector().description(docUIStrings.getShowRoots()));
         try {
             hamburgerMenu.clickAndWaitForNewWindow();
         } catch (UiObjectNotFoundException e) {
