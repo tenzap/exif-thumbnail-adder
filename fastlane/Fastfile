@@ -161,8 +161,10 @@ platform :android do
       )
     end
 
-    # Pause (in seconds) to let the system image in the emulator finish booting.
-    sleep 60
+    if ENV["DELAY"]
+      # Pause (in seconds) to let the system image in the emulator finish booting.
+      sleep ENV["DELAY"].to_i
+    end
 
     begin
       connectedCheck
