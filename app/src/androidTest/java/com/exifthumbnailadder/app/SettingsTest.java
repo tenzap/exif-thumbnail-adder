@@ -81,7 +81,7 @@ public class SettingsTest {
     @Test
     public void addFolder_test_pics() throws Exception {
         // Go to Settings
-        onView(withId(R.id.SettingsFragment)).perform(click());
+        TestUtil.openSettingsFragment();
 
         // Add Folder in settings
         TestUtil.addSourceFolder("DCIM/test_pics");
@@ -97,7 +97,7 @@ public class SettingsTest {
     @Test
     public void removeFolder() throws Exception {
         // Go to Settings
-        onView(withId(R.id.SettingsFragment)).perform(click());
+        TestUtil.openSettingsFragment();
 
         // Remove folders
         onView(withId(R.id.del_path_button)).perform(click());
@@ -113,7 +113,7 @@ public class SettingsTest {
     @Test
     public void addThenRemoveFolder() throws Exception {
         // Go to Settings
-        onView(withId(R.id.SettingsFragment)).perform(click());
+        TestUtil.openSettingsFragment();
 
         // Add Folder in settings
         TestUtil.addSourceFolder("DCIM/test_pics");

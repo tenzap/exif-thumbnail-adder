@@ -22,6 +22,7 @@ package com.exifthumbnailadder.app;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
@@ -174,5 +175,16 @@ public class TestUtil {
         UiObject drawer = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_layout"));
         drawer.swipeRight(50);
         drawer.waitForExists(250);
+    }
+
+    public static void openSettingsFragment() throws Exception {
+        // The method below sometimes shows the Tooltip instead of opening the settings fragment (on API >= 31)
+        //onView(withId(R.id.SettingsFragment)).perform(click());
+
+        // So we use this one instead
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        UiObject uiElement = device.findObject(new UiSelector().clickable(true).description(context.getString(R.string.action_settings)));
+        uiElement.clickAndWaitForNewWindow();
     }
 }
