@@ -95,27 +95,18 @@ public class TestUtil {
         try { showInternalStorage.clickAndWaitForNewWindow(); }
         catch (UiObjectNotFoundException e) { device.pressBack(); }
 
-        // Open Drawer (aka Hamburger menu)
+        // Open Drawer
         UiObject hamburgerMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getShowRoots()));
-        try {
+        if (hamburgerMenu.exists()) {
+            // Open drawer (aka Hamburger menu)
             hamburgerMenu.clickAndWaitForNewWindow();
-        } catch (UiObjectNotFoundException e) {
-            // In some cases (when there is no sdcard for example), the hamburger menu doesn't exist.
-            // So skip gracefully to the next step
-            e.printStackTrace();
-        }
 
-        // Select Root (volume)
-        //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
-        //uiElement = device.findObject(new UiSelector().textMatches("(?i)"+sdCardNameInFilePicker)); //DOESN'T WORK
-        uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
-        try {
+            // Select Root (volume)
+            uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
             uiElement.clickAndWaitForNewWindow();
-        } catch (UiObjectNotFoundException e) {
-            e.printStackTrace();
-
-            // In some cases (when we can't open the drawer), we may have to select the root by selecting it in the breadcrumb
-            // Swipe on breadcrumb
+        } else {
+            // In some cases (when there is no sdcard for example), the hamburger menu doesn't exist.
+            // Select the root by selecting it in the breadcrumb. For this swipe on breadcrumb to display the root
             UiObject breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/horizontal_breadcrumb"));
             UiObject root = null;
             for (int i = 0; i < 5; i++) {
@@ -124,8 +115,7 @@ public class TestUtil {
                 if (root.exists())
                     break;
             }
-            if (root != null)
-                root.clickAndWaitForNewWindow();
+            root.clickAndWaitForNewWindow();
         }
 
         // Select folder
