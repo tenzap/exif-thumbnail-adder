@@ -92,8 +92,8 @@ public class TestUtil {
 
         // Click on "Show internal storage" if it is there, otherwise press back to quit the "More options" menu
         UiObject showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
-        if (showInternalStorage.exists()) { showInternalStorage.clickAndWaitForNewWindow(); }
-        else { device.pressBack(); }
+        try { showInternalStorage.clickAndWaitForNewWindow(); }
+        catch (UiObjectNotFoundException e) { device.pressBack(); }
 
         // Open Drawer
         UiObject hamburgerMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getShowRoots()));
