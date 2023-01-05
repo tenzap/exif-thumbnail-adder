@@ -104,7 +104,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: test-results-${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}
+          name: test-results-${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}-run${{ github.run_attempt }}
           path: |
             app/build/reports/
             screenrecords/
