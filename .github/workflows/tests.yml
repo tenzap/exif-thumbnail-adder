@@ -85,6 +85,7 @@ jobs:
     env:
       with_avd_cache: true
     runs-on: macos-latest
+    needs: build
     strategy:
       fail-fast: false
       matrix:
@@ -121,6 +122,16 @@ jobs:
 
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
+
+      - uses: actions/cache/restore@v3
+        with:
+          path: |
+            app/build/
+            app/.cxx/
+            version_last_tag.txt
+            .gradle/
+            ~/.gradle/
+          key: build-macos-${{ github.run_id }}
 
       - name: AVD cache
         if: ${{ env.with_avd_cache == 'true' }}
