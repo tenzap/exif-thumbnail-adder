@@ -1,6 +1,84 @@
 name: ETA tests
 on: [push, pull_request]
+
+env:
+  GRADLE_COMMON_ARGS: -PexcludeScreenshots=NULL
+
 jobs:
+
+  build:
+    runs-on: macos-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      # Switch to java 11 since AGP requires java 11
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Setup and execute Gradle 'assembleDebug' task
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembleDebug ${{ env.GRADLE_COMMON_ARGS }}
+      - uses: actions/cache/save@v3
+        id: cache
+        with:
+          path: |
+            app/build/
+            app/.cxx/
+            version_last_tag.txt
+            .gradle/
+            ~/.gradle/
+          key: build-macos-${{ github.run_id }}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: outputs-macos-run${{ github.run_attempt }}
+          path: |
+            app/build/outputs/
+
+  buildWithPrebuiltLibs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      # Switch to java 11 since AGP requires java 11
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Setup and execute Gradle 'assembleDebug -PusePrebuiltLib=true' task
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembleRelease -PusePrebuiltLib=true ${{ env.GRADLE_COMMON_ARGS }}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: outputs-linux-with-prebuilt-libs-run${{ github.run_attempt }}
+          path: |
+            app/build/outputs/
+
+  buildWindows:
+    runs-on: windows-latest
+    needs: buildWithPrebuiltLibs
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      # Switch to java 11 since AGP requires java 11
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Setup and execute Gradle 'assembleDebug' task
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembleDebug ${{ env.GRADLE_COMMON_ARGS }}
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: outputs-windows-run${{ github.run_attempt }}
+          path: |
+            app/build/outputs/
 
   test:
     #continue-on-error: true
