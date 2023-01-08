@@ -51,7 +51,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-      - name: Setup and execute Gradle 'assembleDebug' task
+      - name: Setup and build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
           arguments: |
@@ -102,7 +102,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-      - name: Setup and execute Gradle 'assembleDebug -PusePrebuiltLib=true' task
+      - name: Setup and execute Gradle 'assembleRelease -PusePrebuiltLib=true' task
         uses: gradle/gradle-build-action@v2
         with:
           arguments: assembleRelease -PusePrebuiltLib=true ${{ env.GRADLE_COMMON_ARGS }}
