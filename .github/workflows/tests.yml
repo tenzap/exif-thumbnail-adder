@@ -242,7 +242,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: API_LEVEL=${{ matrix.api-level }} DELAY=60 fastlane connectedCheck_with_screenrecord
+          script: API_LEVEL=${{ matrix.api-level }} fastlane connectedCheck_with_screenrecord
 
       - name: run tests without avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
         if: ${{ env.with_avd_cache != 'true' }}
@@ -256,7 +256,7 @@ jobs:
           disk-size: 8G
           sdcard-path-or-size: 200M
           after-boot-delay: 300
-          script: API_LEVEL=${{ matrix.api-level }} DELAY=60 fastlane connectedCheck_with_screenrecord
+          script: API_LEVEL=${{ matrix.api-level }} fastlane connectedCheck_with_screenrecord
 
       - uses: actions/upload-artifact@v3
         if: always()
