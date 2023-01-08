@@ -54,7 +54,20 @@ jobs:
       - name: Setup and execute Gradle 'assembleDebug' task
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: assembleDebug ${{ env.GRADLE_COMMON_ARGS }}
+          arguments: |
+            ${{ env.GRADLE_COMMON_ARGS }}
+            assembleDebug
+            assembleAndroidTest
+            compileGoogle_playDebugUnitTestSources
+            compileGoogle_playReleaseUnitTestSources
+            compileStandardDebugUnitTestSources
+            compileStandardReleaseUnitTestSources
+            compileDebugUnitTestSources
+            compileReleaseUnitTestSources
+            bundleLibResDebug
+            bundleLibResRelease
+            bundleLibRuntimeToJarDebug
+            bundleLibRuntimeToJarRelease
       - uses: actions/cache/save@v3
         id: cache
         with:
