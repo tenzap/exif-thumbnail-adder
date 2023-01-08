@@ -2,7 +2,7 @@ name: ETA tests
 on: [push, pull_request]
 
 env:
-  GRADLE_COMMON_ARGS: -PexcludeScreenshots=NULL
+  GRADLE_COMMON_ARGS:
   CMAKE_VERSION: 3.10.2.4988404
   NDK_VERSION: 23.1.7779620
 
