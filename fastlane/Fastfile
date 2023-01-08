@@ -23,6 +23,31 @@ platform :android do
     gradle(task: "test")
   end
 
+  desc "Build all the tests without running them"
+  lane :build_test do
+    gradle(
+      tasks: [
+        "compileGoogle_playDebugUnitTestSources",
+        "compileGoogle_playReleaseUnitTestSources",
+        "compileStandardDebugUnitTestSources",
+        "compileStandardReleaseUnitTestSources",
+        "compileDebugUnitTestSources",
+        "compileReleaseUnitTestSources",
+        "bundleLibResDebug",
+        "bundleLibResRelease",
+        "bundleLibRuntimeToJarDebug",
+        "bundleLibRuntimeToJarRelease",
+              ],
+    )
+  end
+
+  desc "Build all the instrumented tests without running them"
+  lane :build_androidTest do
+    gradle(
+      task: "assembleAndroidTest",
+    )
+  end
+
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
     gradle(task: "clean assembleRelease")
