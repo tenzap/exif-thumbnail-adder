@@ -41,7 +41,7 @@ public class TestDataCollectionRule extends TestWatcher {
     public void startScreenRecord(String fileName) throws IOException {
 //        try {
         uiDevice.executeShellCommand("mkdir -p " + ScPath);
-        uiDevice.executeShellCommand("screenrecord --bugreport " + ScPath + fileName + ".mp4");
+        uiDevice.executeShellCommand("screenrecord --bit-rate 5M --bugreport " + ScPath + fileName + ".mp4");
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
