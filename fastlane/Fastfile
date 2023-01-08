@@ -160,26 +160,15 @@ platform :android do
     #)
   end
 
-  desc "Run tests"
+  desc "Run all the instrumented tests except screenshots"
   lane :connectedCheck do
-    prepare_device_for_tests
-    gradle(
-      task: "connectedCheck",
-      properties: {
-        "excludeScreenshots" => "NULL",
-      }
-    )
-  end
-
-  desc "Run tests"
-  lane :connectedCheck_with_screenrecord do
     adb(
       # Get rid of `Viewing full screen, To exit, swipe down from the top` message
       # https://stackoverflow.com/a/62475026
       command: 'shell settings put secure immersive_mode_confirmations confirmed',
     )
 
-    if ENV["API_LEVEL"].to_i >= 30
+    if ENV["CI"] == "true" && ENV["API_LEVEL"].to_i >= 30
       adb(
         # Turn off WiFi (to avoid using system resources for updates during tests)
         command: 'shell cmd -w wifi set-wifi-enabled disabled',
@@ -191,6 +180,18 @@ platform :android do
       sleep ENV["DELAY"].to_i
     end
 
+    prepare_device_for_tests
+
+    gradle(
+      task: "connectedCheck",
+      properties: {
+        "excludeScreenshots" => "NULL",
+      }
+    )
+  end
+
+  desc "Run all the instrumented tests except screenshots and save screenrecords"
+  lane :connectedCheck_with_screenrecord do
     begin
       connectedCheck
     rescue => ex
