@@ -62,10 +62,15 @@ ext.readVersionCode = {
         def head = walk.parseCommit(masterRef.getObjectId())
         try {
             while (head != null) {
-                count++
                 def parents = head.getParents()
                 if (parents != null && parents.length > 0) {
-                    head = walk.parseCommit(parents[0])
+                    count++
+                    try {
+                        head = walk.parseCommit(parents[0])
+                    } catch (e) {
+                        println "commit '" + parents[0].getId().getName() + "' not found. Are you on a shallow clone?"
+                        break;
+                    }
                 } else {
                     head = null
                 }
@@ -99,12 +104,18 @@ ext.readVersionName = {
 ext.readLastTagVersionCode = {
     def tag = readLastTagVersionName()
     try {
-        def code = new ByteArrayOutputStream()
+        def stdout = new ByteArrayOutputStream()
         exec {
             commandLine 'git', 'rev-list', '--first-parent', '--count', tag.toString()
-            standardOutput = code
+            standardOutput = stdout
+            errorOutput = stderr
+            executionResult = exitCode
         }
-        return code.toString().trim().toInteger()
+        if (exitCode.getExitValue() == 0) {
+            return stdout.toString().trim().toInteger()
+        } else {
+            return "null";
+        }
     } catch (ignored) {
         return 0
     }
@@ -112,12 +123,18 @@ ext.readLastTagVersionCode = {
 
 ext.readLastTagVersionName = {
     try {
-        def code = new ByteArrayOutputStream()
+        def stdout = new ByteArrayOutputStream()
         exec {
             commandLine 'git', 'describe', '--tags', '--abbrev=0'
-            standardOutput = code
+            standardOutput = stdout
+            errorOutput = stderr
+            executionResult = exitCode
         }
-        return code.toString().trim()
+        if (exitCode.getExitValue() == 0) {
+            return stdout.toString().trim()
+        } else {
+            return "null";
+        }
     } catch (ignored) {
         return "null"
     }
