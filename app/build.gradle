@@ -39,6 +39,15 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
+        // The following argument makes the Android Test Orchestrator run its
+        // "pm clear" command after each test invocation. This command ensures
+        // that the app's state is completely cleared between tests.
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+
+        testOptions {
+            execution 'ANDROIDX_TEST_ORCHESTRATOR'
+        }
+
         // Exclude tests that produce screenshots with screengrab by passing "-PexcludeScreenshots" to the gradlew command
         if (project.hasProperty('excludeScreenshots')) {
             testInstrumentationRunnerArguments('notClass': 'com.exifthumbnailadder.app.TakeScreenshots')
@@ -152,6 +161,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0'
     androidTestImplementation 'androidx.work:work-testing:2.7.1'
     androidTestImplementation 'tools.fastlane:screengrab:2.1.0'
+    androidTestUtil 'androidx.test:orchestrator:1.4.2'
     compileOnly 'com.google.android.wearable:wearable:2.9.0'
 
 }
