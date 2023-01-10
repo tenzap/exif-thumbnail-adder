@@ -219,6 +219,7 @@ jobs:
           target: ${{ matrix.target }}
           arch: ${{ matrix.arch }}
           ram-size: ${{ matrix.ram-size }}
+          profile: pixel_2
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
@@ -236,6 +237,7 @@ jobs:
           target: ${{ matrix.target }}
           arch: ${{ matrix.arch }}
           ram-size: ${{ matrix.ram-size }}
+          profile: pixel_2
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
@@ -252,6 +254,7 @@ jobs:
           target: ${{ matrix.target }}
           arch: ${{ matrix.arch }}
           ram-size: ${{ matrix.ram-size }}
+          profile: pixel_2
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
