@@ -115,17 +115,25 @@ public class TestUtil {
             e.printStackTrace();
 
             // In some cases (when we can't open the drawer), we may have to select the root by selecting it in the breadcrumb
-            // Swipe on breadcrumb
-            UiObject breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/horizontal_breadcrumb"));
-            UiObject root = null;
-            for (int i = 0; i < 5; i++) {
-                breadcrumb.swipeRight(20);
-                root = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/breadcrumb_text"));
-                if (root.exists())
-                    break;
+            UiObject dropdown_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/dropdown_breadcrumb"));
+            if (dropdown_breadcrumb.exists()) {
+                dropdown_breadcrumb.clickAndWaitForNewWindow();
+                UiObject dropdownItem = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
+                dropdownItem.clickAndWaitForNewWindow();
+            } else {
+                // dropdown_breadcrumb was removed in android 11, so try horizontal_breadcrumb
+                // Swipe on horizontal_breadcrumb
+                UiObject horizontal_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/horizontal_breadcrumb"));
+                UiObject root = null;
+                for (int i = 0; i < 5; i++) {
+                    horizontal_breadcrumb.swipeRight(20);
+                    root = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/breadcrumb_text"));
+                    if (root.exists())
+                        break;
+                }
+                if (root != null)
+                    root.clickAndWaitForNewWindow();
             }
-            if (root != null)
-                root.clickAndWaitForNewWindow();
         }
 
         // Select folder
