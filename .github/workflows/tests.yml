@@ -76,7 +76,6 @@ jobs:
             app/.cxx/
             version_last_tag.txt
             .gradle/
-            ~/.gradle/
             library/pixymeta-android/build/
             library/Android-Exif-Extended/build/
             library/pixymeta-android/build/
@@ -191,7 +190,6 @@ jobs:
             app/.cxx/
             version_last_tag.txt
             .gradle/
-            ~/.gradle/
             library/pixymeta-android/build/
             library/Android-Exif-Extended/build/
             library/pixymeta-android/build/
