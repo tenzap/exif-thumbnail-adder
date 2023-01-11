@@ -23,6 +23,7 @@ package com.exifthumbnailadder.app;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
@@ -36,10 +37,14 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 import androidx.test.espresso.PerformException;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -48,6 +53,7 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -57,6 +63,9 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -211,6 +220,9 @@ public class AddThumbs {
         LocalBroadcastManager.getInstance(context)
                 .unregisterReceiver(receiver);
 
+        String log = getText(withId(R.id.textview_log));
+        writeToFile("log.txt", log);
+
         assertTrue(finished);
     }
     public class Dirs {
@@ -274,4 +286,43 @@ public class AddThumbs {
         }
     }
 
+    String getText(final Matcher<View> matcher) {
+        final String[] stringHolder = { null };
+        onView(matcher).perform(new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(TextView.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "getting text from a TextView";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                TextView tv = (TextView)view; //Save, because of check in getConstraints()
+                stringHolder[0] = tv.getText().toString();
+            }
+        });
+        return stringHolder[0];
+    }
+
+    private void writeToFile(String filename, String data) throws IOException {
+        File file = new File(dir.copyFromRoot() + "/" + filename);
+        try(FileOutputStream fos = new FileOutputStream(file);
+            BufferedOutputStream bos = new BufferedOutputStream(fos)) {
+            //convert string to byte array
+            byte[] bytes = data.getBytes();
+            //write byte array to file
+            bos.write(bytes);
+            bos.close();
+            fos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        device.executeShellCommand("mv " + dir.copyFromRoot() + "/" + filename + " " + dir.storageTestRoot());
+    }
 }
