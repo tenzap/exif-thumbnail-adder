@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
@@ -83,17 +84,24 @@ public class TestUtil {
 
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        UiObject uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + context.getString(R.string.settings_button_add_dir)));
-        uiElement.clickAndWaitForNewWindow();
+        onView(withId(R.id.select_path_button)).perform(click());
+//        UiObject uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + context.getString(R.string.settings_button_add_dir)));
+//        uiElement.clickAndWaitForNewWindow();
 
         // Open "more options" menu to click on Show internal storage if it is there
         UiObject advancedMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getMoreOptions()));
         advancedMenu.clickAndWaitForNewWindow();
 
         // Click on "Show internal storage" if it is there, otherwise press back to quit the "More options" menu
-        UiObject showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
-        try { showInternalStorage.clickAndWaitForNewWindow(); }
-        catch (UiObjectNotFoundException e) { device.pressBack(); }
+        UiObject showInternalStorage = device.findObject(new UiSelector().resourceId(docUIStrings.documentsUiPackageName + ":id/title").text(docUIStrings.getShowInternalStorage()));
+        if (showInternalStorage.exists()) {
+            showInternalStorage.clickAndWaitForNewWindow();
+        } else {
+            Log.w("ETA", "'Show internal storage' item not found");
+            device.pressBack();
+        }
+        //try { showInternalStorage.clickAndWaitForNewWindow(); }
+        //catch (UiObjectNotFoundException e) { device.pressBack(); }
 
         // Open Drawer (aka Hamburger menu)
         UiObject hamburgerMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getShowRoots()));
@@ -102,13 +110,14 @@ public class TestUtil {
         } catch (UiObjectNotFoundException e) {
             // In some cases (when there is no sdcard for example), the hamburger menu doesn't exist.
             // So skip gracefully to the next step
-            e.printStackTrace();
+            //e.printStackTrace();
+            throw e;
         }
 
         // Select Root (volume)
         //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
         //uiElement = device.findObject(new UiSelector().textMatches("(?i)"+sdCardNameInFilePicker)); //DOESN'T WORK
-        uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
+        UiObject uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
         try {
             uiElement.clickAndWaitForNewWindow();
         } catch (UiObjectNotFoundException e) {
@@ -187,12 +196,18 @@ public class TestUtil {
 
     public static void openSettingsFragment() throws Exception {
         // The method below sometimes shows the Tooltip instead of opening the settings fragment (on API >= 31)
-        //onView(withId(R.id.SettingsFragment)).perform(click());
+        onView(withId(R.id.SettingsFragment)).perform(click());
 
         // So we use this one instead
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        UiObject uiElement = device.findObject(new UiSelector().clickable(true).description(context.getString(R.string.action_settings)));
+//        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+//        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+//        UiObject uiElement = device.findObject(new UiSelector().clickable(true).description(context.getString(R.string.action_settings)));
+//        uiElement.clickAndWaitForNewWindow();
+    }
+
+    public static void clickPermissionAllowButton() throws Exception {
+        UiDevice device = UiDevice.getInstance(getInstrumentation());
+        UiObject uiElement = device.findObject(new UiSelector().clickable(true).resourceId("com.android.permissioncontroller:id/permission_allow_button"));
         uiElement.clickAndWaitForNewWindow();
     }
 }
