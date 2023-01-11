@@ -93,7 +93,7 @@ public class TestUtil {
         advancedMenu.clickAndWaitForNewWindow();
 
         // Click on "Show internal storage" if it is there, otherwise press back to quit the "More options" menu
-        UiObject showInternalStorage = device.findObject(new UiSelector().resourceId(docUIStrings.documentsUiPackageName + ":id/title").text(docUIStrings.getShowInternalStorage()));
+        UiObject showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
 //        if (showInternalStorage.exists()) {
             showInternalStorage.clickAndWaitForNewWindow();
 //        } else {
