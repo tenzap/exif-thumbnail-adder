@@ -91,6 +91,10 @@ public class TestUtil {
 //        UiObject uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + context.getString(R.string.settings_button_add_dir)));
 //        uiElement.clickAndWaitForNewWindow();
 
+        // Wait a little bit because sometimes, the next step (show more options menu)
+        // doesn't seem to be clicked and the documentsUi seems refreshed a few times.
+        device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 2000);
+
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             // Open "more options" menu to click on Show internal storage if it is there
             UiObject advancedMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getMoreOptions()));
