@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -93,7 +94,7 @@ public class TestUtil {
 
         // Wait a little bit because sometimes, the next step (show more options menu)
         // doesn't seem to be clicked and the documentsUi seems refreshed a few times.
-        device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 2000);
+        //device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 2000);
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             // Open "more options" menu to click on Show internal storage if it is there
@@ -104,13 +105,18 @@ public class TestUtil {
             // Show internal storage is not needed anymore since Android R/30
             UiObject showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
 //        if (showInternalStorage.exists()) {
-            showInternalStorage.clickAndWaitForNewWindow();
+//            showInternalStorage.clickAndWaitForNewWindow();
 //        } else {
 //            Log.w("ETA", "'Show internal storage' item not found");
 //            device.pressBack();
 //        }
-            //try { showInternalStorage.clickAndWaitForNewWindow(); }
-            //catch (UiObjectNotFoundException e) { device.pressBack(); }
+            try { showInternalStorage.clickAndWaitForNewWindow(); }
+            catch (UiObjectNotFoundException e) {
+                Log.w("ETA", "Show internal storage not found. Is the 'More options' menu open? Trying again...");
+                advancedMenu.clickAndWaitForNewWindow();
+                showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
+                showInternalStorage.clickAndWaitForNewWindow();
+            }
         }
         // Open Drawer (aka Hamburger menu)
         UiObject hamburgerMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getShowRoots()));
