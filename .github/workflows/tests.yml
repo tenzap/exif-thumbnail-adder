@@ -183,6 +183,10 @@ jobs:
           repository: 'ianare/exif-samples'
           path: 'tests/data/exif-samples'
 
+      - name: |
+          set timestamp of sample pictures to fixed date: 2021-07-01 09:18
+        run: find tests/data/exif-samples | xargs touch -t 202107010918
+
       # Switch to java 11 since AGP requires java 11
       - uses: actions/setup-java@v3
         with:
