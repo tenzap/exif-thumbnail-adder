@@ -144,7 +144,7 @@ public class AddThumbs {
 
         assertEquals(1, inputDirs.size());
         String expectedValue = "content://com.android.externalstorage.documents/tree/primary%3A"+ dir.copyForUri() + "/document/primary%3A" + dir.copyForUri();
-        assertEquals(expectedValue, inputDirs.get(0).toString());
+        assertEquals("Not exactly one selected source dir", expectedValue, inputDirs.get(0).toString());
 
         // give all files access (we need it to delete folders)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play") && !MainActivity.haveAllFilesAccessPermission()) {
@@ -223,7 +223,7 @@ public class AddThumbs {
         String log = getText(withId(R.id.textview_log));
         writeToFile("log.txt", log);
 
-        assertTrue(finished);
+        assertTrue("Processing couldn't finish (timeout?)", finished);
     }
     public class Dirs {
 
