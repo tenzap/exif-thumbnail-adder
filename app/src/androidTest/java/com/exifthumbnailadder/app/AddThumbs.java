@@ -152,7 +152,7 @@ public class AddThumbs {
         }
 
         // Go to "Add thumbnails" fragment
-        onView(withId(R.id.AddThumbsFragment)).perform(click());
+        onView(withId(R.id.AddThumbsFragment)).perform(click(click()));
 
         // Click "Add thumbnails" button
         onView(withId(R.id.button_addThumbs)).perform(click());

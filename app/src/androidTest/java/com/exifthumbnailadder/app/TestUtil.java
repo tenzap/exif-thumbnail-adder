@@ -202,7 +202,7 @@ public class TestUtil {
 
     public static void openSettingsFragment() throws Exception {
         // The method below sometimes shows the Tooltip instead of opening the settings fragment (on API >= 31)
-        onView(withId(R.id.SettingsFragment)).perform(click());
+        onView(withId(R.id.SettingsFragment)).perform(click(click()));
 
         // So we use this one instead
 //        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
