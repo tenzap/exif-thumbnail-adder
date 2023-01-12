@@ -139,6 +139,7 @@ dependencies {
     implementation 'androidx.wear:wear:1.2.0'
     implementation 'androidx.documentfile:documentfile:1.0.1'
     implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.work:work-runtime:2.7.1'
     implementation project(path: ':library:Android-Exif-Extended')
     implementation project(path: ':library:pixymeta-android')
     //implementation files('libs/*.jar')
@@ -149,6 +150,7 @@ dependencies {
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.4.0'
+    androidTestImplementation 'androidx.work:work-testing:2.7.1'
     androidTestImplementation 'tools.fastlane:screengrab:2.1.0'
     compileOnly 'com.google.android.wearable:wearable:2.9.0'
 
