@@ -94,8 +94,8 @@ public class SettingsTest {
         SharedPreferences.Editor editor = prefs.edit();
         InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
 
-        assertEquals(1, inputDirs.size());
-        assertEquals("content://com.android.externalstorage.documents/tree/primary%3ADCIM%2Ftest_pics/document/primary%3ADCIM%2Ftest_pics", inputDirs.get(0).toString());
+        assertEquals("Expected only 1 dir", 1, inputDirs.size());
+        assertEquals("Selected dir is not correct", "content://com.android.externalstorage.documents/tree/primary%3ADCIM%2Ftest_pics/document/primary%3ADCIM%2Ftest_pics", inputDirs.get(0).toString());
     }
 
     @Test
@@ -111,7 +111,7 @@ public class SettingsTest {
         InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
 
         // Check that folder list is empty
-        assertEquals(0, inputDirs.size());
+        assertEquals("Selected dirs is not empty", 0, inputDirs.size());
     }
 
     @Test
@@ -127,7 +127,7 @@ public class SettingsTest {
         InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
 
         // Check that folder is in the list
-        assertEquals(1, inputDirs.size());
+        assertEquals("Expected only 1 dir",1, inputDirs.size());
 
         // Remove folders
         onView(withId(R.id.del_path_button)).perform(click());
@@ -136,7 +136,7 @@ public class SettingsTest {
         inputDirs = new InputDirs(prefs.getString("srcUris", ""));
 
         // Check that folder list is empty
-        assertEquals(0, inputDirs.size());
+        assertEquals("Selected dirs is not empty",0, inputDirs.size());
     }
 
 }
