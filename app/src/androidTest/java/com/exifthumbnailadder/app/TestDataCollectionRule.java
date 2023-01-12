@@ -57,7 +57,7 @@ public class TestDataCollectionRule extends TestWatcher {
     }
 
     private String getTestName(Description description) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_hhmmss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String timeStamp = simpleDateFormat.format(Calendar.getInstance().getTime());
         return timeStamp + "_" + BuildConfig.FLAVOR + "_" + description.getMethodName();
     }
