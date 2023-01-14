@@ -321,7 +321,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                 AddThumbsLogLiveData.get().appendLog(getString(R.string.frag1_log_starting));
 
                 if (!prefs.getBoolean("useSAF", true) || BuildConfig.FLAVOR.equals("google_play")
-                        || BuildConfig.FLAVOR.equals("standard") && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
+                        || BuildConfig.FLAVOR.equals("standard"))
                 {
                     AddThumbsLogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_check_write_perm), 1));
                     if  (prefs.getBoolean("useSAF", true) && continueWithoutWriteExternalStoragePermission) {
