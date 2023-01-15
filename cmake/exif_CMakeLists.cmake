@@ -2,13 +2,18 @@ cmake_minimum_required(VERSION 3.4.1)
 project(exif LANGUAGES C)
 
 set(PACKAGE "exif")
+set(VERSION "0.6.22")
+
+set(PACKAGE_NAME "libexif command line interface")
+set(PACKAGE_TARNAME  "exif")
+set(PACKAGE_VERSION "0.6.22")
+set(PACKAGE_STRING "libexif command line interface 0.6.22")
+set(PACKAGE_BUGREPORT "libexif-devel@lists.sourceforge.net")
+set(PACKAGE_URL "")
 
 option(ENABLE_NLS "Enable NLS" OFF)
 option(HAVE_LIBEXIF "Compile with libexif support" ON)
 option(ENABLE_GETTEXT_ICONV "whether to run iconv on gettext output" OFF)
-
-# PACKAGE_BUGREPORT needed by actions.c
-add_definitions("-DPACKAGE_BUGREPORT=\"libexif-devel@lists.sourceforge.net\"")
 
 
 ################## libjpeg #################
@@ -22,8 +27,9 @@ link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 add_library(jpeg STATIC ${SOURCES_libjpeg})
 
-target_include_directories(jpeg PRIVATE .) # for "config.h"
-target_include_directories(jpeg PRIVATE ${CMAKE_INSTALL_PREFIX}/include) # for libexif .h
+target_include_directories(jpeg PRIVATE ${CMAKE_SOURCE_DIR})
+target_include_directories(jpeg PRIVATE ${CMAKE_BINARY_DIR}) # for "config.h"
+target_include_directories(jpeg PRIVATE ${CMAKE_INSTALL_PREFIX}/include) # for libexif.h
 
 target_link_libraries(jpeg exif)
 
@@ -44,8 +50,9 @@ link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
 
 add_library(exif_app SHARED ${SOURCES_exif} ${HEADERS_exif})
 
-target_include_directories(exif_app PRIVATE .) # for "config.h"
-target_include_directories(exif_app PRIVATE ${CMAKE_INSTALL_PREFIX}/include) # for libexif .h
+target_include_directories(exif_app PRIVATE ${CMAKE_SOURCE_DIR})
+target_include_directories(exif_app PRIVATE ${CMAKE_BINARY_DIR}) # for "config.h"
+target_include_directories(exif_app PRIVATE ${CMAKE_INSTALL_PREFIX}/include) # for libexif.h
 
 target_link_libraries(exif_app exif jpeg)
 

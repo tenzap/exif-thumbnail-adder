@@ -7,7 +7,7 @@ set (EXIF_DIR exif-${EXIF_VERSION})
 if(NOT USE_PREBUILT_LIB)
 ExternalProject_Add(exif_external
         URL ${CMAKE_CURRENT_SOURCE_DIR}/library/${EXIF_DIR}
-        BUILD_IN_SOURCE 1
+        #BUILD_IN_SOURCE 1
         CMAKE_ARGS
             ${CL_ARGS}
             -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}
