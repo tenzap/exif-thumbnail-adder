@@ -7,7 +7,10 @@ set (EXIF_DIR exif-${EXIF_VERSION})
 if(NOT USE_PREBUILT_LIB)
 ExternalProject_Add(exif_external
         URL ${CMAKE_CURRENT_SOURCE_DIR}/library/${EXIF_DIR}
-        #BUILD_IN_SOURCE 1
+
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/exif_CMakeLists.cmake ${CMAKE_CURRENT_BINARY_DIR}/exif_external-prefix/src/exif_external/CMakeLists.txt
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/exif_config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/exif_external-prefix/src/exif_external/config.h.cmake
+
         CMAKE_ARGS
             ${CL_ARGS}
             -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}
@@ -20,20 +23,13 @@ ExternalProject_Add(exif_external
         BUILD_BYPRODUCTS ${CMAKE_BINARY_DIR}/lib/libexif_app.so
 
         LOG_CONFIGURE 1
+        LOG_UPDATE 1
+#if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.14")
+#        LOG_PATCH 1
+#endif()
         LOG_BUILD 1
         LOG_INSTALL 1
-        LOG_UPDATE 1
         )
-
-ExternalProject_Add_Step(
-        exif_external
-        add_cmake_files
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/exif_CMakeLists.cmake ${CMAKE_CURRENT_BINARY_DIR}/exif_external-prefix/src/exif_external/CMakeLists.txt
-        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/exif_config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/exif_external-prefix/src/exif_external/config.h.cmake
-        DEPENDEES download
-        DEPENDERS update
-        LOG 1
-)
 endif()
 
 add_library(exifLib SHARED IMPORTED)
