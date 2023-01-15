@@ -146,7 +146,10 @@ ExternalProject_Add(ffmpeg_target
 
         #BUILD_ALWAYS 1
 
-        PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_Makefile.patch  ## ETA addition: because we removed some dirs from ffmpeg sources
+        ## ETA patches: because we removed some dirs from ffmpeg sources
+        PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_Makefile.patch
+        COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_AndroidLog.patch
+
         #LOG_PATCH 1 ## ETA addition: needs CMAKE >= version 3.14
 
         # fix for "missing and no known rule to make it": https://stackoverflow.com/a/65803911/15401262
