@@ -13,6 +13,16 @@ set(FFMPEG_VERSION_PREBUILT 4.4)
 set(FFMPEG_NAME ffmpeg-${FFMPEG_VERSION})
 set(FFMPEG_URL https://ffmpeg.org/releases/${FFMPEG_NAME}.tar.bz2)
 
+set(ffmpegLibs
+        libavutil
+        libswscale
+        #libavcodec
+        #libavdevice
+        #libavfilter
+        #libavformat
+        #libswresample
+        )
+
 # if CMAKE_HOST_WIN32 is true, then use precompiled library because we can't easily run "./configure" from win32 systems
 if(NOT (USE_PREBUILT_LIB OR CMAKE_HOST_WIN32))
 get_filename_component(FFMPEG_ARCHIVE_NAME ${FFMPEG_URL} NAME)
@@ -33,6 +43,10 @@ IF (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME})
 
     file(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME}/fftools/ffmpeg.c "${ffmpeg_src}")
 ENDIF()
+
+foreach (lib IN LISTS ffmpegLibs)
+    list(APPEND FFMPEG_BYPRODUCTS ${CMAKE_BINARY_DIR}/lib/${lib}.so)
+endforeach()
 
 #file(
 #        COPY ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_build_system.cmake
@@ -136,7 +150,7 @@ ExternalProject_Add(ffmpeg_target
         #LOG_PATCH 1 ## ETA addition: needs CMAKE >= version 3.14
 
         # fix for "missing and no known rule to make it": https://stackoverflow.com/a/65803911/15401262
-        BUILD_BYPRODUCTS ${CMAKE_BINARY_DIR}/lib/libavutil.so ${CMAKE_BINARY_DIR}/lib/libswscale.so
+        BUILD_BYPRODUCTS ${FFMPEG_BYPRODUCTS}
         )
 
 ExternalProject_Get_property(ffmpeg_target SOURCE_DIR)
@@ -169,34 +183,21 @@ set(ffmpeg_src
 # FFMPEG EXE SOURCES SECTION: END
 endif() # end of "if USE_PREBUILT_LIB"
 
-add_library(libavutilLib SHARED IMPORTED)
-if(USE_PREBUILT_LIB OR CMAKE_HOST_WIN32)
-    set (AVUTIL_LIBRARY_SO_PATH ${CMAKE_SOURCE_DIR}/libs.prebuilt/ffmpeg-${FFMPEG_VERSION_PREBUILT}/lib/${CMAKE_ANDROID_ARCH_ABI}/libavutil.so)
-else()
-    add_dependencies(libavutilLib ffmpeg_target)
-    set (AVUTIL_LIBRARY_SO_PATH ${CMAKE_BINARY_DIR}/lib/libavutil.so)
-endif()
-set_target_properties(
-        # Specifies the target library.
-        libavutilLib
-        # Specifies the parameter you want to define.
-        PROPERTIES IMPORTED_LOCATION
-        # Provides the path to the library you want to import.
-        ${AVUTIL_LIBRARY_SO_PATH}
-)
 
-add_library(libswscaleLib SHARED IMPORTED)
-if(USE_PREBUILT_LIB OR CMAKE_HOST_WIN32)
-    set (SWSCALE_LIBRARY_SO_PATH ${CMAKE_SOURCE_DIR}/libs.prebuilt/ffmpeg-${FFMPEG_VERSION_PREBUILT}/lib/${CMAKE_ANDROID_ARCH_ABI}/libswscale.so)
-else()
-    add_dependencies(libswscaleLib ffmpeg_target)
-    set (SWSCALE_LIBRARY_SO_PATH ${CMAKE_BINARY_DIR}/lib/libswscale.so)
-endif()
-set_target_properties(
-        # Specifies the target library.
-        libswscaleLib
-        # Specifies the parameter you want to define.
-        PROPERTIES IMPORTED_LOCATION
-        # Provides the path to the library you want to import.
-        ${SWSCALE_LIBRARY_SO_PATH}
-)
+foreach (lib IN LISTS ffmpegLibs)
+    add_library(${lib}Lib SHARED IMPORTED)
+    if(USE_PREBUILT_LIB OR CMAKE_HOST_WIN32)
+        set (${lib}_LIBRARY_SO_PATH ${CMAKE_SOURCE_DIR}/libs.prebuilt/ffmpeg-${FFMPEG_VERSION_PREBUILT}/lib/${CMAKE_ANDROID_ARCH_ABI}/${lib}.so)
+    else()
+        add_dependencies(${lib}Lib ffmpeg_target)
+        set (${lib}_LIBRARY_SO_PATH ${CMAKE_BINARY_DIR}/lib/${lib}.so)
+    endif()
+    set_target_properties(
+            # Specifies the target library.
+            ${lib}Lib
+            # Specifies the parameter you want to define.
+            PROPERTIES IMPORTED_LOCATION
+            # Provides the path to the library you want to import.
+            ${${lib}_LIBRARY_SO_PATH}
+    )
+endforeach()

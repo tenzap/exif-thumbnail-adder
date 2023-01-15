@@ -109,6 +109,8 @@ target_link_libraries(exifThumbnailAdderHelpers libexiv2Lib)
 if (USE_PREBUILT_LIB OR CMAKE_HOST_WIN32)
     target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/ffmpeg-${FFMPEG_VERSION_PREBUILT}/include)
 endif()
-target_link_libraries(exifThumbnailAdderHelpers libswscaleLib libavutilLib)
+foreach (lib IN LISTS ffmpegLibs)
+    target_link_libraries(exifThumbnailAdderHelpers ${lib}Lib)
+endforeach()
 target_link_libraries(exifThumbnailAdderHelpers log)         # for __android_log_print
 target_link_libraries(exifThumbnailAdderHelpers jnigraphics) # for android bitmap in jni/c
