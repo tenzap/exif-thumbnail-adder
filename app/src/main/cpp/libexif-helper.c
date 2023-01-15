@@ -2,7 +2,7 @@
  * Adapted from main.c from "exif" program to fit the
  * needs of ExifThumbnailAdder android app.
  *
- * Copyright (c) 2021 Fab Stz <fabstz-it@yahoo.fr>
+ * Copyright (c) 2021-2023 Fab Stz <fabstz-it@yahoo.fr>
  *
  * Copyright (c) 2002 Lutz Mueller <lutz@users.sourceforge.net>
  *
@@ -22,10 +22,15 @@
  * Boston, MA  02110-1301  USA.
  */
 
+#include "config.h"
 #include <jni.h>
+
 #include "libexif-helper.h"
 
-//#include "config.h" //ExifThumbnailAdder Removal
+#include <android/log.h>
+#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "ETA_libexif", __VA_ARGS__)
+#define LOGW(...) __android_log_print(ANDROID_LOG_WARN, "ETA_libexif", __VA_ARGS__)
+#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, "ETA_libexif", __VA_ARGS__)
 
 #include <errno.h>
 #include <signal.h>
@@ -47,7 +52,9 @@
 #include "utils.h"
 
 /* Must be loaded after exif-i18n.h */
-//#include <popt.h> //ExifThumbnailAdder Removal
+#if HAVE_POPT_H
+#include <popt.h>
+#endif
 
 #ifdef HAVE_LOCALE_H
 #  include <locale.h>
@@ -120,20 +127,16 @@ log_func (ExifLog *log, ExifLogCode code, const char *domain,
      * fatal.
      */
     switch (code) {
-        case -1:
-            put_colorstring (stderr, COL_RED);
-            vfprintf (stderr, format, args);
-            fprintf (stderr, "\n");
-            put_colorstring (stderr, COL_NORMAL);
-
+        case -1: {
             char message[2048] = {0, };
-            strncat(message, "libexif (error -1): ", sizeof(message) -1 );
-            char dest[512] = {0, };
-            vsprintf(dest, format, args);
-            strncat(message, dest, sizeof(message) - strlen(message) -1);
+            strncat(message, "libexif error: ", sizeof(message) -1 );
+            char detail[512] = {0, };
+            vsnprintf(detail, 512, format, args);
+            strncat(message, detail, sizeof(message) - strlen(message) -1);
+            LOGE("%s:%i: message: %s", __FILE__, __LINE__, message);
             throwLibexifHelperException(arg->env, message);
             return;
-            //exit (1);
+        }
         case EXIF_LOG_CODE_DEBUG:
             if (arg->debug) {
                 put_colorstring (stdout, COL_GREEN);
@@ -149,15 +152,19 @@ log_func (ExifLog *log, ExifLogCode code, const char *domain,
             if (arg->ignore_corrupted)
                 return;
             /* Fall through to EXIF_LOG_CODE_NO_MEMORY */
-        case EXIF_LOG_CODE_NO_MEMORY:
-            put_colorstring (stderr, COL_RED COL_BOLD COL_UNDERLINE);
-            fprintf (stderr, "%s\n", exif_log_code_get_title (code));
-            put_colorstring (stderr, COL_NORMAL COL_RED);
-            fprintf (stderr, "%s\n", exif_log_code_get_message (code));
-            fprintf (stderr, "%s: ", domain);
-            vfprintf (stderr, format, args);
-            put_colorstring (stderr, COL_NORMAL);
-            fprintf (stderr, "\n");
+        case EXIF_LOG_CODE_NO_MEMORY: {
+            char message[2048] = {0, };
+            strncat(message, "libexif error: ", sizeof(message) -1 );
+            strncat(message, exif_log_code_get_title (code), sizeof(message) - strlen(message) -1);
+            strncat(message, "\n", sizeof(message) - strlen(message) -1);
+            strncat(message, exif_log_code_get_message (code), sizeof(message) - strlen(message) -1);
+            strncat(message, "\n", sizeof(message) - strlen(message) -1);
+            strncat(message, domain, sizeof(message) - strlen(message) -1);
+            strncat(message, ": ", sizeof(message) - strlen(message) -1);
+            char detail[512] = {0, };
+            vsnprintf(detail, 512, format, args);
+            strncat(message, detail, sizeof(message) - strlen(message) -1);
+            LOGE("%s:%i: message: %s", __FILE__, __LINE__, message);
 
             /*
              * EXIF_LOG_CODE_NO_MEMORY is always a fatal error, so exit.
@@ -169,22 +176,11 @@ log_func (ExifLog *log, ExifLogCode code, const char *domain,
              * API is fixed to properly return error codes everywhere.
              */
             if ((code == EXIF_LOG_CODE_NO_MEMORY) || !arg->debug) {
-                char message[2048] = {0, };
-                strncat(message, "libexif (error EXIF_LOG_CODE_NO_MEMORY): ", sizeof(message) -1 );
-                strncat(message, exif_log_code_get_title (code), sizeof(message) - strlen(message) -1);
-                strncat(message, "\n", sizeof(message) - strlen(message) -1);
-                strncat(message, exif_log_code_get_message (code), sizeof(message) - strlen(message) -1);
-                strncat(message, "\n", sizeof(message) - strlen(message) -1);
-                strncat(message, domain, sizeof(message) - strlen(message) -1);
-                strncat(message, ": ", sizeof(message) - strlen(message) -1);
-                char dest[512] = {0, };
-                vsprintf(dest, format, args);
-                strncat(message, dest, sizeof(message) - strlen(message) -1);
                 throwLibexifException(arg->env, message);
                 return;
-                //exit (1);
             }
             break;
+        }
         default:
             if (arg->debug) {
                 put_colorstring (stdout, COL_BLUE);
@@ -216,9 +212,6 @@ static ExifParams p = {EXIF_INVALID_TAG, EXIF_IFD_COUNT, 0, 0, 80,
                        NULL, NULL,NULL};
 LogArg log_arg = {0, 0, 0, NULL};
 
-//int
-//main (int argc, const char **argv)
-// This is mainly copied from main.c of exif-0.6.22
 JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThumbnailWithLibexifThroughFile(
         JNIEnv *env,
         jobject this /* this */,
@@ -229,60 +222,62 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
         jstring jtb,
         jint resolution)
 {
-//    /* POPT_ARG_NONE needs an int, not char! */
-//    poptContext ctx;
-//    const char * const *args;
-//    const struct poptOption options[] = {
-//            POPT_AUTOHELP
-//            {"version", 'v', POPT_ARG_NONE, &show_version, 0,
-//                        N_("Display software version"), NULL},
-//            {"ids", 'i', POPT_ARG_NONE, &p.use_ids, 0,
-//                        N_("Show IDs instead of tag names"), NULL},
-//            {"tag", 't', POPT_ARG_STRING, &tag_string, 0,
-//                        N_("Select tag"), N_("tag")},
-//            {"ifd", '\0', POPT_ARG_STRING, &ifd_string, 0,
-//                        N_("Select IFD"), N_("IFD")},
-//            {"list-tags", 'l', POPT_ARG_NONE, &list_tags, 0,
-//                        N_("List all EXIF tags"), NULL},
-//            {"show-mnote", '|', POPT_ARG_NONE, &list_mnote, 0,
-//                        N_("Show contents of tag MakerNote"), NULL},
-//            {"remove", '\0', POPT_ARG_NONE, &remove_tag, 0,
-//                        N_("Remove tag or ifd"), NULL},
-//            {"show-description", 's', POPT_ARG_NONE, &show_description, 0,
-//                        N_("Show description of tag"), NULL},
-//            {"extract-thumbnail", 'e', POPT_ARG_NONE, &extract_thumbnail, 0,
-//                        N_("Extract thumbnail"), NULL},
-//            {"remove-thumbnail", 'r', POPT_ARG_NONE, &remove_thumb, 0,
-//                        N_("Remove thumbnail"), NULL},
-//            {"insert-thumbnail", 'n', POPT_ARG_STRING, &p.set_thumb, 0,
-//                        N_("Insert FILE as thumbnail"), N_("FILE")},
-//            {"no-fixup", '\0', POPT_ARG_NONE, &no_fixup, 0,
-//                        N_("Do not fix existing tags in files"), NULL},
-//            {"output", 'o', POPT_ARG_STRING, &output, 0,
-//                        N_("Write data to FILE"), N_("FILE")},
-//            {"set-value", '\0', POPT_ARG_STRING, &p.set_value, 0,
-//                        N_("Value of tag"), N_("STRING")},
-//            {"create-exif", 'c', POPT_ARG_NONE, &create_exif, 0,
-//                        N_("Create EXIF data if not existing"), NULL},
-//            {"machine-readable", 'm', POPT_ARG_NONE, &p.machine_readable, 0,
-//                        N_("Output in a machine-readable (tab delimited) format"),
-//                        NULL},
-//            {"width", 'w', POPT_ARG_INT, &p.width, 0,
-//                        N_("Width of output"), N_("WIDTH")},
-//            {"xml-output", 'x', POPT_ARG_NONE, &xml_output, 0,
-//                        N_("Output in a XML format"),
-//                        NULL},
-//            {"debug", 'd', POPT_ARG_NONE, &log_arg.debug, 0,
-//                        N_("Show debugging messages"), NULL},
-//            POPT_TABLEEND};
-//#if 0
-//    /* This is a hack to allow translation of popt 1.10 messages with gettext.
-//     * Supposedly, this won't be necessary starting with popt 1.12
-//     */
-//		N_("Help options:");
-//		N_("Show this help message");
-//		N_("Display brief usage message");
-//#endif
+#if HAVE_POPT_H
+    /* POPT_ARG_NONE needs an int, not char! */
+	poptContext ctx;
+	const char * const *args;
+	const struct poptOption options[] = {
+		POPT_AUTOHELP
+		{"version", 'v', POPT_ARG_NONE, &show_version, 0,
+		 N_("Display software version"), NULL},
+		{"ids", 'i', POPT_ARG_NONE, &p.use_ids, 0,
+		 N_("Show IDs instead of tag names"), NULL},
+		{"tag", 't', POPT_ARG_STRING, &tag_string, 0,
+		 N_("Select tag"), N_("tag")},
+		{"ifd", '\0', POPT_ARG_STRING, &ifd_string, 0,
+		 N_("Select IFD"), N_("IFD")},
+		{"list-tags", 'l', POPT_ARG_NONE, &list_tags, 0,
+		 N_("List all EXIF tags"), NULL},
+		{"show-mnote", '|', POPT_ARG_NONE, &list_mnote, 0,
+		 N_("Show contents of tag MakerNote"), NULL},
+		{"remove", '\0', POPT_ARG_NONE, &remove_tag, 0,
+		 N_("Remove tag or ifd"), NULL},
+		{"show-description", 's', POPT_ARG_NONE, &show_description, 0,
+		 N_("Show description of tag"), NULL},
+		{"extract-thumbnail", 'e', POPT_ARG_NONE, &extract_thumbnail, 0,
+		 N_("Extract thumbnail"), NULL},
+		{"remove-thumbnail", 'r', POPT_ARG_NONE, &remove_thumb, 0,
+		 N_("Remove thumbnail"), NULL},
+		{"insert-thumbnail", 'n', POPT_ARG_STRING, &p.set_thumb, 0,
+		 N_("Insert FILE as thumbnail"), N_("FILE")},
+		{"no-fixup", '\0', POPT_ARG_NONE, &no_fixup, 0,
+		 N_("Do not fix existing tags in files"), NULL},
+		{"output", 'o', POPT_ARG_STRING, &output, 0,
+		 N_("Write data to FILE"), N_("FILE")},
+		{"set-value", '\0', POPT_ARG_STRING, &p.set_value, 0,
+		 N_("Value of tag"), N_("STRING")},
+		{"create-exif", 'c', POPT_ARG_NONE, &create_exif, 0,
+		 N_("Create EXIF data if not existing"), NULL},
+		{"machine-readable", 'm', POPT_ARG_NONE, &p.machine_readable, 0,
+		 N_("Output in a machine-readable (tab delimited) format"),
+		 NULL},
+		{"width", 'w', POPT_ARG_INT, &p.width, 0,
+		 N_("Width of output"), N_("WIDTH")},
+		{"xml-output", 'x', POPT_ARG_NONE, &xml_output, 0,
+		 N_("Output in a XML format"),
+		 NULL},
+		{"debug", 'd', POPT_ARG_NONE, &log_arg.debug, 0,
+		 N_("Show debugging messages"), NULL},
+		POPT_TABLEEND};
+#if 0
+/* This is a hack to allow translation of popt 1.10 messages with gettext.
+ * Supposedly, this won't be necessary starting with popt 1.12
+ */
+		N_("Help options:");
+		N_("Show this help message");
+		N_("Display brief usage message");
+#endif
+#endif
     ExifData *ed;
     ExifLog *log = NULL;
     char fout[1024] = {0, };
@@ -307,13 +302,14 @@ JNIEXPORT jint JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_writeThum
     sa.sa_flags = 0;
     sigemptyset(&sa.sa_mask);
     sigaction(SIGPIPE, &sa, NULL);
+#ifdef HAVE_POPT_H
+    ctx = poptGetContext (PACKAGE, argc, argv, options, 0);
+    poptSetOtherOptionHelp (ctx, _("[OPTION...] file"));
+    while (poptGetNextOpt (ctx) != -1)
+        ;
+#endif
 
-//    ctx = poptGetContext (PACKAGE, argc, argv, options, 0);
-//    poptSetOtherOptionHelp (ctx, _("[OPTION...] file"));
-//    while (poptGetNextOpt (ctx) != -1)
-//        ;
-//
-//    p.width = MIN(MAX_WIDTH, MAX(MIN_WIDTH, p.width));
+    p.width = MIN(MAX_WIDTH, MAX(MIN_WIDTH, p.width));
 
     log = exif_log_new ();
     exif_log_set_func (log, log_func, &log_arg);

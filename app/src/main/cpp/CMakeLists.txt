@@ -12,6 +12,10 @@ else()
     ExternalProject_Get_Property(exiv2_external SOURCE_DIR)
     set(EXIV2_SOURCE_DIR ${SOURCE_DIR})
     unset(SOURCE_DIR)
+
+    ExternalProject_Get_Property(exif_external BINARY_DIR)
+    set (EXIF_BINARY_DIR ${BINARY_DIR})
+    unset(BINARY_DIR)
 endif()
 
 if (USE_PREBUILT_LIB)
@@ -85,6 +89,7 @@ if (USE_PREBUILT_LIB)
     target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/libexif-${LIBEXIF_VERSION_PREBUILT}/include)
 else()
     target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include/libexif_app)
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${EXIF_BINARY_DIR}) # for config.h
 endif()
 target_link_libraries(exifThumbnailAdderHelpers libexifLib exifLib)
 
