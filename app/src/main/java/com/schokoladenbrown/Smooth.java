@@ -54,6 +54,12 @@ public class Smooth {
                 algo.flag, p0, 0.0);
     }
 
+    public static Bitmap requestCrash() throws Exception {
+        Bitmap aa = null;
+        int a = request_crash();
+        return aa;
+    }
+
     public static Bitmap rescale(Bitmap src, int dstWidth, int dstHeight,
                                  AlgoParametrized2 algo, double p0, double p1) {
         return native_rescale(src, Bitmap.createBitmap(dstWidth, dstHeight, src.getConfig()),
@@ -66,4 +72,6 @@ public class Smooth {
 //    }
 
     private static native Bitmap native_rescale(Bitmap src, Bitmap dst, int algo, double p0, double p1);
+    private static native int request_crash();
+
 }

@@ -3,6 +3,7 @@
 // From: https://raw.githubusercontent.com/ser-gik/smoothrescale/master/smoothrescale/src/main/jni/on_load.c
 
 #include <inttypes.h>
+#include <signal.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -147,12 +148,21 @@ static jobject JNICALL native_rescale_impl(JNIEnv *env, jclass clazz,
     return ret;
 }
 
+static int JNICALL request_crash_impl(JNIEnv *env, jclass clazz,
+                                      jobject srcBitmap, jobject dstBitmap, jint sws_algo, jdouble p0, jdouble p1) {
+
+    raise(SIGSEGV);
+    return 200;
+}
 
 static const char *g_rescaler_java_class = "com/schokoladenbrown/Smooth";
 static const JNINativeMethod g_native_methods[] = {
     {"native_rescale",
      "(Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;IDD)Landroid/graphics/Bitmap;",
      native_rescale_impl},
+    {"request_crash",
+     "()I",
+     request_crash_impl},
 };
 
 jint JNI_OnLoad(JavaVM *jvm, void *reserved) {

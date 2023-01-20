@@ -38,6 +38,7 @@ public class FfmpegSwscaleService extends Service {
      * Command to the service to display a message
      */
     static final int RUN_SWSCALE = 1;
+    static final int REQUEST_CRASH = 2;
 
     /**
      * Handler of incoming messages from clients.
@@ -49,6 +50,7 @@ public class FfmpegSwscaleService extends Service {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
+                case REQUEST_CRASH:
                 case RUN_SWSCALE:
                     clientMessenger = msg.replyTo;
 
@@ -58,12 +60,16 @@ public class FfmpegSwscaleService extends Service {
 
                     Runnable doSwscale = () -> {
                         try {
-                            if (tf.algo != null)
-                                thumbnail = Smooth.rescale(tf.original, tf.targetSize.getWidth(), tf.targetSize.getHeight(), tf.algo);  // 3 is default width in ffmpeg.
-                            else if (tf.algo1 != null)
-                                thumbnail = Smooth.rescale(tf.original, tf.targetSize.getWidth(), tf.targetSize.getHeight(), tf.algo1, tf.p0);  // 3 is default width in ffmpeg.
-                            else if (tf.algo2 != null)
-                                thumbnail = Smooth.rescale(tf.original, tf.targetSize.getWidth(), tf.targetSize.getHeight(), tf.algo2, tf.p0, tf.p1);  // 3 is default width in ffmpeg.
+                            if (msg.what == REQUEST_CRASH) {
+                                thumbnail = Smooth.requestCrash();
+                            } else {
+                                if (tf.algo != null)
+                                    thumbnail = Smooth.rescale(tf.original, tf.targetSize.getWidth(), tf.targetSize.getHeight(), tf.algo);  // 3 is default width in ffmpeg.
+                                else if (tf.algo1 != null)
+                                    thumbnail = Smooth.rescale(tf.original, tf.targetSize.getWidth(), tf.targetSize.getHeight(), tf.algo1, tf.p0);  // 3 is default width in ffmpeg.
+                                else if (tf.algo2 != null)
+                                    thumbnail = Smooth.rescale(tf.original, tf.targetSize.getWidth(), tf.targetSize.getHeight(), tf.algo2, tf.p0, tf.p1);  // 3 is default width in ffmpeg.
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

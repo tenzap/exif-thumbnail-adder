@@ -155,6 +155,7 @@ class ThumbnailFactory {
 
         // Create a message to the service, using a supported 'what' value
         Message msg = Message.obtain(null, FfmpegSwscaleService.RUN_SWSCALE);
+        //Message msg = Message.obtain(null, FfmpegSwscaleService.REQUEST_CRASH);
 
         // set replyTo to the messenger of this class
         msg.replyTo = mMessenger;
