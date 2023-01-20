@@ -2,8 +2,10 @@
 // Adapted for Exif Thumbnail Adder
 // From: https://raw.githubusercontent.com/ser-gik/smoothrescale/master/smoothrescale/src/main/jni/on_load.c
 
+#include <inttypes.h>
 #include <stddef.h>
 #include <stdint.h>
+
 #include <jni.h>
 
 #include <android/log.h>
@@ -11,7 +13,9 @@
 
 #include <libswscale/swscale.h>
 #include <libavutil/pixfmt.h>
+#include <libavutil/log.h>
 
+static jboolean enableLog;
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, "schokoladenbrown", __VA_ARGS__)
 
 struct bitmap {
@@ -60,13 +64,36 @@ static inline enum AVPixelFormat pix_fmt(enum AndroidBitmapFormat fmt) {
     }
 }
 
+static void store_to_file(struct bitmap *bmp, const char* name) {
+
+    FILE* pFile;
+
+    // "/data/local/tmp" is apparently not writable, so use another path.
+    char filePath[100] = "/storage/emulated/0/DCIM/test_pics/";
+    strcat(filePath, name);
+
+    const uint8_t *src_planes[] = { bmp->buffer };
+
+    pFile = fopen(filePath,"wb");
+    if (pFile) {
+        // Write buffer to disk.
+        fwrite(*src_planes, 4, bmp->info.width * bmp->info.height, pFile);
+        LOGI("Wrote to file!");
+    } else {
+        LOGI("Something wrong writing to File.");
+    }
+    fclose(pFile);
+}
+
 static jobject JNICALL native_rescale_impl(JNIEnv *env, jclass clazz,
         jobject srcBitmap, jobject dstBitmap, jint sws_algo, jdouble p0, jdouble p1) {
     struct bitmap src = { .jbitmap = srcBitmap };
     struct bitmap dst = { .jbitmap = dstBitmap };
     jobject ret = NULL;
-    
-//    LOGI("algo %x %lf %lf", sws_algo, p0, p1);
+
+    if (enableLog) {
+        LOGI("algo %x %lf %lf", sws_algo, p0, p1);
+    }
     if(ANDROID_BITMAP_RESULT_SUCCESS == lock_bitmap(env, &src)
             && ANDROID_BITMAP_RESULT_SUCCESS == lock_bitmap(env, &dst)) {
         const uint8_t *src_planes[] = { src.buffer };
@@ -75,6 +102,33 @@ static jobject JNICALL native_rescale_impl(JNIEnv *env, jclass clazz,
         const int dst_strides[] = { dst.info.stride };
         const double params[] = { p0, p1 };
         struct SwsContext *ctx;
+
+        if (enableLog) {
+            LOGI("[src]: flags: %"PRIu32", format: %"PRIi32", height: %"PRIu32", stride: %"PRIu32", width: %"PRIu32,
+                 src.info.flags,
+                 src.info.format,
+                 src.info.height,
+                 src.info.stride,
+                 src.info.width);
+            LOGI("[dst]: flags: %"PRIu32", format: %"PRIi32", height: %"PRIu32", stride: %"PRIu32", width: %"PRIu32,
+                 dst.info.flags,
+                 dst.info.format,
+                 dst.info.height,
+                 dst.info.stride,
+                 dst.info.width);
+
+            // This may require 'All files access' depending on where we write the files
+            //store_to_file(&src, "src");
+            //store_to_file(&dst, "dst");
+
+            // enable SWS_PRINT_INFO
+            sws_algo |= SWS_PRINT_INFO;
+            LOGI("sws_algo (with SWS_PRINT_INFO): %i", sws_algo);
+
+            // Set ffmpeg's loglevel to max (=AV_LOG_TRACE)
+            av_log_set_flags(AV_LOG_PRINT_LEVEL | AV_LOG_SKIP_REPEATED);
+            av_log_set_level(AV_LOG_TRACE);
+        }
 
         ctx = sws_getContext(src.info.width, src.info.height, pix_fmt(src.info.format),
                              dst.info.width, dst.info.height, pix_fmt(dst.info.format),
@@ -108,5 +162,12 @@ jint JNI_OnLoad(JavaVM *jvm, void *reserved) {
     (*jvm)->AttachCurrentThread(jvm, &env, NULL);
     cls = (*env)->FindClass(env, g_rescaler_java_class);
     (*env)->RegisterNatives(env, cls, g_native_methods, sizeof g_native_methods / sizeof g_native_methods[0]);
+
+    // get enableLog value from MainApplication.enableLog
+    jclass clsMainApplication = (*env)->FindClass(env,
+                                                  "com/exifthumbnailadder/app/MainApplication");
+    jfieldID enableLogFieldId = (*env)->GetStaticFieldID(env, clsMainApplication, "enableLog", "Z");
+    enableLog = (*env)->GetStaticBooleanField(env, clsMainApplication, enableLogFieldId);
+
     return JNI_VERSION_1_2;
 }

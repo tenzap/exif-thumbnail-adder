@@ -16,6 +16,7 @@ public class Smooth {
         AREA           (0x20),
         BICUBLIN       (0x40),
         SINC          (0x100),
+        SWS_PRINT_INFO (0x1000),
         SPLINE        (0x400);
 
         private final int flag;
