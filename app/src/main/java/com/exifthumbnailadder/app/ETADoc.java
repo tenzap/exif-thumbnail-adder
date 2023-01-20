@@ -24,11 +24,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.DocumentsContract;
 import android.util.Log;
-import android.util.Size;
 
 import androidx.preference.PreferenceManager;
 
@@ -204,21 +202,6 @@ public abstract class ETADoc {
         }
     }
 
-    private static Size getThumbnailTargetSize(int imageWidth, int imageHeight, int maxSize) {
-        float imageRatio = ((float)Math.min(imageWidth, imageHeight) / (float)Math.max(imageWidth, imageHeight));
-        int thumbnailWidth = (imageWidth < imageHeight) ? Math.round(maxSize*imageRatio) : maxSize ;
-        int thumbnailHeight = (imageWidth < imageHeight) ? maxSize : Math.round(maxSize*imageRatio);
-//        if (imageWidth < imageHeight) {
-//            // Swap thumbnail width and height to keep a relative aspect ratio
-//            int temp = thumbnailWidth;
-//            thumbnailWidth = thumbnailHeight;
-//            thumbnailHeight = temp;
-//        }
-        if (imageWidth < thumbnailWidth) thumbnailWidth = imageWidth;
-        if (imageHeight < thumbnailHeight) thumbnailHeight = imageHeight;
-
-        return new Size(thumbnailWidth, thumbnailHeight);
-    }
 
     private Bitmap rotateThumbnail(Bitmap tb_bitmap, int degrees) {
         // Google's "Files" app applies the rotation of the principal picture to the thumbnail
@@ -234,53 +217,29 @@ public abstract class ETADoc {
     }
 
     public Bitmap getThumbnail(String lib, boolean rotateThumbnail, int degrees) throws Exception, BadOriginalImageException {
-        Bitmap original = toBitmap();
-        if (original == null) {
-            throw new BadOriginalImageException();
-        }
-        int imageWidth = original.getWidth();
-        int imageHeight = original.getHeight();
-
-        Size targetSize = getThumbnailTargetSize(imageWidth, imageHeight, 160);
+        ThumbnailFactory tf = new ThumbnailFactory();
+        ThumbnailProject tp = new ThumbnailProject(toBitmap());
 
         Bitmap thumbnail = null;
-        int tmpWidth, tmpHeight;
+
         switch (lib) {
             case "ThumbnailUtils":
-                tmpWidth = imageWidth;
-                tmpHeight = imageHeight;
-                thumbnail = original;
-                while (tmpWidth / targetSize.getWidth() > 2 || tmpHeight / targetSize.getHeight() > 2) {
-                    tmpWidth /= 2;
-                    tmpHeight /= 2;
-                    thumbnail = ThumbnailUtils.extractThumbnail(thumbnail, tmpWidth, tmpHeight, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-                }
-                thumbnail = ThumbnailUtils.extractThumbnail(thumbnail, targetSize.getWidth(), targetSize.getHeight(), ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+                thumbnail = tf.getThumbnailWithThumbnailUtils(tp);
                 break;
             case "ffmpeg":
                 // Algorithm choice for ffmpeg swscale: https://stackoverflow.com/a/29743840/15401262
                 //  "I'd say the quality is: point << bilinear < bicubic < lanczos/sinc/spline I don't really know the others"
                 // Bilinear is somehow blurred
                 // Sinc and Lanczos look similar, but Lanczos seems much faster. So choosing this one
-
-                //thumbnail = Smooth.rescale(thumbnail, targetSize.getWidth(), targetSize.getHeight(), Smooth.Algo.BILINEAR);
-                //thumbnail = Smooth.rescale(thumbnail, targetSize.getWidth(), targetSize.getHeight(), Smooth.Algo.SINC);
-                thumbnail = Smooth.rescale(original, targetSize.getWidth(), targetSize.getHeight(), Smooth.AlgoParametrized1.LANCZOS, 3.0);  // 3 is default width in ffmpeg.
+                tp.setAlgo1(Smooth.AlgoParametrized1.LANCZOS, 3.0);
+                thumbnail = tf.getThumbnailWithFfmpegService(tp);
                 break;
             case "internal":
             default:
                 // There is ThumbnailUtils.extractThumbnail in Android, but quality doesn't seem much better.
                 // https://stackoverflow.com/a/13252754
                 // Apply the principle of not reducing more than 50% each time
-                tmpWidth = imageWidth;
-                tmpHeight = imageHeight;
-                thumbnail = original;
-                while (tmpWidth / targetSize.getWidth() > 2 || tmpHeight / targetSize.getHeight() > 2) {
-                    tmpWidth /= 2;
-                    tmpHeight /= 2;
-                    thumbnail = Bitmap.createScaledBitmap(thumbnail, tmpWidth, tmpHeight, true);
-                }
-                thumbnail = Bitmap.createScaledBitmap(thumbnail, targetSize.getWidth(), targetSize.getHeight(), true);
+                thumbnail = tf.getThumbnailWithCreateScaledBitmap(tp);
                 break;
         }
 
