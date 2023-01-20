@@ -232,7 +232,7 @@ public abstract class ETADoc {
                 // Bilinear is somehow blurred
                 // Sinc and Lanczos look similar, but Lanczos seems much faster. So choosing this one
                 tp.setAlgo1(Smooth.AlgoParametrized1.LANCZOS, 3.0);
-                thumbnail = tf.getThumbnailWithFfmpegService(tp);
+                thumbnail = tf.getThumbnailWithFfmpegService(ctx, tp);
                 break;
             case "internal":
             default:

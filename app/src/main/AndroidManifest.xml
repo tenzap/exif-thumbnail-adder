@@ -28,6 +28,13 @@
             android:name=".AddThumbsService"
             android:enabled="true"
             android:exported="false" />
+        <service
+            android:name=".FfmpegSwscaleService"
+            android:description="@string/ffmpegServiceDescription"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":ffmpeg"
+            />
 
         <activity android:name=".AboutActivity"
             android:label="@string/title_activity_about"
