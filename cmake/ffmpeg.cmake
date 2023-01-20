@@ -6,12 +6,10 @@ cmake_minimum_required(VERSION 3.10.2)
 
 include(ExternalProject)
 
-# FFMPEG FETCH SECTION: START
 
 set(FFMPEG_VERSION 4.4)
 set(FFMPEG_VERSION_PREBUILT 4.4)
 set(FFMPEG_NAME ffmpeg-${FFMPEG_VERSION})
-set(FFMPEG_URL https://ffmpeg.org/releases/${FFMPEG_NAME}.tar.bz2)
 
 set(ffmpegLibs
         libavutil
@@ -25,36 +23,11 @@ set(ffmpegLibs
 
 # if CMAKE_HOST_WIN32 is true, then use precompiled library because we can't easily run "./configure" from win32 systems
 if(NOT (USE_PREBUILT_LIB OR CMAKE_HOST_WIN32))
-get_filename_component(FFMPEG_ARCHIVE_NAME ${FFMPEG_URL} NAME)
-
-IF (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME})
-    file(DOWNLOAD ${FFMPEG_URL} ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_ARCHIVE_NAME})
-
-    execute_process(
-            COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_ARCHIVE_NAME}
-            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/library
-    )
-
-    # We're patching exit just before return in main function of ffmpeg.c because it will crash the application
-    file(READ ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME}/fftools/ffmpeg.c ffmpeg_src)
-
-    string(REPLACE "exit_program(received_nb_signals ? 255 : main_return_code);" "//exit_program(received_nb_signals ? 255 : main_return_code);" ffmpeg_src "${ffmpeg_src}")
-    string(REPLACE "return main_return_code;" "return received_nb_signals ? 255 : main_return_code;" ffmpeg_src "${ffmpeg_src}")
-
-    file(WRITE ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME}/fftools/ffmpeg.c "${ffmpeg_src}")
-ENDIF()
 
 foreach (lib IN LISTS ffmpegLibs)
     list(APPEND FFMPEG_BYPRODUCTS ${CMAKE_BINARY_DIR}/lib/${lib}.so)
 endforeach()
 
-#file(
-#        COPY ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_build_system.cmake
-#        DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME}
-#        FILE_PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
-#)
-
-# FFMPEG FETCH SECTION: END
 
 # ANDROID BUILD TOOLS SECTION: START
 
@@ -72,7 +45,10 @@ set(FFMPEG_STRIP ${ANDROID_TOOLCHAIN_ROOT}/bin/llvm-strip${ANDROID_TOOLCHAIN_SUF
 # Set NM manually
 set(FFMPEG_NM ${ANDROID_TOOLCHAIN_PREFIX}nm${ANDROID_TOOLCHAIN_SUFFIX})
 
+set(FFMPEG_YASM ${ANDROID_TOOLCHAIN_PREFIX}yasm${ANDROID_TOOLCHAIN_SUFFIX})
+
 # ANDROID BUILD TOOLS SECTION: END
+
 
 # ANDROID FLAGS SECTION: START
 
@@ -86,12 +62,16 @@ set(FFMPEG_LD_FLAGS "${FFMPEG_C_FLAGS} ${FFMPEG_LD_FLAGS} ${FFMPEG_EXTRA_LD_FLAG
 
 # ANDROID FLAGS SECTION: END
 
+
 # MISC VARIABLES SECTION: START
 
-set(NJOBS 4)
+include(ProcessorCount)
+ProcessorCount(NJOBS)
+
 set(HOST_BIN ${ANDROID_NDK}/prebuilt/${ANDROID_HOST_TAG}/bin)
 
 # MISC VARIABLES SECTION: END
+
 
 # FFMPEG EXTERNAL PROJECT CONFIG SECTION: START
 
@@ -99,12 +79,19 @@ set(HOST_BIN ${ANDROID_NDK}/prebuilt/${ANDROID_HOST_TAG}/bin)
 IF (${CMAKE_ANDROID_ARCH_ABI} STREQUAL x86)
     list(APPEND FFMPEG_CONFIGURE_EXTRAS --disable-asm)
 ENDIF()
+IF (${CMAKE_ANDROID_ARCH_ABI} STREQUAL x86_64)
+    list(APPEND FFMPEG_CONFIGURE_EXTRAS --x86asmexe=${FFMPEG_YASM})
+ENDIF()
 
 string(REPLACE ";" "|" FFMPEG_CONFIGURE_EXTRAS_ENCODED "${FFMPEG_CONFIGURE_EXTRAS}")
 ExternalProject_Add(ffmpeg_target
-        PREFIX ffmpeg_pref
         URL ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME}
-        DOWNLOAD_NO_EXTRACT 1
+        #DOWNLOAD_NO_EXTRACT 1
+
+        ## ETA patches: because we removed some dirs from ffmpeg sources
+        PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_Makefile.patch
+        COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_AndroidLog.patch
+
         CONFIGURE_COMMAND ${CMAKE_COMMAND} -E env
         PATH=${ANDROID_TOOLCHAIN_ROOT}/bin:$ENV{PATH}
         AS_FLAGS=${FFMPEG_ASM_FLAGS}
@@ -124,6 +111,7 @@ ExternalProject_Add(ffmpeg_target
         #-DINSTALL_LIBDIR:STRING=${CMAKE_LIBRARY_OUTPUT_DIRECTORY} # Test
         -DCONFIGURE_EXTRAS:STRING=${FFMPEG_CONFIGURE_EXTRAS_ENCODED}
         -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_build_system.cmake
+
         BUILD_COMMAND ${CMAKE_COMMAND} -E env
         PATH=${ANDROID_TOOLCHAIN_ROOT}/bin:$ENV{PATH}
         ${CMAKE_COMMAND}
@@ -132,13 +120,16 @@ ExternalProject_Add(ffmpeg_target
         -DHOST_TOOLCHAIN:STRING=${HOST_BIN}
         -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_build_system.cmake
         BUILD_IN_SOURCE 1
+
         INSTALL_COMMAND ${CMAKE_COMMAND} -E env
         PATH=${ANDROID_TOOLCHAIN_ROOT}/bin:$ENV{PATH}
         ${CMAKE_COMMAND}
         -DSTEP:STRING=install
         -DHOST_TOOLCHAIN:STRING=${HOST_BIN}
         -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_build_system.cmake
+
         STEP_TARGETS copy_headers
+
         LOG_CONFIGURE 1
         LOG_BUILD 1
         LOG_INSTALL 1
@@ -146,9 +137,6 @@ ExternalProject_Add(ffmpeg_target
 
         #BUILD_ALWAYS 1
 
-        ## ETA patches: because we removed some dirs from ffmpeg sources
-        PATCH_COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_Makefile.patch
-        COMMAND patch -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_AndroidLog.patch
 
         #LOG_PATCH 1 ## ETA addition: needs CMAKE >= version 3.14
 
@@ -156,34 +144,9 @@ ExternalProject_Add(ffmpeg_target
         BUILD_BYPRODUCTS ${FFMPEG_BYPRODUCTS}
         )
 
-ExternalProject_Get_property(ffmpeg_target SOURCE_DIR)
-#ExternalProject_Add_Step(
-#        ffmpeg_target
-#        copy_headers
-#        COMMAND ${CMAKE_COMMAND}
-#        -DBUILD_DIR:STRING=${SOURCE_DIR}
-#        -DSOURCE_DIR:STRING=${CMAKE_CURRENT_SOURCE_DIR}
-#        -DFFMPEG_NAME:STRING=${FFMPEG_NAME}
-#        -DOUT:STRING=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
-#        -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ffmpeg_copy_headers.cmake
-#        DEPENDEES build
-#        DEPENDERS install
-#)
 
 # FFMPEG EXTERNAL PROJECT CONFIG SECTION: END
 
-# FFMPEG EXE SOURCES SECTION: START
-
-set(ffmpeg_src
-        ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME}/fftools/cmdutils.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME}/fftools/ffmpeg_cuvid.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME}/fftools/ffmpeg_filter.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME}/fftools/ffmpeg_hw.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME}/fftools/ffmpeg_opt.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/library/${FFMPEG_NAME}/fftools/ffmpeg.c
-        )
-
-# FFMPEG EXE SOURCES SECTION: END
 endif() # end of "if USE_PREBUILT_LIB"
 
 
