@@ -43,6 +43,10 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
 - get more details about them on the project homepage
 
 
+## Privacy notice
+- This application doesn't collect and doesn't send any information on you or your usage.
+
+
 ## Installation
 - Prerequisites: minimum android Oreo (android 8, SDK 26). App was tested up to Android 11.
 - Download it through F-Droid app [here](https://f-droid.org/packages/com.exifthumbnailadder.app)
