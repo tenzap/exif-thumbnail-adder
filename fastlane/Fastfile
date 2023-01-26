@@ -183,6 +183,11 @@ platform :android do
       #serial: 'emulator-5554',
       command: 'push tests/data/empty_file tests/data/noexif.jpg tests/data/text_file.txt tests/data/text_with_jpg_extension.jpg /storage/emulated/0/DCIM/test_pics'
     )
+    # Uninstall the app so as to reset the MANAGE_EXTERNAL_STORAGE permission.
+    # I haven't found another way to remove this permission once it's granted
+    adb(
+      command: 'shell pm uninstall com.exifthumbnailadder.app.debug || echo'
+    )
   end
 
   desc "Get test output from device"

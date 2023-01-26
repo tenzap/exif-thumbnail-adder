@@ -98,7 +98,7 @@ public class AddThumbsCommon
 
         finished = false;
 
-        dir = new Dirs("DCIM/test_pics", "ThumbAdder");
+        dir = new Dirs("DCIM/test_pics");
         uiDevice.executeShellCommand("mkdir -p " + dir.pathInStorage());
         uiDevice.executeShellCommand("rm -rf " + dir.copyFromRoot());
         uiDevice.executeShellCommand("cp -a " + dir.origFromRoot() + " " + dir.copyFromRoot());
@@ -112,7 +112,8 @@ public class AddThumbsCommon
     @After
     public void saveOutput() throws IOException {
         UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
-        uiDevice.executeShellCommand("mv " + dir.workingDir() + " " + dir.storageTestRoot());
+        uiDevice.executeShellCommand("mv " + dir.workingDir("ThumbAdder") + " " + dir.storageTestRoot());
+        uiDevice.executeShellCommand("mv " + dir.workingDir("JustSomething") + " " + dir.storageTestRoot());
         uiDevice.executeShellCommand("mv " + dir.copyFromRoot() + " " + dir.pathInStorage());
     }
 
@@ -266,12 +267,10 @@ public class AddThumbsCommon
         public final String OUTPUT_STORAGE_ROOT = "/data/local/tmp/test_output/" + Build.VERSION.SDK_INT;
 
         Path path;
-        String workingDir;
 
-        public Dirs(String path, String workingDir) {
+        public Dirs(String path) {
             Log.e("ETA", "eerere");
             this.path = Paths.get(path);
-            this.workingDir = workingDir;
         }
         public String copyPath() {
             return path() + "/" + copy();
@@ -316,8 +315,8 @@ public class AddThumbsCommon
         public String pathInStorage() {
             return storageTestRoot() + "/" + path();
         }
-        public String workingDir() {
-            return ROOT + "/" + workingDir;
+        public String workingDir(String dir) {
+            return ROOT + "/" + dir;
         }
     }
 

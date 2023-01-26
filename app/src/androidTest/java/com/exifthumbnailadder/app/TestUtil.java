@@ -296,5 +296,6 @@ public class TestUtil {
         UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
         DocUIStrings d = new DocUIStrings();
         uiDevice.executeShellCommand("rm -fr /storage/emulated/0/ThumbAdder");
+        uiDevice.executeShellCommand("rm -fr /storage/emulated/0/JustSomething");
     }
 }
