@@ -38,12 +38,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 import androidx.test.espresso.PerformException;
@@ -65,10 +68,9 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -100,8 +102,8 @@ public class AddThumbsCommon
 
         dir = new Dirs("DCIM/test_pics");
         uiDevice.executeShellCommand("mkdir -p " + dir.pathInStorage());
-        uiDevice.executeShellCommand("rm -rf " + dir.copyFromRoot());
-        uiDevice.executeShellCommand("cp -a " + dir.origFromRoot() + " " + dir.copyFromRoot());
+        uiDevice.executeShellCommand("rm -rf " + dir.copyPathAbsolute());
+        uiDevice.executeShellCommand("cp -a " + dir.origPathAbsolute() + " " + dir.copyPathAbsolute());
     }
 
     @AfterClass
@@ -112,9 +114,9 @@ public class AddThumbsCommon
     @After
     public void saveOutput() throws IOException {
         UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
-        uiDevice.executeShellCommand("mv " + dir.workingDir("ThumbAdder") + " " + dir.storageTestRoot());
-        uiDevice.executeShellCommand("mv " + dir.workingDir("JustSomething") + " " + dir.storageTestRoot());
-        uiDevice.executeShellCommand("mv " + dir.copyFromRoot() + " " + dir.pathInStorage());
+        uiDevice.executeShellCommand("mv " + dir.workingDir("ThumbAdder") + " " + dir.storageBasePathAbsolute());
+        uiDevice.executeShellCommand("mv " + dir.workingDir("JustSomething") + " " + dir.storageBasePathAbsolute());
+        uiDevice.executeShellCommand("mv " + dir.copyPathAbsolute() + " " + dir.pathInStorage());
     }
 
     // https://stackoverflow.com/a/54203607
@@ -256,7 +258,7 @@ public class AddThumbsCommon
         }
 
         String log = getText(withId(R.id.textview_log));
-        writeToFile("log.txt", log);
+        writeTextToFile("log.txt", log);
 
         assertTrue("Processing couldn't finish (timeout?)", finished);
     }
@@ -302,18 +304,18 @@ public class AddThumbsCommon
             return path().replaceAll("/", "%2F") + "%2F" + copy();
         }
 
-        public String origFromRoot() {
+        public String origPathAbsolute() {
             return ROOT + "/" + path() + "/" + orig();
         }
-        public String copyFromRoot() {
+        public String copyPathAbsolute() {
             return ROOT + "/" + path() + "/" + copy();
         }
-        public String storageTestRoot() {
+        public String storageBasePathAbsolute() {
             return OUTPUT_STORAGE_ROOT + "/" + suffix();
         }
 
         public String pathInStorage() {
-            return storageTestRoot() + "/" + path();
+            return storageBasePathAbsolute() + "/" + path();
         }
         public String workingDir(String dir) {
             return ROOT + "/" + dir;
@@ -342,22 +344,37 @@ public class AddThumbsCommon
         return stringHolder[0];
     }
 
-    private void writeToFile(String filename, String data) throws IOException {
-        File file = new File(dir.copyFromRoot() + "/" + filename);
-        try(FileOutputStream fos = new FileOutputStream(file);
-            BufferedOutputStream bos = new BufferedOutputStream(fos)) {
-            //convert string to byte array
-            byte[] bytes = data.getBytes();
-            //write byte array to file
-            bos.write(bytes);
-            bos.close();
-            fos.close();
-        } catch (IOException e) {
+    private void writeTextToFile(String filename, String data) throws IOException {
+        InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
+        Uri srcDirUri = inputDirs.get(0);
+        Uri logFile = null;
+
+        if ( srcDirUri.getScheme().equals("file")) {
+            logFile = Uri.fromFile(new File(srcDirUri.getPath() + File.separator + filename));
+        }
+
+        DocumentFile outputFileDf = DocumentFile.fromTreeUri(context, srcDirUri).findFile(filename);
+        try {
+            if (outputFileDf != null) {
+                logFile = outputFileDf.getUri();
+            } else {
+                logFile = DocumentsContract.createDocument(
+                        context.getContentResolver(),
+                        srcDirUri,
+                        "text/plain",
+                        filename);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
+        OutputStream outputStream = context.getContentResolver().openOutputStream(logFile);
+        byte[] bytes = data.getBytes();
+        outputStream.write(bytes);
+        outputStream.close();
+
         UiDevice device = UiDevice.getInstance(getInstrumentation());
-        device.executeShellCommand("mv " + dir.copyFromRoot() + "/" + filename + " " + dir.storageTestRoot());
+        device.executeShellCommand("mv " + dir.copyPathAbsolute() + "/" + filename + " " + dir.storageBasePathAbsolute());
     }
 
 }
