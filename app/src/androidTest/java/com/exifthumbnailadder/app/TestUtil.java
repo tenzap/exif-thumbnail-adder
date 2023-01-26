@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
@@ -45,25 +46,31 @@ import java.io.IOException;
 public class TestUtil {
 
     public static void requestAllFilesAccess() throws Exception {
-        UiDevice device = UiDevice.getInstance(getInstrumentation());
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play") && !MainActivity.haveAllFilesAccessPermission()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
+                ! Environment.isExternalStorageManager() &&
+                ! Environment.isExternalStorageLegacy()) {
 
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        String permit_manage_external_storage = new String();
-        int resId;
+            UiDevice device = UiDevice.getInstance(getInstrumentation());
 
-        PackageManager manager = context.getPackageManager();
+            Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+            String permit_manage_external_storage = new String();
+            int resId;
 
-        // Identifier names are taken here:
-        // https://cs.android.com/android/platform/superproject/+/master:packages/apps/Settings/res/values/strings.xml
-        Resources resources = manager.getResourcesForApplication("com.android.settings");
-        resId = resources.getIdentifier("permit_manage_external_storage", "string", "com.android.settings");
-        permit_manage_external_storage = resources.getString(resId);
+            PackageManager manager = context.getPackageManager();
 
-        onView(withText(R.string.pref_allFilesAccess_title)).perform(click());
+            // Identifier names are taken here:
+            // https://cs.android.com/android/platform/superproject/+/master:packages/apps/Settings/res/values/strings.xml
+            Resources resources = manager.getResourcesForApplication("com.android.settings");
+            resId = resources.getIdentifier("permit_manage_external_storage", "string", "com.android.settings");
+            permit_manage_external_storage = resources.getString(resId);
 
-        UiObject uiElement2 = device.findObject(new UiSelector().textMatches("(?i)" + permit_manage_external_storage));
-        uiElement2.click();
-        device.pressBack();
+            onView(withText(R.string.pref_allFilesAccess_title)).perform(click());
+
+            UiObject uiElement2 = device.findObject(new UiSelector().textMatches("(?i)" + permit_manage_external_storage));
+            uiElement2.click();
+            device.pressBack();
+        }
     }
 
     public static String getSdCardNameInFilePicker() throws Exception {
