@@ -127,21 +127,38 @@ public class TestUtil {
         }
         // Open Drawer (aka Hamburger menu)
         UiObject hamburgerMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getShowRoots()));
-        try {
+        if (hamburgerMenu.exists()) {
             hamburgerMenu.clickAndWaitForNewWindow();
-        } catch (UiObjectNotFoundException e) {
-            // In some cases (when there is no sdcard for example), the hamburger menu doesn't exist.
-            // So skip gracefully to the next step
-            //e.printStackTrace();
-            throw e;
+            UiObject uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
+            uiElement.clickAndWaitForNewWindow();
+        } else {
+            // In some cases (when we can't open the drawer), we may have to select the root by selecting it in the breadcrumb
+            UiObject dropdown_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/dropdown_breadcrumb"));
+            if (dropdown_breadcrumb.exists()) {
+                dropdown_breadcrumb.clickAndWaitForNewWindow();
+                UiObject dropdownItem = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
+                dropdownItem.clickAndWaitForNewWindow();
+            } else {
+                // dropdown_breadcrumb was removed in android 11, so try horizontal_breadcrumb
+                // Swipe on horizontal_breadcrumb
+                UiObject horizontal_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/horizontal_breadcrumb"));
+                UiObject root = null;
+                for (int i = 0; i < 5; i++) {
+                    root = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/breadcrumb_text"));
+                    if (root.exists())
+                        break;
+                    horizontal_breadcrumb.swipeRight(20);
+                }
+                if (root != null)
+                    root.clickAndWaitForNewWindow();
+            }
         }
 
         // Select Root (volume)
         //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
         //uiElement = device.findObject(new UiSelector().textMatches("(?i)"+sdCardNameInFilePicker)); //DOESN'T WORK
-        UiObject uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
+        //UiObject uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
 //        try {
-            uiElement.clickAndWaitForNewWindow();
 /*
         } catch (UiObjectNotFoundException e) {
             e.printStackTrace();
@@ -169,6 +186,7 @@ public class TestUtil {
  */
 
         // Select folder
+        UiObject uiElement;
         String[] dirnames = dir.split(System.getProperty("file.separator"));
         for (String basename : dirnames) {
             uiElement = device.findObject(new UiSelector().text(basename).resourceId("android:id/title"));
