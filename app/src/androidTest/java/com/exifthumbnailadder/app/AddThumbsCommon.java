@@ -25,21 +25,25 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 import androidx.test.espresso.PerformException;
@@ -47,7 +51,6 @@ import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
@@ -59,7 +62,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
@@ -69,13 +71,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 
 @RunWith(AndroidJUnit4.class)
-public class AddThumbs {
+public class AddThumbsCommon
+{
     Context context;
     SharedPreferences prefs;
 
-    @Rule public TestName testname = new TestName();
+    @Rule
+    public TestName testname = new TestName();
     public Dirs dir;
     public boolean finished;
 
@@ -87,7 +92,7 @@ public class AddThumbs {
 
     @Before
     public void init() throws Exception {
-        context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        context = getInstrumentation().getTargetContext();
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
 
@@ -95,6 +100,7 @@ public class AddThumbs {
 
         dir = new Dirs("DCIM/test_pics", "ThumbAdder");
         uiDevice.executeShellCommand("mkdir -p " + dir.pathInStorage());
+        uiDevice.executeShellCommand("rm -rf " + dir.copyFromRoot());
         uiDevice.executeShellCommand("cp -a " + dir.origFromRoot() + " " + dir.copyFromRoot());
     }
 
@@ -113,10 +119,10 @@ public class AddThumbs {
     // https://stackoverflow.com/a/54203607
     @BeforeClass
     public static void dismissANRSystemDialog() throws UiObjectNotFoundException {
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        Context context = getInstrumentation().getTargetContext();
         int resId = context.getResources().getIdentifier("wait", "string", "android");
         String wait = context.getResources().getString(resId);
-        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        UiDevice device = UiDevice.getInstance(getInstrumentation());
 
         UiObject waitButton = device.findObject(new UiSelector().textMatches("(?i)" + wait));
         if (waitButton.exists()) {
@@ -130,8 +136,11 @@ public class AddThumbs {
         TestUtil.clearDocumentsUI();
     }
 
-    @Test
     public void addThumbs() throws Exception {
+        addThumbs(null);
+    }
+
+    public void addThumbs(HashMap opts) throws Exception {
         // Go to Settings
         TestUtil.openSettingsFragment();
 
@@ -146,9 +155,14 @@ public class AddThumbs {
         String expectedValue = "content://com.android.externalstorage.documents/tree/primary%3A"+ dir.copyForUri() + "/document/primary%3A" + dir.copyForUri();
         assertEquals("Not exactly one selected source dir", expectedValue, inputDirs.get(0).toString());
 
-        // give all files access (we need it to delete folders)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play") && !MainActivity.haveAllFilesAccessPermission()) {
+        if (opts != null &&
+                opts.containsKey("all_files_access") &&
+                opts.get("all_files_access").equals(new Boolean(true))) {
             TestUtil.requestAllFilesAccess();
+        } else {
+            // TODO: revokeAllFilesAccess https://stackoverflow.com/q/75102412/15401262addThumbsSettingsUpdateInSourceOffWithDestOverwrite
+            // Cannot revoke for now, so fail test if All Files acccess is enabled
+            assertFalse("All Files access is granted. Should not be in these tests.", MainActivity.haveAllFilesAccessPermission());
         }
 
         // Go to "Add thumbnails" fragment
@@ -157,16 +171,18 @@ public class AddThumbs {
         // Click "Add thumbnails" button
         onView(withId(R.id.button_addThumbs)).perform(click());
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-            TestUtil.clickPermissionAllowButton();
-            // Click "Add thumbnails" button again
-            onView(withId(R.id.button_addThumbs)).perform(click());
-        } else {
-            if (BuildConfig.FLAVOR.equals("google_play")) {
+        // ATTENTION: This below requires to be on a clean app (where permissions have been reset)
+        // Same condition as in AddThumbsFragment.addThumbsUsingTreeUris() to trigger the WRITE_EXTERNAL_STORAGE permission
+        if (!prefs.getBoolean("useSAF", true) ||
+                BuildConfig.FLAVOR.equals("google_play") ||
+                BuildConfig.FLAVOR.equals("standard")) {
+            // Trigger only if WRITE_EXTERNAL_STORAGE is not granted yet
+            if (ContextCompat.checkSelfPermission(
+                    context, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                    PackageManager.PERMISSION_GRANTED) {
                 TestUtil.clickPermissionAllowButton();
                 // Click "Add thumbnails" button again
                 onView(withId(R.id.button_addThumbs)).perform(click());
-            } else {
             }
         }
 
@@ -175,56 +191,75 @@ public class AddThumbs {
         // For this: swipeUp & click on button
         onView(withId(R.id.permScrollView)).perform(swipeUp());
         onView(withId(R.id.button_checkPermissions)).perform(click());
+
+        // TODO: API 33 will ask user if user allows notifications
+        if (Build.VERSION.SDK_INT >= 33) {
+            //TestUtil.clickPermissionAllowButton();
+        }
+
         TestUtil.givePermissionToWorkingDir();
 
-        // Register BroadcastReceiver of the signal saying that processing is finished
-        BroadcastReceiver receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                switch (intent.getAction()) {
-                    case "com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED":
-                        finished = true;
-                        break;
-                    default:
-                        break;
+        int runs = 1;
+        if (opts != null &&
+                opts.containsKey("rerun_processing") &&
+                opts.get("rerun_processing").equals(new Boolean(true))) {
+            runs = 2;
+        }
+        Log.e("ETA", "runs: "+ runs);
+
+        for (int i = 0; i < runs; i++) {
+            finished = false;
+            Log.e("ETA", "run: "+ i);
+            // Register BroadcastReceiver of the signal saying that processing is finished
+            BroadcastReceiver receiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    switch (intent.getAction()) {
+                        case "com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED":
+                            finished = true;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            };
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED");
+            LocalBroadcastManager.getInstance(context)
+                    .registerReceiver(receiver, filter);
+
+            // We are back to the MainActivity / Add Thumbs fragment
+            // Click on "Add Thumbs" button to really start processing now that permissions to WorkingDir are given
+            onView(withId(R.id.button_addThumbs)).perform(click());
+
+            // Wait until processing is finished or has hit timeout (duration is in ms)
+            long max_duration = 1800000;
+            long timeout = System.currentTimeMillis() + max_duration;
+            while (!finished && System.currentTimeMillis() < timeout) {
+                Thread.sleep(1000);
+            }
+
+            // Stop processing if not finished
+            if (!finished) {
+                try {
+                    onView(withId(R.id.button_stopProcess)).perform(click());
+                } catch (PerformException e) {
+                    // This exception happens when button_stopProcess is not in the view.
+                    e.printStackTrace();
                 }
             }
-        };
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED");
-        LocalBroadcastManager.getInstance(context)
-                .registerReceiver(receiver, filter);
 
-        // We are back to the MainActivity / Add Thumbs fragment
-        // Click on "Add Thumbs" button to really start processing now that permissions to WorkingDir are given
-        onView(withId(R.id.button_addThumbs)).perform(click());
-
-        // Wait until processing is finished or has hit timeout (duration is in ms)
-        long max_duration = 1800000;
-        long timeout = System.currentTimeMillis() + max_duration;
-        while (!finished && System.currentTimeMillis() < timeout) {
-            Thread.sleep(1000);
+            // Unregister BroadcastReceiver
+            LocalBroadcastManager.getInstance(context)
+                    .unregisterReceiver(receiver);
         }
-
-        // Stop processing if not finished
-        if (!finished) {
-            try {
-                onView(withId(R.id.button_stopProcess)).perform(click());
-            } catch (PerformException e) {
-                // This exception happens when button_stopProcess is not in the view.
-                e.printStackTrace();
-            }
-        }
-
-        // Unregister BroadcastReceiver
-        LocalBroadcastManager.getInstance(context)
-                .unregisterReceiver(receiver);
 
         String log = getText(withId(R.id.textview_log));
         writeToFile("log.txt", log);
 
         assertTrue("Processing couldn't finish (timeout?)", finished);
     }
+
     public class Dirs {
 
         public final String ROOT = "/storage/emulated/0";
@@ -322,7 +357,8 @@ public class AddThumbs {
             e.printStackTrace();
         }
 
-        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        UiDevice device = UiDevice.getInstance(getInstrumentation());
         device.executeShellCommand("mv " + dir.copyFromRoot() + "/" + filename + " " + dir.storageTestRoot());
     }
+
 }
