@@ -94,12 +94,12 @@ public class TestUtil {
 
         // Click on "Show internal storage" if it is there, otherwise press back to quit the "More options" menu
         UiObject showInternalStorage = device.findObject(new UiSelector().resourceId(docUIStrings.documentsUiPackageName + ":id/title").text(docUIStrings.getShowInternalStorage()));
-        if (showInternalStorage.exists()) {
+//        if (showInternalStorage.exists()) {
             showInternalStorage.clickAndWaitForNewWindow();
-        } else {
-            Log.w("ETA", "'Show internal storage' item not found");
-            device.pressBack();
-        }
+//        } else {
+//            Log.w("ETA", "'Show internal storage' item not found");
+//            device.pressBack();
+//        }
         //try { showInternalStorage.clickAndWaitForNewWindow(); }
         //catch (UiObjectNotFoundException e) { device.pressBack(); }
 
@@ -118,11 +118,11 @@ public class TestUtil {
         //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
         //uiElement = device.findObject(new UiSelector().textMatches("(?i)"+sdCardNameInFilePicker)); //DOESN'T WORK
         UiObject uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
-        try {
+//        try {
             uiElement.clickAndWaitForNewWindow();
+/*
         } catch (UiObjectNotFoundException e) {
             e.printStackTrace();
-
             // In some cases (when we can't open the drawer), we may have to select the root by selecting it in the breadcrumb
             UiObject dropdown_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/dropdown_breadcrumb"));
             if (dropdown_breadcrumb.exists()) {
@@ -144,6 +144,7 @@ public class TestUtil {
                     root.clickAndWaitForNewWindow();
             }
         }
+ */
 
         // Select folder
         String[] dirnames = dir.split(System.getProperty("file.separator"));
