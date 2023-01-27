@@ -50,7 +50,7 @@ platform :android do
 
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
-    gradle(task: "clean assembleRelease")
+    gradle(task: "clean assembleRelease bundleRelease")
     crashlytics
   
     # sh "your_script.sh"
@@ -59,8 +59,14 @@ platform :android do
 
   desc "Deploy a new version to the Google Play"
   lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+    gradle(task: "clean assembleRelease bundleRelease")
+    upload_to_play_store(
+        #aab: "app/build/outputs/bundle/.../release/*.aab",
+        skip_upload_changelogs: true,
+        skip_upload_metadata: false,
+        skip_upload_images: false,
+        skip_upload_screenshots: false,
+    )
   end
 
   desc "Build signed APK (flavor: standard ; type: Release)"
