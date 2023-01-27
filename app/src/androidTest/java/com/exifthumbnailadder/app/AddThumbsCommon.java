@@ -41,7 +41,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -61,7 +60,6 @@ import androidx.test.uiautomator.UiSelector;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -76,48 +74,20 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 
 @RunWith(AndroidJUnit4.class)
-public class AddThumbsCommon
-{
+public class AddThumbsCommon {
     Context context;
     SharedPreferences prefs;
+    public Dirs dir;
+    public boolean finished;
 
     @Rule
     public TestName testname = new TestName();
-    public Dirs dir;
-    public boolean finished;
 
     @Rule
     public TestDataCollectionRule testDataCollectionRule = new TestDataCollectionRule();
 
     @Rule
     public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
-
-    @Before
-    public void init() throws Exception {
-        context = getInstrumentation().getTargetContext();
-        prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
-
-        finished = false;
-
-        dir = new Dirs("DCIM/test_pics");
-        uiDevice.executeShellCommand("mkdir -p " + dir.pathInStorage());
-        uiDevice.executeShellCommand("rm -rf " + dir.copyPathAbsolute());
-        uiDevice.executeShellCommand("cp -a " + dir.origPathAbsolute() + " " + dir.copyPathAbsolute());
-    }
-
-    @AfterClass
-    public static void resetPerm() throws Exception {
-        TestUtil.resetETAPermissions();
-    }
-
-    @After
-    public void saveOutput() throws IOException {
-        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
-        uiDevice.executeShellCommand("mv " + dir.workingDir("ThumbAdder") + " " + dir.storageBasePathAbsolute());
-        uiDevice.executeShellCommand("mv " + dir.workingDir("JustSomething") + " " + dir.storageBasePathAbsolute());
-        uiDevice.executeShellCommand("mv " + dir.copyPathAbsolute() + " " + dir.pathInStorage());
-    }
 
     // https://stackoverflow.com/a/54203607
     @BeforeClass
@@ -139,6 +109,28 @@ public class AddThumbsCommon
         TestUtil.clearDocumentsUI();
     }
 
+    @Before
+    public void init() throws Exception {
+        context = getInstrumentation().getTargetContext();
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
+
+        finished = false;
+
+        dir = new Dirs("DCIM/test_pics");
+        uiDevice.executeShellCommand("mkdir -p " + dir.pathInStorage());
+        uiDevice.executeShellCommand("rm -rf " + dir.copyPathAbsolute());
+        uiDevice.executeShellCommand("cp -a " + dir.origPathAbsolute() + " " + dir.copyPathAbsolute());
+    }
+
+    @After
+    public void saveOutput() throws IOException {
+        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
+        uiDevice.executeShellCommand("mv " + dir.workingDir("ThumbAdder") + " " + dir.storageBasePathAbsolute());
+        uiDevice.executeShellCommand("mv " + dir.workingDir("JustSomething") + " " + dir.storageBasePathAbsolute());
+        uiDevice.executeShellCommand("mv " + dir.copyPathAbsolute() + " " + dir.pathInStorage());
+    }
+
     public void addThumbs() throws Exception {
         addThumbs(null);
     }
@@ -155,7 +147,7 @@ public class AddThumbsCommon
         InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
 
         assertEquals(1, inputDirs.size());
-        String expectedValue = "content://com.android.externalstorage.documents/tree/primary%3A"+ dir.copyForUri() + "/document/primary%3A" + dir.copyForUri();
+        String expectedValue = "content://com.android.externalstorage.documents/tree/primary%3A" + dir.copyForUri() + "/document/primary%3A" + dir.copyForUri();
         assertEquals("Not exactly one selected source dir", expectedValue, inputDirs.get(0).toString());
 
         if (opts != null &&
@@ -208,11 +200,9 @@ public class AddThumbsCommon
                 opts.get("rerun_processing").equals(new Boolean(true))) {
             runs = 2;
         }
-        Log.e("ETA", "runs: "+ runs);
 
         for (int i = 0; i < runs; i++) {
             finished = false;
-            Log.e("ETA", "run: "+ i);
             // Register BroadcastReceiver of the signal saying that processing is finished
             BroadcastReceiver receiver = new BroadcastReceiver() {
                 @Override
@@ -271,9 +261,9 @@ public class AddThumbsCommon
         Path path;
 
         public Dirs(String path) {
-            Log.e("ETA", "eerere");
             this.path = Paths.get(path);
         }
+
         public String copyPath() {
             return path() + "/" + copy();
 
@@ -307,9 +297,11 @@ public class AddThumbsCommon
         public String origPathAbsolute() {
             return ROOT + "/" + path() + "/" + orig();
         }
+
         public String copyPathAbsolute() {
             return ROOT + "/" + path() + "/" + copy();
         }
+
         public String storageBasePathAbsolute() {
             return OUTPUT_STORAGE_ROOT + "/" + suffix();
         }
@@ -317,13 +309,14 @@ public class AddThumbsCommon
         public String pathInStorage() {
             return storageBasePathAbsolute() + "/" + path();
         }
+
         public String workingDir(String dir) {
             return ROOT + "/" + dir;
         }
     }
 
     String getText(final Matcher<View> matcher) {
-        final String[] stringHolder = { null };
+        final String[] stringHolder = {null};
         onView(matcher).perform(new ViewAction() {
             @Override
             public Matcher<View> getConstraints() {
@@ -337,7 +330,7 @@ public class AddThumbsCommon
 
             @Override
             public void perform(UiController uiController, View view) {
-                TextView tv = (TextView)view; //Save, because of check in getConstraints()
+                TextView tv = (TextView) view; //Save, because of check in getConstraints()
                 stringHolder[0] = tv.getText().toString();
             }
         });
@@ -349,7 +342,7 @@ public class AddThumbsCommon
         Uri srcDirUri = inputDirs.get(0);
         Uri logFile = null;
 
-        if ( srcDirUri.getScheme().equals("file")) {
+        if (srcDirUri.getScheme().equals("file")) {
             logFile = Uri.fromFile(new File(srcDirUri.getPath() + File.separator + filename));
         }
 
@@ -376,5 +369,4 @@ public class AddThumbsCommon
         UiDevice device = UiDevice.getInstance(getInstrumentation());
         device.executeShellCommand("mv " + dir.copyPathAbsolute() + "/" + filename + " " + dir.storageBasePathAbsolute());
     }
-
 }

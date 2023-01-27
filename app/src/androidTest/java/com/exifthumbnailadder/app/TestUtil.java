@@ -54,7 +54,7 @@ public class TestUtil {
             UiDevice device = UiDevice.getInstance(getInstrumentation());
 
             Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-            String permit_manage_external_storage = new String();
+            String permit_manage_external_storage;
             int resId;
 
             PackageManager manager = context.getPackageManager();
@@ -283,18 +283,8 @@ public class TestUtil {
         editor.commit();
     }
 
-    public static void resetETAPermissions() throws IOException {
-        // This will reset ETA's permissions
-        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
-        DocUIStrings d = new DocUIStrings();
-        // This command makes the test suite crash.
-        // uiDevice.executeShellCommand("pm reset-permissions com.exifthumbnailadder.app.debug");
-
-    }
-
     public static void deleteWorkingDir() throws IOException {
         UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
-        DocUIStrings d = new DocUIStrings();
         uiDevice.executeShellCommand("rm -fr /storage/emulated/0/ThumbAdder");
         uiDevice.executeShellCommand("rm -fr /storage/emulated/0/JustSomething");
     }
