@@ -272,6 +272,12 @@ jobs:
           after-boot-delay: 300
           script: API_LEVEL=${{ matrix.api-level }} fastlane connectedCheck_with_screenrecord
 
+      - name: Run bash tests
+        if: always()
+        run: |
+          sudo apt-get -y install findimagedupes exiv2 libimage-exiftool-perl imagemagick
+          cd tests && ./run_tests.sh
+
       - uses: actions/upload-artifact@v3
         if: always()
         with:
