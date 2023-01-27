@@ -91,13 +91,13 @@ public class TestUtil {
 //        UiObject uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + context.getString(R.string.settings_button_add_dir)));
 //        uiElement.clickAndWaitForNewWindow();
 
-        // Open "more options" menu to click on Show internal storage if it is there
-        UiObject advancedMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getMoreOptions()));
-        advancedMenu.clickAndWaitForNewWindow();
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+            // Open "more options" menu to click on Show internal storage if it is there
+            UiObject advancedMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getMoreOptions()));
+            advancedMenu.clickAndWaitForNewWindow();
 
-        // Click on "Show internal storage" if it is there, otherwise press back to quit the "More options" menu
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
-            // Show internal storage is not needed anymore since Android S/31
+            // Click on "Show internal storage" if it is there, otherwise press back to quit the "More options" menu
+            // Show internal storage is not needed anymore since Android R/30
             UiObject showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
 //        if (showInternalStorage.exists()) {
             showInternalStorage.clickAndWaitForNewWindow();
