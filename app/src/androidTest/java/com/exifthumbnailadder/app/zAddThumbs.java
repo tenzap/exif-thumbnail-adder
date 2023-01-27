@@ -21,9 +21,13 @@
 package com.exifthumbnailadder.app;
 
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Environment;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,6 +39,11 @@ import java.util.HashMap;
 
 @RunWith(AndroidJUnit4.class)
 public class zAddThumbs extends AddThumbsCommon {
+    @Before
+    public void checkAPI30() {
+        Assume.assumeTrue(Build.VERSION.SDK_INT >= Build.VERSION_CODES.R);
+    }
+
     @Test
     public void addThumbsSettingsAllFilesAccessOn() throws Exception {
         // Only starting from Android 11 / API 30
@@ -51,6 +60,24 @@ public class zAddThumbs extends AddThumbsCommon {
         // Only starting from Android 11 / API 30
         HashMap<String, Boolean> opts = new HashMap<String, Boolean>();
         opts.put("all_files_access", new Boolean(true));
+        addThumbs(opts);
+    }
+
+    @Test
+    public void addThumbsSettingsExiv2withoutSAF_AllFilesAccess() throws Exception {
+        TestUtil.openSettingsFragment();
+        TestUtil.requestAllFilesAccess();
+        Assume.assumeTrue(Environment.isExternalStorageManager());
+
+        HashMap<String, Boolean> opts = new HashMap<String, Boolean>();
+        opts.put("all_files_access", new Boolean(true));
+
+        SharedPreferences.Editor e = prefs.edit();
+        e.putBoolean("skipPicsHavingThumbnail", false);
+        e.putString("exif_library", "exiflib_exiv2");
+        e.putBoolean("useSAF", false);
+        e.apply();
+
         addThumbs(opts);
     }
 }

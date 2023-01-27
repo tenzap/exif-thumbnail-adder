@@ -21,9 +21,12 @@
 package com.exifthumbnailadder.app;
 
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.os.Environment;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -134,6 +137,10 @@ public class AddThumbs extends AddThumbsCommon {
 
     @Test
     public void addThumbsSettingsExiv2withoutSAF() throws Exception {
+        // Skip test if we don't have "all files access"
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Assume.assumeTrue(!Environment.isExternalStorageManager());
+        }
         SharedPreferences.Editor e = prefs.edit();
         e.putBoolean("skipPicsHavingThumbnail", false);
         e.putString("exif_library", "exiflib_exiv2");
