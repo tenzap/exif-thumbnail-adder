@@ -30,7 +30,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
@@ -93,16 +92,18 @@ public class TestUtil {
         advancedMenu.clickAndWaitForNewWindow();
 
         // Click on "Show internal storage" if it is there, otherwise press back to quit the "More options" menu
-        UiObject showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S) {
+            // Show internal storage is not needed anymore since Android S/31
+            UiObject showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
 //        if (showInternalStorage.exists()) {
             showInternalStorage.clickAndWaitForNewWindow();
 //        } else {
 //            Log.w("ETA", "'Show internal storage' item not found");
 //            device.pressBack();
 //        }
-        //try { showInternalStorage.clickAndWaitForNewWindow(); }
-        //catch (UiObjectNotFoundException e) { device.pressBack(); }
-
+            //try { showInternalStorage.clickAndWaitForNewWindow(); }
+            //catch (UiObjectNotFoundException e) { device.pressBack(); }
+        }
         // Open Drawer (aka Hamburger menu)
         UiObject hamburgerMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getShowRoots()));
         try {
