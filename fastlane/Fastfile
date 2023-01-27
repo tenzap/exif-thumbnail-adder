@@ -224,7 +224,7 @@ platform :android do
   end
 
   desc "Run all the instrumented tests except screenshots"
-  lane :connectedCheck do
+  lane :connectedCheck do |options|
     adb(
       # Get rid of `Viewing full screen, To exit, swipe down from the top` message
       # https://stackoverflow.com/a/62475026
@@ -246,15 +246,17 @@ platform :android do
     prepare_device_for_tests
 
     gradle(
-      task: "connectedCheck",
+      task: options[:task],
       properties: {
         "excludeScreenshots" => "NULL",
       }
     )
   end
 
+  # To run only for a single flavor, run:
+  # bundle exec fastlane connectedCheck_with_screenrecord task:connectedStandardDebugAndroidTest
   desc "Run all the instrumented tests except screenshots and save screenrecords"
-  lane :connectedCheck_with_screenrecord do
+  lane :connectedCheck_with_screenrecord do |options|
 
     adb(
       command: 'shell rm -rf /data/local/tmp/screenrecords/',
@@ -263,11 +265,29 @@ platform :android do
       command: 'shell rm -rf /data/local/tmp/test_output/',
     )
 
-    begin
-      connectedCheck
-    rescue => ex
-      test_failed = true
-      UI.error(ex)
+    if options[:task]
+      begin
+        connectedCheck(task: options[:task])
+      rescue => ex
+        test_failed = true
+        UI.error(ex)
+      end
+    else
+      # We split in 2 calls because with connectedCheck, as soon a one flavor has a failing test,
+      # then the subsequent flavors are skipped.
+      begin
+        connectedCheck(task: "connectedStandardDebugAndroidTest")
+      rescue => ex
+        test_failed = true
+        UI.error(ex)
+      end
+
+      begin
+        connectedCheck(task: "connectedGoogle_playDebugAndroidTest")
+      rescue => ex
+        test_failed = true
+        UI.error(ex)
+      end
     end
 
     get_output_of_tests
