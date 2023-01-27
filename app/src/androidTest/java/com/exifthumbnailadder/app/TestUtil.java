@@ -213,7 +213,13 @@ public class TestUtil {
 
     public static void clickPermissionAllowButton() throws Exception {
         UiDevice device = UiDevice.getInstance(getInstrumentation());
-        UiObject uiElement = device.findObject(new UiSelector().clickable(true).resourceId("com.android.permissioncontroller:id/permission_allow_button"));
+        String resource;
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            resource = "com.android.packageinstaller:id/permission_allow_button";
+        } else {
+            resource = "com.android.permissioncontroller:id/permission_allow_button";
+        }
+        UiObject uiElement = device.findObject(new UiSelector().clickable(true).resourceId(resource));
         uiElement.clickAndWaitForNewWindow();
     }
 
