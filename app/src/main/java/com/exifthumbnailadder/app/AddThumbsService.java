@@ -310,6 +310,7 @@ public class AddThumbsService extends Service {
 
                 boolean srcImgHasThumbnail = false;
                 int srcImgDegrees = 0;
+                boolean srcImgFlipped = false;
                 int srcImgWidth = 0;
                 int srcImgHeight = 0;
 
@@ -319,6 +320,7 @@ public class AddThumbsService extends Service {
                     if (srcImgExifInterface != null) {
                         srcImgHasThumbnail = srcImgExifInterface.hasThumbnail();
                         srcImgDegrees = srcImgExifInterface.getRotationDegrees();
+                        srcImgFlipped = srcImgExifInterface.isFlipped();
                         srcImgWidth = srcImgExifInterface.getAttributeInt(ExifInterface.TAG_PIXEL_X_DIMENSION, 0);
                         srcImgHeight = srcImgExifInterface.getAttributeInt(ExifInterface.TAG_PIXEL_Y_DIMENSION, 0);
                     }
@@ -353,6 +355,7 @@ public class AddThumbsService extends Service {
                     thumbnail = doc.getThumbnail(
                             "ffmpeg",
                             prefs.getBoolean("rotateThumbnails", true),
+                            srcImgFlipped,
                             srcImgDegrees);
                     srcImgIs = doc.inputStream();
 

@@ -203,20 +203,32 @@ public abstract class ETADoc {
     }
 
 
-    private Bitmap rotateThumbnail(Bitmap tb_bitmap, int degrees) {
+    private Bitmap rotateThumbnail(Bitmap tb_bitmap, boolean flip, int degrees) {
         // Google's "Files" app applies the rotation of the principal picture to the thumbnail
-        // when it displays the thumbnail. Kde in PTP mode and Windows don't do that, so the have to
+        // when it displays the thumbnail. Kde in PTP mode and Windows don't do that, so they have to
         // rotate the thumbnail.
         // Neither GoogleFiles, nor the others consider the "Orientation" tag when set on IFD1
-        // (which is for the thumbnail), so it is not usefsull to set that orientation tag
+        // (which is for the thumbnail), so it is not usefull to set that orientation tag
 
         // Get rotation & rotate thumbnail
         Matrix matrix = new Matrix();
-        matrix.postRotate(degrees);
+        if (degrees < 0) {
+            // First undo rotation, then flip
+            matrix.postRotate(degrees);
+            if (flip) {
+                matrix.postScale(-1f, 1f);
+            }
+        } else {
+            // First flip, then do rotation
+            if (flip) {
+                matrix.postScale(-1f, 1f);
+            }
+            matrix.postRotate(degrees);
+        }
         return Bitmap.createBitmap(tb_bitmap, 0, 0, tb_bitmap.getWidth(), tb_bitmap.getHeight(), matrix, true);
     }
 
-    public Bitmap getThumbnail(String lib, boolean rotateThumbnail, int degrees) throws Exception, BadOriginalImageException {
+    public Bitmap getThumbnail(String lib, boolean rotateThumbnail, boolean isFlipped, int degrees) throws Exception, BadOriginalImageException {
         ThumbnailFactory tf = new ThumbnailFactory();
         ThumbnailProject tp = new ThumbnailProject(toBitmap());
 
@@ -251,12 +263,12 @@ public abstract class ETADoc {
 
         if (rotateThumbnail) {
             if (!toBitmapReturnsRotatedBitmap) {
-                thumbnail = rotateThumbnail(thumbnail, degrees);
+                thumbnail = rotateThumbnail(thumbnail, isFlipped, degrees);
             }
         } else {
             if (toBitmapReturnsRotatedBitmap) {
                 // we need to undo rotation
-                thumbnail = rotateThumbnail(thumbnail, -degrees);
+                thumbnail = rotateThumbnail(thumbnail, isFlipped, -degrees);
             }
         }
 
