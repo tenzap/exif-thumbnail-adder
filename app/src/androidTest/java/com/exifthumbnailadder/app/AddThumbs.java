@@ -27,13 +27,19 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
+import androidx.test.espresso.PerformException;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -62,6 +68,7 @@ public class AddThumbs {
 
     @Rule public TestName testname = new TestName();
     public Dirs dir;
+    public boolean finished;
 
     @Rule
     public TestDataCollectionRule testDataCollectionRule = new TestDataCollectionRule();
@@ -74,6 +81,8 @@ public class AddThumbs {
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
+
+        finished = false;
 
         dir = new Dirs("DCIM/test_pics", "ThumbAdder");
         uiDevice.executeShellCommand("mkdir -p " + dir.pathInStorage());
@@ -159,12 +168,50 @@ public class AddThumbs {
         onView(withId(R.id.button_checkPermissions)).perform(click());
         TestUtil.givePermissionToWorkingDir();
 
-        // We are back to the MainAcitivity / Add Thumbs fragment
+        // Register BroadcastReceiver of the signal saying that processing is finished
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getAction()) {
+                    case "com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED":
+                        finished = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED");
+        LocalBroadcastManager.getInstance(context)
+                .registerReceiver(receiver, filter);
+
+        // We are back to the MainActivity / Add Thumbs fragment
         // Click on "Add Thumbs" button to really start processing now that permissions to WorkingDir are given
         onView(withId(R.id.button_addThumbs)).perform(click());
 
-        // Wait 5 sec
-        Thread.sleep(5000);
+        // Wait until processing is finished or has hit timeout (duration is in ms)
+        long max_duration = 1800000;
+        long timeout = System.currentTimeMillis() + max_duration;
+        while (!finished && System.currentTimeMillis() < timeout) {
+            Thread.sleep(1000);
+        }
+
+        // Stop processing if not finished
+        if (!finished) {
+            try {
+                onView(withId(R.id.button_stopProcess)).perform(click());
+            } catch (PerformException e) {
+                // This exception happens when button_stopProcess is not in the view.
+                e.printStackTrace();
+            }
+        }
+
+        // Unregister BroadcastReceiver
+        LocalBroadcastManager.getInstance(context)
+                .unregisterReceiver(receiver);
+
+        assertTrue(finished);
     }
     public class Dirs {
 
