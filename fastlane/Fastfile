@@ -192,6 +192,14 @@ platform :android do
 
   desc "Run all the instrumented tests except screenshots and save screenrecords"
   lane :connectedCheck_with_screenrecord do
+
+    adb(
+      command: 'shell rm -rf /data/local/tmp/screenrecords/',
+    )
+    adb(
+      command: 'shell rm -rf /data/local/tmp/test_output/',
+    )
+
     begin
       connectedCheck
     rescue => ex
@@ -201,10 +209,6 @@ platform :android do
 
     adb(
       command: 'pull /data/local/tmp/screenrecords/',
-    )
-
-    adb(
-      command: 'shell rm -rf /data/local/tmp/screenrecords/',
     )
 
     if test_failed == true

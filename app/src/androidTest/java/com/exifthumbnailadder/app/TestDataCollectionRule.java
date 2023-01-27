@@ -35,13 +35,13 @@ import org.junit.runner.Description;
 public class TestDataCollectionRule extends TestWatcher {
 
     private final UiDevice uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-    private final String ScPath = "/data/local/tmp/screenrecords/";
+    private final String ScPath = "/data/local/tmp/screenrecords/" + android.os.Build.VERSION.SDK_INT;
 
     @WorkerThread
     public void startScreenRecord(String fileName) throws IOException {
 //        try {
         uiDevice.executeShellCommand("mkdir -p " + ScPath);
-        uiDevice.executeShellCommand("screenrecord --bit-rate 5M --bugreport " + ScPath + fileName + ".mp4");
+        uiDevice.executeShellCommand("screenrecord --bit-rate 5M --bugreport " + ScPath + "/" + fileName + ".mp4");
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }

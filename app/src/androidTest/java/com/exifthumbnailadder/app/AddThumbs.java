@@ -47,12 +47,20 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @RunWith(AndroidJUnit4.class)
 public class AddThumbs {
     Context context;
     SharedPreferences prefs;
+
+    @Rule public TestName testname = new TestName();
+    public Dirs dir;
 
     @Rule
     public TestDataCollectionRule testDataCollectionRule = new TestDataCollectionRule();
@@ -64,11 +72,23 @@ public class AddThumbs {
     public void init() throws Exception {
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
+
+        dir = new Dirs("DCIM/test_pics", "ThumbAdder");
+        uiDevice.executeShellCommand("mkdir -p " + dir.pathInStorage());
+        uiDevice.executeShellCommand("cp -a " + dir.origFromRoot() + " " + dir.copyFromRoot());
     }
 
     @AfterClass
     public static void resetPerm() throws Exception {
         TestUtil.resetETAPermissions();
+    }
+
+    @After
+    public void saveOutput() throws IOException {
+        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
+        uiDevice.executeShellCommand("mv " + dir.workingDir() + " " + dir.storageTestRoot());
+        uiDevice.executeShellCommand("mv " + dir.copyFromRoot() + " " + dir.pathInStorage());
     }
 
     // https://stackoverflow.com/a/54203607
@@ -97,14 +117,15 @@ public class AddThumbs {
         TestUtil.openSettingsFragment();
 
         // Add Folder in settings
-        TestUtil.addSourceFolder("DCIM/test_pics");
+        TestUtil.addSourceFolder(dir.copyPath());
 
         // Check that folder is in the list
         SharedPreferences.Editor editor = prefs.edit();
         InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
 
         assertEquals(1, inputDirs.size());
-        assertEquals("content://com.android.externalstorage.documents/tree/primary%3ADCIM%2Ftest_pics/document/primary%3ADCIM%2Ftest_pics", inputDirs.get(0).toString());
+        String expectedValue = "content://com.android.externalstorage.documents/tree/primary%3A"+ dir.copyForUri() + "/document/primary%3A" + dir.copyForUri();
+        assertEquals(expectedValue, inputDirs.get(0).toString());
 
         // give all files access (we need it to delete folders)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play") && !MainActivity.haveAllFilesAccessPermission()) {
@@ -141,6 +162,66 @@ public class AddThumbs {
 
         // Wait 5 sec
         Thread.sleep(5000);
+    }
+    public class Dirs {
+
+        public final String ROOT = "/storage/emulated/0";
+        public final String OUTPUT_STORAGE_ROOT = "/data/local/tmp/test_output/" + Build.VERSION.SDK_INT;
+
+        Path path;
+        String workingDir;
+
+        public Dirs(String path, String workingDir) {
+            Log.e("ETA", "eerere");
+            this.path = Paths.get(path);
+            this.workingDir = workingDir;
+        }
+        public String copyPath() {
+            return path() + "/" + copy();
+
+        }
+
+        public String path() {
+            // DCIM
+            return path.getParent().toString();
+        }
+
+        public String orig() {
+            // test_pics
+            return path.getFileName().toString();
+        }
+
+        public String copy() {
+            // test_<FLAVOR>_<TESTNAME>
+            return "test_" + suffix();
+        }
+
+        public String suffix() {
+            // <FLAVOR>_<TESTNAME>
+            return BuildConfig.FLAVOR + "_" + testname.getMethodName();
+        }
+
+        public String copyForUri() {
+            // DCIM/test_<FLAVOR>_<TESTNAME> -> DCIM%2Ftest_<FLAVOR>_<TESTNAME>
+            return path().replaceAll("/", "%2F") + "%2F" + copy();
+        }
+
+        public String origFromRoot() {
+            return ROOT + "/" + path() + "/" + orig();
+        }
+        public String copyFromRoot() {
+            return ROOT + "/" + path() + "/" + copy();
+        }
+        public String storageTestRoot() {
+            return OUTPUT_STORAGE_ROOT + "/" + suffix();
+        }
+
+        public String pathInStorage() {
+            return storageTestRoot() + "/" + path();
+        }
+        public String workingDir() {
+            return ROOT + "/" + workingDir;
+        }
     }
 
 }
