@@ -1,0 +1,6 @@
+Exif.Photo.ExifVersion
+Exif.Photo.ComponentsConfiguration
+Exif.Photo.FlashpixVersion
+Exif.Photo.ColorSpace
+Exif.Photo.PixelXDimension
+Exif.Photo.PixelYDimension
