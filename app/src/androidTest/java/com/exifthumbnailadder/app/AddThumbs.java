@@ -23,13 +23,15 @@ package com.exifthumbnailadder.app;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.junit.Assert.assertEquals;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.util.Log;
 
-import androidx.annotation.WorkerThread;
 import androidx.preference.PreferenceManager;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -39,16 +41,16 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
-
 @RunWith(AndroidJUnit4.class)
-public class SettingsTest {
+public class AddThumbs {
     Context context;
     SharedPreferences prefs;
 
@@ -56,16 +58,17 @@ public class SettingsTest {
     public TestDataCollectionRule testDataCollectionRule = new TestDataCollectionRule();
 
     @Rule
-    public ActivityScenarioRule <MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
 
     @Before
     public void init() throws Exception {
         context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        UiDevice uiDevice = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-        uiDevice.executeShellCommand("mkdir -p /storage/emulated/0/DCIM/test_pics");
-        TestUtil.clearETA();
-        TestUtil.clearDocumentsUI();
+    }
+
+    @AfterClass
+    public static void resetPerm() throws Exception {
+        TestUtil.resetETAPermissions();
     }
 
     // https://stackoverflow.com/a/54203607
@@ -82,8 +85,14 @@ public class SettingsTest {
         }
     }
 
+    @BeforeClass
+    public static void clear() throws Exception {
+        TestUtil.clearETA();
+        TestUtil.clearDocumentsUI();
+    }
+
     @Test
-    public void addFolder_test_pics() throws Exception {
+    public void addThumbs() throws Exception {
         // Go to Settings
         TestUtil.openSettingsFragment();
 
@@ -96,47 +105,42 @@ public class SettingsTest {
 
         assertEquals(1, inputDirs.size());
         assertEquals("content://com.android.externalstorage.documents/tree/primary%3ADCIM%2Ftest_pics/document/primary%3ADCIM%2Ftest_pics", inputDirs.get(0).toString());
-    }
 
-    @Test
-    public void removeFolder() throws Exception {
-        // Go to Settings
-        TestUtil.openSettingsFragment();
+        // give all files access (we need it to delete folders)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play") && !MainActivity.haveAllFilesAccessPermission()) {
+            TestUtil.requestAllFilesAccess();
+        }
 
-        // Remove folders
-        onView(withId(R.id.del_path_button)).perform(click());
+        // Go to "Add thumbnails" fragment
+        onView(withId(R.id.AddThumbsFragment)).perform(click());
 
-        // Get preference value
-        SharedPreferences.Editor editor = prefs.edit();
-        InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
+        // Click "Add thumbnails" button
+        onView(withId(R.id.button_addThumbs)).perform(click());
 
-        // Check that folder list is empty
-        assertEquals(0, inputDirs.size());
-    }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+            TestUtil.clickPermissionAllowButton();
+            // Click "Add thumbnails" button again
+            onView(withId(R.id.button_addThumbs)).perform(click());
+        } else {
+            if (BuildConfig.FLAVOR.equals("google_play")) {
+                TestUtil.clickPermissionAllowButton();
+                // Click "Add thumbnails" button again
+                onView(withId(R.id.button_addThumbs)).perform(click());
+            } else {
+            }
+        }
 
-    @Test
-    public void addThenRemoveFolder() throws Exception {
-        // Go to Settings
-        TestUtil.openSettingsFragment();
+        // The WorkingDirPermActivity has now launched.
+        // Create & Give permissions to the WorkingDir
+        onView(withId(R.id.button_checkPermissions)).perform(click());
+        TestUtil.givePermissionToWorkingDir();
 
-        // Add Folder in settings
-        TestUtil.addSourceFolder("DCIM/test_pics");
+        // We are back to the MainAcitivity / Add Thumbs fragment
+        // Click on "Add Thumbs" button to really start processing now that permissions to WorkingDir are given
+        onView(withId(R.id.button_addThumbs)).perform(click());
 
-        // Get preference value
-        SharedPreferences.Editor editor = prefs.edit();
-        InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
-
-        // Check that folder is in the list
-        assertEquals(1, inputDirs.size());
-
-        // Remove folders
-        onView(withId(R.id.del_path_button)).perform(click());
-
-        // Get preference value
-        inputDirs = new InputDirs(prefs.getString("srcUris", ""));
-
-        // Check that folder list is empty
-        assertEquals(0, inputDirs.size());
+        // Wait 5 sec
+        Thread.sleep(5000);
     }
 
 }

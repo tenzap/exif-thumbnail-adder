@@ -27,15 +27,19 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 
+import androidx.preference.PreferenceManager;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
+
+import java.io.IOException;
 
 public class TestUtil {
 
@@ -211,5 +215,45 @@ public class TestUtil {
         UiDevice device = UiDevice.getInstance(getInstrumentation());
         UiObject uiElement = device.findObject(new UiSelector().clickable(true).resourceId("com.android.permissioncontroller:id/permission_allow_button"));
         uiElement.clickAndWaitForNewWindow();
+    }
+
+    public static void clearDocumentsUI() throws Exception {
+        // This is needed so that when we enter DocumentsUI (aka file picker)
+        // we always start with the same starting point in the app (not the last selected location)
+        // It avoids test flakiness
+        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
+        DocUIStrings d = new DocUIStrings();
+        uiDevice.executeShellCommand("pm clear " + d.documentsUiPackageName);
+    }
+
+    public static void clearETA() throws Exception {
+        // This will clean ETA
+        // ETA Preferences Cleanup is managed through orchestrator's clearPackageData: 'true'
+        //TestUtil.clearETAPreferences();
+        TestUtil.deleteWorkingDir();
+    }
+
+    public static void clearETAPreferences() {
+        // This will clean ETA's preferences
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.commit();
+    }
+
+    public static void resetETAPermissions() throws IOException {
+        // This will reset ETA's permissions
+        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
+        DocUIStrings d = new DocUIStrings();
+        // This command makes the test suite crash.
+        // uiDevice.executeShellCommand("pm reset-permissions com.exifthumbnailadder.app.debug");
+
+    }
+
+    public static void deleteWorkingDir() throws IOException {
+        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
+        DocUIStrings d = new DocUIStrings();
+        uiDevice.executeShellCommand("rm -fr /storage/emulated/0/ThumbAdder");
     }
 }
