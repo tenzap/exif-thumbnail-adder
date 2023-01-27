@@ -21,6 +21,16 @@ or alternatively using `brew install fastlane`
 fastlane android test
 ```
 Runs all the tests
+### android build_test
+```
+fastlane android build_test
+```
+Build all the tests without running them
+### android build_androidTest
+```
+fastlane android build_androidTest
+```
+Build all the instrumented tests without running them
 ### android beta
 ```
 fastlane android beta
@@ -56,6 +66,31 @@ Copy sample pictures to the device
 fastlane android screenshots
 ```
 Do screenshots
+### android disable_animation
+```
+fastlane android disable_animation
+```
+disable animations on device
+### android prepare_device_for_tests
+```
+fastlane android prepare_device_for_tests
+```
+Prepare device for tests
+### android get_output_of_tests
+```
+fastlane android get_output_of_tests
+```
+Get test output from device
+### android connectedCheck
+```
+fastlane android connectedCheck
+```
+Run all the instrumented tests except screenshots
+### android connectedCheck_with_screenrecord
+```
+fastlane android connectedCheck_with_screenrecord
+```
+Run all the instrumented tests except screenshots and save screenrecords
 
 ----
 
