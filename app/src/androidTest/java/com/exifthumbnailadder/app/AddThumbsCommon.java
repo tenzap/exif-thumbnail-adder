@@ -195,11 +195,6 @@ public class AddThumbsCommon {
         // androidx.test.espresso.NoMatchingViewException: No views in hierarchy found matching: view.getId() is <2131362157/com.exifthumbnailadder.app.debug:id/permScrollView>
         onView(withId(R.id.button_checkPermissions)).perform(scrollTo(), click());
 
-        // TODO: API 33 will ask user if user allows notifications
-        if (Build.VERSION.SDK_INT >= 33) {
-            //TestUtil.clickPermissionAllowButton();
-        }
-
         TestUtil.givePermissionToWorkingDir();
 
         int runs = 1;
@@ -232,6 +227,11 @@ public class AddThumbsCommon {
             // We are back to the MainActivity / Add Thumbs fragment
             // Click on "Add Thumbs" button to really start processing now that permissions to WorkingDir are given
             onView(withId(R.id.button_addThumbs)).perform(click());
+
+            // On API33 (and when target SDK <= 32), the user is asked to give Notification permission
+            if (i == 0 && Build.VERSION.SDK_INT >=33) {
+                TestUtil.clickPermissionAllowButton();
+            }
 
             // Wait until processing is finished or has hit timeout (duration is in ms)
             long max_duration = 1800000;
