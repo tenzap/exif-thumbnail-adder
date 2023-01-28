@@ -246,6 +246,10 @@ public class TestUtil {
 //        uiElement.clickAndWaitForNewWindow();
     }
 
+    public static void openSyncFragment() throws Exception {
+        onView(withId(R.id.SyncFragment)).perform(click(click()));
+    }
+
     public static void clickPermissionAllowButton() throws Exception {
         UiDevice device = UiDevice.getInstance(getInstrumentation());
         String resource;

@@ -680,6 +680,132 @@ for API in $APIs; do
       fi
     done
 
+    test_number=$(( test_number+1 ))
+    PROBLEMS=""
+    TESTNAME=syncListTest
+    echo -ne "[$test_number] Check Sync 'list' - input=processed & deleted ($TESTNAME). ($API, $VARIANT): \t"
+    for picture in \
+        Reconyx_HC500_Hyperfire.jpg \
+        mobile/jolla.jpg \
+        orientation/portrait_1.jpg \
+        orientation/portrait_2.jpg \
+        orientation/portrait_3.jpg \
+        orientation/portrait_4.jpg \
+        orientation/portrait_5.jpg \
+        orientation/portrait_6.jpg \
+        orientation/portrait_7.jpg \
+        orientation/portrait_8.jpg \
+        tests/87_OSError.jpg \
+        ; do
+      if [ -f "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/sync_log.txt" ] &&
+        grep "ThumbAdder/DCIM.bak/test_${VARIANT}_${TESTNAME}/${picture}" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/sync_log.txt" > /dev/null &&
+        grep "ThumbAdder/DCIM.new/test_${VARIANT}_${TESTNAME}/${picture}" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/sync_log.txt" > /dev/null &&
+        [ -f "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/ThumbAdder/DCIM.bak/test_${VARIANT}_${TESTNAME}/${picture}" ] &&
+        [ -f "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/ThumbAdder/DCIM.new/test_${VARIANT}_${TESTNAME}/${picture}" ]
+        then
+        echo -en "${GREEN}.${RESET}"
+      else
+        echo -en "${RED}.${RESET}"
+        PROBLEMS="${picture} $PROBLEMS"
+      fi
+    done
+    if [ "a$PROBLEMS" == "a" ]; then
+      success
+    else
+      failure "See list of problematic files below"
+      tr ' ' '\n' <<< "$PROBLEMS"
+    fi
+
+    test_number=$(( test_number+1 ))
+    PROBLEMS=""
+    TESTNAME=syncListTest
+    echo -ne "[$test_number] Check Sync 'list' - input=NOT processed & deleted ($TESTNAME). ($API, $VARIANT): \t"
+    # This picture was deleted but it was not processed. We expect it is not in the sync_log.txt
+    for picture in \
+        tests/42_IndexError.jpg \
+        ; do
+      if  [ -f "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/sync_log.txt" ] &&
+        ! grep "ThumbAdder/DCIM.bak/test_${VARIANT}_${TESTNAME}/${picture}" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/sync_log.txt" > /dev/null &&
+        ! grep "ThumbAdder/DCIM.new/test_${VARIANT}_${TESTNAME}/${picture}" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/sync_log.txt" > /dev/null &&
+        [ ! -f "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/ThumbAdder/DCIM.bak/test_${VARIANT}_${TESTNAME}/${picture}" ] &&
+        [ ! -f "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/ThumbAdder/DCIM.new/test_${VARIANT}_${TESTNAME}/${picture}" ]
+        then
+        echo -en "${GREEN}.${RESET}"
+      else
+        echo -en "${RED}.${RESET}"
+        PROBLEMS="${picture} $PROBLEMS"
+      fi
+    done
+    if [ "a$PROBLEMS" == "a" ]; then
+      success
+    else
+      failure "See list of problematic files below"
+      tr ' ' '\n' <<< "$PROBLEMS"
+    fi
+
+    test_number=$(( test_number+1 ))
+    PROBLEMS=""
+    TESTNAME=syncDeleteTest
+    echo -ne "[$test_number] Check Sync 'delete' - input=processed & deleted ($TESTNAME). ($API, $VARIANT): \t"
+    for picture in \
+        Reconyx_HC500_Hyperfire.jpg \
+        mobile/jolla.jpg \
+        orientation/portrait_1.jpg \
+        orientation/portrait_2.jpg \
+        orientation/portrait_3.jpg \
+        orientation/portrait_4.jpg \
+        orientation/portrait_5.jpg \
+        orientation/portrait_6.jpg \
+        orientation/portrait_7.jpg \
+        orientation/portrait_8.jpg \
+        tests/87_OSError.jpg \
+        ; do
+      if [ -f "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/sync_log.txt" ] &&
+        grep "ThumbAdder/DCIM.bak/test_${VARIANT}_${TESTNAME}/${picture}.*Done" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/sync_log.txt" > /dev/null &&
+        grep "ThumbAdder/DCIM.new/test_${VARIANT}_${TESTNAME}/${picture}.*Done" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/sync_log.txt" > /dev/null &&
+        [ ! -f "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/ThumbAdder/DCIM.bak/test_${VARIANT}_${TESTNAME}/${picture}" ] &&
+        [ ! -f "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/ThumbAdder/DCIM.new/test_${VARIANT}_${TESTNAME}/${picture}" ]
+        then
+        echo -en "${GREEN}.${RESET}"
+      else
+        echo -en "${RED}.${RESET}"
+        PROBLEMS="${picture} $PROBLEMS"
+      fi
+    done
+    if [ "a$PROBLEMS" == "a" ]; then
+      success
+    else
+      failure "See list of problematic files below"
+      tr ' ' '\n' <<< "$PROBLEMS"
+    fi
+
+    test_number=$(( test_number+1 ))
+    PROBLEMS=""
+    TESTNAME=syncDeleteTest
+    echo -ne "[$test_number] Check Sync 'delete' - input=NOT processed & deleted ($TESTNAME). ($API, $VARIANT): \t"
+    # This picture was deleted but it was not processed. We expect it is not in the sync_log.txt
+    for picture in \
+        tests/42_IndexError.jpg \
+        ; do
+      if [ -f "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/sync_log.txt" ] &&
+        ! grep "ThumbAdder/DCIM.bak/test_${VARIANT}_${TESTNAME}/${picture}.*Done" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/sync_log.txt" > /dev/null &&
+        ! grep "ThumbAdder/DCIM.new/test_${VARIANT}_${TESTNAME}/${picture}.*Done" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/sync_log.txt" > /dev/null &&
+        [ ! -f "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/ThumbAdder/DCIM.bak/test_${VARIANT}_${TESTNAME}/${picture}" ] &&
+        [ ! -f "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/ThumbAdder/DCIM.new/test_${VARIANT}_${TESTNAME}/${picture}" ]
+        then
+        echo -en "${GREEN}.${RESET}"
+      else
+        echo -en "${RED}.${RESET}"
+        PROBLEMS="${picture} $PROBLEMS"
+      fi
+    done
+    if [ "a$PROBLEMS" == "a" ]; then
+      success
+    else
+      failure "See list of problematic files below"
+      tr ' ' '\n' <<< "$PROBLEMS"
+    fi
+
     echo
   done
 done

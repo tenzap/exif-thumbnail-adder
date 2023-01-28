@@ -185,4 +185,54 @@ public class AddThumbs extends AddThumbsCommon {
         e.apply();
         addThumbs();
     }
+
+    @Test
+    public void syncListTest() throws Exception {
+        // Don't write to original folder so that we can test
+        // that files DCIM.new are also 'synced"
+        SharedPreferences.Editor e = prefs.edit();
+        e.putBoolean("writeThumbnailedToOriginalFolder", false);
+        e.apply();
+
+        addThumbs();
+
+        deletePicture("Reconyx_HC500_Hyperfire.jpg");
+        deletePicture("mobile/jolla.jpg");
+        deletePicture("orientation/portrait_1.jpg");
+        deletePicture("orientation/portrait_2.jpg");
+        deletePicture("orientation/portrait_3.jpg");
+        deletePicture("orientation/portrait_4.jpg");
+        deletePicture("orientation/portrait_5.jpg");
+        deletePicture("orientation/portrait_6.jpg");
+        deletePicture("orientation/portrait_7.jpg");
+        deletePicture("orientation/portrait_8.jpg");
+        deletePicture("tests/87_OSError.jpg");
+
+        syncList();
+    }
+
+    @Test
+    public void syncDeleteTest() throws Exception {
+        // Don't write to original folder so that we can test
+        // that files DCIM.new are also 'synced"
+        SharedPreferences.Editor e = prefs.edit();
+        e.putBoolean("writeThumbnailedToOriginalFolder", false);
+        e.apply();
+
+        addThumbs();
+
+        deletePicture("Reconyx_HC500_Hyperfire.jpg");
+        deletePicture("mobile/jolla.jpg");
+        deletePicture("orientation/portrait_1.jpg");
+        deletePicture("orientation/portrait_2.jpg");
+        deletePicture("orientation/portrait_3.jpg");
+        deletePicture("orientation/portrait_4.jpg");
+        deletePicture("orientation/portrait_5.jpg");
+        deletePicture("orientation/portrait_6.jpg");
+        deletePicture("orientation/portrait_7.jpg");
+        deletePicture("orientation/portrait_8.jpg");
+        deletePicture("tests/87_OSError.jpg");
+
+        syncDelete();
+    }
 }
