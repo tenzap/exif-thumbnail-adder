@@ -121,7 +121,7 @@ public class AddThumbsCommon {
         uiDevice.executeShellCommand("mkdir -p " + dir.pathInStorage());
         uiDevice.executeShellCommand("rm -rf " + dir.copyPathAbsolute());
         if (Build.VERSION.SDK_INT <= 28) {
-            // On Android P (API29), timestamps are not kept despite use of -a.
+            // On Android P (API28), timestamps are not kept despite use of -a.
             // So add --preserve=timestamps,mode,ownership
             uiDevice.executeShellCommand("cp -a --preserve=timestamps,mode,ownership " + dir.origPathAbsolute() + " " + dir.copyPathAbsolute());
         } else {
@@ -131,10 +131,9 @@ public class AddThumbsCommon {
 
     @After
     public void saveOutput() throws IOException {
-        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
-        uiDevice.executeShellCommand("mv " + dir.workingDir("ThumbAdder") + " " + dir.storageBasePathAbsolute());
-        uiDevice.executeShellCommand("mv " + dir.workingDir("JustSomething") + " " + dir.storageBasePathAbsolute());
-        uiDevice.executeShellCommand("mv " + dir.copyPathAbsolute() + " " + dir.pathInStorage());
+        moveOnFSWithShell(dir.workingDir("ThumbAdder"), dir.storageBasePathAbsolute());
+        moveOnFSWithShell(dir.workingDir("JustSomething"), dir.storageBasePathAbsolute());
+        moveOnFSWithShell(dir.copyPathAbsolute(), dir.pathInStorage());
     }
 
     public void addThumbs() throws Exception {
@@ -374,8 +373,7 @@ public class AddThumbsCommon {
         outputStream.write(bytes);
         outputStream.close();
 
-        UiDevice device = UiDevice.getInstance(getInstrumentation());
-        device.executeShellCommand("mv " + dir.copyPathAbsolute() + "/" + filename + " " + dir.storageBasePathAbsolute());
+        moveOnFSWithShell(dir.copyPathAbsolute() + "/" + filename, dir.storageBasePathAbsolute());
     }
 
     void syncList() throws Exception {
@@ -483,5 +481,26 @@ public class AddThumbsCommon {
     protected void deletePicture(String filename) throws IOException {
         UiDevice device = UiDevice.getInstance(getInstrumentation());
         device.executeShellCommand("rm " + dir.copyPathAbsolute() + "/" + filename);
+    }
+
+    private void moveOnFSWithShell(String source, String destination) throws IOException {
+        UiDevice device = UiDevice.getInstance(getInstrumentation());
+
+        // On API <= 28, "mv" doesn't preserve the timestamps, so use tar instead
+        // NB: Using tar with pipe doesn't seem to work 'tar -C <source> -cf - . | tar -C <destination> -xf -'
+        // So use an intermediate file.
+        if (Build.VERSION.SDK_INT <= 28) {
+            device.executeShellCommand("rm -f /data/local/tmp/tmp.tar");
+
+            device.executeShellCommand("tar -C " + Paths.get(source).getParent() + " -cf /data/local/tmp/tmp.tar " + Paths.get(source).getFileName());
+
+            device.executeShellCommand("mkdir -p " + destination);
+            device.executeShellCommand("tar -C " + destination + " -xf /data/local/tmp/tmp.tar");
+
+            device.executeShellCommand("rm -rf " + source);
+            device.executeShellCommand("rm -f /data/local/tmp/tmp.tar");
+        } else {
+            device.executeShellCommand("mv " + source + " " + destination);
+        }
     }
 }
