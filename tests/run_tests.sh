@@ -247,10 +247,10 @@ for API in $APIs; do
         -ot "$TEST_PICS/${PICTURE_WITHOUT_THUMBNAIL}" ]; then
         success
       else
-        if [ "$API" -ge 30 ]; then
-          failure
-        else
+        if [ "$API" -lt 30 ] && [ $external_storage = "on" ]; then
           skipped "API < 30, test not relevant"
+        else
+          failure
         fi
       fi
 
@@ -263,7 +263,9 @@ for API in $APIs; do
         -ot "$TEST_PICS/${PICTURE_WITHOUT_THUMBNAIL}" ]; then
         success
       else
-        if [ $external_storage = "off" ]; then
+        if [ "$API" -lt 30 ] && [ $external_storage = "on" ]; then
+          skipped "API < 30, test not relevant"
+        elif [ "$API" -ge 30 ] && [ $external_storage = "off" ]; then
           failure "(expected)"
         else
           failure
@@ -289,13 +291,13 @@ for API in $APIs; do
         -ot "$TEST_PICS/${PICTURE_WITHOUT_THUMBNAIL}" ]; then
         success
       else
-        if [ $external_storage = "off" ]; then
+        if [ $external_storage = "off" ] && [ "$API" -ge 30 ]; then
           failure "(expected)"
         else
-          if [ "$API" -ge 30 ]; then
-            failure
-          else
+          if [ "$API" -lt 30 ] && [ $external_storage = "on" ]; then
             skipped "API < 30, test not relevant"
+          else
+            failure
           fi
         fi
       fi
