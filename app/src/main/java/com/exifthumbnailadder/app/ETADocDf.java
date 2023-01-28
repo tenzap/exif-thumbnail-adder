@@ -225,7 +225,18 @@ public class ETADocDf extends ETADoc {
     }
 
     public Bitmap toBitmap() throws Exception {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        // The condition here should be Build.VERSION.SDK_INT >= Build.VERSION_CODES.P, but
+        // on API 28, call to toBitmapImageDecoder will raise an exception on pictures
+        // that have ORIENTATION tag different than ORIENTATION_NORMAL = 1:
+        //
+        // java.io.IOException: getPixels failed with error internal error
+        //   at android.graphics.ImageDecoder.nDecodeBitmap(Native Method)
+        //   at android.graphics.ImageDecoder.decodeBitmapInternal(ImageDecoder.java:1607)
+        //   at android.graphics.ImageDecoder.decodeBitmapImpl(ImageDecoder.java:1761)
+        //   at android.graphics.ImageDecoder.decodeBitmap(ImageDecoder.java:1747)
+        //   at com.exifthumbnailadder.app.ETADocDf.toBitmapImageDecoder(ETADocDf.java:255)
+        // So, when on API 28, whe use the legacy method
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             return toBitmapImageDecoder();
         } else {
             return toBitmapLegacy();
