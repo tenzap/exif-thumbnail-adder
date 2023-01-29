@@ -179,9 +179,7 @@ public class AddThumbsCommon {
 
         // ATTENTION: This below requires to be on a clean app (where permissions have been reset)
         // Same condition as in AddThumbsFragment.addThumbsUsingTreeUris() to trigger the WRITE_EXTERNAL_STORAGE permission
-        if (!prefs.getBoolean("useSAF", true) ||
-                BuildConfig.FLAVOR.equals("google_play") ||
-                BuildConfig.FLAVOR.equals("standard")) {
+        if (true) {
             // Trigger only if WRITE_EXTERNAL_STORAGE is not granted yet
             if (ContextCompat.checkSelfPermission(
                     context, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=

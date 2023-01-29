@@ -164,7 +164,7 @@ public class TakeScreenshots {
         editor.commit();
 
         // give all files access (we need it to delete folders)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play") && !MainActivity.haveAllFilesAccessPermission()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !MainActivity.haveAllFilesAccessPermission()) {
             TestUtil.requestAllFilesAccess();
         }
 

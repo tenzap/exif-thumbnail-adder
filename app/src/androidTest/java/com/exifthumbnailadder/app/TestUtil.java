@@ -46,10 +46,11 @@ import java.io.IOException;
 public class TestUtil {
 
     public static void requestAllFilesAccess() throws Exception {
-        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play") && !MainActivity.haveAllFilesAccessPermission()) {
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !MainActivity.haveAllFilesAccessPermission()) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R &&
                 ! Environment.isExternalStorageManager() &&
-                ! Environment.isExternalStorageLegacy()) {
+                ! Environment.isExternalStorageLegacy() &&
+                PermissionManager.manifestHasMANAGE_EXTERNAL_STORAGE(InstrumentationRegistry.getInstrumentation().getTargetContext())) {
 
             UiDevice device = UiDevice.getInstance(getInstrumentation());
 

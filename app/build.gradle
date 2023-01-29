@@ -118,10 +118,6 @@ android {
             getIsDefault().set(true)
         }
         google_play {
-            // On play store, apps with MANAGE_EXTERNAL_STORAGE permission are limited.
-            // On play store we publish this variant that is without MANGE_EXTERNAL_STORAGE and has targetSdk 29.
-            // This permits to keep same behaviour as on Android 10 for devices running Android 11.
-            targetSdkVersion 29
         }
     }
 

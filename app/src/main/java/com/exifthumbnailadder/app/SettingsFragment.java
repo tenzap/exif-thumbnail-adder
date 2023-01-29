@@ -23,6 +23,7 @@ package com.exifthumbnailadder.app;
 import android.annotation.TargetApi;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -32,6 +33,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
@@ -55,8 +57,33 @@ import static com.exifthumbnailadder.app.MainApplication.TAG;
             SwitchPreferenceCompat allFilesAccess = findPreference("settings_allFilesAccess");
             allFilesAccess.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 public boolean onPreferenceClick(Preference preference) {
-                    requestAllFilesAccessPermission();
-                    return true;
+                    if (PermissionManager.manifestHasMANAGE_EXTERNAL_STORAGE(getContext())) {
+                        requestAllFilesAccessPermission();
+                        return true;
+                    } else {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                        alert.setTitle(R.string.settings_option_not_available);
+                        alert.setMessage(getString(R.string.settings_all_files_access_unavailable, "F-Droid.org", getString(R.string.app_name)));
+
+                        alert.setNeutralButton(R.string.close, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                //Your action here
+                            }
+                        });
+
+                        alert.setPositiveButton(getString(R.string.settings_show_in_, "F-Droid"), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                Intent browserIntent = new Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse("https://f-droid.org/packages/com.exifthumbnailadder.app/"));
+                                startActivity(browserIntent);
+                            }
+                        });
+
+                        alert.show();
+                        setAllFilesAccess();
+                        return true;
+                    }
                 }
             });
 
@@ -169,9 +196,13 @@ import static com.exifthumbnailadder.app.MainApplication.TAG;
             if (allFilesAccess == null) return;
 
             PreferenceCategory mCategory = (PreferenceCategory) findPreference("categ_Folders");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play")) {
-                // update preference value
-                allFilesAccess.setChecked(MainActivity.haveAllFilesAccessPermission());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (PermissionManager.manifestHasMANAGE_EXTERNAL_STORAGE(getContext())) {
+                    // update preference value
+                    allFilesAccess.setChecked(MainActivity.haveAllFilesAccessPermission());
+                } else {
+                    allFilesAccess.setChecked(false);
+                }
             } else {
                 // remove preference from the settings screen
                 mCategory.removePreference(allFilesAccess);

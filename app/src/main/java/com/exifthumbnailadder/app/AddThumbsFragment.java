@@ -139,7 +139,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
 
         LinearLayout ll = (LinearLayout)view.findViewById(R.id.block_allFilesAccess);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !BuildConfig.FLAVOR.equals("google_play")) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Use of "All Files Access Permissions" may result in rejection from the google play store
             // We use it only to be able to update the attributes of the files (ie timestamps)
             if (MainActivity.haveAllFilesAccessPermission())
@@ -272,8 +272,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
             alertBuilder.setCancelable(true);
             alertBuilder.setTitle(R.string.frag1_perm_request_title);
             if (prefs.getBoolean("useSAF", true) &&
-                    ( BuildConfig.FLAVOR.equals("google_play") ||
-                            (BuildConfig.FLAVOR.equals("standard") && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q))) {
+                    Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
                 alertBuilder.setMessage(R.string.frag1_perm_request_message_timestamp);
                 alertBuilder.setNegativeButton(R.string.frag1_perm_request_deny, new DialogInterface.OnClickListener() {
                     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -320,8 +319,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                 AddThumbsLogLiveData.get().clear();
                 AddThumbsLogLiveData.get().appendLog(getString(R.string.frag1_log_starting));
 
-                if (!prefs.getBoolean("useSAF", true) || BuildConfig.FLAVOR.equals("google_play")
-                        || BuildConfig.FLAVOR.equals("standard"))
+                if (true)
                 {
                     AddThumbsLogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_check_write_perm), 1));
                     if  (prefs.getBoolean("useSAF", true) && continueWithoutWriteExternalStoragePermission) {
