@@ -105,18 +105,20 @@ ext.readLastTagVersionCode = {
     def tag = readLastTagVersionName()
     try {
         def stdout = new ByteArrayOutputStream()
+        def stderr = new ByteArrayOutputStream()
         exec {
             commandLine 'git', 'rev-list', '--first-parent', '--count', tag.toString()
             standardOutput = stdout
             errorOutput = stderr
-            executionResult = exitCode
+            //executionResult = exitCode
         }
-        if (exitCode.getExitValue() == 0) {
+//        if (exitCode.getExitValue() == 0) {
             return stdout.toString().trim().toInteger()
-        } else {
-            return "null";
-        }
+//        } else {
+//            return "null";
+//        }
     } catch (ignored) {
+        ignored.printStackTrace()
         return 0
     }
 }
@@ -124,18 +126,20 @@ ext.readLastTagVersionCode = {
 ext.readLastTagVersionName = {
     try {
         def stdout = new ByteArrayOutputStream()
+        def stderr = new ByteArrayOutputStream()
         exec {
             commandLine 'git', 'describe', '--tags', '--abbrev=0'
             standardOutput = stdout
             errorOutput = stderr
-            executionResult = exitCode
+            //execResult = exitCode
         }
-        if (exitCode.getExitValue() == 0) {
+//        if (exitCode.getExitValue() == 0) {
             return stdout.toString().trim()
-        } else {
-            return "null";
-        }
+//        } else {
+//            return "null";
+//        }
     } catch (ignored) {
+        ignored.printStackTrace()
         return "null"
     }
 }
