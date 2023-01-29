@@ -120,7 +120,11 @@ public class AddThumbsCommon {
         dir = new Dirs("DCIM/test_pics");
         uiDevice.executeShellCommand("mkdir -p " + dir.pathInStorage());
         uiDevice.executeShellCommand("rm -rf " + dir.copyPathAbsolute());
-        if (Build.VERSION.SDK_INT <= 28) {
+        if (Build.VERSION.SDK_INT == 26) {
+            // On Android O (API26), cp doesn't understand --preserve=timestamps,mode,ownership
+            // But it understands --preserve=a.
+            uiDevice.executeShellCommand("cp -a --preserve=a " + dir.origPathAbsolute() + " " + dir.copyPathAbsolute());
+        } else if (Build.VERSION.SDK_INT <= 28) {
             // On Android P (API28), timestamps are not kept despite use of -a.
             // So add --preserve=timestamps,mode,ownership
             uiDevice.executeShellCommand("cp -a --preserve=timestamps,mode,ownership " + dir.origPathAbsolute() + " " + dir.copyPathAbsolute());
