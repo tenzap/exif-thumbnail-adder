@@ -10,8 +10,6 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion Integer.parseInt(ANDROID_BUILD_TARGET_SDK_VERSION)
-        versionCode 1
-        versionName version
     }
     buildTypes {
         release {
@@ -19,6 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
+    namespace 'it.sephiroth.android.library.exif2'
 }
 
 //dependencies {

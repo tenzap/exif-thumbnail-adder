@@ -130,6 +130,7 @@ android {
             path file('../CMakeLists.txt')
         }
     }
+    namespace 'com.exifthumbnailadder.app'
 }
 
 dependencies {
