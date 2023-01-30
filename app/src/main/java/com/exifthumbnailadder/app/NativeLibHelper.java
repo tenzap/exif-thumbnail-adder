@@ -26,6 +26,7 @@ import android.util.Log;
 import com.exifthumbnailadder.app.exception.Exiv2ErrorException;
 import com.exifthumbnailadder.app.exception.Exiv2WarnException;
 import com.exifthumbnailadder.app.exception.LibexifException;
+import com.exifthumbnailadder.app.exception.TimestampHelperException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -48,6 +49,9 @@ public class NativeLibHelper {
 
     native int writeThumbnailWithExiv2ThroughFile(
             String out, int width, int height, String tb, int resolution) throws Exception;
+
+    native static int copyTimestamp(String file, String reference) throws TimestampHelperException;
+    native static int setTimestamp(String file, double atime, double mtime) throws TimestampHelperException;
 
     public void writeThumbnailWithLibexif (
             InputStream srcImgIs, OutputStream newImgOs, Bitmap thumbnail)
