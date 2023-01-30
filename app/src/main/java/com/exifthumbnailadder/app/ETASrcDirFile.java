@@ -22,6 +22,7 @@ package com.exifthumbnailadder.app;
 
 import android.content.Context;
 import android.content.UriPermission;
+import android.os.Build;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.provider.MediaStore;
@@ -142,19 +143,23 @@ public class ETASrcDirFile extends ETASrcDir {
         StorageManager myStorageManager = (StorageManager) ctx.getSystemService(Context.STORAGE_SERVICE);
         StorageVolume mySV = myStorageManager.getStorageVolume(etaDocsRoot);
 
-        Class<?> storageVolumeClazz = null;
-        try {
-            storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
-            Method getPath = storageVolumeClazz.getMethod("getPath");
-            volumeRootPath = (String) getPath.invoke(mySV);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            volumeRootPath = mySV.getDirectory().toString();
+        } else {
+            Class<?> storageVolumeClazz = null;
+            try {
+                storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
+                Method getPath = storageVolumeClazz.getMethod("getPath");
+                volumeRootPath = (String) getPath.invoke(mySV);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
 
         if (enableLog) Log.i(TAG, "volumeRootPath: " + volumeRootPath);
