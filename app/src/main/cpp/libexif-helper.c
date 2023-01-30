@@ -629,38 +629,6 @@ JNIEXPORT jbyteArray JNICALL Java_com_exifthumbnailadder_app_NativeLibHelper_wri
     return inBa;
 }
 
-//https://stackoverflow.com/questions/230689/best-way-to-throw-exceptions-in-jni-code
-jint throwNoClassDefError( JNIEnv *env, char *message )
-{
-    jclass exClass;
-    char *className = "java/lang/NoClassDefFoundError";
-
-    exClass = (*env)->FindClass( env, className);
-    if (exClass == NULL) {
-        return throwNoClassDefError( env, className );
-    }
-
-    return (*env)->ThrowNew( env, exClass, message );
-}
-
-//https://stackoverflow.com/questions/230689/best-way-to-throw-exceptions-in-jni-code
-jint throwError( JNIEnv *env, char *message )
-{
-    if ((*env)->ExceptionCheck(env) == JNI_TRUE) {
-        return 99;
-    }
-
-    jclass exClass;
-    char *className = "java/lang/RuntimeException" ;
-
-    exClass = (*env)->FindClass( env, className );
-    if ( exClass == NULL ) {
-        return throwNoClassDefError( env, className );
-    }
-
-    return (*env)->ThrowNew( env, exClass, message );
-}
-
 jint throwLibexifException( JNIEnv *env, char *message )
 {
     if ((*env)->ExceptionCheck(env) == JNI_TRUE) {
