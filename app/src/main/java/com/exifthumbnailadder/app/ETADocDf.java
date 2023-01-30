@@ -41,10 +41,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributeView;
 
 import static com.exifthumbnailadder.app.MainApplication.TAG;
 import static com.exifthumbnailadder.app.MainApplication.enableLog;
@@ -450,18 +448,10 @@ public class ETADocDf extends ETADoc {
             throw new UnsupportedOperationException("passed object must be of type Uri");
 
         try {
-            // Set owner attribute
-            Files.setOwner(outFilePath, attributeUser);
-            // Set time attributes
-            Files.getFileAttributeView(outFilePath, BasicFileAttributeView.class).setTimes(
-                    attributeBasic.lastModifiedTime(),
-                    attributeBasic.lastAccessTime(),
-                    attributeBasic.creationTime());
-            // Set Posix attributes
-            Files.setPosixFilePermissions(outFilePath, attributePosix);
+            NativeLibHelper.setTimestamp(outFilePath.toString(), 0,0);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CopyAttributesFailedException(e);
+            throw new CopyAttributesFailedException(e.getMessage());
         }
     }
 

@@ -47,10 +47,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.BasicFileAttributeView;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.nio.file.attribute.PosixFilePermission;
-import java.nio.file.attribute.UserPrincipal;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -944,22 +940,10 @@ public class AddThumbsService extends Service {
     private void copyFileAttributes(Path inFilePath, Path outFilePath) throws Exception {
         if (enableLog) Log.i(TAG, getString(R.string.frag1_log_copying_attr));
         try {
-            BasicFileAttributes inAttrs = Files.readAttributes(inFilePath, BasicFileAttributes.class);
-
-            // Copy owner attribute
-            UserPrincipal user = Files.getOwner(inFilePath, LinkOption.NOFOLLOW_LINKS);
-            Files.setOwner(outFilePath, user);
-
-            // Copy time attributes
-            Files.getFileAttributeView(outFilePath, BasicFileAttributeView.class).setTimes(inAttrs.lastModifiedTime(), inAttrs.lastAccessTime(), inAttrs.creationTime());
-
-            // Copy Posix attributes
-            Set<PosixFilePermission> inPosix = Files.getPosixFilePermissions(inFilePath, LinkOption.NOFOLLOW_LINKS);
-            Files.setPosixFilePermissions(outFilePath, inPosix);
-
+            NativeLibHelper.copyTimestamp(outFilePath.toString(), inFilePath.toString());
         } catch (Exception e) {
             e.printStackTrace();
-            throw new CopyAttributesFailedException(e);
+            throw new CopyAttributesFailedException(e.getMessage());
         }
     }
 
