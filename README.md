@@ -48,9 +48,10 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
 
 
 ## Installation
-- Prerequisites: minimum android Oreo (android 8, SDK 26). App was tested up to Android 11.
+- Prerequisites: minimum android Oreo (android 8, SDK 26). App was tested up to Android 13.
 - Download it through F-Droid app [here](https://f-droid.org/packages/com.exifthumbnailadder.app)
 - Download it through Google Play [here](https://play.google.com/store/apps/details?id=com.exifthumbnailadder.app)
+- Download it through Amazon Appstore [here](https://www.amazon.com/dp/B09CZ7684J/)
 - Download the APK from the [release page](https://github.com/tenzap/exif-thumbnail-adder/releases)
 
 
