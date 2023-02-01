@@ -20,10 +20,14 @@
 
 package com.exifthumbnailadder.app;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
+
+import androidx.core.content.ContextCompat;
 
 public class PermissionManager {
     public static boolean manifestHasMANAGE_EXTERNAL_STORAGE(Context ctx) {
@@ -42,5 +46,17 @@ public class PermissionManager {
     @TargetApi(30)
     public static boolean hasAllFilesAccessPermission() {
         return Environment.isExternalStorageManager();
+    }
+
+    public static boolean hasWriteExternalStorage(Context ctx) {
+        // WRITE_EXTERNAL_STORAGE is available only for API <= 29
+        if (Build.VERSION.SDK_INT <= 29) {
+            return ContextCompat.checkSelfPermission(
+                    ctx,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
+                    PackageManager.PERMISSION_GRANTED;
+        } else {
+            return false;
+        }
     }
 }

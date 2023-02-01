@@ -181,9 +181,7 @@ public class AddThumbsCommon {
         // Same condition as in AddThumbsFragment.addThumbsUsingTreeUris() to trigger the WRITE_EXTERNAL_STORAGE permission
         if (true) {
             // Trigger only if WRITE_EXTERNAL_STORAGE is not granted yet
-            if (ContextCompat.checkSelfPermission(
-                    context, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
-                    PackageManager.PERMISSION_GRANTED) {
+            if (!PermissionManager.hasWriteExternalStorage(context)) {
                 TestUtil.clickPermissionAllowButton();
                 // Click "Add thumbnails" button again
                 onView(withId(R.id.button_addThumbs)).perform(click());

@@ -28,7 +28,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -47,7 +46,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.menu.MenuView;
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -262,10 +260,8 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         }
     }
 
-    private boolean hasWriteExternalStorage() {
-        if (ContextCompat.checkSelfPermission(
-                getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                PackageManager.PERMISSION_GRANTED) {
+    private boolean requestWriteExternalStorage() {
+        if (PermissionManager.hasWriteExternalStorage(getContext())) {
             hasWriteExternalStoragePermission = true;
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
@@ -324,7 +320,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                     AddThumbsLogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_check_write_perm), 1));
                     if  (prefs.getBoolean("useSAF", true) && continueWithoutWriteExternalStoragePermission) {
                         AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:blue'>"+getString(R.string.frag1_continue_without_timestamps)+"</span><br>", 1));
-                    } else if (!hasWriteExternalStorage()) {
+                    } else if (!requestWriteExternalStorage()) {
                         AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
                         setIsProcessFalse(view);
                         stopProcessing = false;
