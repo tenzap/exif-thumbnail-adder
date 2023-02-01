@@ -41,6 +41,16 @@ Submit a new Beta Build to Crashlytics Beta
 fastlane android deploy
 ```
 Deploy a new version to the Google Play
+### android prepare_metadata_for_googleplay
+```
+fastlane android prepare_metadata_for_googleplay
+```
+Prepare matadata so that it is not rejected by google play
+### android postpare_metadata_for_googleplay
+```
+fastlane android postpare_metadata_for_googleplay
+```
+Postpare matadata - This restores to the state before the 'prepare'
 ### android build_signed_apk_standard_release
 ```
 fastlane android build_signed_apk_standard_release

@@ -60,6 +60,7 @@ platform :android do
   desc "Deploy a new version to the Google Play"
   lane :deploy do
     gradle(task: "clean assembleRelease bundleRelease")
+    prepare_metadata_for_googleplay
     upload_to_play_store(
         #aab: "app/build/outputs/bundle/.../release/*.aab",
         skip_upload_changelogs: true,
@@ -67,6 +68,17 @@ platform :android do
         skip_upload_images: false,
         skip_upload_screenshots: false,
     )
+    postpare_metadata_for_googleplay
+  end
+
+  desc "Prepare matadata so that it is not rejected by google play"
+  lane :prepare_metadata_for_googleplay do
+    sh "../scripts/prepare_metadata_for_googleplay.sh"
+  end
+
+  desc "Postpare matadata - This restores to the state before the 'prepare'"
+  lane :postpare_metadata_for_googleplay do
+    sh "../scripts/post_metadata_for_googleplay.sh"
   end
 
   desc "Build signed APK (flavor: standard ; type: Release)"
