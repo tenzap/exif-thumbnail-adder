@@ -76,6 +76,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
             public void onReceive(Context context, Intent intent) {
                 switch (intent.getAction()) {
                     case "com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED":
+                    case "com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_STOPPED_BY_USER":
                         setIsProcessFalse(null);
                         break;
                     default:
@@ -99,6 +100,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         super.onStart();
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED");
+        filter.addAction("com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_STOPPED_BY_USER");
         LocalBroadcastManager.getInstance(getContext())
                 .registerReceiver(receiver, filter);
     }
@@ -125,9 +127,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         view.findViewById(R.id.button_stopProcess).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopProcessing = true;
                 getContext().stopService(ETAServiceIntent);
-                displayStartButton();
             }
         });
 
@@ -186,7 +186,10 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         if (ServiceUtil.isServiceRunning(getContext(), AddThumbsService.class)) {
             displayStopButton();
         } else {
-            displayStartButton();
+            if (isProcessing)
+                displayStopButton();
+            else
+                displayStartButton();
         }
 
         getActivity().setTitle(R.string.action_add_thumbs);
