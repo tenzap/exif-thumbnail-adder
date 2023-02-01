@@ -39,7 +39,6 @@ import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
@@ -57,6 +56,14 @@ public class WorkingDirPermActivity extends AppCompatActivity {
         setContentView(R.layout.activity_working_dir_perm);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        synchronized (PermissionManager.sync) {
+            PermissionManager.sync.notify();
+        }
+        super.onDestroy();
     }
 
     // Replacing startActivityForResult
@@ -175,21 +182,40 @@ public class WorkingDirPermActivity extends AppCompatActivity {
             return;
         }
 
-        Toast t = Toast.makeText(this, getString(R.string.working_dir_perm_permissions_set_retry), Toast.LENGTH_LONG);
-        t.show();
         finish();
     }
 
     public static boolean isWorkingDirPermOk(Context ctx) {
         List<UriPermission> persUriPermList = ctx.getContentResolver().getPersistedUriPermissions();
-        Uri uri = WorkingDirPermActivity
-                .workingDirPermMissing(PreferenceManager.getDefaultSharedPreferences(ctx), persUriPermList, ctx);
+        Uri uri = WorkingDirPermActivity.workingDirPermMissing(
+                PreferenceManager.getDefaultSharedPreferences(ctx),
+                persUriPermList,
+                ctx);
         if (uri == null) {
             return true;
         } else {
-            Intent intent = new Intent(ctx, WorkingDirPermActivity.class);
-            ctx.startActivity(intent);
-            return false;
+            // Launch activity that will help getting the permission
+            synchronized (PermissionManager.sync) {
+                Intent intent = new Intent(ctx, WorkingDirPermActivity.class);
+                ctx.startActivity(intent);
+                try {
+                    PermissionManager.sync.wait();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // Check again that it is ok now
+            persUriPermList = ctx.getContentResolver().getPersistedUriPermissions();
+            uri = WorkingDirPermActivity.workingDirPermMissing(
+                    PreferenceManager.getDefaultSharedPreferences(ctx),
+                    persUriPermList,
+                    ctx);
+            if (uri == null) {
+                return true;
+            } else {
+                return false;
+            }
         }
     }
 }

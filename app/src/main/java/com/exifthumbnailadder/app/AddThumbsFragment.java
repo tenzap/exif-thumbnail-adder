@@ -62,8 +62,6 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
     NestedScrollView scrollview = null;
     private boolean stopProcessing = false;
     private boolean isProcessing = false;
-    private boolean hasWriteExternalStoragePermission = false;
-    private boolean continueWithoutWriteExternalStoragePermission = false;
 
     Intent ETAServiceIntent;
     BroadcastReceiver receiver;
@@ -263,51 +261,6 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         }
     }
 
-    private boolean requestWriteExternalStorage() {
-        if (PermissionManager.hasWriteExternalStorage(getContext())) {
-            hasWriteExternalStoragePermission = true;
-        } else if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
-            alertBuilder.setCancelable(true);
-            alertBuilder.setTitle(R.string.frag1_perm_request_title);
-            if (prefs.getBoolean("useSAF", true) &&
-                    Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-                alertBuilder.setMessage(R.string.frag1_perm_request_message_timestamp);
-                alertBuilder.setNegativeButton(R.string.frag1_perm_request_deny, new DialogInterface.OnClickListener() {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        continueWithoutWriteExternalStoragePermission = true;
-                    }
-                });
-            } else {
-                alertBuilder.setMessage(R.string.frag1_perm_request_message_Files);
-            }
-            alertBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                public void onClick(DialogInterface dialog, int which) {
-                    requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                }
-            });
-            alertBuilder.setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                public void onClick(DialogInterface dialog, int which) {
-                    //do nothing
-                }
-            });
-
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    AlertDialog alert = alertBuilder.create();
-                    alert.show();
-                }
-            });
-        } else {
-            requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        return hasWriteExternalStoragePermission;
-    }
-
     public void addThumbsUsingTreeUris(View view) {
         isProcessing = true;
         stopProcessing = false;
@@ -318,33 +271,15 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                 AddThumbsLogLiveData.get().clear();
                 AddThumbsLogLiveData.get().appendLog(getString(R.string.frag1_log_starting));
 
-                if (true)
-                {
-                    AddThumbsLogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_check_write_perm), 1));
-                    if  (prefs.getBoolean("useSAF", true) && continueWithoutWriteExternalStoragePermission) {
-                        AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:blue'>"+getString(R.string.frag1_continue_without_timestamps)+"</span><br>", 1));
-                    } else if (!requestWriteExternalStorage()) {
-                        AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
-                        setIsProcessFalse(view);
-                        stopProcessing = false;
-                        return;
-                    } else {
-                        AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_successful) + "</span><br>", 1));
-                    }
-                }
+                PermissionManager pm = new PermissionManager(getParentFragment(), requestPermissionLauncher);
 
-                {
-                    AddThumbsLogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm), 1));
-                    if (!WorkingDirPermActivity.isWorkingDirPermOk(getContext())) {
-                        AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
-                        setIsProcessFalse(view);
-                        stopProcessing = false;
-                        return;
-                    }
-                    AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+                if(pm.checkPermissions()) {
+                    // Launch service
+                    getContext().startForegroundService(ETAServiceIntent);
+                } else {
+                    setIsProcessFalse(view);
+                    stopProcessing = false;
                 }
-
-                getContext().startForegroundService(ETAServiceIntent);
             }
         }).start();
     }
@@ -372,9 +307,12 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
     private ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
-                    hasWriteExternalStoragePermission = true;
+                    PermissionManager.hasWriteExternalStoragePermission = true;
                 } else {
-                    hasWriteExternalStoragePermission = false;
+                    PermissionManager.hasWriteExternalStoragePermission = false;
+                }
+                synchronized(PermissionManager.sync) {
+                    PermissionManager.sync.notify();
                 }
             });
 

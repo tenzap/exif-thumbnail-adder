@@ -23,10 +23,13 @@ package com.exifthumbnailadder.app;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
+import static org.hamcrest.core.AllOf.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -51,6 +54,7 @@ import androidx.preference.PreferenceManager;
 import androidx.test.espresso.PerformException;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.intent.rule.IntentsTestRule;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.uiautomator.UiDevice;
@@ -88,6 +92,10 @@ public class AddThumbsCommon {
 
     @Rule
     public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
+
+    @Rule
+    public IntentsTestRule<WorkingDirPermActivity> intentsTestRule =
+            new IntentsTestRule<>(WorkingDirPermActivity.class);
 
     // https://stackoverflow.com/a/54203607
     @BeforeClass
@@ -179,14 +187,15 @@ public class AddThumbsCommon {
 
         // ATTENTION: This below requires to be on a clean app (where permissions have been reset)
         // Same condition as in AddThumbsFragment.addThumbsUsingTreeUris() to trigger the WRITE_EXTERNAL_STORAGE permission
-        if (true) {
+        if (Build.VERSION.SDK_INT <= 29 || !prefs.getBoolean("useSAF", true)) {
             // Trigger only if WRITE_EXTERNAL_STORAGE is not granted yet
             if (!PermissionManager.hasWriteExternalStorage(context)) {
                 TestUtil.clickPermissionAllowButton();
-                // Click "Add thumbnails" button again
-                onView(withId(R.id.button_addThumbs)).perform(click());
             }
         }
+
+        // Wait until 'WorkingDirPermActivity' has launched
+        intended(allOf(hasComponent(WorkingDirPermActivity.class.getName())));
 
         // The WorkingDirPermActivity has now launched.
         // Create & Give permissions to the WorkingDir
@@ -223,10 +232,6 @@ public class AddThumbsCommon {
             filter.addAction("com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED");
             LocalBroadcastManager.getInstance(context)
                     .registerReceiver(receiver, filter);
-
-            // We are back to the MainActivity / Add Thumbs fragment
-            // Click on "Add Thumbs" button to really start processing now that permissions to WorkingDir are given
-            onView(withId(R.id.button_addThumbs)).perform(click());
 
             // On API33 (and when target SDK <= 32), the user is asked to give Notification permission
             if (i == 0 && Build.VERSION.SDK_INT >=33) {
