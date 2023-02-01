@@ -65,7 +65,7 @@ platform :android do
         #aab: "app/build/outputs/bundle/.../release/*.aab",
         changes_not_sent_for_review: true,
         skip_upload_apk: true,
-        skip_upload_changelogs: true,
+        skip_upload_changelogs: false,
         skip_upload_metadata: false,
         skip_upload_images: false,
         skip_upload_screenshots: false,

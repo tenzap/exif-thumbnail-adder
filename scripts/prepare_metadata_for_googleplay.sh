@@ -68,7 +68,17 @@ for metadata in title.txt short_description.txt full_description.txt; do
       cp -a "$PROJECT_ROOT/fastlane/metadata/android/$REF_LANG/$metadata" "$PROJECT_ROOT/fastlane/metadata/android/$language/"
     fi
   done
-set +x
+
+done
+
+# Copy changelog
+VerCode="$(cut -d'+' -f2 < "$PROJECT_ROOT/version_last_tag.txt")"
+REF_LANG="en-US"
+for language in $(cd "$PROJECT_ROOT/fastlane/metadata/android" && find . -mindepth 1 -maxdepth 1 -type d); do
+  if [ ! -f "$PROJECT_ROOT/fastlane/metadata/android/$language/changelogs/$VerCode.txt" ]; then
+    mkdir -p "$PROJECT_ROOT/fastlane/metadata/android/$language/changelogs/"
+    cp -a "$PROJECT_ROOT/fastlane/metadata/android/$REF_LANG/changelogs/$VerCode.txt" "$PROJECT_ROOT/fastlane/metadata/android/$language/changelogs/"
+  fi
 done
 
 # Show modifications
