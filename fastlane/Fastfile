@@ -59,10 +59,12 @@ platform :android do
 
   desc "Deploy a new version to the Google Play"
   lane :deploy do
-    gradle(task: "clean assembleRelease bundleRelease")
+    gradle(task: "clean assembleStandardRelease bundleStandardRelease")
     prepare_metadata_for_googleplay
     upload_to_play_store(
         #aab: "app/build/outputs/bundle/.../release/*.aab",
+        changes_not_sent_for_review: true,
+        skip_upload_apk: true,
         skip_upload_changelogs: true,
         skip_upload_metadata: false,
         skip_upload_images: false,
