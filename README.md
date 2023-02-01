@@ -106,8 +106,8 @@ GPL-3.0 (see "COPYING" file on project homepage)
 - these permissions are required to keep the timestamp of the pictures
 
 
-## Concerning `MANAGE_EXTERNAL_STORAGE` (for flavor `standard`)
-Since flavor `standard` uses targetSdk >= 30 (ie Android 11+), I needed to use the `MANAGE_EXTERNAL_STORAGE` permission.
+## Concerning `MANAGE_EXTERNAL_STORAGE`
+Since the app uses targetSdk >= 30 (ie Android 11+), I needed to use the `MANAGE_EXTERNAL_STORAGE` permission.
 
 Some explanations:
 
@@ -130,8 +130,7 @@ In addition to Android Studio you need these components (android studio can inst
 ### Flavors
 The app can be compiled in any of the following flavors:
 
-* *standard* (version shipped on F-Droid)
-* *google_play*. It is the same as "standard" except it can't request `MANAGE_EXTERNAL_STORAGE` permission.
+* *standard* (version shipped on F-Droid, Google Play, Amazon Appstore)
 
 
 ### To create screenshots

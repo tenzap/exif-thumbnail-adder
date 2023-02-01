@@ -4,7 +4,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-VARIANTS="google_play standard"
+VARIANTS="standard"
 TEST_OUTPUT_DIR="output/test_output"
 TEST_PICS="output/test_pics"
 

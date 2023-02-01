@@ -27,8 +27,6 @@ platform :android do
   lane :build_test do
     gradle(
       tasks: [
-        "compileGoogle_playDebugUnitTestSources",
-        "compileGoogle_playReleaseUnitTestSources",
         "compileStandardDebugUnitTestSources",
         "compileStandardReleaseUnitTestSources",
         "compileDebugUnitTestSources",
@@ -287,17 +285,10 @@ platform :android do
         UI.error(ex)
       end
     else
-      # We split in 2 calls because with connectedCheck, as soon a one flavor has a failing test,
+      # We split by flavor because with connectedCheck, as soon a one flavor has a failing test,
       # then the subsequent flavors are skipped.
       begin
         connectedCheck(task: "connectedStandardDebugAndroidTest")
-      rescue => ex
-        test_failed = true
-        UI.error(ex)
-      end
-
-      begin
-        connectedCheck(task: "connectedGoogle_playDebugAndroidTest")
       rescue => ex
         test_failed = true
         UI.error(ex)

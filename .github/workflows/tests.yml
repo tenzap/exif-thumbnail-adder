@@ -58,8 +58,6 @@ jobs:
             ${{ env.GRADLE_COMMON_ARGS }}
             assembleDebug
             assembleAndroidTest
-            compileGoogle_playDebugUnitTestSources
-            compileGoogle_playReleaseUnitTestSources
             compileStandardDebugUnitTestSources
             compileStandardReleaseUnitTestSources
             compileDebugUnitTestSources

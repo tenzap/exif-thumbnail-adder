@@ -117,8 +117,6 @@ android {
         standard {
             getIsDefault().set(true)
         }
-        google_play {
-        }
     }
 
     compileOptions {
