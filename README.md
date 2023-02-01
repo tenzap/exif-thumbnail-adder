@@ -39,8 +39,8 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
 - `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`
     - to keep the timestamp of the pictures
 - `MANAGE_EXTERNAL_STORAGE`
-    - requested only with the `standard` flavor that is shipped on F-Droid for devices running Android 11 and above to keep the timestamp of the pictures
-- get more details about them on the project homepage
+    - requested on devices running Android 11 and above to keep the timestamp of the pictures
+
 
 
 ## Privacy notice
@@ -50,6 +50,7 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
 ## Installation
 - Prerequisites: minimum android Oreo (android 8, SDK 26). App was tested up to Android 11.
 - Download it through F-Droid app [here](https://f-droid.org/packages/com.exifthumbnailadder.app)
+- Download it through Google Play [here](https://play.google.com/store/apps/details?id=com.exifthumbnailadder.app)
 - Download the APK from the [release page](https://github.com/tenzap/exif-thumbnail-adder/releases)
 
 
@@ -60,7 +61,6 @@ GPL-3.0 (see "COPYING" file on project homepage)
 ## Contribute
 - You are very welcome to contribute to the project either by translating, testing, reporting bugs, developing, creating pull requests with fixes and features.
 - Suggestions for contribution
-    - Help to ship the app on Google Play: either support financially by donating some money so that I can pay the 25 USD fee to have a Google developer account, or if you have a Google developer account you may contact me to see how you could publish the app to the play store.
     - Translation
         - through [crowdin project page](https://crowdin.com/project/exif-thumbnail-adder). If you want a language that is not listed on crowdin, please ask for it so that I make it available.
         - or translate the following files and submit a pull request/issue with the translated files
@@ -102,20 +102,18 @@ GPL-3.0 (see "COPYING" file on project homepage)
 
 ## Concerning `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`
 - permit to read and write/update the picture from the storage of your device
-- requested with the `google_play` flavor that is shipped on google play and with the `standard` flavor on Android 10 and before
+- requested on Android 10 and before
 - these permissions are required to keep the timestamp of the pictures
 
 
 ## Concerning `MANAGE_EXTERNAL_STORAGE` (for flavor `standard`)
-Since flavor `standard` uses targetSdk >= 30 (ie Android 11+), I needed to use the `MANAGE_EXTERNAL_STORAGE` permission. This might be problematic to publish on the play store. See [1](https://developer.android.com/training/data-storage/manage-all-files#all-files-access-google-play) [2](https://support.google.com/googleplay/android-developer/answer/10467955).
+Since flavor `standard` uses targetSdk >= 30 (ie Android 11+), I needed to use the `MANAGE_EXTERNAL_STORAGE` permission.
 
 Some explanations:
 
-The app uses the Storage Access Framework to process the files. However, with Storage Access Framework, on copying files or modifying them, timestamps get updated. But when adding thumbnails we don't want them to change and thus I set them back to the original value. To set the values of timestamps back I use the BasicFileAttributesView class [3](https://developer.android.com/reference/java/nio/file/attribute/BasicFileAttributeView#setTimes(java.nio.file.attribute.FileTime,%20java.nio.file.attribute.FileTime,%20java.nio.file.attribute.FileTime)). This works fine until targetSdk 28 (=android 9). There is a workaround for targetSdk 29 (android 10) but from targetSdk 30 (Android 11) onwards, the method returns an "AccessDeniedException". So I ended up using `MANAGE_EXTERNAL_STORAGE` with targetSdk >= 30, see [4](https://stackoverflow.com/a/66681306/15401262).
+The app uses the Storage Access Framework to process the files. However, with Storage Access Framework, on copying files or modifying them, timestamps get updated. But when adding thumbnails we don't want them to change and thus I set them back to the original value. To set the values of timestamps back I use the BasicFileAttributesView class [1](https://developer.android.com/reference/java/nio/file/attribute/BasicFileAttributeView#setTimes(java.nio.file.attribute.FileTime,%20java.nio.file.attribute.FileTime,%20java.nio.file.attribute.FileTime)). This works fine until targetSdk 28 (=android 9). There is a workaround for targetSdk 29 (android 10) but from targetSdk 30 (Android 11) onwards, the method returns an "AccessDeniedException". So I ended up using `MANAGE_EXTERNAL_STORAGE` with targetSdk >= 30, see [2](https://stackoverflow.com/a/66681306/15401262).
 
-So in the App, when one is on Android 11+ with targetSdk >= 30 (which is the case of flavor `standard`), one is invited to give the "all files access" permissions through the settings. This is not mandatory. In case permission is not given, the user is informed that timestamps can't be kept during processing.
-
-With flavor `google_play` targetSdk is set to 29. Hence it is still possible with Android 11 to not use `MANAGE_EXTERNAL_STORAGE`. For versions above 11 it is uncertain whether it will still work. To be sure to have all functionalities of the app if you run Android 11+ get the `standard` flavor from F-Droid.org
+So in the App, when one is on Android 11+ with targetSdk >= 30, one is invited to give the "all files access" permissions through the settings. This is not mandatory. In case permission is not given, the user is informed that timestamps can't be kept during processing.
 
 Please note that this is about the timestamps of the files (not the ones in the EXIF tags)
 
@@ -133,7 +131,7 @@ In addition to Android Studio you need these components (android studio can inst
 The app can be compiled in any of the following flavors:
 
 * *standard* (version shipped on F-Droid)
-* *google_play* (version for Google Play). It is the same as "standard" except it has targetSdk 29 and doesn't request `MANAGE_EXTERNAL_STORAGE` permission.
+* *google_play*. It is the same as "standard" except it can't request `MANAGE_EXTERNAL_STORAGE` permission.
 
 
 ### To create screenshots
