@@ -199,7 +199,7 @@ import static com.exifthumbnailadder.app.MainApplication.TAG;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (PermissionManager.manifestHasMANAGE_EXTERNAL_STORAGE(getContext())) {
                     // update preference value
-                    allFilesAccess.setChecked(MainActivity.haveAllFilesAccessPermission());
+                    allFilesAccess.setChecked(PermissionManager.hasAllFilesAccessPermission());
                 } else {
                     allFilesAccess.setChecked(false);
                 }

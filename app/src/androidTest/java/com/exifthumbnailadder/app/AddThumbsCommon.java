@@ -167,7 +167,7 @@ public class AddThumbsCommon {
             // TODO: revokeAllFilesAccess https://stackoverflow.com/q/75102412/15401262addThumbsSettingsUpdateInSourceOffWithDestOverwrite
             // Cannot revoke for now, so fail test if All Files acccess is enabled
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                assertFalse("All Files access is granted. Should not be in these tests.", MainActivity.haveAllFilesAccessPermission());
+                assertFalse("All Files access is granted. Should not be in these tests.", PermissionManager.hasAllFilesAccessPermission());
             }
         }
 

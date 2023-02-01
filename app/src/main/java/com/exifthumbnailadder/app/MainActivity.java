@@ -20,20 +20,17 @@
 
 package com.exifthumbnailadder.app;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.UriPermission;
 import android.net.Uri;
 import android.os.Bundle;
-import android.Manifest;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.documentfile.provider.DocumentFile;
@@ -43,11 +40,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
-import androidx.core.content.ContextCompat;
 
-import android.content.pm.PackageManager;
-
-import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -242,8 +235,4 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         prefs.edit().putString("srcUris", inputDirs.toString()).apply();
     }
 
-    @TargetApi(30)
-    public static boolean haveAllFilesAccessPermission() {
-        return Environment.isExternalStorageManager();
-    }
 }

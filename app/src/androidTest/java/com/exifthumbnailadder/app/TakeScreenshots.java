@@ -22,9 +22,6 @@ package com.exifthumbnailadder.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.os.Build;
 
 import androidx.preference.PreferenceManager;
@@ -33,9 +30,6 @@ import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.UiObject;
-import androidx.test.uiautomator.UiSelector;
 
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -56,7 +50,6 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.nio.file.Paths;
-import java.util.List;
 
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
@@ -164,7 +157,7 @@ public class TakeScreenshots {
         editor.commit();
 
         // give all files access (we need it to delete folders)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !MainActivity.haveAllFilesAccessPermission()) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !PermissionManager.hasAllFilesAccessPermission()) {
             TestUtil.requestAllFilesAccess();
         }
 

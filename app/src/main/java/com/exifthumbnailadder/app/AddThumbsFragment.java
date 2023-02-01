@@ -142,7 +142,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             // Use of "All Files Access Permissions" may result in rejection from the google play store
             // We use it only to be able to update the attributes of the files (ie timestamps)
-            if (MainActivity.haveAllFilesAccessPermission())
+            if (PermissionManager.hasAllFilesAccessPermission())
                 ll.setVisibility(View.GONE);
             else
                 ll.setVisibility(View.VISIBLE);

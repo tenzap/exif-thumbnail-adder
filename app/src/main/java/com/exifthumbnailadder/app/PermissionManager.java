@@ -20,8 +20,10 @@
 
 package com.exifthumbnailadder.app;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Environment;
 
 public class PermissionManager {
     public static boolean manifestHasMANAGE_EXTERNAL_STORAGE(Context ctx) {
@@ -35,5 +37,10 @@ public class PermissionManager {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @TargetApi(30)
+    public static boolean hasAllFilesAccessPermission() {
+        return Environment.isExternalStorageManager();
     }
 }
