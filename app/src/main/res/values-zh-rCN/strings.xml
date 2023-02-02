@@ -144,4 +144,5 @@
     <string name="sync_log_checking">正在检查：%1$s</string>
     <string name="sync_log_failure_to_delete_file">删除文件失败</string>
     <string name="sync_log_files_to_remove">要删除的文件 (不再在源中)：</string>
+    <string name="notification_status">Notification status…</string>
 </resources>

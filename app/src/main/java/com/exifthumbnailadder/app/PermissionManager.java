@@ -42,15 +42,19 @@ public class PermissionManager {
     SharedPreferences prefs;
 
     public static boolean hasWriteExternalStoragePermission = false;
+    public static boolean hasPostNotificationPermission = false;
 
     private boolean continueWithoutWriteExternalStoragePermission = false;
 
     ActivityResultLauncher<String> requestPermissionLauncher;
+    ActivityResultLauncher<String> requestPostNotificationPermissionLauncher;
 
     final public static Object sync = new Object();
 
-    PermissionManager(Fragment fragment, ActivityResultLauncher<String> requestPermissionLauncher) {
+    PermissionManager(Fragment fragment, ActivityResultLauncher<String> requestPermissionLauncher,
+                      ActivityResultLauncher<String> requestPostNotificationPermissionLauncher) {
         this.requestPermissionLauncher = requestPermissionLauncher;
+        this.requestPostNotificationPermissionLauncher = requestPostNotificationPermissionLauncher;
         this.fragment = fragment;
         prefs = PreferenceManager.getDefaultSharedPreferences(fragment.getContext());
     }
@@ -104,6 +108,13 @@ public class PermissionManager {
         } else {
             return false;
         }
+    }
+
+    public static boolean hasPostNotifications(Context ctx) {
+        return ContextCompat.checkSelfPermission(
+                ctx,
+                android.Manifest.permission.POST_NOTIFICATIONS) ==
+                PackageManager.PERMISSION_GRANTED;
     }
 
     public boolean checkPermissions() {
@@ -167,8 +178,83 @@ public class PermissionManager {
     }
 
     private boolean checkNotificationPermission() {
-        // TODO: ask for Notification permission (API >= 33)
+        AddThumbsLogLiveData.get().appendLog(Html.fromHtml(fragment.getString(R.string.notification_status), 1));
+        if (requestNotificationPermission()) {
+            AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + fragment.getString(R.string.enabled) + "</span><br>", 1));
+        } else {
+            AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:blue'>" + fragment.getString(R.string.disabled) + "</span><br>", 1));
+        }
+        // Not having notification permission doesn't block processing of pictures.
+        // Always return true
         return true;
+    }
+
+    private boolean requestNotificationPermission() {
+        if (PermissionManager.hasPostNotifications(fragment.getContext())) {
+            hasPostNotificationPermission = true;
+            return true;
+        }
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            if (fragment.shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(fragment.getContext());
+                alertBuilder.setCancelable(true);
+                alertBuilder.setTitle(R.string.notification_permission_title);
+                alertBuilder.setMessage(R.string.notification_permission_message);
+                alertBuilder.setNegativeButton(R.string.frag1_perm_request_deny, new DialogInterface.OnClickListener() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        synchronized (sync) {
+                            sync.notify();
+                        }
+                    }
+                });
+                alertBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        synchronized (sync) {
+                            requestPostNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                        }
+                    }
+                });
+                alertBuilder.setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                    public void onClick(DialogInterface dialog, int which) {
+                        synchronized (sync) {
+                            sync.notify();
+                        }
+                    }
+                });
+
+                synchronized (sync) {
+                    fragment.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            AlertDialog alert = alertBuilder.create();
+                            alert.show();
+                        }
+                    });
+                    // Wait until user answered
+                    try {
+                        sync.wait();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                synchronized (sync) {
+                    requestPostNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                    try {
+                        sync.wait();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }
+
+        return hasPostNotificationPermission;
     }
 
     private boolean requestWriteExternalStorage() {

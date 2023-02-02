@@ -144,4 +144,5 @@
     <string name="sync_log_checking">Đang kiểm tra: %1$s</string>
     <string name="sync_log_failure_to_delete_file">Xoá tệp thất bại</string>
     <string name="sync_log_files_to_remove">Các tệp để xoá (không còn ở trong nguồn):</string>
+    <string name="notification_status">Notification status…</string>
 </resources>

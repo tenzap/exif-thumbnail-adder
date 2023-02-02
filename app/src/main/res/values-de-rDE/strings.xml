@@ -144,4 +144,5 @@
     <string name="sync_log_checking">Prüfung: %1$s</string>
     <string name="sync_log_failure_to_delete_file">Löschen der Datei fehlgeschlagen</string>
     <string name="sync_log_files_to_remove">Zu entfernende Dateien (nicht mehr in der Quelle):</string>
+    <string name="notification_status">Notification status…</string>
 </resources>

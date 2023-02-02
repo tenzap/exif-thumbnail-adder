@@ -170,4 +170,9 @@
 
     <string name="ffmpegServiceDescription" translatable="false">Build thumbnail from ThumbnailProject with ffmpeg\'s swscale</string>
     <string name="close">Close</string>
+    <string name="notification_status">Notification status…</string>
+    <string name="notification_permission_title">Notification permission request</string>
+    <string name="notification_permission_message">The notifications display the progress of processing in the notification drawer. It automatically disappears when processing is completed.</string>
+    <string name="enabled">\u00A0Enabled</string>
+    <string name="disabled">\u00A0Disabled</string>
 </resources>

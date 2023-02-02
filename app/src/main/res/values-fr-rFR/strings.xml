@@ -157,4 +157,5 @@
     <string name="sync_log_checking">Vérification de : %1$s</string>
     <string name="sync_log_failure_to_delete_file">Erreur à la suppression</string>
     <string name="sync_log_files_to_remove">Fichiers à supprimer (ils ne sont plus dans la source) :</string>
+    <string name="notification_status">Notification status…</string>
 </resources>

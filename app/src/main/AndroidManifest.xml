@@ -17,6 +17,8 @@
     <!-- For Android 10, we use android:requestLegacyExternalStorage="true" -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
