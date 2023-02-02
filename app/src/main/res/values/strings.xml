@@ -61,12 +61,12 @@
     <string name="frag1_text_processing_log">Processing Log</string>
 
     <string name="frag1_perm_request_title">Permission request</string>
-    <string name="frag1_perm_request_message_timestamp">External storage permission is necessary to keep timestamps of files.\n
+    <string name="frag1_perm_request_message_timestamp">Permission to access storage is necessary to keep timestamps of files.\n
         If you deny permission, processing will be done without keeping timestamps.\n
         After permission is given, you need to restart processing.</string>
     <string name="frag1_perm_request_deny">Deny permission</string>
-    <string name="frag1_perm_request_message_Files">External storage permission is necessary. After permission is given, you need to restart processing.</string>
-    <string name="frag1_check_write_perm">Checking WRITE_EXTERNAL_STORAGE permission…</string>
+    <string name="frag1_perm_request_message_Files">Permission to access storage is necessary.</string>
+    <string name="frag1_check_write_perm">Checking permission to access storage…</string>
     <string name="frag1_continue_without_timestamps">\u00A0Permission not given, continuing without keeping timestamps.</string>
 
     <string name="frag1_log_skipping_excluded_dir">Skipping excluded dir %1$s in %2$s</string>
@@ -171,7 +171,6 @@
     <string name="ffmpegServiceDescription" translatable="false">Build thumbnail from ThumbnailProject with ffmpeg\'s swscale</string>
     <string name="close">Close</string>
     <string name="notification_status">Notification status…</string>
-    <string name="notification_permission_title">Notification permission request</string>
     <string name="notification_permission_message">The notifications display the progress of processing in the notification drawer. It automatically disappears when processing is completed.</string>
     <string name="enabled">\u00A0Enabled</string>
     <string name="disabled">\u00A0Disabled</string>
