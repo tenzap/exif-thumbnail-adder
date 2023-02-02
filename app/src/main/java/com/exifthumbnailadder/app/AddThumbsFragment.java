@@ -20,17 +20,13 @@
 
 package com.exifthumbnailadder.app;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +40,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.menu.MenuView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
@@ -309,9 +304,9 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
     private ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
-                    PermissionManager.hasWriteExternalStoragePermission = true;
+                    PermissionManager.hasStoragePermission = true;
                 } else {
-                    PermissionManager.hasWriteExternalStoragePermission = false;
+                    PermissionManager.hasStoragePermission = false;
                 }
                 synchronized(PermissionManager.sync) {
                     PermissionManager.sync.notify();

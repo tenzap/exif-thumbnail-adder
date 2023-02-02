@@ -33,20 +33,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
@@ -185,11 +182,11 @@ public class AddThumbsCommon {
 
         // ATTENTION: This below requires to be on a clean app (where permissions have been reset)
         // Same condition as in AddThumbsFragment.addThumbsUsingTreeUris() to trigger the WRITE_EXTERNAL_STORAGE permission
-        if (Build.VERSION.SDK_INT <= 29 || !prefs.getBoolean("useSAF", true)) {
-            // Trigger only if WRITE_EXTERNAL_STORAGE is not granted yet
-            if (!PermissionManager.hasWriteExternalStorage(context)) {
+        for (String perm : PermissionManager.getRequiredStoragePermissions(prefs)) {
+            if (!PermissionManager.hasStoragePermission(context, perm)) {
                 TestUtil.clickPermissionAllowButton();
             }
+
         }
 
         // Wait until 'WorkingDirPermActivity' has launched

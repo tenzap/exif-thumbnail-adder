@@ -36,12 +36,14 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import java.util.ArrayList;
+
 public class PermissionManager {
 
     Fragment fragment;
     SharedPreferences prefs;
 
-    public static boolean hasWriteExternalStoragePermission = false;
+    public static boolean hasStoragePermission = false;
     public static boolean hasPostNotificationPermission = false;
 
     private boolean continueWithoutWriteExternalStoragePermission = false;
@@ -77,37 +79,15 @@ public class PermissionManager {
         return Environment.isExternalStorageManager();
     }
 
-    public static boolean hasWriteExternalStorage(Context ctx) {
-        // WRITE_EXTERNAL_STORAGE is available only for API <= 29
-        if (Build.VERSION.SDK_INT <= 29) {
-            return ContextCompat.checkSelfPermission(
-                    ctx,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) ==
-                    PackageManager.PERMISSION_GRANTED;
-        } else {
-            return false;
-        }
+    public static boolean hasStoragePermission(Context ctx, String permission) {
+        return ContextCompat.checkSelfPermission(
+                ctx,
+                permission) ==
+                PackageManager.PERMISSION_GRANTED;
     }
 
     public static boolean hasWriteExternalStorageOrAllFilesAccess(Context ctx) {
-        return PermissionManager.hasWriteExternalStorage(ctx) || hasAllFilesAccessPermission();
-    }
-
-    public static boolean hasReadExternalStorage(Context ctx) {
-        // READ_EXTERNAL_STORAGE is available only for API <= 32
-        if (Build.VERSION.SDK_INT <= 32) {
-            return ContextCompat.checkSelfPermission(
-                    ctx,
-                    Manifest.permission.READ_EXTERNAL_STORAGE) ==
-                    PackageManager.PERMISSION_GRANTED;
-        } else if (Build.VERSION.SDK_INT >= 33) {
-            return ContextCompat.checkSelfPermission(
-                    ctx,
-                    Manifest.permission.READ_MEDIA_IMAGES) ==
-                    PackageManager.PERMISSION_GRANTED;
-        } else {
-            return false;
-        }
+        return PermissionManager.hasStoragePermission(ctx, "WRITE_EXTERNAL_STORAGE") || hasAllFilesAccessPermission();
     }
 
     public static boolean hasPostNotifications(Context ctx) {
@@ -118,11 +98,14 @@ public class PermissionManager {
     }
 
     public boolean checkPermissions() {
-        boolean writeExternalStorageSufficient = checkWriteExternalStoragePermission();
+        boolean writeStorageSufficient = false;
+        for (String permission : getRequiredStoragePermissions(prefs)) {
+            writeStorageSufficient = checkStoragePermission(permission);
+        }
         boolean workingDirSufficient = checkWorkingDirPermission();
         boolean notificationSufficient = checkNotificationPermission();
 
-        if (writeExternalStorageSufficient &&
+        if (writeStorageSufficient &&
                 workingDirSufficient &&
                 notificationSufficient)
             return true;
@@ -130,39 +113,24 @@ public class PermissionManager {
             return false;
     }
 
-    private boolean checkWriteExternalStoragePermission() {
+    private boolean checkStoragePermission(String permission) {
+        AddThumbsLogLiveData.get().appendLog(Html.fromHtml(fragment.getString(R.string.frag1_check_write_perm) + permission, 1));
+
+        if (requestStorage(permission)) {
+            AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + fragment.getString(R.string.frag1_log_successful) + "</span><br>", 1));
+            return true;
+        }
+
         if (prefs.getBoolean("useSAF", true)) {
-            // Request WRITE_EXTERNAL_STORAGE because this is the only way to
-            // update the timestamps.
             if (Build.VERSION.SDK_INT <= 29) {
-                AddThumbsLogLiveData.get().appendLog(Html.fromHtml(fragment.getString(R.string.frag1_check_write_perm), 1));
-                if (requestWriteExternalStorage()) {
-                    AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + fragment.getString(R.string.frag1_log_successful) + "</span><br>", 1));
+                if (continueWithoutWriteExternalStoragePermission) {
+                    AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:blue'>" + fragment.getString(R.string.frag1_continue_without_timestamps) + "</span><br>", 1));
                     return true;
-                } else {
-                    if (continueWithoutWriteExternalStoragePermission) {
-                        AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:blue'>" + fragment.getString(R.string.frag1_continue_without_timestamps) + "</span><br>", 1));
-                        return true;
-                    } else {
-                        AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>" + fragment.getString(R.string.frag1_log_unsuccessful) + "</span><br>", 1));
-                    }
                 }
-            } else {
-                // For API >= 30, WRITE_EXTERNAL_STORAGE is not available anymore
-                // So this is managed by MANAGE_EXTERNAL_STORAGE
-                // Return true here so as not to block further processing
-                return true;
-            }
-        } else {
-            // Using "Files"
-            AddThumbsLogLiveData.get().appendLog(Html.fromHtml(fragment.getString(R.string.frag1_check_write_perm), 1));
-            if (!requestWriteExternalStorage()) {
-                AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + fragment.getString(R.string.frag1_log_successful) + "</span><br>", 1));
-                return true;
-            } else {
-                AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>" + fragment.getString(R.string.frag1_log_unsuccessful) + "</span><br>", 1));
             }
         }
+
+        AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>" + fragment.getString(R.string.frag1_log_unsuccessful) + "</span><br>", 1));
         return false;
     }
 
@@ -257,43 +225,59 @@ public class PermissionManager {
         return hasPostNotificationPermission;
     }
 
-    private boolean requestWriteExternalStorage() {
-        if (PermissionManager.hasWriteExternalStorage(fragment.getContext())) {
-            hasWriteExternalStoragePermission = true;
-            return hasWriteExternalStoragePermission;
+    private boolean requestStorage(String permission) {
+        if (PermissionManager.hasStoragePermission(fragment.getContext(), permission)) {
+            hasStoragePermission = true;
+            return hasStoragePermission;
         }
 
-        if (fragment.shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        if (fragment.shouldShowRequestPermissionRationale(permission)) {
             AlertDialog.Builder alertBuilder = new AlertDialog.Builder(fragment.getContext());
             alertBuilder.setCancelable(true);
             alertBuilder.setTitle(R.string.frag1_perm_request_title);
-            if (prefs.getBoolean("useSAF", true) &&
-                    Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-                alertBuilder.setMessage(R.string.frag1_perm_request_message_timestamp);
-                alertBuilder.setNegativeButton(R.string.frag1_perm_request_deny, new DialogInterface.OnClickListener() {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        synchronized (sync) {
-                            continueWithoutWriteExternalStoragePermission = true;
-                            sync.notify();
-                        }
-                    }
-                });
-            } else {
-                alertBuilder.setMessage(R.string.frag1_perm_request_message_Files);
+
+            int msg_id, msg_positive_button, msg_neutral_button, msg_negative_button;
+
+            switch (permission) {
+                case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                    if (prefs.getBoolean("useSAF", true) && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
+                        msg_id = R.string.frag1_perm_request_message_timestamp;
+                    else
+                        msg_id = R.string.frag1_perm_request_message_Files;
+                case Manifest.permission.READ_EXTERNAL_STORAGE:
+                case Manifest.permission.READ_MEDIA_IMAGES:
+                case Manifest.permission.ACCESS_MEDIA_LOCATION:
+                default:
+                    msg_id = R.string.frag1_perm_request_message_Files;
+                    break;
             }
-            alertBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+
+            msg_positive_button = android.R.string.ok;
+            msg_neutral_button = android.R.string.cancel;
+            msg_negative_button = R.string.frag1_perm_request_deny;
+
+            alertBuilder.setMessage(msg_id);
+            alertBuilder.setPositiveButton(msg_positive_button, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     synchronized (sync) {
-                        requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                        requestPermissionLauncher.launch(permission);
                     }
                 }
             });
-            alertBuilder.setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+            alertBuilder.setNeutralButton(msg_neutral_button, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     synchronized (sync) {
+                        sync.notify();
+                    }
+                }
+            });
+            alertBuilder.setNegativeButton(msg_negative_button, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    synchronized (sync) {
+                        if (prefs.getBoolean("useSAF", true) &&
+                                Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+                            continueWithoutWriteExternalStoragePermission = true;
+                        }
                         sync.notify();
                     }
                 }
@@ -316,7 +300,7 @@ public class PermissionManager {
             }
         } else {
             synchronized (sync) {
-                requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                requestPermissionLauncher.launch(permission);
                 try {
                     sync.wait();
                 } catch (Exception e) {
@@ -324,6 +308,40 @@ public class PermissionManager {
                 }
             }
         }
-        return hasWriteExternalStoragePermission;
+        return hasStoragePermission;
     }
+
+    public static ArrayList<String> getRequiredStoragePermissions(SharedPreferences prefs) {
+        ArrayList<String> s = new ArrayList<>();
+
+        // API <= 29
+        //  - if using SAF: WRITE_EXTERNAL_STORAGE to update the timestamps
+        //  - if using Files: WRITE_EXTERNAL_STORAGE to be able to write the files with 'Files'
+        if (Build.VERSION.SDK_INT <= 29) {
+            s.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        // API 30-32
+        //  - if using SAF: none
+        //  - if using SAF + libexif: READ_EXTERNAL_STORAGE
+        //  - if using Files: TODO
+        //  - if using Files: TODO
+        //
+        if (Build.VERSION.SDK_INT >= 30 && Build.VERSION.SDK_INT <= 32) {
+            if (prefs.getString("exif_library", "").equals("exiflib_libexif")) {
+                s.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            }
+        }
+
+        // API 33
+        //  - is using SAF: TODO: READ_MEDIA_IMAGES + permission to modify media
+        //
+        if (Build.VERSION.SDK_INT >= 33) {
+            s.add(Manifest.permission.READ_MEDIA_IMAGES);
+            s.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
+        }
+
+        return s;
+    }
+
 }
