@@ -231,8 +231,7 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         InputDirs inputDirs = new InputDirs(prefsUri);
         inputDirs.add(path);
 
-        //prefs.edit().putString("srcUris", inputDirs.toString()).commit();
-        prefs.edit().putString("srcUris", inputDirs.toString()).apply();
+        prefs.edit().putString("srcUris", inputDirs.toString()).commit();
     }
 
 }

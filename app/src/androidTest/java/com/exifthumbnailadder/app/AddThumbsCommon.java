@@ -159,7 +159,6 @@ public class AddThumbsCommon {
         TestUtil.addSourceFolder(dir.copyPath());
 
         // Check that folder is in the list
-        SharedPreferences.Editor editor = prefs.edit();
         InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
 
         assertEquals(1, inputDirs.size());
