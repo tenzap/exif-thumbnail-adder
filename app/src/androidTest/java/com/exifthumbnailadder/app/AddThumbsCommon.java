@@ -181,8 +181,8 @@ public class AddThumbsCommon {
         onView(withId(R.id.button_addThumbs)).perform(click());
 
         // ATTENTION: This below requires to be on a clean app (where permissions have been reset)
-        for (String perm : PermissionManager.getRequiredStoragePermissions(prefs)) {
-            if (!PermissionManager.hasStoragePermission(context, perm)) {
+        for (String perm : PermissionManager.getRequiredPermissions(prefs)) {
+            if (!PermissionManager.isPermissionGranted(context, perm)) {
                 TestUtil.clickPermissionAllowButton();
             }
         }

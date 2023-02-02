@@ -43,7 +43,7 @@ public class PermissionManager {
     Fragment fragment;
     SharedPreferences prefs;
 
-    public static boolean hasStoragePermission = false;
+    public static boolean isPermissionGranted = false;
 
     private boolean continueWithoutWriteExternalStoragePermission = false;
 
@@ -75,7 +75,7 @@ public class PermissionManager {
         return Environment.isExternalStorageManager();
     }
 
-    public static boolean hasStoragePermission(Context ctx, String permission) {
+    public static boolean isPermissionGranted(Context ctx, String permission) {
         return ContextCompat.checkSelfPermission(
                 ctx,
                 permission) ==
@@ -83,13 +83,13 @@ public class PermissionManager {
     }
 
     public static boolean hasWriteExternalStorageOrAllFilesAccess(Context ctx) {
-        return PermissionManager.hasStoragePermission(ctx, "WRITE_EXTERNAL_STORAGE") || hasAllFilesAccessPermission();
+        return PermissionManager.isPermissionGranted(ctx, "WRITE_EXTERNAL_STORAGE") || hasAllFilesAccessPermission();
     }
 
     public boolean checkPermissions() {
         boolean hasMissingPermission = false;
 
-        for (String permission : getRequiredStoragePermissions(prefs)) {
+        for (String permission : getRequiredPermissions(prefs)) {
             if(!checkPermission(permission))
                 hasMissingPermission = true;
         }
@@ -121,7 +121,7 @@ public class PermissionManager {
 
         AddThumbsLogLiveData.get().appendLog(Html.fromHtml(label,1));
 
-        if (requestStorage(permission)) {
+        if (requestPermission(permission)) {
             AddThumbsLogLiveData.get().appendLog(Html.fromHtml(outcome_success,1));
             return true;
         }
@@ -156,10 +156,10 @@ public class PermissionManager {
         return false;
     }
 
-    private boolean requestStorage(String permission) {
-        if (PermissionManager.hasStoragePermission(fragment.getContext(), permission)) {
-            hasStoragePermission = true;
-            return hasStoragePermission;
+    private boolean requestPermission(String permission) {
+        if (PermissionManager.isPermissionGranted(fragment.getContext(), permission)) {
+            isPermissionGranted = true;
+            return isPermissionGranted;
         }
 
         if (fragment.shouldShowRequestPermissionRationale(permission)) {
@@ -243,10 +243,10 @@ public class PermissionManager {
                 }
             }
         }
-        return hasStoragePermission;
+        return isPermissionGranted;
     }
 
-    public static ArrayList<String> getRequiredStoragePermissions(SharedPreferences prefs) {
+    public static ArrayList<String> getRequiredPermissions(SharedPreferences prefs) {
         ArrayList<String> s = new ArrayList<>();
 
         // API <= 29

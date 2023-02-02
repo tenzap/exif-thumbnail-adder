@@ -303,9 +303,9 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
     private ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {
-                    PermissionManager.hasStoragePermission = true;
+                    PermissionManager.isPermissionGranted = true;
                 } else {
-                    PermissionManager.hasStoragePermission = false;
+                    PermissionManager.isPermissionGranted = false;
                 }
                 synchronized(PermissionManager.sync) {
                     PermissionManager.sync.notify();
