@@ -44,19 +44,15 @@ public class PermissionManager {
     SharedPreferences prefs;
 
     public static boolean hasStoragePermission = false;
-    public static boolean hasPostNotificationPermission = false;
 
     private boolean continueWithoutWriteExternalStoragePermission = false;
 
     ActivityResultLauncher<String> requestPermissionLauncher;
-    ActivityResultLauncher<String> requestPostNotificationPermissionLauncher;
 
     final public static Object sync = new Object();
 
-    PermissionManager(Fragment fragment, ActivityResultLauncher<String> requestPermissionLauncher,
-                      ActivityResultLauncher<String> requestPostNotificationPermissionLauncher) {
+    PermissionManager(Fragment fragment, ActivityResultLauncher<String> requestPermissionLauncher) {
         this.requestPermissionLauncher = requestPermissionLauncher;
-        this.requestPostNotificationPermissionLauncher = requestPostNotificationPermissionLauncher;
         this.fragment = fragment;
         prefs = PreferenceManager.getDefaultSharedPreferences(fragment.getContext());
     }
@@ -90,34 +86,43 @@ public class PermissionManager {
         return PermissionManager.hasStoragePermission(ctx, "WRITE_EXTERNAL_STORAGE") || hasAllFilesAccessPermission();
     }
 
-    public static boolean hasPostNotifications(Context ctx) {
-        return ContextCompat.checkSelfPermission(
-                ctx,
-                android.Manifest.permission.POST_NOTIFICATIONS) ==
-                PackageManager.PERMISSION_GRANTED;
-    }
-
     public boolean checkPermissions() {
-        boolean writeStorageSufficient = false;
-        for (String permission : getRequiredStoragePermissions(prefs)) {
-            writeStorageSufficient = checkStoragePermission(permission);
-        }
-        boolean workingDirSufficient = checkWorkingDirPermission();
-        boolean notificationSufficient = checkNotificationPermission();
+        boolean hasMissingPermission = false;
 
-        if (writeStorageSufficient &&
-                workingDirSufficient &&
-                notificationSufficient)
-            return true;
-        else
-            return false;
+        for (String permission : getRequiredStoragePermissions(prefs)) {
+            if(!checkPermission(permission))
+                hasMissingPermission = true;
+        }
+
+        if (!checkWorkingDirPermission())
+            hasMissingPermission = true;
+
+        return !hasMissingPermission;
     }
 
-    private boolean checkStoragePermission(String permission) {
-        AddThumbsLogLiveData.get().appendLog(Html.fromHtml(fragment.getString(R.string.frag1_check_write_perm) + permission, 1));
+    private boolean checkPermission(String permission) {
+        String label, outcome_success, outcome_failure;
+        switch (permission) {
+            case Manifest.permission.POST_NOTIFICATIONS:
+                label = fragment.getString(R.string.notification_status);
+                outcome_success = "<span style='color:green'>" + fragment.getString(R.string.enabled) + "</span><br>";
+                outcome_failure = "<span style='color:blue'>" + fragment.getString(R.string.disabled) + "</span><br>";
+                break;
+            case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+            case Manifest.permission.READ_EXTERNAL_STORAGE:
+            case Manifest.permission.READ_MEDIA_IMAGES:
+            case Manifest.permission.ACCESS_MEDIA_LOCATION:
+            default:
+                label = fragment.getString(R.string.frag1_check_write_perm);
+                outcome_success = "<span style='color:green'>" + fragment.getString(R.string.frag1_log_successful) + "</span><br>";
+                outcome_failure = "<span style='color:red'>" + fragment.getString(R.string.frag1_log_unsuccessful) + "</span><br>";
+                break;
+        }
+
+        AddThumbsLogLiveData.get().appendLog(Html.fromHtml(label,1));
 
         if (requestStorage(permission)) {
-            AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + fragment.getString(R.string.frag1_log_successful) + "</span><br>", 1));
+            AddThumbsLogLiveData.get().appendLog(Html.fromHtml(outcome_success,1));
             return true;
         }
 
@@ -130,7 +135,13 @@ public class PermissionManager {
             }
         }
 
-        AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>" + fragment.getString(R.string.frag1_log_unsuccessful) + "</span><br>", 1));
+        AddThumbsLogLiveData.get().appendLog(Html.fromHtml(outcome_failure, 1));
+
+        // Not having notification permission shouldn't block processing of pictures.
+        // So return true
+        if (permission.equals(Manifest.permission.POST_NOTIFICATIONS))
+            return true;
+
         return false;
     }
 
@@ -143,86 +154,6 @@ public class PermissionManager {
             AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>" + fragment.getString(R.string.frag1_log_unsuccessful) + "</span><br>", 1));
         }
         return false;
-    }
-
-    private boolean checkNotificationPermission() {
-        AddThumbsLogLiveData.get().appendLog(Html.fromHtml(fragment.getString(R.string.notification_status), 1));
-        if (requestNotificationPermission()) {
-            AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + fragment.getString(R.string.enabled) + "</span><br>", 1));
-        } else {
-            AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:blue'>" + fragment.getString(R.string.disabled) + "</span><br>", 1));
-        }
-        // Not having notification permission doesn't block processing of pictures.
-        // Always return true
-        return true;
-    }
-
-    private boolean requestNotificationPermission() {
-        if (PermissionManager.hasPostNotifications(fragment.getContext())) {
-            hasPostNotificationPermission = true;
-            return true;
-        }
-
-        if (Build.VERSION.SDK_INT >= 33) {
-            if (fragment.shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(fragment.getContext());
-                alertBuilder.setCancelable(true);
-                alertBuilder.setTitle(R.string.notification_permission_title);
-                alertBuilder.setMessage(R.string.notification_permission_message);
-                alertBuilder.setNegativeButton(R.string.frag1_perm_request_deny, new DialogInterface.OnClickListener() {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        synchronized (sync) {
-                            sync.notify();
-                        }
-                    }
-                });
-                alertBuilder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        synchronized (sync) {
-                            requestPostNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
-                        }
-                    }
-                });
-                alertBuilder.setNeutralButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-                    public void onClick(DialogInterface dialog, int which) {
-                        synchronized (sync) {
-                            sync.notify();
-                        }
-                    }
-                });
-
-                synchronized (sync) {
-                    fragment.getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            AlertDialog alert = alertBuilder.create();
-                            alert.show();
-                        }
-                    });
-                    // Wait until user answered
-                    try {
-                        sync.wait();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            } else {
-                synchronized (sync) {
-                    requestPostNotificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
-                    try {
-                        sync.wait();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        }
-
-        return hasPostNotificationPermission;
     }
 
     private boolean requestStorage(String permission) {
@@ -244,6 +175,10 @@ public class PermissionManager {
                         msg_id = R.string.frag1_perm_request_message_timestamp;
                     else
                         msg_id = R.string.frag1_perm_request_message_Files;
+                    break;
+                case Manifest.permission.POST_NOTIFICATIONS:
+                    msg_id = R.string.notification_permission_message;
+                    break;
                 case Manifest.permission.READ_EXTERNAL_STORAGE:
                 case Manifest.permission.READ_MEDIA_IMAGES:
                 case Manifest.permission.ACCESS_MEDIA_LOCATION:
@@ -339,9 +274,9 @@ public class PermissionManager {
         if (Build.VERSION.SDK_INT >= 33) {
             s.add(Manifest.permission.READ_MEDIA_IMAGES);
             s.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
+            s.add(Manifest.permission.POST_NOTIFICATIONS);
         }
 
         return s;
     }
-
 }

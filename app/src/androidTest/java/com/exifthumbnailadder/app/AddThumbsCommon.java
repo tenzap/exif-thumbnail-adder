@@ -181,12 +181,10 @@ public class AddThumbsCommon {
         onView(withId(R.id.button_addThumbs)).perform(click());
 
         // ATTENTION: This below requires to be on a clean app (where permissions have been reset)
-        // Same condition as in AddThumbsFragment.addThumbsUsingTreeUris() to trigger the WRITE_EXTERNAL_STORAGE permission
         for (String perm : PermissionManager.getRequiredStoragePermissions(prefs)) {
             if (!PermissionManager.hasStoragePermission(context, perm)) {
                 TestUtil.clickPermissionAllowButton();
             }
-
         }
 
         // Wait until 'WorkingDirPermActivity' has launched
@@ -200,11 +198,6 @@ public class AddThumbsCommon {
         onView(withId(R.id.button_checkPermissions)).perform(scrollTo(), click());
 
         TestUtil.givePermissionToWorkingDir();
-
-        // On API33 (and when target SDK <= 32), the user is asked to give Notification permission
-        if (!PermissionManager.hasPostNotifications(context)) {
-            TestUtil.clickPermissionAllowButton();
-        }
 
         int runs = 1;
         if (opts != null &&

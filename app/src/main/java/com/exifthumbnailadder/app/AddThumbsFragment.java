@@ -267,8 +267,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                 AddThumbsLogLiveData.get().appendLog(getString(R.string.frag1_log_starting));
 
                 PermissionManager pm = new PermissionManager(getParentFragment(),
-                        requestPermissionLauncher,
-                        requestPostNotificationPermissionLauncher);
+                        requestPermissionLauncher);
 
                 if(pm.checkPermissions()) {
                     // Launch service
@@ -307,19 +306,6 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                     PermissionManager.hasStoragePermission = true;
                 } else {
                     PermissionManager.hasStoragePermission = false;
-                }
-                synchronized(PermissionManager.sync) {
-                    PermissionManager.sync.notify();
-                }
-            });
-
-    private ActivityResultLauncher<String> requestPostNotificationPermissionLauncher =
-            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-                // This is relevant only starting from API33
-                if (isGranted) {
-                    PermissionManager.hasPostNotificationPermission = true;
-                } else {
-                    PermissionManager.hasPostNotificationPermission = false;
                 }
                 synchronized(PermissionManager.sync) {
                     PermissionManager.sync.notify();
