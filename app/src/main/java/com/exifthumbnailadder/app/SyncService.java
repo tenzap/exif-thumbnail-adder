@@ -167,6 +167,7 @@ public class SyncService extends Service {
                         .setSmallIcon(R.drawable.ic_notif_status_bar)
                         .setContentIntent(pendingIntent)
                         .setTicker(getText(R.string.frag1_text_processing_log))
+                        .setOngoing(true)
                         .build();
 
         return notification;
