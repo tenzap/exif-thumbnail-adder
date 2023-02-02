@@ -74,6 +74,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 
+
 @RunWith(AndroidJUnit4.class)
 public class AddThumbsCommon {
     Context context;
@@ -164,7 +165,7 @@ public class AddThumbsCommon {
 
         if (opts != null &&
                 opts.containsKey("all_files_access") &&
-                opts.get("all_files_access").equals(new Boolean(true))) {
+                opts.get("all_files_access").equals(Boolean.TRUE)) {
             TestUtil.requestAllFilesAccess();
         } else {
             // TODO: revokeAllFilesAccess https://stackoverflow.com/q/75102412/15401262addThumbsSettingsUpdateInSourceOffWithDestOverwrite
@@ -202,7 +203,7 @@ public class AddThumbsCommon {
         int runs = 1;
         if (opts != null &&
                 opts.containsKey("rerun_processing") &&
-                opts.get("rerun_processing").equals(new Boolean(true))) {
+                opts.get("rerun_processing").equals(Boolean.TRUE)) {
             runs = 2;
         }
 

@@ -48,7 +48,7 @@ public class zAddThumbs extends AddThumbsCommon {
     public void addThumbsSettingsAllFilesAccessOn() throws Exception {
         // Only starting from Android 11 / API 30
         HashMap<String, Boolean> opts = new HashMap<String, Boolean>();
-        opts.put("all_files_access", new Boolean(true));
+        opts.put("all_files_access", Boolean.TRUE);
         addThumbs(opts);
     }
 
@@ -59,7 +59,7 @@ public class zAddThumbs extends AddThumbsCommon {
         e.apply();
         // Only starting from Android 11 / API 30
         HashMap<String, Boolean> opts = new HashMap<String, Boolean>();
-        opts.put("all_files_access", new Boolean(true));
+        opts.put("all_files_access", Boolean.TRUE);
         addThumbs(opts);
     }
 
@@ -70,7 +70,7 @@ public class zAddThumbs extends AddThumbsCommon {
         Assume.assumeTrue(Environment.isExternalStorageManager());
 
         HashMap<String, Boolean> opts = new HashMap<String, Boolean>();
-        opts.put("all_files_access", new Boolean(true));
+        opts.put("all_files_access", Boolean.TRUE);
 
         SharedPreferences.Editor e = prefs.edit();
         e.putBoolean("skipPicsHavingThumbnail", false);

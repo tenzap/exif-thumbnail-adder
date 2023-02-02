@@ -43,7 +43,7 @@ public class AddThumbs extends AddThumbsCommon {
     @Test
     public void addThumbsSettingsDefaultTwoRuns() throws Exception {
         HashMap<String, Boolean> opts = new HashMap<String, Boolean>();
-        opts.put("rerun_processing", new Boolean(true));
+        opts.put("rerun_processing", Boolean.TRUE);
         addThumbs();
     }
 
@@ -93,7 +93,7 @@ public class AddThumbs extends AddThumbsCommon {
         e.putBoolean("writeThumbnailedToOriginalFolder", false);
         e.apply();
         HashMap<String, Boolean> opts = new HashMap<String, Boolean>();
-        opts.put("rerun_processing", new Boolean(true));
+        opts.put("rerun_processing", Boolean.TRUE);
         addThumbs(opts);
     }
 
