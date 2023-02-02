@@ -36,6 +36,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
@@ -50,6 +51,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    LocalBroadcastManager broadcaster;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
             //editor.commit();
             editor.apply();
         }
+
+        broadcaster = LocalBroadcastManager.getInstance(this);
     }
 
     @Override
@@ -179,6 +184,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                         grantUriPermission(getPackageName(), treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_PREFIX_URI_PERMISSION);
                         getContentResolver().takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION );
                         setChosenPath( pickedDir.getUri());
+
+                        Intent intent = new Intent("com.exifthumbnailadder.app.srcUris_Added");
+                        broadcaster.sendBroadcast(intent);
                     }
                 }
             });

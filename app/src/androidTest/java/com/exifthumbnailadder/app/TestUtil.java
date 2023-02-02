@@ -26,7 +26,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -34,6 +37,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
@@ -44,6 +48,8 @@ import androidx.test.uiautomator.UiSelector;
 import java.io.IOException;
 
 public class TestUtil {
+
+    private static boolean srcAdded = false;
 
     public static void requestAllFilesAccess() throws Exception {
         //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !MainActivity.haveAllFilesAccessPermission()) {
@@ -95,6 +101,25 @@ public class TestUtil {
         UiDevice device = UiDevice.getInstance(getInstrumentation());
 
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+
+        // Create broadcast receiver that will tell when srcUri has been
+        // really added to prefs.
+        BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getAction()) {
+                    case "com.exifthumbnailadder.app.srcUris_Added":
+                        srcAdded = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("com.exifthumbnailadder.app.srcUris_Added");
+        LocalBroadcastManager.getInstance(context)
+                .registerReceiver(receiver, filter);
 
         onView(withId(R.id.select_path_button)).perform(click());
 //        UiObject uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + context.getString(R.string.settings_button_add_dir)));
@@ -204,6 +229,17 @@ public class TestUtil {
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSelect()));
             uiElement.clickAndWaitForNewWindow();
         }
+
+        // Wait until we received the com.exifthumbnailadder.app.srcUris_Added message
+        // or until timeout
+        long max_duration = 1000;
+        long timeout = System.currentTimeMillis() + max_duration;
+        while (!srcAdded && System.currentTimeMillis() < timeout) {
+            Thread.sleep(50);
+        }
+
+        LocalBroadcastManager.getInstance(context)
+                .unregisterReceiver(receiver);
     }
 
     public static void givePermissionToWorkingDir() throws Exception {
