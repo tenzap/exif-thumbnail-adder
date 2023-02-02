@@ -25,5 +25,6 @@
 
 jint throwNoClassDefError( JNIEnv *env, char *message );
 jint throwError( JNIEnv *env, char *message );
+jint throwNativeException( JNIEnv *env, char *message );
 
 #endif //EXIF_THUMBNAIL_ADDER_EXCEPTIONS_H

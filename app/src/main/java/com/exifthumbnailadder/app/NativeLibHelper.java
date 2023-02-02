@@ -53,6 +53,9 @@ public class NativeLibHelper {
     native static int copyTimestamp(String file, String reference) throws TimestampHelperException;
     native static int setTimestamp(String file, double atime, double mtime) throws TimestampHelperException;
 
+    native static int readFile(String file) throws TimestampHelperException;
+    native static int writeFile(String file) throws TimestampHelperException;
+
     public void writeThumbnailWithLibexif (
             InputStream srcImgIs, OutputStream newImgOs, Bitmap thumbnail)
             throws Exception {

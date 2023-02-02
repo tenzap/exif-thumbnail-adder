@@ -89,6 +89,7 @@ add_library(exifThumbnailAdderHelpers
         ${SOURCES_ffmpeg} ${HEADERS_ffmpeg}
         ${SOURCES_exceptions}
         ${SOURCES_timestamp}
+        tests.c
         )
 
 target_include_directories(exifThumbnailAdderHelpers PRIVATE .)

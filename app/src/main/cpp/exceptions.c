@@ -52,3 +52,20 @@ jint throwError( JNIEnv *env, char *message )
 
     return (*env)->ThrowNew( env, exClass, message );
 }
+
+jint throwNativeException( JNIEnv *env, char *message )
+{
+    if ((*env)->ExceptionCheck(env) == JNI_TRUE) {
+        return 99;
+    }
+
+    jclass exClass;
+    char *className = "com/exifthumbnailadder/app/exception/TimestampHelperException" ;
+
+    exClass = (*env)->FindClass( env, className );
+    if ( exClass == NULL ) {
+        return throwNoClassDefError( env, className );
+    }
+
+    return (*env)->ThrowNew( env, exClass, message );
+}
