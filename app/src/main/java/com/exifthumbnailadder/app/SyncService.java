@@ -129,6 +129,11 @@ public class SyncService extends Service {
         broadcaster.sendBroadcast(intent);
     }
 
+    private void sendStoppedByUser() {
+        Intent intent = new Intent("com.exifthumbnailadder.app.SYNC_SERVICE_RESULT_STOPPED_BY_USER");
+        broadcaster.sendBroadcast(intent);
+    }
+
     // https://stackoverflow.com/questions/5528288/how-do-i-update-the-notification-text-for-a-foreground-service-in-android
     private Notification getMyActivityNotification(String text) {
         Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -293,6 +298,7 @@ public class SyncService extends Service {
             if (stopProcessing) {
                 stopProcessing = false;
                 updateLogAndNotif(Html.fromHtml("<br><br>"+getString(R.string.frag1_log_stopped_by_user),1));
+                sendStoppedByUser();
                 return false;
             }
 

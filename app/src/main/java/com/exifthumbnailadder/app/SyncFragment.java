@@ -62,6 +62,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
             public void onReceive(Context context, Intent intent) {
                 switch (intent.getAction()) {
                     case "com.exifthumbnailadder.app.SYNC_SERVICE_RESULT_FINISHED":
+                    case "com.exifthumbnailadder.app.SYNC_SERVICE_RESULT_STOPPED_BY_USER":
                         setIsProcessFalse();
                         break;
                     default:
@@ -85,6 +86,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
         super.onStart();
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.exifthumbnailadder.app.SYNC_SERVICE_RESULT_FINISHED");
+        filter.addAction("com.exifthumbnailadder.app.SYNC_SERVICE_RESULT_STOPPED_BY_USER");
         LocalBroadcastManager.getInstance(getContext())
                 .registerReceiver(receiver, filter);
     }
@@ -119,9 +121,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
         view.findViewById(R.id.sync_button_stop).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stopProcessing = true;
                 getContext().stopService(syncServiceIntent);
-                displayStartButton();
             }
         });
 
@@ -168,7 +168,10 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
         if (ServiceUtil.isServiceRunning(getContext(), SyncService.class)) {
             displayStopButton();
         } else {
-            displayStartButton();
+            if (isProcessing)
+                displayStopButton();
+            else
+                displayStartButton();
         }
 
         getActivity().setTitle(R.string.action_sync);
