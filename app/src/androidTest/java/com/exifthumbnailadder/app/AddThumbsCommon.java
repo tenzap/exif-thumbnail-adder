@@ -204,6 +204,11 @@ public class AddThumbsCommon {
 
         TestUtil.givePermissionToWorkingDir();
 
+        // On API33 (and when target SDK <= 32), the user is asked to give Notification permission
+        if (!PermissionManager.hasPostNotifications(context)) {
+            TestUtil.clickPermissionAllowButton();
+        }
+
         int runs = 1;
         if (opts != null &&
                 opts.containsKey("rerun_processing") &&
@@ -231,9 +236,8 @@ public class AddThumbsCommon {
             LocalBroadcastManager.getInstance(context)
                     .registerReceiver(receiver, filter);
 
-            // On API33 (and when target SDK <= 32), the user is asked to give Notification permission
-            if (i == 0 && Build.VERSION.SDK_INT >=33) {
-                TestUtil.clickPermissionAllowButton();
+            if (i >= 1) {
+                onView(withId(R.id.button_addThumbs)).perform(click());
             }
 
             // Wait until processing is finished or has hit timeout (duration is in ms)
