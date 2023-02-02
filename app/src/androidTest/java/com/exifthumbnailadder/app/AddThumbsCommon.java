@@ -23,7 +23,6 @@ package com.exifthumbnailadder.app;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
-import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -54,7 +53,8 @@ import androidx.preference.PreferenceManager;
 import androidx.test.espresso.PerformException;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
-import androidx.test.espresso.intent.rule.IntentsTestRule;
+import androidx.test.espresso.intent.Intents;
+import androidx.test.espresso.intent.rule.IntentsRule;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.uiautomator.UiDevice;
@@ -94,8 +94,7 @@ public class AddThumbsCommon {
     public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
 
     @Rule
-    public IntentsTestRule<WorkingDirPermActivity> intentsTestRule =
-            new IntentsTestRule<>(WorkingDirPermActivity.class);
+    public IntentsRule intentsTestRule = new IntentsRule();
 
     // https://stackoverflow.com/a/54203607
     @BeforeClass
@@ -195,7 +194,7 @@ public class AddThumbsCommon {
         }
 
         // Wait until 'WorkingDirPermActivity' has launched
-        intended(allOf(hasComponent(WorkingDirPermActivity.class.getName())));
+        Intents.intended(allOf(hasComponent(WorkingDirPermActivity.class.getName())));
 
         // The WorkingDirPermActivity has now launched.
         // Create & Give permissions to the WorkingDir
