@@ -76,6 +76,10 @@ public class PermissionManager {
     }
 
     public static boolean isPermissionGranted(Context ctx, String permission) {
+        if (permission.equals(Manifest.permission.MANAGE_EXTERNAL_STORAGE)) {
+            return hasAllFilesAccessPermission();
+        }
+
         return ContextCompat.checkSelfPermission(
                 ctx,
                 permission) ==
@@ -107,6 +111,11 @@ public class PermissionManager {
                 label = fragment.getString(R.string.notification_status);
                 outcome_success = "<span style='color:green'>" + fragment.getString(R.string.enabled) + "</span><br>";
                 outcome_failure = "<span style='color:blue'>" + fragment.getString(R.string.disabled) + "</span><br>";
+                break;
+            case Manifest.permission.MANAGE_EXTERNAL_STORAGE:
+                label = "Checking 'All files access' permission";
+                outcome_success = "<span style='color:green'>" + fragment.getString(R.string.enabled) + "</span><br>";
+                outcome_failure = "<span style='color:red'>" + "Disabled. This can be changed in the settings." + "</span><br>";
                 break;
             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
             case Manifest.permission.READ_EXTERNAL_STORAGE:
@@ -249,6 +258,8 @@ public class PermissionManager {
     public static ArrayList<String> getRequiredPermissions(SharedPreferences prefs) {
         ArrayList<String> s = new ArrayList<>();
 
+        // 1. permissions for access to the files and proper processing
+
         // API <= 29
         //  - if using SAF: WRITE_EXTERNAL_STORAGE to update the timestamps
         //  - if using Files: WRITE_EXTERNAL_STORAGE to be able to write the files with 'Files'
@@ -257,23 +268,48 @@ public class PermissionManager {
         }
 
         // API 30-32
-        //  - if using SAF: none
-        //  - if using SAF + libexif: READ_EXTERNAL_STORAGE
-        //  - if using Files: TODO
-        //  - if using Files: TODO
+        //  - if using SAF:
+        //      none (+ optionally MANAGE_EXTERNAL_STORAGE to write timestamps)
+        //  - if using SAF + libexif:
+        //      like SAF only + READ_EXTERNAL_STORAGE  (+ optionally MANAGE_EXTERNAL_STORAGE to write timestamps)
+        //  - if using MediaStore
+        //      probably relevant only for files in MediaStore, ie DCIM & Pictures only.
+        //      READ_EXTERNAL_STORAGE + writeRequest as described here:
+        //       + writeRequest as described here: https://developer.android.com/training/data-storage/shared/media?hl=fr#manage-groups-files
+        //  - if using Files:
+        //      MANAGE_EXTERNAL_STORAGE/All files access
         //
         if (Build.VERSION.SDK_INT >= 30 && Build.VERSION.SDK_INT <= 32) {
-            if (prefs.getString("exif_library", "").equals("exiflib_libexif")) {
-                s.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (prefs.getBoolean("useSAF", true)) {
+                if (prefs.getString("exif_library", "").equals("exiflib_libexif")) {
+                    s.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+                }
+            } else {
+                s.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
             }
         }
 
-        // API 33
-        //  - is using SAF: TODO: READ_MEDIA_IMAGES + permission to modify media
-        //
+        // API 33:
+        //  = Like API 30-32 except we use READ_MEDIA_IMAGES instead of READ_EXTERNAL_STORAGE
         if (Build.VERSION.SDK_INT >= 33) {
-            s.add(Manifest.permission.READ_MEDIA_IMAGES);
+            if (prefs.getBoolean("useSAF", true)) {
+                if (prefs.getString("exif_library", "").equals("exiflib_libexif")) {
+                    s.add(Manifest.permission.READ_MEDIA_IMAGES);
+                }
+            } else {
+                s.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+            }
+        }
+
+        // 2. Permission to access the Exif tags related to GPS location
+        if (Build.VERSION.SDK_INT >= 29) {
             s.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
+            // TODO: Make use of setRequireOriginal when using the MediaStore
+            // https://developer.android.com/reference/android/provider/MediaStore#setRequireOriginal(android.net.Uri)
+        }
+
+        // 3. Permission for notifications
+        if (Build.VERSION.SDK_INT >= 33) {
             s.add(Manifest.permission.POST_NOTIFICATIONS);
         }
 

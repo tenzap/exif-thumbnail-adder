@@ -33,6 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -184,6 +185,8 @@ public class AddThumbsCommon {
         // ATTENTION: This below requires to be on a clean app (where permissions have been reset)
         for (String perm : PermissionManager.getRequiredPermissions(prefs)) {
             if (!PermissionManager.isPermissionGranted(context, perm)) {
+                if (perm.equals(Manifest.permission.MANAGE_EXTERNAL_STORAGE))
+                    continue;
                 TestUtil.clickPermissionAllowButton();
             }
         }
