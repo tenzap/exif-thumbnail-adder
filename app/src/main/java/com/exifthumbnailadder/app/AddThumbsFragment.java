@@ -303,6 +303,10 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         });
     }
 
+    public ActivityResultLauncher<String> getRequestPermissionLauncher() {
+        return requestPermissionLauncher;
+    }
+
     private ActivityResultLauncher<String> requestPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
                 if (isGranted) {

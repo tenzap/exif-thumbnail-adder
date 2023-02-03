@@ -104,7 +104,7 @@ public class PermissionManager {
         return !hasMissingPermission;
     }
 
-    private boolean checkPermission(String permission) {
+    public boolean checkPermission(String permission) {
         String label, outcome_success, outcome_failure;
         switch (permission) {
             case Manifest.permission.POST_NOTIFICATIONS:

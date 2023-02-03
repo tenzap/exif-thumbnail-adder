@@ -299,6 +299,30 @@ public class TestUtil {
         uiElement.clickAndWaitForNewWindow();
     }
 
+    public static void clickPermissionDenyButton() throws Exception {
+        UiDevice device = UiDevice.getInstance(getInstrumentation());
+        String resource;
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            resource = "com.android.packageinstaller:id/permission_deny_button";
+        } else {
+            resource = "com.android.permissioncontroller:id/permission_deny_button";
+        }
+        UiObject uiElement = device.findObject(new UiSelector().clickable(true).resourceId(resource));
+        uiElement.clickAndWaitForNewWindow();
+    }
+
+    public static void clickPermissionDontAskAgainButton() throws Exception {
+        UiDevice device = UiDevice.getInstance(getInstrumentation());
+        String resource;
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+            resource = "com.android.packageinstaller:id/permission_deny_dont_ask_again_button";
+        } else {
+            resource = "com.android.permissioncontroller:id/permission_deny_dont_ask_again_button";
+        }
+        UiObject uiElement = device.findObject(new UiSelector().clickable(true).resourceId(resource));
+        uiElement.clickAndWaitForNewWindow();
+    }
+
     public static void clearDocumentsUI() throws Exception {
         // This is needed so that when we enter DocumentsUI (aka file picker)
         // we always start with the same starting point in the app (not the last selected location)
