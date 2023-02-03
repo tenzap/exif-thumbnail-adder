@@ -54,6 +54,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
 
     Intent syncServiceIntent;
     BroadcastReceiver receiver;
+    private LocalBroadcastManager broadcaster;
 
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -70,6 +71,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
                 }
             }
         };
+        broadcaster = LocalBroadcastManager.getInstance(getContext());
     }
 
     @Override
@@ -247,6 +249,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
             @Override
             public void run() {
                 displayStartButton();
+                sendFinished();
             }
         });
     }
@@ -271,4 +274,8 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
         setBottomBarMenuItemsEnabled(true);
     }
 
+    private void sendFinished() {
+        Intent intent = new Intent("com.exifthumbnailadder.app.ADD_THUMBS_FRAGMENT_FINISHED");
+        broadcaster.sendBroadcast(intent);
+    }
 }

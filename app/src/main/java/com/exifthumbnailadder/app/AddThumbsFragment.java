@@ -60,6 +60,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
 
     Intent ETAServiceIntent;
     BroadcastReceiver receiver;
+    private LocalBroadcastManager broadcaster;
 
     public void onCreate(Bundle saveInstanceState) {
         super.onCreate(saveInstanceState);
@@ -77,6 +78,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                 }
             }
         };
+        broadcaster = LocalBroadcastManager.getInstance(getContext());
     }
 
     @Override
@@ -296,6 +298,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
             @Override
             public void run() {
                 displayStartButton();
+                sendFinished();
             }
         });
     }
@@ -326,5 +329,10 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         start.setVisibility(Button.GONE);
         stop.setVisibility(Button.VISIBLE);
         setBottomBarMenuItemsEnabled(false);
+    }
+
+    private void sendFinished() {
+        Intent intent = new Intent("com.exifthumbnailadder.app.ADD_THUMBS_FRAGMENT_FINISHED");
+        broadcaster.sendBroadcast(intent);
     }
 }

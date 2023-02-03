@@ -217,7 +217,7 @@ public class AddThumbsCommon {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     switch (intent.getAction()) {
-                        case "com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED":
+                        case "com.exifthumbnailadder.app.ADD_THUMBS_FRAGMENT_FINISHED":
                             finished = true;
                             break;
                         default:
@@ -226,7 +226,7 @@ public class AddThumbsCommon {
                 }
             };
             IntentFilter filter = new IntentFilter();
-            filter.addAction("com.exifthumbnailadder.app.ADD_THUMBS_SERVICE_RESULT_FINISHED");
+            filter.addAction("com.exifthumbnailadder.app.ADD_THUMBS_FRAGMENT_FINISHED");
             LocalBroadcastManager.getInstance(context)
                     .registerReceiver(receiver, filter);
 
@@ -388,7 +388,7 @@ public class AddThumbsCommon {
             @Override
             public void onReceive(Context context, Intent intent) {
                 switch (intent.getAction()) {
-                    case "com.exifthumbnailadder.app.SYNC_SERVICE_RESULT_FINISHED":
+                    case "com.exifthumbnailadder.app.SYNC_FRAGMENT_FINISHED":
                         finished = true;
                         break;
                     default:
@@ -397,7 +397,7 @@ public class AddThumbsCommon {
             }
         };
         IntentFilter filter = new IntentFilter();
-        filter.addAction("com.exifthumbnailadder.app.SYNC_SERVICE_RESULT_FINISHED");
+        filter.addAction("com.exifthumbnailadder.app.SYNC_FRAGMENT_FINISHED");
         LocalBroadcastManager.getInstance(context)
                 .registerReceiver(receiver, filter);
 
@@ -439,7 +439,7 @@ public class AddThumbsCommon {
             @Override
             public void onReceive(Context context, Intent intent) {
                 switch (intent.getAction()) {
-                    case "com.exifthumbnailadder.app.SYNC_SERVICE_RESULT_FINISHED":
+                    case "com.exifthumbnailadder.app.SYNC_FRAGMENT_FINISHED":
                         finished = true;
                         break;
                     default:
@@ -448,7 +448,7 @@ public class AddThumbsCommon {
             }
         };
         IntentFilter filter = new IntentFilter();
-        filter.addAction("com.exifthumbnailadder.app.SYNC_SERVICE_RESULT_FINISHED");
+        filter.addAction("com.exifthumbnailadder.app.SYNC_FRAGMENT_FINISHED");
         LocalBroadcastManager.getInstance(context)
                 .registerReceiver(receiver, filter);
 
