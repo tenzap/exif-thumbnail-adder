@@ -20,6 +20,9 @@
 
 package com.exifthumbnailadder.app;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -40,6 +43,7 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
+import org.hamcrest.Matchers;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -109,23 +113,34 @@ public class PermissionsTest {
             }
         }.start();
 
-        String permPackage;
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            permPackage = "com.android.packageinstaller";
-        } else {
-            permPackage = "com.android.permissioncontroller";
-        }
-
-        // Wait until permission controller is displayed
         UiDevice device = UiDevice.getInstance(getInstrumentation());
-        device.waitForWindowUpdate(permPackage, 5000);
 
-        if (answer.equals("allow")) {
-            TestUtil.clickPermissionAllowButton();
-            assertTrue("Permissions " + permission + " should be granted.", PermissionManager.isPermissionGranted(context, permission));
-        } else if (answer.equals("deny")) {
-            TestUtil.clickPermissionDenyButton();
-            assertFalse("Permissions " + permission + " should be denied.", PermissionManager.isPermissionGranted(context, permission));
+        switch (answer) {
+            case "allow":
+                TestUtil.clickPermissionAllowButton();
+                assertTrue("Permissions " + permission + " should be granted.", PermissionManager.isPermissionGranted(context, permission));
+                break;
+            case "deny":
+                TestUtil.clickPermissionDenyButton();
+                assertFalse("Permissions " + permission + " should be denied.", PermissionManager.isPermissionGranted(context, permission));
+                break;
+            case "first_deny":
+                TestUtil.clickPermissionDenyButton();
+                assertFalse("Permissions " + permission + " should be denied (first deny).", PermissionManager.isPermissionGranted(context, permission));
+                break;
+            case "second_deny":
+                device.waitForWindowUpdate(context.getPackageName(), 1000);
+                onView(withText(Matchers.equalToIgnoringCase(context.getString(R.string.frag1_perm_request_deny)))).perform(click());
+                assertFalse("Permissions " + permission + " should be denied (2nd deny).", PermissionManager.isPermissionGranted(context, permission));
+                break;
+            case "ok_allow":
+                device.waitForWindowUpdate(context.getPackageName(), 1000);
+                onView(withText(Matchers.equalToIgnoringCase(context.getString(android.R.string.ok)))).perform(click());
+                TestUtil.clickPermissionAllowButton();
+                assertTrue("Permissions " + permission + " should be granted.", PermissionManager.isPermissionGranted(context, permission));
+                break;
+            default:
+                break;
         }
     }
 
@@ -142,6 +157,20 @@ public class PermissionsTest {
     }
 
     @Test
+    public void writeExternalStorageDenyAllowTest() throws Exception {
+        requiresLowerEqualThanAPI(29);
+        permissionTest(Manifest.permission.WRITE_EXTERNAL_STORAGE, "first_deny");
+        permissionTest(Manifest.permission.WRITE_EXTERNAL_STORAGE, "ok_allow");
+    }
+
+    @Test
+    public void writeExternalStorageDenyDenyTest() throws Exception {
+        requiresLowerEqualThanAPI(29);
+        permissionTest(Manifest.permission.WRITE_EXTERNAL_STORAGE, "first_deny");
+        permissionTest(Manifest.permission.WRITE_EXTERNAL_STORAGE, "second_deny");
+    }
+
+    @Test
     public void readExternalStorageAllowTest() throws Exception {
         requiresLowerEqualThanAPI(32);
         permissionTest(Manifest.permission.READ_EXTERNAL_STORAGE, "allow");
@@ -151,6 +180,20 @@ public class PermissionsTest {
     public void readExternalStorageDenyTest() throws Exception {
         requiresLowerEqualThanAPI(32);
         permissionTest(Manifest.permission.READ_EXTERNAL_STORAGE, "deny");
+    }
+
+    @Test
+    public void readExternalStorageDenyAllowTest() throws Exception {
+        requiresLowerEqualThanAPI(32);
+        permissionTest(Manifest.permission.READ_EXTERNAL_STORAGE, "first_deny");
+        permissionTest(Manifest.permission.READ_EXTERNAL_STORAGE, "ok_allow");
+    }
+
+    @Test
+    public void readExternalStorageDenyDenyTest() throws Exception {
+        requiresLowerEqualThanAPI(32);
+        permissionTest(Manifest.permission.READ_EXTERNAL_STORAGE, "first_deny");
+        permissionTest(Manifest.permission.READ_EXTERNAL_STORAGE, "second_deny");
     }
 
     @Test
@@ -166,6 +209,20 @@ public class PermissionsTest {
     }
 
     @Test
+    public void readMediaImagesDenyAllowTest() throws Exception {
+        requiresGreaterEqualThanAPI(33);
+        permissionTest(Manifest.permission.READ_MEDIA_IMAGES, "first_deny");
+        permissionTest(Manifest.permission.READ_MEDIA_IMAGES, "ok_allow");
+    }
+
+    @Test
+    public void readMediaImagesDenyDenyTest() throws Exception {
+        requiresGreaterEqualThanAPI(33);
+        permissionTest(Manifest.permission.READ_MEDIA_IMAGES, "first_deny");
+        permissionTest(Manifest.permission.READ_MEDIA_IMAGES, "second_deny");
+    }
+
+    @Test
     public void postNotificationAllowTest() throws Exception {
         requiresGreaterEqualThanAPI(33);
         permissionTest(Manifest.permission.POST_NOTIFICATIONS, "allow");
@@ -175,6 +232,20 @@ public class PermissionsTest {
     public void postNotificationDenyTest() throws Exception {
         requiresGreaterEqualThanAPI(33);
         permissionTest(Manifest.permission.POST_NOTIFICATIONS, "deny");
+    }
+
+    @Test
+    public void postNotificationDenyAllowTest() throws Exception {
+        requiresGreaterEqualThanAPI(33);
+        permissionTest(Manifest.permission.POST_NOTIFICATIONS, "first_deny");
+        permissionTest(Manifest.permission.POST_NOTIFICATIONS, "ok_allow");
+    }
+
+    @Test
+    public void postNotificationDenyDenyTest() throws Exception {
+        requiresGreaterEqualThanAPI(33);
+        permissionTest(Manifest.permission.POST_NOTIFICATIONS, "first_deny");
+        permissionTest(Manifest.permission.POST_NOTIFICATIONS, "second_deny");
     }
 
     @Test
@@ -189,6 +260,20 @@ public class PermissionsTest {
         permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "deny");
     }
 
+    @Test
+    public void accessMediaLocationDenyAllowTest() throws Exception {
+        requiresGreaterEqualThanAPI(29);
+        permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "first_deny");
+        permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "ok_allow");
+    }
+
+    @Test
+    public void accessMediaLocationDenyDenyTest() throws Exception {
+        requiresGreaterEqualThanAPI(29);
+        permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "first_deny");
+        permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "second_deny");
+    }
+
     public void requiresLowerEqualThanAPI(int api) {
         Assume.assumeTrue(Build.VERSION.SDK_INT <= api);
     }
@@ -196,5 +281,4 @@ public class PermissionsTest {
     public void requiresGreaterEqualThanAPI(int api) {
         Assume.assumeTrue(Build.VERSION.SDK_INT >= api);
     }
-
 }

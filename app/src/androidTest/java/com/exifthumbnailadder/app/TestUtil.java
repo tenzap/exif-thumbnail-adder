@@ -289,36 +289,48 @@ public class TestUtil {
 
     public static void clickPermissionAllowButton() throws Exception {
         UiDevice device = UiDevice.getInstance(getInstrumentation());
-        String resource;
+        String resource, permPackage;
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            resource = "com.android.packageinstaller:id/permission_allow_button";
+            permPackage = "com.android.packageinstaller";
         } else {
-            resource = "com.android.permissioncontroller:id/permission_allow_button";
+            permPackage = "com.android.permissioncontroller";
         }
+        resource = permPackage + ":id/permission_allow_button";
+
+        // Wait until permission controller is displayed
+        device.waitForWindowUpdate(permPackage, 5000);
         UiObject uiElement = device.findObject(new UiSelector().clickable(true).resourceId(resource));
         uiElement.clickAndWaitForNewWindow();
     }
 
     public static void clickPermissionDenyButton() throws Exception {
         UiDevice device = UiDevice.getInstance(getInstrumentation());
-        String resource;
+        String resource, permPackage;
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            resource = "com.android.packageinstaller:id/permission_deny_button";
+            permPackage = "com.android.packageinstaller";
         } else {
-            resource = "com.android.permissioncontroller:id/permission_deny_button";
+            permPackage = "com.android.permissioncontroller";
         }
+        resource = permPackage + ":id/permission_deny_button";
+
+        // Wait until permission controller is displayed
+        device.waitForWindowUpdate(permPackage, 5000);
         UiObject uiElement = device.findObject(new UiSelector().clickable(true).resourceId(resource));
         uiElement.clickAndWaitForNewWindow();
     }
 
     public static void clickPermissionDontAskAgainButton() throws Exception {
         UiDevice device = UiDevice.getInstance(getInstrumentation());
-        String resource;
+        String resource, permPackage;
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            resource = "com.android.packageinstaller:id/permission_deny_dont_ask_again_button";
+            permPackage = "com.android.packageinstaller";
         } else {
-            resource = "com.android.permissioncontroller:id/permission_deny_dont_ask_again_button";
+            permPackage = "com.android.permissioncontroller";
         }
+        resource = permPackage + ":id/permission_deny_dont_ask_again_button";
+
+        // Wait until permission controller is displayed
+        device.waitForWindowUpdate(permPackage, 5000);
         UiObject uiElement = device.findObject(new UiSelector().clickable(true).resourceId(resource));
         uiElement.clickAndWaitForNewWindow();
     }
