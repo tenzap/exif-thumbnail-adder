@@ -25,6 +25,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
@@ -226,6 +227,11 @@ public class AddThumbsCommon {
 
                 // Wait until 'WorkingDirPermActivity' has launched
                 Intents.intended(allOf(hasComponent(WorkingDirPermActivity.class.getName())));
+
+                // Wait until the id is here because sometimes the tests fail here
+                // with NoMatchingViewException: No views in hierarchy found matching: view.getId()
+                // :id/button_checkPermissions
+                onView(isRoot()).perform(TestUtil.waitId(R.id.permScrollView,5000));
 
                 // The WorkingDirPermActivity has now launched.
                 // Create & Give permissions to the WorkingDir
