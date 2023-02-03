@@ -164,6 +164,7 @@ public class AddThumbsCommon {
         String expectedValue = "content://com.android.externalstorage.documents/tree/primary%3A" + dir.copyForUri() + "/document/primary%3A" + dir.copyForUri();
         assertEquals("Not exactly one selected source dir", expectedValue, inputDirs.get(0).toString());
 
+        // Set All files access permission
         if (opts != null &&
                 opts.containsKey("all_files_access") &&
                 opts.get("all_files_access").equals(Boolean.TRUE)) {
@@ -179,30 +180,7 @@ public class AddThumbsCommon {
         // Go to "Add thumbnails" fragment
         onView(withId(R.id.AddThumbsFragment)).perform(click(click()));
 
-        // Click "Add thumbnails" button
-        onView(withId(R.id.button_addThumbs)).perform(click());
-
-        // ATTENTION: This below requires to be on a clean app (where permissions have been reset)
-        for (String perm : PermissionManager.getRequiredPermissions(prefs)) {
-            if (!PermissionManager.isPermissionGranted(context, perm)) {
-                if (perm.equals(Manifest.permission.MANAGE_EXTERNAL_STORAGE))
-                    continue;
-                TestUtil.clickPermissionAllowButton();
-            }
-        }
-
-        // Wait until 'WorkingDirPermActivity' has launched
-        Intents.intended(allOf(hasComponent(WorkingDirPermActivity.class.getName())));
-
-        // The WorkingDirPermActivity has now launched.
-        // Create & Give permissions to the WorkingDir
-        // For this use scrollTo(). See: https://stackoverflow.com/a/30390176/15401262
-        // Former method with swipeUp sometimes failed with
-        // androidx.test.espresso.NoMatchingViewException: No views in hierarchy found matching: view.getId() is <2131362157/com.exifthumbnailadder.app.debug:id/permScrollView>
-        onView(withId(R.id.button_checkPermissions)).perform(scrollTo(), click());
-
-        TestUtil.givePermissionToWorkingDir();
-
+        // Set how many times to run the processing
         int runs = 1;
         if (opts != null &&
                 opts.containsKey("rerun_processing") &&
@@ -210,7 +188,8 @@ public class AddThumbsCommon {
             runs = 2;
         }
 
-        for (int i = 0; i < runs; i++) {
+        // Perform processing
+        for (int run = 0; run < runs; run++) {
             finished = false;
             // Register BroadcastReceiver of the signal saying that processing is finished
             BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -230,18 +209,42 @@ public class AddThumbsCommon {
             LocalBroadcastManager.getInstance(context)
                     .registerReceiver(receiver, filter);
 
-            if (i >= 1) {
-                onView(withId(R.id.button_addThumbs)).perform(click());
+            // Click "Add thumbnails" button
+            onView(withId(R.id.button_addThumbs)).perform(click());
+
+            // Grand required permissions
+            // ATTENTION: This below requires to be on a clean app (where permissions have been reset)
+            // And only on the first run
+            if (run == 0) {
+                for (String perm : PermissionManager.getRequiredPermissions(prefs)) {
+                    if (!PermissionManager.isPermissionGranted(context, perm)) {
+                        if (perm.equals(Manifest.permission.MANAGE_EXTERNAL_STORAGE))
+                            continue;
+                        TestUtil.clickPermissionAllowButton();
+                    }
+                }
+
+                // Wait until 'WorkingDirPermActivity' has launched
+                Intents.intended(allOf(hasComponent(WorkingDirPermActivity.class.getName())));
+
+                // The WorkingDirPermActivity has now launched.
+                // Create & Give permissions to the WorkingDir
+                // For this use scrollTo(). See: https://stackoverflow.com/a/30390176/15401262
+                // Former method with swipeUp sometimes failed with
+                // androidx.test.espresso.NoMatchingViewException: No views in hierarchy found matching: view.getId() is <2131362157/com.exifthumbnailadder.app.debug:id/permScrollView>
+                onView(withId(R.id.button_checkPermissions)).perform(scrollTo(), click());
+
+                TestUtil.givePermissionToWorkingDir();
             }
 
             // Wait until processing is finished or has hit timeout (duration is in ms)
-            long max_duration = 1800000;
+            long max_duration = 600000;
             long timeout = System.currentTimeMillis() + max_duration;
             while (!finished && System.currentTimeMillis() < timeout) {
                 Thread.sleep(1000);
             }
 
-            // Stop processing if not finished
+            // Stop processing if not finished (ie. in the case timeout was hit)
             if (!finished) {
                 try {
                     onView(withId(R.id.button_stopProcess)).perform(click());
@@ -254,10 +257,14 @@ public class AddThumbsCommon {
             // Unregister BroadcastReceiver
             LocalBroadcastManager.getInstance(context)
                     .unregisterReceiver(receiver);
-        }
 
-        String log = getText(withId(R.id.textview_log));
-        writeTextToFile("log.txt", log);
+            String log = getText(withId(R.id.textview_log));
+            if (run == runs - 1) {
+                writeTextToFile("log.txt", log);
+            } else {
+                writeTextToFile("log_run" + (run + 1) + ".txt", log);
+            }
+        }
 
         assertTrue("Processing couldn't finish (timeout?)", finished);
     }
