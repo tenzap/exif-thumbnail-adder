@@ -22,7 +22,7 @@ package com.exifthumbnailadder.app;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
@@ -243,10 +243,9 @@ public class AddThumbsCommon {
 
                 // The WorkingDirPermActivity has now launched.
                 // Create & Give permissions to the WorkingDir
-                // For this use scrollTo(). See: https://stackoverflow.com/a/30390176/15401262
-                // Former method with swipeUp sometimes failed with
-                // androidx.test.espresso.NoMatchingViewException: No views in hierarchy found matching: view.getId() is <2131362157/com.exifthumbnailadder.app.debug:id/permScrollView>
-                onView(withId(R.id.button_checkPermissions)).perform(scrollTo(), click());
+                // For this: swipeUp & click on button
+                onView(withId(R.id.permScrollView)).perform(swipeUp());
+                onView(withId(R.id.button_checkPermissions)).perform(click());
 
                 TestUtil.givePermissionToWorkingDir();
             }
