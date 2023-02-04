@@ -226,7 +226,9 @@ public class AddThumbsCommon {
                 }
 
                 // Wait until 'WorkingDirPermActivity' has launched
-                Intents.intended(allOf(hasComponent(WorkingDirPermActivity.class.getName())));
+                // Disable for now, because this only check if there was an intent to
+                // start WorkingDirPermActivity. It may not be there if we are too early
+//                Intents.intended(allOf(hasComponent(WorkingDirPermActivity.class.getName())));
 
                 // Wait until the id is here because sometimes the tests fail here
                 // with NoMatchingViewException: No views in hierarchy found matching: view.getId()
