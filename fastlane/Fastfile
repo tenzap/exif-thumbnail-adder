@@ -58,17 +58,34 @@ platform :android do
   desc "Deploy a new version to the Google Play"
   lane :deploy do
     gradle(task: "clean assembleStandardRelease bundleStandardRelease")
+    postpare_metadata_for_googleplay
     prepare_metadata_for_googleplay
+    version_code = get_version_code
+    version_name = get_version_name
     upload_to_play_store(
-        #aab: "app/build/outputs/bundle/.../release/*.aab",
+        aab: 'app/build/outputs/bundle/standardRelease/exifthumbnailadder-' + version_name + '-standard-release.aab',
         changes_not_sent_for_review: true,
         skip_upload_apk: true,
         skip_upload_changelogs: false,
+        #version_code: version_code,
         skip_upload_metadata: false,
         skip_upload_images: false,
         skip_upload_screenshots: false,
     )
     postpare_metadata_for_googleplay
+  end
+
+  desc "get version_code"
+  lane :get_version_code do
+    lines = File.open("../version_last_tag.txt")
+    lines.first.split("+")[1].strip
+  end
+
+  desc "get version_name"
+  lane :get_version_name do
+    lines = File.open("../version_last_tag.txt")
+    tmp = lines.first.split("+")[0].strip
+    tmp.split(" ")[1].strip
   end
 
   desc "Prepare matadata so that it is not rejected by google play"

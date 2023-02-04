@@ -41,6 +41,16 @@ Submit a new Beta Build to Crashlytics Beta
 fastlane android deploy
 ```
 Deploy a new version to the Google Play
+### android get_version_code
+```
+fastlane android get_version_code
+```
+get version_code
+### android get_version_name
+```
+fastlane android get_version_name
+```
+get version_name
 ### android prepare_metadata_for_googleplay
 ```
 fastlane android prepare_metadata_for_googleplay
