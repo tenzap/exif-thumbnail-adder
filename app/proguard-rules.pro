@@ -32,3 +32,6 @@
 
 # Fix: java.lang.ClassNotFoundException: org.apache.log4j.helpers.Loader
 -keep class org.apache.log4j.helpers.Loader {*;}
+
+# Fix Pending exception java.lang.NoSuchFieldError: no "Z" field "enableLog" in class "Lcom/exifthumbnailadder/app/MainApplication;" or its superclasses
+-keep public class com.exifthumbnailadder.app.MainApplication { public static boolean enableLog; }
