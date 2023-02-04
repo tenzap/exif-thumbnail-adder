@@ -221,6 +221,12 @@ public class AddThumbsCommon {
                     if (!PermissionManager.isPermissionGranted(context, perm)) {
                         if (perm.equals(Manifest.permission.MANAGE_EXTERNAL_STORAGE))
                             continue;
+                        if (perm.equals(Manifest.permission.ACCESS_MEDIA_LOCATION)) {
+                            if (PermissionManager.isPermissionGranted(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
+                                    PermissionManager.isPermissionGranted(context, Manifest.permission.READ_EXTERNAL_STORAGE) ||
+                                    PermissionManager.isPermissionGranted(context, Manifest.permission.READ_MEDIA_IMAGES))
+                                continue;
+                        }
                         TestUtil.clickPermissionAllowButton();
                     }
                 }

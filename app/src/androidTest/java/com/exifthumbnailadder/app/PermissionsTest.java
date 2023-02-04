@@ -120,6 +120,12 @@ public class PermissionsTest {
                 TestUtil.clickPermissionAllowButton();
                 assertTrue("Permissions " + permission + " should be granted.", PermissionManager.isPermissionGranted(context, permission));
                 break;
+            case "allow_auto":
+                // Wait a bit because the permission is given automatically, but not
+                // at the time we check the permission if we don't wait a bit.
+                Thread.sleep(1000);
+                assertTrue("Permissions " + permission + " should be granted.", PermissionManager.isPermissionGranted(context, permission));
+                break;
             case "deny":
                 TestUtil.clickPermissionDenyButton();
                 assertFalse("Permissions " + permission + " should be denied.", PermissionManager.isPermissionGranted(context, permission));
@@ -272,6 +278,56 @@ public class PermissionsTest {
         requiresGreaterEqualThanAPI(29);
         permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "first_deny");
         permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "second_deny");
+    }
+
+    @Test
+    public void chainedAccessMediaLocationWriteExternalStorageTest() throws Exception {
+        // It is expected to have no permission dialog for the 2nd permission
+        requiresGreaterEqualThanAPI(29);
+        requiresLowerEqualThanAPI(29);
+        permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "allow");
+        permissionTest(Manifest.permission.WRITE_EXTERNAL_STORAGE, "allow_auto");
+    }
+
+    @Test
+    public void chainedWriteExternalStorageAccessMediaLocationTest() throws Exception {
+        // It is expected to have no permission dialog for the 2nd permission
+        requiresGreaterEqualThanAPI(29);
+        requiresLowerEqualThanAPI(29);
+        permissionTest(Manifest.permission.WRITE_EXTERNAL_STORAGE, "allow");
+        permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "allow_auto");
+    }
+
+    @Test
+    public void chainedAccessMediaLocationReadExternalStorageTest() throws Exception {
+        requiresGreaterEqualThanAPI(29);
+        requiresLowerEqualThanAPI(32);
+        permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "allow");
+        permissionTest(Manifest.permission.READ_EXTERNAL_STORAGE, "allow_auto");
+    }
+
+    @Test
+    public void chainedReadExternalStorageAccessMediaLocationTest() throws Exception {
+        // It is expected to have no permission dialog for the 2nd permission
+        requiresGreaterEqualThanAPI(29);
+        requiresLowerEqualThanAPI(32);
+        permissionTest(Manifest.permission.READ_EXTERNAL_STORAGE, "allow");
+        permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "allow_auto");
+    }
+
+    @Test
+    public void chainedAccessMediaLocationReadMediaImagesTest() throws Exception {
+        requiresGreaterEqualThanAPI(33);
+        permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "allow");
+        permissionTest(Manifest.permission.READ_MEDIA_IMAGES, "allow_auto");
+    }
+
+    @Test
+    public void chainedReadMediaImagesAccessMediaLocationTest() throws Exception {
+        // It is expected to have no permission dialog for the 2nd permission
+        requiresGreaterEqualThanAPI(33);
+        permissionTest(Manifest.permission.READ_MEDIA_IMAGES, "allow");
+        permissionTest(Manifest.permission.ACCESS_MEDIA_LOCATION, "allow_auto");
     }
 
     public void requiresLowerEqualThanAPI(int api) {
