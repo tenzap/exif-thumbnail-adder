@@ -239,7 +239,7 @@ public class AddThumbsCommon {
                 // Wait until the id is here because sometimes the tests fail here
                 // with NoMatchingViewException: No views in hierarchy found matching: view.getId()
                 // :id/button_checkPermissions
-                onView(isRoot()).perform(TestUtil.waitId(R.id.permScrollView,5000));
+//                onView(isRoot()).perform(TestUtil.waitId(R.id.permScrollView,5000));
 
                 // The WorkingDirPermActivity has now launched.
                 // Create & Give permissions to the WorkingDir
