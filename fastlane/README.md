@@ -31,6 +31,11 @@ Build all the tests without running them
 fastlane android build_androidTest
 ```
 Build all the instrumented tests without running them
+### android build_release
+```
+fastlane android build_release
+```
+Build Release APK & AAB
 ### android beta
 ```
 fastlane android beta
@@ -61,16 +66,6 @@ Prepare matadata so that it is not rejected by google play
 fastlane android postpare_metadata_for_googleplay
 ```
 Postpare matadata - This restores to the state before the 'prepare'
-### android build_signed_apk_standard_release
-```
-fastlane android build_signed_apk_standard_release
-```
-Build signed APK (flavor: standard ; type: Release)
-### android build_amazon_apk
-```
-fastlane android build_amazon_apk
-```
-Build amazon app store APK
 ### android build_for_screengrab
 ```
 fastlane android build_for_screengrab

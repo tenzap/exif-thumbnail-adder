@@ -46,6 +46,13 @@ platform :android do
     )
   end
 
+  desc "Build Release APK & AAB"
+  lane :build_release do
+    gradle(
+      tasks: ["clean", "assembleStandardRelease", "bundleStandardRelease"]
+    )
+  end
+
   desc "Submit a new Beta Build to Crashlytics Beta"
   lane :beta do
     gradle(task: "clean assembleRelease bundleRelease")
@@ -57,7 +64,6 @@ platform :android do
 
   desc "Deploy a new version to the Google Play"
   lane :deploy do
-    gradle(task: "clean assembleStandardRelease bundleStandardRelease")
     postpare_metadata_for_googleplay
     prepare_metadata_for_googleplay
     version_code = get_version_code
@@ -96,26 +102,6 @@ platform :android do
   desc "Postpare matadata - This restores to the state before the 'prepare'"
   lane :postpare_metadata_for_googleplay do
     sh "../scripts/post_metadata_for_googleplay.sh"
-  end
-
-  desc "Build signed APK (flavor: standard ; type: Release)"
-  lane :build_signed_apk_standard_release do
-    gradle(
-      task: 'clean'
-    )
-    build_android_app(
-      task: 'assemble',
-      flavor: 'Standard',
-      build_type: 'Release',
-      #properties: {
-      #  "noVersionInArchivesBaseName" => "true",
-      #}
-    )
-  end
-
-  desc "Build amazon app store APK"
-  lane :build_amazon_apk do
-    build_signed_apk_standard_release
   end
 
   desc "Build debug and test APK for screenshots"
