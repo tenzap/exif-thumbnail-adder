@@ -46,6 +46,8 @@ import java.util.List;
 import static com.exifthumbnailadder.app.MainApplication.enableLog;
 import static com.exifthumbnailadder.app.MainApplication.TAG;
 
+import com.exifthumbnailadder.app.IdlingResource.SimpleIdlingResource;
+
 public class WorkingDirPermActivity extends AppCompatActivity {
 
     SharedPreferences  prefs = null;
@@ -56,6 +58,9 @@ public class WorkingDirPermActivity extends AppCompatActivity {
         setContentView(R.layout.activity_working_dir_perm);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Tell the tests that the Activity is now ready (to scroll & click on it)
+        MainActivity.setWorkingDirPermIdlingResourceState(true);
     }
 
     @Override
@@ -192,6 +197,8 @@ public class WorkingDirPermActivity extends AppCompatActivity {
                 persUriPermList,
                 ctx);
         if (uri == null) {
+            // Release the IdlingResource
+            MainActivity.setWorkingDirPermIdlingResourceState(true);
             return true;
         } else {
             // Launch activity that will help getting the permission
@@ -212,8 +219,12 @@ public class WorkingDirPermActivity extends AppCompatActivity {
                     persUriPermList,
                     ctx);
             if (uri == null) {
+                // Release the IdlingResource
+                MainActivity.setWorkingDirPermIdlingResourceState(true);
                 return true;
             } else {
+                // Release the IdlingResource
+                MainActivity.setWorkingDirPermIdlingResourceState(true);
                 return false;
             }
         }

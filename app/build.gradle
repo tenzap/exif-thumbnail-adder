@@ -148,6 +148,10 @@ dependencies {
     implementation project(path: ':library:Android-Exif-Extended')
     implementation project(path: ':library:pixymeta-android')
     //implementation files('libs/*.jar')
+
+    // Used in both test & app code
+    implementation 'androidx.test.espresso:espresso-idling-resource:3.5.1'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test:rules:1.5.0'

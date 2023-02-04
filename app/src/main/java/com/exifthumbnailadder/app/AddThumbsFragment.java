@@ -262,6 +262,9 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         isProcessing = true;
         stopProcessing = false;
 
+        // Set IdlingResource for WorkingDirPermActivity to false so that
+        // the tests wait until the Activity is displayed.
+        MainActivity.setWorkingDirPermIdlingResourceState(false);
         new Thread(new Runnable() {
             @Override
             public void run() {

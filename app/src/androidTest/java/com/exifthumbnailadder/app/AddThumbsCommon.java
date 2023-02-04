@@ -49,6 +49,8 @@ import android.widget.TextView;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
 import androidx.test.espresso.PerformException;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
@@ -83,6 +85,8 @@ public class AddThumbsCommon {
     SharedPreferences prefs;
     public Dirs dir;
     public boolean finished;
+    private IdlingResource mIdlingResource;
+    private IdlingResource mWorkingDirPermIdlingResource;
 
     @Rule
     public TestName testname = new TestName();
@@ -137,6 +141,24 @@ public class AddThumbsCommon {
             uiDevice.executeShellCommand("cp -a --preserve=timestamps,mode,ownership " + dir.origPathAbsolute() + " " + dir.copyPathAbsolute());
         } else {
             uiDevice.executeShellCommand("cp -a " + dir.origPathAbsolute() + " " + dir.copyPathAbsolute());
+        }
+    }
+
+    @Before
+    public void registerIdlingResource() {
+        activityScenarioRule.getScenario().onActivity(activity -> {
+            mIdlingResource = MainActivity.getIdlingResource();
+            // To prove that the test fails, omit this call:
+            IdlingRegistry.getInstance().register(mIdlingResource);
+
+            mWorkingDirPermIdlingResource = MainActivity.getWorkingDirPermIdlingResource();
+        });
+    }
+
+    @After
+    public void unregisterIdlingResource() {
+        if (mIdlingResource != null) {
+            IdlingRegistry.getInstance().unregister(mIdlingResource);
         }
     }
 
@@ -244,8 +266,10 @@ public class AddThumbsCommon {
                 // The WorkingDirPermActivity has now launched.
                 // Create & Give permissions to the WorkingDir
                 // For this: swipeUp & click on button
+                IdlingRegistry.getInstance().register(mWorkingDirPermIdlingResource);
                 onView(withId(R.id.permScrollView)).perform(swipeUp());
                 onView(withId(R.id.button_checkPermissions)).perform(click());
+                IdlingRegistry.getInstance().unregister(mWorkingDirPermIdlingResource);
 
                 TestUtil.givePermissionToWorkingDir();
             }

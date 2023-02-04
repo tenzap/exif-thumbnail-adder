@@ -31,6 +31,9 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.documentfile.provider.DocumentFile;
@@ -41,11 +44,14 @@ import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
+import androidx.test.espresso.IdlingResource;
 
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.exifthumbnailadder.app.IdlingResource.SimpleIdlingResource;
+import com.exifthumbnailadder.app.IdlingResource.SimpleWorkingDirPermIdlingResource;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.List;
@@ -53,6 +59,12 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     LocalBroadcastManager broadcaster;
+
+    // The Idling Resource which will be null in production.
+    @Nullable
+    private static SimpleIdlingResource mIdlingResource;
+    @Nullable
+    private static SimpleWorkingDirPermIdlingResource mWorkingDirPermIdlingResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,4 +254,36 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         prefs.edit().putString("srcUris", inputDirs.toString()).commit();
     }
 
+    /**
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public static SimpleIdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
+    }
+
+    @VisibleForTesting
+    @NonNull
+    public static SimpleWorkingDirPermIdlingResource getWorkingDirPermIdlingResource() {
+        if (mWorkingDirPermIdlingResource == null) {
+            mWorkingDirPermIdlingResource = new SimpleWorkingDirPermIdlingResource();
+        }
+        return mWorkingDirPermIdlingResource;
+    }
+
+    public static void setIdlingResourceState(boolean isIdleNow) {
+        if (mIdlingResource != null) {
+            mIdlingResource.setIdleState(isIdleNow);
+        }
+    }
+
+    public static void setWorkingDirPermIdlingResourceState(boolean isIdleNow) {
+        if (mWorkingDirPermIdlingResource != null) {
+            mWorkingDirPermIdlingResource.setIdleState(isIdleNow);
+        }
+    }
 }

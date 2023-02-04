@@ -94,6 +94,7 @@ public class PermissionManager {
         boolean hasMissingPermission = false;
 
         for (String permission : getRequiredPermissions(prefs)) {
+            MainActivity.setIdlingResourceState(false);
             if(!checkPermission(permission))
                 hasMissingPermission = true;
         }
@@ -168,6 +169,8 @@ public class PermissionManager {
     private boolean requestPermission(String permission) {
         if (PermissionManager.isPermissionGranted(fragment.getContext(), permission)) {
             isPermissionGranted = true;
+            // Release the Idling Resource so that the test suite can continue
+            MainActivity.setIdlingResourceState(true);
             return isPermissionGranted;
         }
 
@@ -233,6 +236,8 @@ public class PermissionManager {
                     public void run() {
                         AlertDialog alert = alertBuilder.create();
                         alert.show();
+                        // Window is ready for click in the test suite
+                        MainActivity.setIdlingResourceState(true);
                     }
                 });
                 // Wait until user answered
@@ -245,6 +250,8 @@ public class PermissionManager {
         } else {
             synchronized (sync) {
                 requestPermissionLauncher.launch(permission);
+                // Window is ready for click in the test suite
+                MainActivity.setIdlingResourceState(true);
                 try {
                     sync.wait();
                 } catch (Exception e) {
