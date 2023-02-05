@@ -78,6 +78,13 @@ if [ ! -d $TEST_PICS ]; then
   exit 1
 fi
 
+if [ $(uname) = "Darwin" ]; then
+  # Use gnu-sed on macos (provided by homebrew or macports)
+  SED=gsed
+else
+  SED=sed
+fi
+
 check_apps() {
   # https://stackoverflow.com/questions/592620/check-if-a-program-exists-from-a-bash-script
   local MISSING_APPS
@@ -140,7 +147,7 @@ failure() {
 # \xC2\xA0 is for the non-breaking space
 update_log_to_one_liner() {
   local logfile="$1"
-  sed ':a;N;$!ba;s/\n\xC2\xA0/\xC2\xA0/g' "$logfile"  > "${logfile}_tmp"
+  $SED ':a;N;$!ba;s/\n\xC2\xA0/\xC2\xA0/g' "$logfile"  > "${logfile}_tmp"
   iconv --to utf8 "${logfile}_tmp" > "${logfile}1"
   rm "${logfile}_tmp"
 }
@@ -169,7 +176,7 @@ if which exiv2 > /dev/null; then
   fi
 fi
 
-check_apps findimagedupes exiv2 exiftool convert
+check_apps findimagedupes exiv2 exiftool convert $SED
 
 for API in $APIs; do
   for VARIANT in $VARIANTS; do

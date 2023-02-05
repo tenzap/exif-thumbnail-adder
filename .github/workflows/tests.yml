@@ -286,6 +286,9 @@ jobs:
           brew install exiftool
           brew install imagemagick@6
 
+          # gnu-sed is also needed
+          brew install gnu-sed
+
           # Install findimagedupes (version of opennota)
           #set -x
           #brew install libmagic
