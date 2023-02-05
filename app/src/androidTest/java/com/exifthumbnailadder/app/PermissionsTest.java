@@ -123,7 +123,7 @@ public class PermissionsTest {
             case "allow_auto":
                 // Wait a bit because the permission is given automatically, but not
                 // at the time we check the permission if we don't wait a bit.
-                Thread.sleep(1000);
+                device.waitForIdle();
                 assertTrue("Permissions " + permission + " should be granted.", PermissionManager.isPermissionGranted(context, permission));
                 break;
             case "deny":
