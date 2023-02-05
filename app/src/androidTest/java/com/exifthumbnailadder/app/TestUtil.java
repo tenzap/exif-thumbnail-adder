@@ -22,10 +22,13 @@ package com.exifthumbnailadder.app;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
+import static org.hamcrest.Matchers.allOf;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -38,12 +41,15 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 import androidx.test.espresso.PerformException;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.util.HumanReadables;
 import androidx.test.espresso.util.TreeIterables;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -52,7 +58,9 @@ import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -282,6 +290,17 @@ public class TestUtil {
         drawer.waitForExists(250);
     }
 
+    public static void workingDirPermActivityCheckPermission() {
+        ViewInteraction materialButton3 = onView(
+                allOf(withId(R.id.button_checkPermissions), withText(R.string.working_dir_button_create_dir_and_set_permissions),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.permScrollView),
+                                        0),
+                                1)));
+        materialButton3.perform(scrollTo(), click());
+    }
+
     public static void openSettingsFragment() throws Exception {
         // The method below sometimes shows the Tooltip instead of opening the settings fragment (on API >= 31)
         onView(withId(R.id.SettingsFragment)).perform(click(click()));
@@ -419,6 +438,25 @@ public class TestUtil {
                         .withViewDescription(HumanReadables.describe(view))
                         .withCause(new TimeoutException())
                         .build();
+            }
+        };
+    }
+
+    private static Matcher<View> childAtPosition(
+            final Matcher<View> parentMatcher, final int position) {
+
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("Child at position " + position + " in parent ");
+                parentMatcher.describeTo(description);
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                ViewParent parent = view.getParent();
+                return parent instanceof ViewGroup && parentMatcher.matches(parent)
+                        && view.equals(((ViewGroup) parent).getChildAt(position));
             }
         };
     }
