@@ -278,7 +278,7 @@ jobs:
       - name: Tar tests/output artifacts
         run: tar -cf test_output_artifact.tar --exclude="tests/output/screenrecords" tests/output/
 
-      - name: Run bash tests
+      - name: Install tools for bash tests
         if: always()
         #if: ${{ false }} # Don't run them for now because locally I use the perl version of findimagedupes which is different
         run: |
@@ -300,6 +300,9 @@ jobs:
           #export GOPATH=$(go env GOPATH)
           #export PATH=$PATH:$GOPATH/bin
 
+      - name: Run bash tests
+        if: always()
+        run: |
           # run tests
           set -x
           cd tests && ./run_tests.sh || true
