@@ -184,7 +184,7 @@ public class AddThumbsCommon {
         InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
 
         uiDevice.waitForIdle();
-        assertEquals(1, inputDirs.size());
+        assertEquals("Not exactly one selected source dir", 1, inputDirs.size());
         String expectedValue = "content://com.android.externalstorage.documents/tree/primary%3A" + dir.copyForUri() + "/document/primary%3A" + dir.copyForUri();
         assertEquals("Selected dir doesn't match", expectedValue, inputDirs.get(0).toString());
 
