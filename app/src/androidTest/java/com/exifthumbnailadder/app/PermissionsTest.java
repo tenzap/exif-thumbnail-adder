@@ -163,12 +163,12 @@ public class PermissionsTest {
                 assertFalse("Permissions " + permission + " should be denied (first deny).", PermissionManager.isPermissionGranted(context, permission));
                 break;
             case "second_deny":
-                device.waitForWindowUpdate(context.getPackageName(), 1000);
+                device.waitForIdle();
                 onView(withText(Matchers.equalToIgnoringCase(context.getString(R.string.frag1_perm_request_deny)))).perform(click());
                 assertFalse("Permissions " + permission + " should be denied (2nd deny).", PermissionManager.isPermissionGranted(context, permission));
                 break;
             case "ok_allow":
-                device.waitForWindowUpdate(context.getPackageName(), 1000);
+                device.waitForIdle();
                 onView(withText(Matchers.equalToIgnoringCase(context.getString(android.R.string.ok)))).perform(click());
                 TestUtil.clickPermissionAllowButton();
                 assertTrue("Permissions " + permission + " should be granted.", PermissionManager.isPermissionGranted(context, permission));
