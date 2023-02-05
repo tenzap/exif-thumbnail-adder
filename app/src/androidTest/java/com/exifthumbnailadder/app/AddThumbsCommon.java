@@ -201,6 +201,11 @@ public class AddThumbsCommon {
         }
 
         // Go to "Add thumbnails" fragment
+        // Sometimes, it fails and logcat repeats multiple times:
+        // Dropping event because there is no touchable window or gesture monitor at
+        // Workaround would be to use waitForIdle
+        UiDevice device = UiDevice.getInstance(getInstrumentation());
+        device.waitForIdle();
         onView(withId(R.id.AddThumbsFragment)).perform(click(click()));
 
         // Set how many times to run the processing
