@@ -131,20 +131,15 @@ public class PermissionsTest {
         if (PermissionManager.logIdlingResourceChanges)
             Log.d("ETA", "setIdlingResourceState: false (" + permission + ") - in PermissionsTest");
         MainActivity.setIdlingResourceState(false);
-        new Thread() {
-            @Override
-            public void run() {
-                activityScenarioRule.getScenario().onActivity(activity -> {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            PermissionManager pm = new PermissionManager(fragment, requestPermissionLauncher);
-                            pm.checkPermission(permission);
-                        }
-                    }).start();
-                });
-            }
-        }.start();
+        activityScenarioRule.getScenario().onActivity(activity -> {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    PermissionManager pm = new PermissionManager(fragment, requestPermissionLauncher);
+                    pm.checkPermission(permission);
+                }
+            }).start();
+        });
 
         UiDevice device = UiDevice.getInstance(getInstrumentation());
 
