@@ -22,6 +22,7 @@ package com.exifthumbnailadder.app;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
@@ -272,8 +273,8 @@ public class AddThumbsCommon {
                 // Create & Give permissions to the WorkingDir
                 // For this: swipeUp & click on button
                 IdlingRegistry.getInstance().register(mWorkingDirPermIdlingResource);
-                onView(withId(R.id.permScrollView)).perform(swipeUp());
-                onView(withId(R.id.button_checkPermissions)).perform(click());
+                //onView(withId(R.id.permScrollView)).perform(swipeUp());
+                onView(withId(R.id.button_checkPermissions)).perform(scrollTo(), click());
                 IdlingRegistry.getInstance().unregister(mWorkingDirPermIdlingResource);
 
                 TestUtil.givePermissionToWorkingDir();
