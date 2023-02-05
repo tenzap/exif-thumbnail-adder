@@ -88,6 +88,7 @@ public class AddThumbsCommon {
     public boolean finished;
     private IdlingResource mIdlingResource;
     private IdlingResource mWorkingDirPermIdlingResource;
+    UiDevice uiDevice;
 
     @Rule
     public TestName testname = new TestName();
@@ -125,7 +126,7 @@ public class AddThumbsCommon {
     public void init() throws Exception {
         context = getInstrumentation().getTargetContext();
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());
+        uiDevice = UiDevice.getInstance(getInstrumentation());
 
         finished = false;
 
@@ -205,8 +206,7 @@ public class AddThumbsCommon {
         // Sometimes, it fails and logcat repeats multiple times:
         // Dropping event because there is no touchable window or gesture monitor at
         // Workaround would be to use waitForIdle
-        UiDevice device = UiDevice.getInstance(getInstrumentation());
-        device.waitForIdle();
+        uiDevice.waitForIdle();
         onView(withId(R.id.AddThumbsFragment)).perform(click(click()));
 
         // Set how many times to run the processing
@@ -531,28 +531,25 @@ public class AddThumbsCommon {
     }
 
     protected void deletePicture(String filename) throws IOException {
-        UiDevice device = UiDevice.getInstance(getInstrumentation());
-        device.executeShellCommand("rm " + dir.copyPathAbsolute() + "/" + filename);
+        uiDevice.executeShellCommand("rm " + dir.copyPathAbsolute() + "/" + filename);
     }
 
     private void moveOnFSWithShell(String source, String destination) throws IOException {
-        UiDevice device = UiDevice.getInstance(getInstrumentation());
-
         // On API <= 28, "mv" doesn't preserve the timestamps, so use tar instead
         // NB: Using tar with pipe doesn't seem to work 'tar -C <source> -cf - . | tar -C <destination> -xf -'
         // So use an intermediate file.
         if (Build.VERSION.SDK_INT <= 28) {
-            device.executeShellCommand("rm -f /data/local/tmp/tmp.tar");
+            uiDevice.executeShellCommand("rm -f /data/local/tmp/tmp.tar");
 
-            device.executeShellCommand("tar -C " + Paths.get(source).getParent() + " -cf /data/local/tmp/tmp.tar " + Paths.get(source).getFileName());
+            uiDevice.executeShellCommand("tar -C " + Paths.get(source).getParent() + " -cf /data/local/tmp/tmp.tar " + Paths.get(source).getFileName());
 
-            device.executeShellCommand("mkdir -p " + destination);
-            device.executeShellCommand("tar -C " + destination + " -xf /data/local/tmp/tmp.tar");
+            uiDevice.executeShellCommand("mkdir -p " + destination);
+            uiDevice.executeShellCommand("tar -C " + destination + " -xf /data/local/tmp/tmp.tar");
 
-            device.executeShellCommand("rm -rf " + source);
-            device.executeShellCommand("rm -f /data/local/tmp/tmp.tar");
+            uiDevice.executeShellCommand("rm -rf " + source);
+            uiDevice.executeShellCommand("rm -f /data/local/tmp/tmp.tar");
         } else {
-            device.executeShellCommand("mv " + source + " " + destination);
+            uiDevice.executeShellCommand("mv " + source + " " + destination);
         }
     }
 }
