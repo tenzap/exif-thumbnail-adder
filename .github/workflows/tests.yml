@@ -85,8 +85,9 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: outputs-macos-run${{ github.run_attempt }}
+          name: build-outputs-macos-run${{ github.run_attempt }}
           path: |
+            version_last_tag.txt
             app/build/outputs/
 
   buildWithPrebuiltLibs:
@@ -106,8 +107,9 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: outputs-linux-with-prebuilt-libs-run${{ github.run_attempt }}
+          name: build-outputs-linux-with-prebuilt-libs-run${{ github.run_attempt }}
           path: |
+            version_last_tag.txt
             app/build/outputs/
 
   buildWindows:
@@ -128,8 +130,9 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: outputs-windows-run${{ github.run_attempt }}
+          name: build-outputs-windows-run${{ github.run_attempt }}
           path: |
+            version_last_tag.txt
             app/build/outputs/
 
   test:
@@ -270,6 +273,11 @@ jobs:
           after-boot-delay: 300
           script: API_LEVEL=${{ matrix.api-level }} fastlane connectedCheck_with_screenrecord
 
+      # actions/upload-artifact@v3 doesn't keep timestamps, so use tar as an intermediate
+      # Moreover, by using this intermediate file, the files created by the test suite won't be inside the artifact
+      - name: Tar tests/output artifacts
+        run: tar -cf test_output_artifact.tar --exclude="tests/output/screenrecords" tests/output/
+
       - name: Run bash tests
         if: always()
         #if: ${{ false }} # Don't run them for now because locally I use the perl version of findimagedupes which is different
@@ -299,10 +307,25 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: test-results-${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}-run${{ github.run_attempt }}
+          name: test-api${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}-run${{ github.run_attempt }}-reports
           path: |
+            version_last_tag.txt
             app/build/reports/
-            tests/output/
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-api${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}-run${{ github.run_attempt }}-screenrecords
+          path: |
+            version_last_tag.txt
+            tests/output/screenrecords/
+
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: test-api${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}-run${{ github.run_attempt }}-output
+          path: |
+            test_output_artifact.tar
 
 # From: https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#force-deleting-cache-entries
   cleanup-cache:
