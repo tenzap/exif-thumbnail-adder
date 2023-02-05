@@ -29,6 +29,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
 import android.text.Html;
+import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AlertDialog;
@@ -39,6 +40,8 @@ import androidx.preference.PreferenceManager;
 import java.util.ArrayList;
 
 public class PermissionManager {
+
+    public static final boolean logIdlingResourceChanges = MainApplication.enableLog;
 
     Fragment fragment;
     SharedPreferences prefs;
@@ -94,6 +97,8 @@ public class PermissionManager {
         boolean hasMissingPermission = false;
 
         for (String permission : getRequiredPermissions(prefs)) {
+            if (logIdlingResourceChanges)
+                Log.d("ETA", "setIdlingResourceState: false (" + permission + ")");
             MainActivity.setIdlingResourceState(false);
             if(!checkPermission(permission))
                 hasMissingPermission = true;
@@ -170,6 +175,8 @@ public class PermissionManager {
         if (PermissionManager.isPermissionGranted(fragment.getContext(), permission)) {
             isPermissionGranted = true;
             // Release the Idling Resource so that the test suite can continue
+            if (logIdlingResourceChanges)
+                Log.d("ETA", "setIdlingResourceState: true (" + permission + ") - PermissingAlreadyGranted");
             MainActivity.setIdlingResourceState(true);
             return isPermissionGranted;
         }
@@ -237,6 +244,8 @@ public class PermissionManager {
                         AlertDialog alert = alertBuilder.create();
                         alert.show();
                         // Window is ready for click in the test suite
+                        if (logIdlingResourceChanges)
+                            Log.d("ETA", "setIdlingResourceState: true (" + permission + ") - shouldShowRequestPermissionRationale");
                         MainActivity.setIdlingResourceState(true);
                     }
                 });
