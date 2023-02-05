@@ -149,11 +149,13 @@ public class TestUtil {
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
             // Open "more options" menu to click on Show internal storage if it is there
+            device.waitForIdle();
             UiObject advancedMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getMoreOptions()));
             advancedMenu.clickAndWaitForNewWindow();
 
             // Click on "Show internal storage" if it is there, otherwise press back to quit the "More options" menu
             // Show internal storage is not needed anymore since Android R/30
+            device.waitForIdle();
             UiObject showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
 //        if (showInternalStorage.exists()) {
 //            showInternalStorage.clickAndWaitForNewWindow();
@@ -165,29 +167,36 @@ public class TestUtil {
             catch (UiObjectNotFoundException e) {
                 Log.w("ETA", "Show internal storage not found. Is the 'More options' menu open? Trying again...");
                 advancedMenu.clickAndWaitForNewWindow();
+                device.waitForIdle();
                 showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
                 showInternalStorage.clickAndWaitForNewWindow();
             }
         }
         // Open Drawer (aka Hamburger menu)
+        device.waitForIdle();
         UiObject hamburgerMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getShowRoots()));
         if (hamburgerMenu.exists()) {
             hamburgerMenu.clickAndWaitForNewWindow();
+            device.waitForIdle();
             UiObject uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
             uiElement.clickAndWaitForNewWindow();
         } else {
             // In some cases (when we can't open the drawer), we may have to select the root by selecting it in the breadcrumb
+            device.waitForIdle();
             UiObject dropdown_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/dropdown_breadcrumb"));
             if (dropdown_breadcrumb.exists()) {
                 dropdown_breadcrumb.clickAndWaitForNewWindow();
+                device.waitForIdle();
                 UiObject dropdownItem = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
                 dropdownItem.clickAndWaitForNewWindow();
             } else {
                 // dropdown_breadcrumb was removed in android 11, so try horizontal_breadcrumb
                 // Swipe on horizontal_breadcrumb
+                device.waitForIdle();
                 UiObject horizontal_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/horizontal_breadcrumb"));
                 UiObject root = null;
                 for (int i = 0; i < 5; i++) {
+                    device.waitForIdle();
                     root = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/breadcrumb_text"));
                     if (root.exists())
                         break;
@@ -233,17 +242,21 @@ public class TestUtil {
         UiObject uiElement;
         String[] dirnames = dir.split(System.getProperty("file.separator"));
         for (String basename : dirnames) {
+            device.waitForIdle();
             uiElement = device.findObject(new UiSelector().text(basename).resourceId("android:id/title"));
             uiElement.clickAndWaitForNewWindow();
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            device.waitForIdle();
             uiElement = device.findObject(new UiSelector().clickable(true).textContains(docUIStrings.getAllowAccessTo()));
             uiElement.clickAndWaitForNewWindow();
 
+            device.waitForIdle();
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllow()));
             uiElement.clickAndWaitForNewWindow();
         } else {
+            device.waitForIdle();
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSelect()));
             uiElement.clickAndWaitForNewWindow();
         }
