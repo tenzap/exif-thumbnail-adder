@@ -268,15 +268,20 @@ public class TestUtil {
         UiDevice device = UiDevice.getInstance(getInstrumentation());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            device.waitForIdle();
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSave()));
             uiElement.clickAndWaitForNewWindow();
+            device.waitForIdle();
             uiElement = device.findObject(new UiSelector().clickable(true).textContains(docUIStrings.getAllowAccessTo()));
             uiElement.clickAndWaitForNewWindow();
+            device.waitForIdle();
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllow()));
             uiElement.clickAndWaitForNewWindow();
         } else {
+            device.waitForIdle();
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSave()));
             uiElement.clickAndWaitForNewWindow();
+            device.waitForIdle();
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSelect()));
             uiElement.clickAndWaitForNewWindow();
         }
