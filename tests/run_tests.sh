@@ -60,6 +60,8 @@ WHITE='\033[0;37m'
 RESET='\033[0m'
 YELLOW='\e[0;33m'
 
+NO_IS_SAME_PICTURE_CHECK=0
+
 if [ -n "$1" ]; then
     APIs="$1"
 else
@@ -89,14 +91,23 @@ check_apps() {
       RESULT="$RESULT OK\n"
     else
       RESULT="$RESULT missing\n"
-      MISSING_APPS="$MISSING_APPS $key"
+
+      if [ "$key" = "findimagedupes" ]; then
+        MISSING_APPS_OPTIONAL="$MISSING_APPS_OPTIONAL $key"
+        NO_IS_SAME_PICTURE_CHECK=1
+      else
+        MISSING_APPS_MANDATORY="$MISSING_APPS_MANDATORY $key"
+      fi
     fi
     shift # past argument or value
   done
   #echo -e "$RESULT" | column -t
 
-  if [ ! -z "$MISSING_APPS" ]; then
-    echo "Missing apps: $MISSING_APPS"
+  if [ ! -z "$MISSING_APPS_OPTIONAL" ]; then
+    echo "Missing apps (optional) : $MISSING_APPS_OPTIONAL"
+  fi
+  if [ ! -z "$MISSING_APPS_MANDATORY" ]; then
+    echo "Missing apps (mandatory) : $MISSING_APPS_MANDATORY"
     echo "Stopping"
     exit 1
   fi
@@ -579,6 +590,9 @@ for API in $APIs; do
     TESTNAME=addThumbsSettingsRotateOff
     THUMBNAIL_PROBLEMS=
     echo -en "[$test_number] Disable Thumbnail rotation (with SAF). ($API, $VARIANT): \t"
+    if [ $NO_IS_SAME_PICTURE_CHECK -eq 1 ]; then
+      skipped "findimagedupes tool missing"
+    else
     for picture in \
       $PICTURE_ORIENTATION_1 \
       $PICTURE_ORIENTATION_2 \
@@ -606,6 +620,7 @@ for API in $APIs; do
       failure "See list of dissimilar files below"
       tr ' ' '\n' <<< "$THUMBNAIL_PROBLEMS"
     fi
+    fi
 
     test_number=$(( test_number+1 ))
     THUMBNAIL_PROBLEMS=
@@ -620,6 +635,9 @@ for API in $APIs; do
     else
       failure "Couldn't find test case"
     fi
+    if [ $NO_IS_SAME_PICTURE_CHECK -eq 1 ]; then
+      skipped "findimagedupes tool missing"
+    else
     if [ -n "$TESTNAME" ]; then
       echo -n " [Testing with $TESTNAME] "
       for picture in \
@@ -650,6 +668,7 @@ for API in $APIs; do
         tr ' ' '\n' <<< "$THUMBNAIL_PROBLEMS"
       fi
     fi
+    fi
 
     # Test thumbnail content (check that it is similar to orignal)
     for TESTNAME in \
@@ -660,6 +679,9 @@ for API in $APIs; do
       test_number=$(( test_number+1 ))
       THUMBNAIL_PROBLEMS=""
       echo -ne "[$test_number] Check thumbnail ($TESTNAME). ($API, $VARIANT): \t"
+      if [ $NO_IS_SAME_PICTURE_CHECK -eq 1 ]; then
+        skipped "findimagedupes tool missing"
+      else
       #for file in $(cd $TEST_PICS && find -iname "*.jpg" -or -iname "*.jpeg" | sort); do
       # Only check files that were actually processed (otherwise it would check files that ETA didn't process)
       for file in $(cd "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/ThumbAdder/DCIM.bak/test_${VARIANT}_${TESTNAME}" && find . -iname "*.jpg" -or -iname "*.jpeg" | sort); do
@@ -679,6 +701,7 @@ for API in $APIs; do
       else
         failure "See list of dissimilar files below"
         tr ' ' '\n' <<< "$THUMBNAIL_PROBLEMS"
+      fi
       fi
     done
 
