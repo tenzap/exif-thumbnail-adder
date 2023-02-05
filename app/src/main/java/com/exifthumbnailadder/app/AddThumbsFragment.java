@@ -28,6 +28,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -316,6 +317,13 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                     PermissionManager.isPermissionGranted = true;
                 } else {
                     PermissionManager.isPermissionGranted = false;
+                }
+                // In case the permission is auto-granted without dialog,
+                // we have to set idling resource state to 'idle'
+                if (!MainActivity.getIdlingResource().isIdleNow()) {
+                    if (PermissionManager.logIdlingResourceChanges)
+                        Log.d("ETA", "setIdlingResourceState: true (now auto-grant is done)");
+                    MainActivity.setIdlingResourceState(true);
                 }
                 synchronized(PermissionManager.sync) {
                     PermissionManager.sync.notify();

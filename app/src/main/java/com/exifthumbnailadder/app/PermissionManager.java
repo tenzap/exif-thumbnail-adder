@@ -25,6 +25,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
@@ -38,6 +39,8 @@ import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class PermissionManager {
 
@@ -259,8 +262,19 @@ public class PermissionManager {
         } else {
             synchronized (sync) {
                 requestPermissionLauncher.launch(permission);
+
                 // Window is ready for click in the test suite
-                MainActivity.setIdlingResourceState(true);
+                // But in some cases, permissions will be automatically granted.
+                // For this, we don't set idlingResourceState to true
+                // It will be done in the registerForActivityResult
+                if (!willPermissionBeAutogranted(permission)) {
+                    if (logIdlingResourceChanges)
+                        Log.d("ETA", "setIdlingResourceState: true (" + permission + ") - launch permission request dialog");
+                    MainActivity.setIdlingResourceState(true);
+                } else {
+                    if (logIdlingResourceChanges)
+                        Log.d("ETA", "setIdlingResourceState: NO CHANGE (" + permission + ") - permission will be auto-granted");
+                }
                 try {
                     sync.wait();
                 } catch (Exception e) {
@@ -330,5 +344,63 @@ public class PermissionManager {
         }
 
         return s;
+    }
+
+    private boolean willPermissionBeAutogranted(String permission) {
+        /*
+         * These pairs of permissions are auto-granted. If one of the pair
+         * is granted, the other one will be granted automatically
+         *
+         *       ACCESS_MEDIA_LOCATION (API >= 29) & READ_MEDIA_IMAGES (API >= 33)
+         *       ACCESS_MEDIA_LOCATION (API >= 29) & READ_EXTERNAL_STORAGE (API <= 32)
+         *       ACCESS_MEDIA_LOCATION (API >= 29) & WRITE_EXTERNAL_STORAGE (API <= 29)
+         */
+
+        if (Build.VERSION.SDK_INT < 29)
+            return false;
+
+        ArrayList<String> a = new ArrayList<>(
+                Arrays.asList(
+                        Manifest.permission.ACCESS_MEDIA_LOCATION
+                ));
+
+        ArrayList<String> b = new ArrayList<>(
+                Arrays.asList(
+                        Manifest.permission.READ_MEDIA_IMAGES,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ));
+
+        List<String> grantedPerm = getGrantedPermissions(fragment.getContext().getPackageName());
+
+        if (a.contains(permission)) {
+            for (String perm2 : b) {
+                if (grantedPerm.contains(perm2))
+                    return true;
+            }
+        }
+
+        if (b.contains(permission)) {
+            for (String perm2 : a) {
+                if (grantedPerm.contains(perm2))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    List<String> getGrantedPermissions(final String appPackage) {
+        List<String> granted = new ArrayList<String>();
+        try {
+            PackageInfo pi = fragment.getContext().getPackageManager().getPackageInfo(appPackage, PackageManager.GET_PERMISSIONS);
+            for (int i = 0; i < pi.requestedPermissions.length; i++) {
+                if ((pi.requestedPermissionsFlags[i] & PackageInfo.REQUESTED_PERMISSION_GRANTED) != 0) {
+                    granted.add(pi.requestedPermissions[i]);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return granted;
     }
 }

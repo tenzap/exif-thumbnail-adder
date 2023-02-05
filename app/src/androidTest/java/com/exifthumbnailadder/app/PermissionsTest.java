@@ -31,10 +31,14 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
+import androidx.test.espresso.Espresso;
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.espresso.IdlingResource;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -44,6 +48,7 @@ import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -52,12 +57,15 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import javax.net.ssl.ExtendedSSLSession;
+
 @RunWith(AndroidJUnit4.class)
 public class PermissionsTest {
     Context context;
     SharedPreferences prefs;
     Fragment fragment;
     private ActivityResultLauncher<String> requestPermissionLauncher;
+    private IdlingResource mIdlingResource;
 
     @Rule
     public RepeatRule repeatRule = new RepeatRule();
@@ -101,7 +109,28 @@ public class PermissionsTest {
         }
     }
 
+    @Before
+    public void registerIdlingResource() {
+        activityScenarioRule.getScenario().onActivity(activity -> {
+            mIdlingResource = MainActivity.getIdlingResource();
+            // To prove that the test fails, omit this call:
+            IdlingRegistry.getInstance().register(mIdlingResource);
+        });
+    }
+
+    @After
+    public void unregisterIdlingResource() {
+        if (mIdlingResource != null) {
+            IdlingRegistry.getInstance().unregister(mIdlingResource);
+        }
+    }
+
     public void permissionTest(String permission, String answer) throws Exception {
+        // Set idlingResourceState to false here. It is set back to true by the app
+        // when it is ready for the test suite to answer the permission request dialog.
+        if (PermissionManager.logIdlingResourceChanges)
+            Log.d("ETA", "setIdlingResourceState: false (" + permission + ") - in PermissionsTest");
+        MainActivity.setIdlingResourceState(false);
         new Thread() {
             @Override
             public void run() {
@@ -119,15 +148,15 @@ public class PermissionsTest {
 
         UiDevice device = UiDevice.getInstance(getInstrumentation());
 
+        // Wait until the idlingResource is idle
+        Espresso.onIdle();
+
         switch (answer) {
             case "allow":
                 TestUtil.clickPermissionAllowButton();
                 assertTrue("Permissions " + permission + " should be granted.", PermissionManager.isPermissionGranted(context, permission));
                 break;
             case "allow_auto":
-                // Wait a bit because the permission is given automatically, but not
-                // at the time we check the permission if we don't wait a bit.
-                device.waitForIdle();
                 assertTrue("Permissions " + permission + " should be granted.", PermissionManager.isPermissionGranted(context, permission));
                 break;
             case "deny":
