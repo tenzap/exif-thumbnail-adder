@@ -191,19 +191,24 @@ public class TestUtil {
                 dropdownItem.clickAndWaitForNewWindow();
             } else {
                 // dropdown_breadcrumb was removed in android 11, so try horizontal_breadcrumb
-                // Swipe on horizontal_breadcrumb
+                // Swipe on horizontal_breadcrumb until we can click on the 'root'
                 device.waitForIdle();
                 UiObject horizontal_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/horizontal_breadcrumb"));
                 UiObject root = null;
-                for (int i = 0; i < 5; i++) {
+                root = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/breadcrumb_text"));
+
+                long max_duration = 10000; // 10sec
+                long timeout = System.currentTimeMillis() + max_duration;
+                while (!root.exists() && System.currentTimeMillis() < timeout) {
+                    horizontal_breadcrumb.swipeRight(80);
+                    Thread.sleep(200);
                     device.waitForIdle();
-                    root = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/breadcrumb_text"));
-                    if (root.exists())
-                        break;
-                    horizontal_breadcrumb.swipeRight(20);
                 }
-                if (root != null)
+                if (root.exists()) {
                     root.clickAndWaitForNewWindow();
+                } else {
+                    throw new UnsupportedOperationException("root not found in Documents UI");
+                }
             }
         }
 
