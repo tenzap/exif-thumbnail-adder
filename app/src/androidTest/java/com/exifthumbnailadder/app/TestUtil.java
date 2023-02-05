@@ -53,10 +53,12 @@ import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.util.HumanReadables;
 import androidx.test.espresso.util.TreeIterables;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
+import androidx.test.uiautomator.Until;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -68,6 +70,7 @@ import java.util.concurrent.TimeoutException;
 public class TestUtil {
 
     private static boolean srcAdded = false;
+    private static UiDevice device = UiDevice.getInstance(getInstrumentation());
 
     public static void requestAllFilesAccess() throws Exception {
         //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !MainActivity.haveAllFilesAccessPermission()) {
@@ -111,13 +114,7 @@ public class TestUtil {
     }
 
     public static void addSourceFolder(String dir) throws Exception {
-        String volumeNameInFilePicker = Build.MODEL;
-        String sdCardNameInFilePicker = getSdCardNameInFilePicker();
-
         DocUIStrings docUIStrings = new DocUIStrings();
-
-        UiDevice device = UiDevice.getInstance(getInstrumentation());
-
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
         // Create broadcast receiver that will tell when srcUri has been
@@ -139,132 +136,45 @@ public class TestUtil {
         LocalBroadcastManager.getInstance(context)
                 .registerReceiver(receiver, filter);
 
+        Log.d("ETATest", "before click on 'Add'");
         onView(withId(R.id.select_path_button)).perform(click());
-//        UiObject uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + context.getString(R.string.settings_button_add_dir)));
-//        uiElement.clickAndWaitForNewWindow();
+        Log.d("ETATest", "after click on 'Add'");
 
-        // Wait a little bit because sometimes, the next step (show more options menu)
-        // doesn't seem to be clicked and the documentsUi seems refreshed a few times.
-        //device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 2000);
+        // DocumentsUI is very long to load the first time. ~10secs...
+        device.wait(Until.hasObject(By.pkg(docUIStrings.getDocumentsUiPackageName())), 60000);
+        Log.d("ETATest", "After wait until hasObject from documentsUi");
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
-            // Open "more options" menu to click on Show internal storage if it is there
-            device.waitForIdle();
-            UiObject advancedMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getMoreOptions()));
-            advancedMenu.clickAndWaitForNewWindow();
+        // Additional wait because the screen refreshes itself even after the
+        // first display (especially the first time DocumentsUI is loaded)
+        // The next times, we might hit the timeout because the windows doesn't refresh itself.
+        device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 5000);
+        Log.d("ETATest", "after waitForWindowUpdate");
 
-            // Click on "Show internal storage" if it is there, otherwise press back to quit the "More options" menu
-            // Show internal storage is not needed anymore since Android R/30
-            device.waitForIdle();
-            UiObject showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
-//        if (showInternalStorage.exists()) {
-//            showInternalStorage.clickAndWaitForNewWindow();
-//        } else {
-//            Log.w("ETA", "'Show internal storage' item not found");
-//            device.pressBack();
-//        }
-            try { showInternalStorage.clickAndWaitForNewWindow(); }
-            catch (UiObjectNotFoundException e) {
-                Log.w("ETA", "Show internal storage not found. Is the 'More options' menu open? Trying again...");
-                advancedMenu.clickAndWaitForNewWindow();
-                device.waitForIdle();
-                showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
-                showInternalStorage.clickAndWaitForNewWindow();
-            }
-        }
-        // Open Drawer (aka Hamburger menu)
+        // Wait until the device is idle (this is usually very short, maybe useless)
         device.waitForIdle();
-        UiObject hamburgerMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getShowRoots()));
-        if (hamburgerMenu.exists()) {
-            hamburgerMenu.clickAndWaitForNewWindow();
-            device.waitForIdle();
-            UiObject uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
-            uiElement.clickAndWaitForNewWindow();
-        } else {
-            // In some cases (when we can't open the drawer), we may have to select the root by selecting it in the breadcrumb
-            device.waitForIdle();
-            UiObject dropdown_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/dropdown_breadcrumb"));
-            if (dropdown_breadcrumb.exists()) {
-                dropdown_breadcrumb.clickAndWaitForNewWindow();
-                device.waitForIdle();
-                UiObject dropdownItem = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
-                dropdownItem.clickAndWaitForNewWindow();
-            } else {
-                // dropdown_breadcrumb was removed in android 11, so try horizontal_breadcrumb
-                // Swipe on horizontal_breadcrumb until we can click on the 'root'
-                device.waitForIdle();
-                UiObject horizontal_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/horizontal_breadcrumb"));
-                UiObject root = null;
-                root = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/breadcrumb_text"));
+        Log.d("ETATest", "after waitForIdle");
 
-                long max_duration = 10000; // 10sec
-                long timeout = System.currentTimeMillis() + max_duration;
-                while (!root.exists() && System.currentTimeMillis() < timeout) {
-                    horizontal_breadcrumb.swipeRight(80);
-                    Thread.sleep(200);
-                    device.waitForIdle();
-                }
-                if (root.exists()) {
-                    root.clickAndWaitForNewWindow();
-                } else {
-                    throw new UnsupportedOperationException("root not found in Documents UI");
-                }
-            }
-        }
-
-        // Select Root (volume)
-        //uiElement = device.findObject(new UiSelector().textMatches("(?i).*Virtual.*"));
-        //uiElement = device.findObject(new UiSelector().textMatches("(?i)"+sdCardNameInFilePicker)); //DOESN'T WORK
-        //UiObject uiElement = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
-//        try {
-/*
-        } catch (UiObjectNotFoundException e) {
-            e.printStackTrace();
-            // In some cases (when we can't open the drawer), we may have to select the root by selecting it in the breadcrumb
-            UiObject dropdown_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/dropdown_breadcrumb"));
-            if (dropdown_breadcrumb.exists()) {
-                dropdown_breadcrumb.clickAndWaitForNewWindow();
-                UiObject dropdownItem = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
-                dropdownItem.clickAndWaitForNewWindow();
-            } else {
-                // dropdown_breadcrumb was removed in android 11, so try horizontal_breadcrumb
-                // Swipe on horizontal_breadcrumb
-                UiObject horizontal_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/horizontal_breadcrumb"));
-                UiObject root = null;
-                for (int i = 0; i < 5; i++) {
-                    horizontal_breadcrumb.swipeRight(20);
-                    root = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/breadcrumb_text"));
-                    if (root.exists())
-                        break;
-                }
-                if (root != null)
-                    root.clickAndWaitForNewWindow();
-            }
-        }
- */
-
-        // Select folder
-        UiObject uiElement;
+        // Get the components of the path we want to add to the dir.
         String[] dirnames = dir.split(System.getProperty("file.separator"));
-        for (String basename : dirnames) {
-            device.waitForIdle();
-            uiElement = device.findObject(new UiSelector().text(basename).resourceId("android:id/title"));
-            uiElement.clickAndWaitForNewWindow();
+
+        /*
+         * A. If it is already displayed, click on DCIM (aka parentDir), then the folders.
+         * B. If DCIM is not there, try to display the root volume which holds DCIM.
+         *    After what it is possible to click on DCIM & the subfolders.
+         */
+
+        // Search parentDir on the screen
+        UiObject parentDir = device.findObject(new UiSelector().text(dirnames[0]).resourceId("android:id/title"));
+        Log.d("ETATest", "parentDir (" + dirnames[0] + ") exists? " + parentDir.exists());
+
+        // If parent dir is not there, we need to select the root volume in DocumentsUI
+        if (!parentDir.exists()) {
+            displayRoot();
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            device.waitForIdle();
-            uiElement = device.findObject(new UiSelector().clickable(true).textContains(docUIStrings.getAllowAccessTo()));
-            uiElement.clickAndWaitForNewWindow();
-
-            device.waitForIdle();
-            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllow()));
-            uiElement.clickAndWaitForNewWindow();
-        } else {
-            device.waitForIdle();
-            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSelect()));
-            uiElement.clickAndWaitForNewWindow();
-        }
+        // Now content of root volume should be displayed. So proceed with navigating
+        // in the tree.
+        selectDirFromRoot(dirnames);
 
         // Wait until we received the com.exifthumbnailadder.app.srcUris_Added message
         // or until timeout
@@ -276,6 +186,166 @@ public class TestUtil {
 
         LocalBroadcastManager.getInstance(context)
                 .unregisterReceiver(receiver);
+    }
+
+    private static void clickObject(UiDevice device, UiObject object) throws UiObjectNotFoundException {
+        object.clickAndWaitForNewWindow();
+        device.waitForIdle();
+    }
+
+    private static boolean clickHamburgerMenuThenVolumeName(UiDevice device, UiObject hamburgerMenu, UiObject volumeName, UiObject advancedMenu) throws UiObjectNotFoundException {
+        clickObject(device, hamburgerMenu);
+
+        // If volumeName is displayed, click on it.
+        if (volumeName.exists()) {
+            Log.d("ETATest", "volumeName exists. Click on volumeName.");
+            clickObject(device, volumeName);
+            return true;
+        } else {
+            // Get out of drawer/hamburger menu. Click anywhere outside
+            // of drawer: the advanced menu is a good candidate.
+            clickObject(device, advancedMenu);
+            return false;
+        }
+    }
+
+    /* Display the root of the volume in the DocumentsUi
+     * Layout of DocumentsUI differs across Android versions.
+     * So method to get there is a bit complex
+     */
+    private static void displayRoot() throws UiObjectNotFoundException, Exception {
+        String volumeNameInFilePicker = Build.MODEL;
+        String sdCardNameInFilePicker = getSdCardNameInFilePicker();
+
+        DocUIStrings docUIStrings = new DocUIStrings();
+
+        // Not always available. May be hidden when there is no SDCard on some APIs
+        UiObject hamburgerMenu = device.findObject(new UiSelector().clickable(true).focusable(true).description(docUIStrings.getShowRoots()));
+        Log.d("ETATest", "hamburgerMenu exists? " + hamburgerMenu.exists());
+
+        UiObject advancedMenu = device.findObject(new UiSelector().clickable(true).description(docUIStrings.getMoreOptions()));
+        Log.d("ETATest", "advancedMenu exists? " + advancedMenu.exists());
+
+        // Only exists on API < 30
+        UiObject dropdown_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/dropdown_breadcrumb"));
+        Log.d("ETATest", "dropdown_breadcrumb exists? " + dropdown_breadcrumb.exists());
+
+        // Only exists on API >= 30
+        UiObject horizontal_breadcrumb = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/horizontal_breadcrumb"));
+        Log.d("ETATest", "horizontal_breadcrumb exists? " + horizontal_breadcrumb.exists());
+
+        UiObject volumeName = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId("android:id/title"));
+        Log.d("ETATest", "volumeName exists? " + volumeName.exists());
+
+        // Displayed in the "more options" menu
+        UiObject showInternalStorage = device.findObject(new UiSelector().text(docUIStrings.getShowInternalStorage()));
+        Log.d("ETATest", "showInternalStorage exists? " + showInternalStorage.exists());
+
+        // If volumeName is displayed, click on it.
+        if (volumeName.exists()) {
+            Log.d("ETATest", "volumeName exists. Click on volumeName.");
+            clickObject(device, volumeName);
+            return;
+        }
+
+        // Check if volume name is in Hamburger Menu,
+        // In that case, click on it.
+        if (hamburgerMenu.exists()) {
+            Log.d("ETATest", "hamburgerMenu exists. Open menu.");
+            if (clickHamburgerMenuThenVolumeName(device, hamburgerMenu, volumeName, advancedMenu))
+                return;
+        }
+
+        // Volume name is not in Hamburger Menu, so enable it from
+        // Advanced menu
+        if (advancedMenu.exists()) {
+            Log.d("ETATest", "advancedMenu exists. Open menu.");
+            clickObject(device, advancedMenu);
+
+            // In the Advanced menu, click on "show internal storage" (if it is there)
+            Log.d("ETATest", "showInternalStorage exists? " + showInternalStorage.exists());
+            if (showInternalStorage.exists()) {
+                Log.d("ETATest", "showInternalStorage exists. Click on it.");
+                clickObject(device, showInternalStorage);
+
+                if (hamburgerMenu.exists()) {
+                    Log.d("ETATest", "hamburgerMenu exists. Open menu.");
+                    if (clickHamburgerMenuThenVolumeName(device, hamburgerMenu, volumeName, advancedMenu))
+                        return;
+                }
+            } else {
+                Log.d("ETATest", "'Show internal storage' item not found");
+                // TODO: Check that menu is really open
+                device.pressBack();
+                device.waitForIdle();
+
+                // TODO, check that we are still in DocumentsUI, otherwise, click again on "Add"
+            }
+        }
+
+        // Last resort: Breadcrumb. In some cases (when we can't open the drawer)
+        // we may have to select the root volume by selecting it in the breadcrumb
+        if (dropdown_breadcrumb.exists()) {
+            Log.d("ETATest", "dropdown_breadcrumb exists. Click on it.");
+            clickObject(device, dropdown_breadcrumb);
+
+            if (volumeName.exists()) {
+                Log.d("ETATest", "volumeName exists. Click on volumeName.");
+                clickObject(device, volumeName);
+                return;
+            }
+        }
+
+        if (horizontal_breadcrumb.exists()) {
+            Log.d("ETATest", "horizontal_breadcrumb exists. Swipe on it.");
+
+            UiObject breadcrumbVolumeName = device.findObject(new UiSelector().text(volumeNameInFilePicker).resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/breadcrumb_text"));
+            Log.d("ETATest", "breadcrumbVolumeName exists? " + breadcrumbVolumeName.exists());
+
+            // Swipe until we find the breadcrumbVolumeName
+            long max_duration = 10000; // 10 sec
+            long timeout = System.currentTimeMillis() + max_duration;
+            while (!breadcrumbVolumeName.exists() && System.currentTimeMillis() < timeout) {
+                horizontal_breadcrumb.swipeRight(20);
+                Thread.sleep(200);
+                device.waitForIdle();
+            }
+
+            if (breadcrumbVolumeName.exists()) {
+                Log.d("ETATest", "breadcrumbVolumeName exists. Click on volumeName.");
+                clickObject(device, breadcrumbVolumeName);
+                return;
+            }
+        }
+
+        throw new UiObjectNotFoundException("Couldn't find method to display root volume in DocumentsUI");
+    }
+
+    private static void selectDirFromRoot(String[] dirnames) throws UiObjectNotFoundException {
+        UiObject uiElement;
+        DocUIStrings docUIStrings = new DocUIStrings();
+
+        // Navigate to the requested dir
+        for (String basename : dirnames) {
+            uiElement = device.findObject(new UiSelector().text(basename).resourceId("android:id/title"));
+            Log.d("ETATest", "dir '" + basename + "' exists? " + uiElement.exists());
+            clickObject(device, uiElement);
+        }
+
+        // Confirm/Validate the selected dir
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            uiElement = device.findObject(new UiSelector().clickable(true).textContains(docUIStrings.getAllowAccessTo()));
+            Log.d("ETATest", "AllowAccessTo exists? " + uiElement.exists());
+            clickObject(device, uiElement);
+
+            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllow()));
+            Log.d("ETATest", "Allow exists? " + uiElement.exists());
+            clickObject(device, uiElement);
+        } else {
+            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSelect()));
+            Log.d("ETATest", "Select exists? " + uiElement.exists());
+            clickObject(device, uiElement);
+        }
     }
 
     public static void givePermissionToWorkingDir() throws Exception {
