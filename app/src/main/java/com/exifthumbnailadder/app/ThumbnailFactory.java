@@ -193,10 +193,8 @@ class ThumbnailFactory {
         synchronized (sync) {
             service_replied = false;
         }
-        Log.e("ETA", "ggg8");
         try {
             mService.send(msg);
-            Log.e("ETA", "ggg10");
         } catch (RemoteException e) {
             e.printStackTrace();
         }
