@@ -183,9 +183,10 @@ public class AddThumbsCommon {
         // Check that folder is in the list
         InputDirs inputDirs = new InputDirs(prefs.getString("srcUris", ""));
 
+        uiDevice.waitForIdle();
         assertEquals(1, inputDirs.size());
         String expectedValue = "content://com.android.externalstorage.documents/tree/primary%3A" + dir.copyForUri() + "/document/primary%3A" + dir.copyForUri();
-        assertEquals("Not exactly one selected source dir", expectedValue, inputDirs.get(0).toString());
+        assertEquals("Selected dir doesn't match", expectedValue, inputDirs.get(0).toString());
 
         // Set All files access permission
         if (opts != null &&
