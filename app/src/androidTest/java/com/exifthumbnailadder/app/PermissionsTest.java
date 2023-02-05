@@ -60,6 +60,10 @@ public class PermissionsTest {
     private ActivityResultLauncher<String> requestPermissionLauncher;
 
     @Rule
+    public RepeatRule repeatRule = new RepeatRule();
+    // To repeat a test, use the @Repeat(100) with the @Test annotation
+
+    @Rule
     public TestName testname = new TestName();
 
     @Rule
