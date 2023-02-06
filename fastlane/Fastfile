@@ -209,6 +209,12 @@ platform :android do
     adb(
       command: 'shell pm uninstall com.exifthumbnailadder.app.debug || echo'
     )
+    # Uninstall the previously installed test package. On github actions, don't removing it may give
+    # Failed to install APK(s): exifthumbnailadder-*-standard-debug-androidTest.apk
+    # INSTALL_FAILED_UPDATE_INCOMPATIBLE: Package com.exifthumbnailadder.app.debug.test signatures do not match the previously installed version; ignoring!
+    adb(
+      command: 'shell pm uninstall com.exifthumbnailadder.app.debug.test || echo'
+    )
   end
 
   desc "Get test output from device"
