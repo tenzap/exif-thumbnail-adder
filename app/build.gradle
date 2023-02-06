@@ -14,7 +14,7 @@ android {
 
     compileSdkVersion 33
     buildToolsVersion "33.0.0"
-    ndkVersion "25.1.8937393"
+    ndkVersion NDK_VERSION
 
     defaultConfig {
         applicationId "com.exifthumbnailadder.app"
@@ -125,7 +125,7 @@ android {
     }
     externalNativeBuild {
         cmake {
-            version "3.22.1"
+            version SDK_CMAKE_VERSION
             path file('../CMakeLists.txt')
         }
     }
