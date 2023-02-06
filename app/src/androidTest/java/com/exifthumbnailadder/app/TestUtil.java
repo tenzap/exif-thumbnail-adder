@@ -140,19 +140,7 @@ public class TestUtil {
         onView(withId(R.id.select_path_button)).perform(click());
         Log.d("ETATest", "after click on 'Add'");
 
-        // DocumentsUI is very long to load the first time. ~10secs...
-        device.wait(Until.hasObject(By.pkg(docUIStrings.getDocumentsUiPackageName())), 60000);
-        Log.d("ETATest", "After wait until hasObject from documentsUi");
-
-        // Additional wait because the screen refreshes itself even after the
-        // first display (especially the first time DocumentsUI is loaded)
-        // The next times, we might hit the timeout because the windows doesn't refresh itself.
-        device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 5000);
-        Log.d("ETATest", "after waitForWindowUpdate");
-
-        // Wait until the device is idle (this is usually very short, maybe useless)
-        device.waitForIdle();
-        Log.d("ETATest", "after waitForIdle");
+        waitForDocumentsUiReadiness(device, docUIStrings);
 
         // Get the components of the path we want to add to the dir.
         String[] dirnames = dir.split(System.getProperty("file.separator"));
@@ -355,19 +343,7 @@ public class TestUtil {
 
         UiDevice device = UiDevice.getInstance(getInstrumentation());
 
-        // DocumentsUI is very long to load the first time. ~10secs...
-        device.wait(Until.hasObject(By.pkg(docUIStrings.getDocumentsUiPackageName())), 60000);
-        Log.d("ETATest", "After wait until hasObject from documentsUi");
-
-        // Additional wait because the screen refreshes itself even after the
-        // first display (especially the first time DocumentsUI is loaded)
-        // The next times, we might hit the timeout because the windows doesn't refresh itself.
-        device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 5000);
-        Log.d("ETATest", "after waitForWindowUpdate");
-
-        // Wait until the device is idle (this is usually very short, maybe useless)
-        device.waitForIdle();
-        Log.d("ETATest", "after waitForIdle");
+        waitForDocumentsUiReadiness(device, docUIStrings);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSave()));
@@ -383,6 +359,22 @@ public class TestUtil {
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSelect()));
             clickObject(device, uiElement);
         }
+    }
+
+    public static void waitForDocumentsUiReadiness(UiDevice device, DocUIStrings docUIStrings) throws Exception {
+        // DocumentsUI is very long to load the first time. ~10secs...
+        device.wait(Until.hasObject(By.pkg(docUIStrings.getDocumentsUiPackageName())), 60000);
+        Log.d("ETATest", "After wait until hasObject from documentsUi");
+
+        // Additional wait because the screen refreshes itself even after the
+        // first display (especially the first time DocumentsUI is loaded)
+        // The next times, we might hit the timeout because the windows doesn't refresh itself.
+        device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 5000);
+        Log.d("ETATest", "after waitForWindowUpdate");
+
+        // Wait until the device is idle (this is usually very short, maybe useless)
+        device.waitForIdle();
+        Log.d("ETATest", "after waitForIdle");
     }
 
     public void openHamburgerMenuBySwipe() throws Exception {
