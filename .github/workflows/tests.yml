@@ -285,7 +285,7 @@ jobs:
 
       - name: create AVD and generate snapshot for caching (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
         if: ${{ env.with_avd_cache == 'true' &&  steps.avd-cache.outputs.cache-hit != 'true' }}
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: tenzap/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
@@ -295,6 +295,7 @@ jobs:
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
+          after-boot-delay: 120
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
@@ -302,7 +303,7 @@ jobs:
 
       - name: run tests with avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
         if: ${{ env.with_avd_cache == 'true' }}
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: tenzap/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
@@ -319,7 +320,7 @@ jobs:
 
       - name: run tests without avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
         if: ${{ env.with_avd_cache != 'true' }}
-        uses: reactivecircus/android-emulator-runner@v2
+        uses: tenzap/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
@@ -329,6 +330,7 @@ jobs:
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
+          after-boot-delay: 120
           script: API_LEVEL=${{ matrix.api-level }} fastlane connectedCheck_with_screenrecord
 
       # actions/upload-artifact@v3 doesn't keep timestamps, so use tar as an intermediate
