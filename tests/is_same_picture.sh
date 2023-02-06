@@ -50,6 +50,8 @@ compare_with_findimagedupes() {
   OUTPUT="$(findimagedupes -q --threshold=85% --verbosity=fingerprint "$original" "$thumbnail")"
 #   echo -e "OUTPUT:\n$OUTPUT"
   LINE_COUNT=$(wc -l <<< "$OUTPUT")
+  # Remove leading space (this is required on macOS)
+  LINE_COUNT="${LINE_COUNT#"${LINE_COUNT%%[![:space:]]*}"}"
 #   echo -e "LINE_COUNT: $LINE_COUNT"
 #   FINGERPRINT_ORIGINAL=$(head -n2 <<< "$OUTPUT" | head -n1 | cut -d ' ' -f 1)
 #   FINGERPRINT_THUMBNAIL=$(head -n2 <<< "$OUTPUT" | tail -n1 | cut -d ' ' -f 1)

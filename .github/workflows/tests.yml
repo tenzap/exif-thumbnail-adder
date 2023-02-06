@@ -340,6 +340,10 @@ jobs:
         if: always()
         #if: ${{ false }} # Don't run them for now because locally I use the perl version of findimagedupes which is different
         run: |
+          set -x
+          #set
+          #echo HOME=$HOME
+
           brew install exiv2
           brew install exiftool
           brew install imagemagick@6
@@ -347,19 +351,51 @@ jobs:
           # gnu-sed is also needed
           brew install gnu-sed
 
-          # Install findimagedupes (version of opennota)
-          #set -x
-          #brew install libmagic
-          #brew install libjpeg
-          #brew install libpng
-          #brew install libtiff
-          #brew install dcraw
-          #brew install libheif
-          #go install gitlab.com/opennota/findimagedupes@latest
+          # Dependencies for findimagedupes
+          # Graphics::Magick is provided by graphicsmagick
+          brew install graphicsmagick
 
-          # Add findimagedupes to PATH
-          #export GOPATH=$(go env GOPATH)
-          #export PATH=$PATH:$GOPATH/bin
+          # Install PerlMagick from GraphicsMagick to have Graphics::Magick
+          wget https://netcologne.dl.sourceforge.net/project/graphicsmagick/graphicsmagick/1.3.40/GraphicsMagick-1.3.40.tar.xz
+          tar -xf GraphicsMagick-1.3.40.tar.xz
+          cd GraphicsMagick-1.3.40
+
+          # Configure with the same configure arguments as homebrew, but with "--with-perl=yes"
+          ./configure \
+            --prefix=/usr/local \
+            --disable-dependency-tracking \
+            --disable-openmp \
+            --disable-static \
+            --enable-shared \
+            --with-modules \
+            --with-quantum-depth=16 \
+            --without-lzma \
+            --without-x \
+            --without-gslib \
+            --with-gs-font-dir=/usr/local/share/ghostscript/fonts \
+            --without-wmf \
+            --with-jxl \
+            --with-perl=yes
+          cd PerlMagick
+          perl Makefile.PL
+          make
+          sudo make install
+
+          sudo perl -MCPAN -e 'CPAN::Shell->rematein("notest", "install", "File::MimeInfo")'
+          sudo perl -MCPAN -e 'CPAN::Shell->rematein("notest", "install", "File::MimeInfo::Magic")'
+          sudo perl -MCPAN -e 'CPAN::Shell->rematein("notest", "install", "Inline")'
+          sudo perl -MCPAN -e 'CPAN::Shell->rematein("notest", "install", "Inline::C")'
+
+          # Install findimagedupes
+          wget https://raw.githubusercontent.com/jhnc/findimagedupes/2.20.1/findimagedupes
+          chmod +x findimagedupes
+          gsed -i 's#usr/bin/perl#usr/bin/env perl#' findimagedupes
+          gsed -i 's#'\''/usr/local/lib/findimagedupes'\''#$ENV{"HOME"}#' findimagedupes
+          sudo mv findimagedupes /usr/local/bin
+
+          # Run findimagedupes (check it works)
+          findimagedupes
+
 
       - name: Run bash tests
         if: always()
