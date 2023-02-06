@@ -39,11 +39,11 @@ jobs:
       - name: download some SDK components & touch with fixed date
         run: |
           set -x
-          if [ $ANDROID_NDK_IS_LOCAL_DOWNLOAD -eq 1 ]; then
+          if [ "a$ANDROID_NDK_IS_LOCAL_DOWNLOAD" = "a1" ]; then
             $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --install "ndk;$NDK_VERSION"
             find $ANDROID_SDK_ROOT/ndk/$NDK_VERSION -exec touch -t 202301010000 '{}' \;
           fi
-          if [ $ANDROID_CMAKE_IS_LOCAL_DOWNLOAD -eq 1 ]; then
+          if [ "a$ANDROID_CMAKE_IS_LOCAL_DOWNLOAD" = "a1" ]; then
             $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --install "cmake;$CMAKE_VERSION"
             find $ANDROID_SDK_ROOT/cmake/$CMAKE_VERSION -exec touch -t 202301010000 '{}' \;
           fi
