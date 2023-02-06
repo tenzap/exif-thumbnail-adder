@@ -355,23 +355,33 @@ public class TestUtil {
 
         UiDevice device = UiDevice.getInstance(getInstrumentation());
 
+        // DocumentsUI is very long to load the first time. ~10secs...
+        device.wait(Until.hasObject(By.pkg(docUIStrings.getDocumentsUiPackageName())), 60000);
+        Log.d("ETATest", "After wait until hasObject from documentsUi");
+
+        // Additional wait because the screen refreshes itself even after the
+        // first display (especially the first time DocumentsUI is loaded)
+        // The next times, we might hit the timeout because the windows doesn't refresh itself.
+        device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 5000);
+        Log.d("ETATest", "after waitForWindowUpdate");
+
+        // Wait until the device is idle (this is usually very short, maybe useless)
+        device.waitForIdle();
+        Log.d("ETATest", "after waitForIdle");
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            device.waitForIdle();
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSave()));
-            uiElement.clickAndWaitForNewWindow();
-            device.waitForIdle();
+            clickObject(device, uiElement);
             uiElement = device.findObject(new UiSelector().clickable(true).textContains(docUIStrings.getAllowAccessTo()));
-            uiElement.clickAndWaitForNewWindow();
-            device.waitForIdle();
+            clickObject(device, uiElement);
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllow()));
-            uiElement.clickAndWaitForNewWindow();
+            clickObject(device, uiElement);
         } else {
             device.waitForIdle();
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSave()));
-            uiElement.clickAndWaitForNewWindow();
-            device.waitForIdle();
+            clickObject(device, uiElement);
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSelect()));
-            uiElement.clickAndWaitForNewWindow();
+            clickObject(device, uiElement);
         }
     }
 
