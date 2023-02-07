@@ -205,7 +205,7 @@ public class AddThumbsCommon {
         // Dropping event because there is no touchable window or gesture monitor at
         // Workaround would be to use waitForIdle
         uiDevice.waitForIdle();
-        onView(withId(R.id.AddThumbsFragment)).perform(click(click()));
+        onView(withId(R.id.AddThumbsFragment)).perform(click(click(click())));
 
         // Set how many times to run the processing
         int runs = 1;
