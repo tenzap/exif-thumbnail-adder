@@ -254,7 +254,16 @@ public class TestUtil {
             clickObject(device, advancedMenu);
 
             // Wait until advancedMenu is really open
-            Boolean waitResult = device.wait(Until.hasObject(By.res(docUIStrings.getDocumentsUiPackageName() + ":id/content")), 4000);
+            Boolean waitResult = null;
+            if (Build.VERSION.SDK_INT <= 28) {
+                // Use a BySelector by class, because, there can be id/title in the main DocumentsUI window
+                //   When in the main documentsUI window, the parent will be a LinearLayout
+                //   When in the advancedMenu , the parent will be a RelativeLayout
+                waitResult = device.wait(Until.hasObject(By.clazz("android.widget.RelativeLayout").hasChild(By.res("android:id/title"))), 4000);
+            } else {
+                waitResult = device.wait(Until.hasObject(By.res(docUIStrings.getDocumentsUiPackageName() + ":id/content")), 4000);
+            }
+
             if (waitResult.equals(Boolean.TRUE)) {
                 // In the Advanced menu, click on "show internal storage" (if it is there)
                 Log.d("ETATest", "showInternalStorage exists? " + showInternalStorage.exists());
