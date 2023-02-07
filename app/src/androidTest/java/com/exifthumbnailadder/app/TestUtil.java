@@ -176,9 +176,10 @@ public class TestUtil {
                 .unregisterReceiver(receiver);
     }
 
-    private static void clickObject(UiDevice device, UiObject object) throws UiObjectNotFoundException {
-        object.clickAndWaitForNewWindow();
+    private static boolean clickObject(UiDevice device, UiObject object) throws UiObjectNotFoundException {
+        boolean result = object.clickAndWaitForNewWindow();
         device.waitForIdle();
+        return result;
     }
 
     private static boolean clickHamburgerMenuThenVolumeName(UiDevice device, UiObject hamburgerMenu, UiObject volumeName) throws UiObjectNotFoundException {
