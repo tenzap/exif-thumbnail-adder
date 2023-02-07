@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -659,6 +660,23 @@ public class AddThumbsService extends Service {
                     e.printStackTrace();
                     continue;
                 }
+
+                // Refresh MediaStore to reflect the new state of the picture
+                // There is no need to check before if file is in a directory covered by MediaStore
+                // The list of paths covered by mediastore can be found at:
+                // https://cs.android.com/android/platform/superproject/+/master:packages/providers/MediaProvider/src/com/android/providers/media/MediaProvider.java;l=321?q=DIRECTORY_DCIM_LOWER_CASE
+                // NB: Instead of calling scanFile on a File, we could also call it on a dir
+                // On API<=29, if we set a mimeType array, it must have the same size as the path array.
+                // On API>=30, mimetype doesn't seem considered.
+                MediaScannerConnection.scanFile(getApplicationContext(),
+                        new String[]{doc.getFullFSPathToDest(), doc.getFullFSPathToBackup()},
+                        null,
+                        new MediaScannerConnection.OnScanCompletedListener() {
+                            public void onScanCompleted(String path, Uri uri) {
+                                if (enableLog)
+                                    Log.i("ETA", "MediaStore scanCompleted ([PATH]: " + path + " [URI]: " + uri + ")");
+                            }
+                        });
 
                 updateLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.frag1_log_done) + "</span><br>",1));
             }

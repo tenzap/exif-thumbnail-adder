@@ -118,6 +118,8 @@ public abstract class ETADoc {
     public abstract Object getOutputInTmp();
     public abstract String getTmpFSPathWithFilename();
     public abstract String getFullFSPath();
+    public abstract String getFullFSPathToBackup();
+    public abstract String getFullFSPathToDest();
     public abstract void writeInTmp(ByteArrayOutputStream newImgOs) throws Exception;
     public abstract Uri getOutputFileUri(Uri tmpUri, String filename);
     public abstract boolean isFile();

@@ -320,6 +320,16 @@ public class ETADocDf extends ETADoc {
         return FileUtil.getFullDocIdPathFromTreeUri(_uri, ctx);
     }
 
+    public String getFullFSPathToBackup() {
+        String dir = FileUtil.getFullDocIdPathFromTreeUri(getBackupUri(), ctx);
+        return dir + File.separator + getName();
+    }
+
+    public String getFullFSPathToDest() {
+        String dir = FileUtil.getFullDocIdPathFromTreeUri(getDestUri(), ctx);
+        return dir + File.separator + getName();
+    }
+
     public void writeInTmp(ByteArrayOutputStream newImgOs) throws Exception {
         Uri outputTmpFileUri = (Uri) getOutputInTmp();
         OutputStream outputStream2 = null;

@@ -287,6 +287,14 @@ public class ETADocFile extends ETADoc {
         return etaDoc.getPath();
     }
 
+    public String getFullFSPathToBackup() {
+        return getBackupDir() + File.separator + getName();
+    }
+
+    public String getFullFSPathToDest() {
+        return getBackupDir() + File.separator + getName();
+    }
+
     public void writeInTmp(ByteArrayOutputStream newImgOs) throws Exception {
         File outputFilename = (File) getOutputInTmp();
         if (enableLog) Log.i(TAG, "Write to: " + outputFilename);
