@@ -322,9 +322,14 @@ public class TestUtil {
 
         // Navigate to the requested dir
         for (String basename : dirnames) {
-            uiElement = device.findObject(new UiSelector().text(basename).resourceId("android:id/title"));
-            Log.d("ETATest", "dir '" + basename + "' exists? " + uiElement.exists());
-            clickObject(device, uiElement);
+            Boolean waitResult = device.wait(Until.hasObject(By.text(basename)), 4000);
+            if (waitResult.equals(Boolean.TRUE)) {
+                uiElement = device.findObject(new UiSelector().text(basename).resourceId("android:id/title"));
+                Log.d("ETATest", "dir '" + basename + "' exists? " + uiElement.exists());
+                clickObject(device, uiElement);
+            } else {
+                Log.e("ETATest", basename + " dir not found.");
+            }
         }
 
         // Confirm/Validate the selected dir
