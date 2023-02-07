@@ -54,8 +54,10 @@ import androidx.test.espresso.util.HumanReadables;
 import androidx.test.espresso.util.TreeIterables;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 import androidx.test.uiautomator.Until;
@@ -335,17 +337,47 @@ public class TestUtil {
 
     private static void selectDirFromRoot(String[] dirnames) throws UiObjectNotFoundException {
         UiObject uiElement;
+        UiObject2 folder;
         DocUIStrings docUIStrings = new DocUIStrings();
 
         // Navigate to the requested dir
         for (String basename : dirnames) {
-            Boolean waitResult = device.wait(Until.hasObject(By.text(basename)), 4000);
-            if (waitResult.equals(Boolean.TRUE)) {
-                uiElement = device.findObject(new UiSelector().text(basename).resourceId("android:id/title"));
-                Log.d("ETATest", "dir '" + basename + "' exists? " + uiElement.exists());
-                clickObject(device, uiElement);
+            BySelector folderSelector = By.text(basename);
+            // On API >= 29 we could also use an additional filter ':id/item_root'
+            //BySelector folderSelector = By.res(docUIStrings.getDocumentsUiPackageName() + ":id/item_root").hasDescendant(By.text(basename));
+
+            Log.d("ETATest", "Folder '" + basename + "'. Start waiting for object.");
+            Boolean waitResult = device.wait(Until.hasObject(folderSelector), 10000);
+            Log.d("ETATest", "Folder '" + basename + "'. Finished waiting for object.");
+
+            if (!waitResult.equals(Boolean.TRUE)) {
+                Log.e("ETATest", "Folder '" + basename + "'. Not found before timeout.");
+                throw new UiObjectNotFoundException("Folder '" + basename + "'. Not found before timeout.");
+            }
+            Log.d("ETATest", "Folder '" + basename + "'. Now displayed on screen.");
+
+            //folder = device.findObject(new UiSelector().text(basename).resourceId("android:id/title"));
+            folder = device.findObject(folderSelector);
+            Log.d("ETATest", "Folder '" + basename + "'. After call to findObject.");
+
+            if (folder != null) {
+                Log.d("ETATest", "Folder '" + basename + "' object found. Click on it.");
+
+                // Wait for idle, sometimes there can be delay.
+                Log.d("ETATest", "Before waitForIdle");
+                device.waitForIdle();
+                Log.d("ETATest", "After waitForIdle");
+
+                Log.d("ETATest", "Before click");
+                folder.click();
+                Log.d("ETATest", "After click");
+
+                Log.d("ETATest", "Before waitForIdle: ");
+                device.waitForIdle();
+                Log.d("ETATest", "After waitForIdle: ");
             } else {
-                Log.e("ETATest", basename + " dir not found.");
+                Log.e("ETATest", "Folder '" + basename + "'. Couldn't find matching object.");
+                throw new UiObjectNotFoundException("Folder '" + basename + "'. Couldn't find matching object.");
             }
         }
 
