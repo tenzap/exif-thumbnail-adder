@@ -182,7 +182,13 @@ public class TestUtil {
     }
 
     private static boolean clickHamburgerMenuThenVolumeName(UiDevice device, UiObject hamburgerMenu, UiObject volumeName) throws UiObjectNotFoundException {
+        DocUIStrings docUIStrings = new DocUIStrings();
+
         clickObject(device, hamburgerMenu);
+
+        Boolean waitResult = device.wait(Until.hasObject(By.res(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_roots")), 4000);
+        if (waitResult.equals(Boolean.FALSE))
+            throw new UiObjectNotFoundException("hamburgerMenu didn't open before timeout (drawers_root not displayed)" );
 
         // If volumeName is displayed, click on it.
         if (volumeName.exists()) {
@@ -192,7 +198,7 @@ public class TestUtil {
         } else {
             // Get out of drawer/hamburger menu. Swipe on the drawer, because
             // clicking somewhere else doesn't seems a strategy with good results
-            UiObject drawerRoots = device.findObject(new UiSelector().resourceId(new DocUIStrings().getDocumentsUiPackageName() + ":id/drawer_roots"));
+            UiObject drawerRoots = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_roots"));
             Log.d("ETATest", "drawerRoots exists? " + drawerRoots.exists());
             drawerRoots.swipeLeft(10);
             device.waitForIdle();
