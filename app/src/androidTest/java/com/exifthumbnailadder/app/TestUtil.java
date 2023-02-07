@@ -290,6 +290,7 @@ public class TestUtil {
                 }
             } else {
                 Log.e("ETATest", "advancedMenu didn't open before timeout");
+                throw new UiObjectNotFoundException("advancedMenu didn't open before timeout");
             }
         }
 
