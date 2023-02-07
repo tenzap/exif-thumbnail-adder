@@ -181,7 +181,7 @@ public class TestUtil {
         device.waitForIdle();
     }
 
-    private static boolean clickHamburgerMenuThenVolumeName(UiDevice device, UiObject hamburgerMenu, UiObject volumeName, UiObject advancedMenu) throws UiObjectNotFoundException {
+    private static boolean clickHamburgerMenuThenVolumeName(UiDevice device, UiObject hamburgerMenu, UiObject volumeName) throws UiObjectNotFoundException {
         clickObject(device, hamburgerMenu);
 
         // If volumeName is displayed, click on it.
@@ -190,9 +190,12 @@ public class TestUtil {
             clickObject(device, volumeName);
             return true;
         } else {
-            // Get out of drawer/hamburger menu. Click anywhere outside
-            // of drawer: the advanced menu is a good candidate.
-            clickObject(device, advancedMenu);
+            // Get out of drawer/hamburger menu. Swipe on the drawer, because
+            // clicking somewhere else doesn't seems a strategy with good results
+            UiObject drawerRoots = device.findObject(new UiSelector().resourceId(new DocUIStrings().getDocumentsUiPackageName() + ":id/drawer_roots"));
+            Log.d("ETATest", "drawerRoots exists? " + drawerRoots.exists());
+            drawerRoots.swipeLeft(10);
+            device.waitForIdle();
             return false;
         }
     }
@@ -240,7 +243,7 @@ public class TestUtil {
         // In that case, click on it.
         if (hamburgerMenu.exists()) {
             Log.d("ETATest", "hamburgerMenu exists. Open menu.");
-            if (clickHamburgerMenuThenVolumeName(device, hamburgerMenu, volumeName, advancedMenu))
+            if (clickHamburgerMenuThenVolumeName(device, hamburgerMenu, volumeName))
                 return;
         }
 
@@ -250,24 +253,28 @@ public class TestUtil {
             Log.d("ETATest", "advancedMenu exists. Open menu.");
             clickObject(device, advancedMenu);
 
-            // In the Advanced menu, click on "show internal storage" (if it is there)
-            Log.d("ETATest", "showInternalStorage exists? " + showInternalStorage.exists());
-            if (showInternalStorage.exists()) {
-                Log.d("ETATest", "showInternalStorage exists. Click on it.");
-                clickObject(device, showInternalStorage);
+            // Wait until advancedMenu is really open
+            Boolean waitResult = device.wait(Until.hasObject(By.res(docUIStrings.getDocumentsUiPackageName() + ":id/content")), 4000);
+            if (waitResult.equals(Boolean.TRUE)) {
+                // In the Advanced menu, click on "show internal storage" (if it is there)
+                Log.d("ETATest", "showInternalStorage exists? " + showInternalStorage.exists());
+                if (showInternalStorage.exists()) {
+                    Log.d("ETATest", "showInternalStorage exists. Click on it.");
+                    clickObject(device, showInternalStorage);
 
-                if (hamburgerMenu.exists()) {
-                    Log.d("ETATest", "hamburgerMenu exists. Open menu.");
-                    if (clickHamburgerMenuThenVolumeName(device, hamburgerMenu, volumeName, advancedMenu))
-                        return;
+                    if (hamburgerMenu.exists()) {
+                        Log.d("ETATest", "hamburgerMenu exists. Open menu.");
+                        if (clickHamburgerMenuThenVolumeName(device, hamburgerMenu, volumeName))
+                            return;
+                    }
+                } else {
+                    Log.d("ETATest", "'Show internal storage' item not found");
+                    device.pressBack();
+                    Log.d("ETATest", "Doing 'pressBack()'");
+                    device.waitForIdle();
                 }
             } else {
-                Log.d("ETATest", "'Show internal storage' item not found");
-                // TODO: Check that menu is really open
-                device.pressBack();
-                device.waitForIdle();
-
-                // TODO, check that we are still in DocumentsUI, otherwise, click again on "Add"
+                Log.e("ETATest", "advancedMenu didn't open before timeout");
             }
         }
 
