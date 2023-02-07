@@ -295,7 +295,7 @@ jobs:
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
-          after-boot-delay: 120
+          after-boot-delay: 300
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
@@ -330,7 +330,7 @@ jobs:
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
-          after-boot-delay: 120
+          after-boot-delay: 300
           script: API_LEVEL=${{ matrix.api-level }} fastlane connectedCheck_with_screenrecord
 
       # actions/upload-artifact@v3 doesn't keep timestamps, so use tar as an intermediate
