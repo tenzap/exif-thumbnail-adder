@@ -184,12 +184,48 @@ public class TestUtil {
         return result;
     }
 
-    private static boolean clickHamburgerMenuThenVolumeName(UiDevice device, UiObject hamburgerMenu, UiObject volumeName) throws UiObjectNotFoundException {
+    private static boolean clickHamburgerMenuThenVolumeName(UiDevice device, UiObject hamburgerMenuOL, UiObject volumeName) throws UiObjectNotFoundException {
         DocUIStrings docUIStrings = new DocUIStrings();
+        UiObject2 hamburgerMenu;
 
-        clickObject(device, hamburgerMenu);
+        BySelector hamburgerMenuSelector = By.desc(docUIStrings.getShowRoots()).clickable(true).focusable(true);
 
-        Boolean waitResult = device.wait(Until.hasObject(By.res(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_roots")), 4000);
+        // First click on HamburgerMenu
+        Log.d("ETATest", "HamburgerMenu: Start waiting for object.");
+        Boolean waitResultHamburgerMenu = device.wait(Until.hasObject(hamburgerMenuSelector), 10000);
+        Log.d("ETATest", "HamburgerMenu: Finished waiting for object.");
+
+        if (!waitResultHamburgerMenu.equals(Boolean.TRUE)) {
+            Log.e("ETATest", "HamburgerMenu: Not found before timeout.");
+            throw new UiObjectNotFoundException("HamburgerMenu: Not found before timeout.");
+        }
+        Log.d("ETATest", "HamburgerMenu: Now displayed on screen.");
+
+        hamburgerMenu = device.findObject(hamburgerMenuSelector);
+        Log.d("ETATest", "HamburgerMenu: After call to findObject.");
+
+        if (hamburgerMenu != null) {
+            Log.d("ETATest", "HamburgerMenu: Click on it.");
+
+            // Wait for idle, sometimes there can be delay.
+            Log.d("ETATest", "Before waitForIdle");
+            device.waitForIdle();
+            Log.d("ETATest", "After waitForIdle");
+
+            Log.d("ETATest", "Before click");
+            hamburgerMenu.click();
+            Log.d("ETATest", "After click");
+
+            Log.d("ETATest", "Before waitForIdle: ");
+            device.waitForIdle();
+            Log.d("ETATest", "After waitForIdle: ");
+        } else {
+            Log.e("ETATest", "HamburgerMenu: Couldn't find matching object.");
+            throw new UiObjectNotFoundException("HamburgerMenu: Couldn't find matching object.");
+        }
+
+        // Now check if it opened
+        Boolean waitResult = device.wait(Until.hasObject(By.res(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_roots")), 5000);
         if (waitResult.equals(Boolean.FALSE))
             throw new UiObjectNotFoundException("hamburgerMenu didn't open before timeout (drawers_root not displayed)" );
 
