@@ -159,7 +159,7 @@ public class TestUtil {
 
         // If parent dir is not there, we need to select the root volume in DocumentsUI
         if (!parentDir.exists()) {
-            displayRoot();
+            displayRoot(parentDir);
         }
 
         // Now content of root volume should be displayed. So proceed with navigating
@@ -213,7 +213,7 @@ public class TestUtil {
      * Layout of DocumentsUI differs across Android versions.
      * So method to get there is a bit complex
      */
-    private static void displayRoot() throws UiObjectNotFoundException, Exception {
+    private static void displayRoot(UiObject parentDir) throws UiObjectNotFoundException, Exception {
         String volumeNameInFilePicker = Build.MODEL;
         String sdCardNameInFilePicker = getSdCardNameInFilePicker();
 
@@ -332,7 +332,9 @@ public class TestUtil {
             }
         }
 
-        throw new UiObjectNotFoundException("Couldn't find method to display root volume in DocumentsUI");
+        // Last check, in case parentDir would exist... before throwing exception
+        if(!parentDir.exists())
+            throw new UiObjectNotFoundException("Couldn't find method to display root volume in DocumentsUI");
     }
 
     private static void selectDirFromRoot(String[] dirnames) throws UiObjectNotFoundException {
