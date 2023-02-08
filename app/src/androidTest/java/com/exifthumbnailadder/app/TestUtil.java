@@ -325,27 +325,26 @@ public class TestUtil {
                 waitResult = device.wait(Until.hasObject(By.clazz("android.widget.LinearLayout").res(docUIStrings.getDocumentsUiPackageName() + ":id/content")), 4000);
             }
 
-            if (waitResult.equals(Boolean.TRUE)) {
-                // In the Advanced menu, click on "show internal storage" (if it is there)
-                Log.d("ETATest", "showInternalStorage exists? " + showInternalStorage.exists());
-                if (showInternalStorage.exists()) {
-                    Log.d("ETATest", "showInternalStorage exists. Click on it.");
-                    clickObject(device, showInternalStorage);
-
-                    if (hamburgerMenu.exists()) {
-                        Log.d("ETATest", "hamburgerMenu exists. Open menu.");
-                        if (clickHamburgerMenuThenVolumeName(device, hamburgerMenu, volumeName))
-                            return;
-                    }
-                } else {
-                    Log.d("ETATest", "'Show internal storage' item not found");
-                    device.pressBack();
-                    Log.d("ETATest", "Doing 'pressBack()'");
-                    device.waitForIdle();
-                }
-            } else {
+            if (!waitResult.equals(Boolean.TRUE)) {
                 Log.e("ETATest", "advancedMenu didn't open before timeout");
                 throw new UiObjectNotFoundException("advancedMenu didn't open before timeout");
+            }
+
+            // In the Advanced menu, click on "show internal storage" (if it is there)                Log.d("ETATest", "showInternalStorage exists? " + showInternalStorage.exists());
+            if (showInternalStorage.exists()) {
+                Log.d("ETATest", "showInternalStorage exists. Click on it.");
+                clickObject(device, showInternalStorage);
+
+                if (hamburgerMenu.exists()) {
+                    Log.d("ETATest", "hamburgerMenu exists. Open menu.");
+                    if (clickHamburgerMenuThenVolumeName(device, hamburgerMenu, volumeName))
+                        return;
+                }
+            } else {
+                Log.d("ETATest", "'Show internal storage' item not found");
+                device.pressBack();
+                Log.d("ETATest", "Doing 'pressBack()'");
+                device.waitForIdle();
             }
         }
 
