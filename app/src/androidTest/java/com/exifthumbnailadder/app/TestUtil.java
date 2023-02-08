@@ -187,6 +187,7 @@ public class TestUtil {
     private static boolean clickHamburgerMenuThenVolumeName(UiDevice device, UiObject hamburgerMenuOL, UiObject volumeName) throws UiObjectNotFoundException {
         DocUIStrings docUIStrings = new DocUIStrings();
         UiObject2 hamburgerMenu;
+        boolean retValue;
 
         BySelector hamburgerMenuSelector = By.desc(docUIStrings.getShowRoots()).clickable(true).focusable(true);
 
@@ -225,24 +226,39 @@ public class TestUtil {
         }
 
         // Now check if it opened
-        Boolean waitResult = device.wait(Until.hasObject(By.res(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_roots")), 5000);
-        if (waitResult.equals(Boolean.FALSE))
-            throw new UiObjectNotFoundException("hamburgerMenu didn't open before timeout (drawers_root not displayed)" );
+        BySelector drawerRootsSelector = By.res(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_roots");
+
+        Log.d("ETATest", "drawer_roots: Start waiting for object.");
+        Boolean waitResult = device.wait(Until.hasObject(drawerRootsSelector), 5000);
+        Log.d("ETATest", "drawer_roots: Finished waiting for object.");
+        if (!waitResult.equals(Boolean.TRUE))
+            throw new UiObjectNotFoundException("drawer_roots didn't open before timeout (drawers_root not displayed)." );
+        Log.d("ETATest", "drawer_roots: Now displayed on screen.");
 
         // If volumeName is displayed, click on it.
         if (volumeName.exists()) {
             Log.d("ETATest", "volumeName exists. Click on volumeName.");
             clickObject(device, volumeName);
-            return true;
+            retValue = true;
         } else {
             // Get out of drawer/hamburger menu. Swipe on the drawer, because
             // clicking somewhere else doesn't seems a strategy with good results
-            UiObject drawerRoots = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_roots"));
-            Log.d("ETATest", "drawerRoots exists? " + drawerRoots.exists());
-            drawerRoots.swipeLeft(10);
+            UiObject drawerRootsObj = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_roots"));
+            Log.d("ETATest", "drawerRoots exists? " + drawerRootsObj.exists());
+            drawerRootsObj.swipeLeft(10);
             device.waitForIdle();
-            return false;
+            retValue = false;
         }
+
+        // Wait until drawer_roots closed
+        Log.d("ETATest", "drawer_roots: Start waiting it closed.");
+        Boolean drawerRootWaitCloseResult = device.wait(Until.gone(drawerRootsSelector), 10000);
+        Log.d("ETATest", "drawer_roots: Finished waiting it closed.");
+
+        if (!drawerRootWaitCloseResult.equals(Boolean.TRUE))
+            throw new UiObjectNotFoundException("drawer_roots didn't close before timeout (drawers_root still displayed)." );
+
+        return retValue;
     }
 
     /* Display the root of the volume in the DocumentsUi
