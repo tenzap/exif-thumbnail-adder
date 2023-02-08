@@ -312,7 +312,9 @@ jobs:
           script: echo "Generated AVD snapshot for caching."
 
       - name: run tests with avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
+        id: test_with_cache
         if: ${{ env.with_avd_cache == 'true' }}
+        timeout-minutes: 240
         uses: tenzap/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
@@ -329,7 +331,9 @@ jobs:
           script: API_LEVEL=${{ matrix.api-level }} fastlane connectedCheck_with_screenrecord
 
       - name: run tests without avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
+        id: test_without_cache
         if: ${{ env.with_avd_cache != 'true' }}
+        timeout-minutes: 240
         uses: tenzap/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
@@ -343,9 +347,27 @@ jobs:
           after-boot-delay: 300
           script: API_LEVEL=${{ matrix.api-level }} fastlane connectedCheck_with_screenrecord
 
+      # Get test output if nothing was downloaded from device. Typically, if the step has hit timeout
+      - name: Get test output
+        if: always() && (steps.test_with_cache.outcome == 'failure' || steps.test_without_cache.outcome == 'failure' || steps.test_with_cache.outcome == 'cancelled' || steps.test_without_cache.outcome == 'cancelled')
+        run: |
+          set -x
+
+          echo "Outcome of 'test_with_cache' ${{ steps.test_with_cache.outcome }}"
+          echo "Outcome of 'test_without_cache' ${{ steps.test_without_cache.outcome }}"
+
+          if [ ! -d tests/output ]; then
+            fastlane get_output_of_tests
+          else
+            echo "tests/output exists."
+            echo "Content:"
+            ls tests/output
+          fi
+
       # actions/upload-artifact@v3 doesn't keep timestamps, so use tar as an intermediate
       # Moreover, by using this intermediate file, the files created by the test suite won't be inside the artifact
       - name: Tar tests/output artifacts
+        if: always()
         run: tar -cf test_output_artifact.tar --exclude="tests/output/screenrecords" tests/output/
 
       - name: Install tools for bash tests
