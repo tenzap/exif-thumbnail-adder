@@ -107,14 +107,39 @@ public class AddThumbsCommon {
     // https://stackoverflow.com/a/54203607
     @BeforeClass
     public static void dismissANRSystemDialog() throws UiObjectNotFoundException {
-        Context context = getInstrumentation().getTargetContext();
-        int resId = context.getResources().getIdentifier("wait", "string", "android");
-        String wait = context.getResources().getString(resId);
         UiDevice device = UiDevice.getInstance(getInstrumentation());
 
-        UiObject waitButton = device.findObject(new UiSelector().textMatches("(?i)" + wait));
-        if (waitButton.exists()) {
-            waitButton.click();
+        UiObject dialogTitle = device.findObject(new UiSelector().resourceId("android:id/alertTitle"));
+        UiObject closeButton = device.findObject(new UiSelector().resourceId("android:id/aerr_close"));
+        UiObject waitButton = device.findObject(new UiSelector().resourceId("android:id/aerr_wait"));
+
+        if (dialogTitle.exists()) {
+            Log.d("ETATest", "ANR Dialog open.");
+            Log.d("ETATest", "Title: " + dialogTitle.getText());
+
+            if (dialogTitle.getText().startsWith("System UI")) {
+                // On API 33, when ANR dialog is 'System UI is not responding',
+                // wait doesn't seem sufficient because the ANR dialog reappears. So click 'Close app'
+                Log.d("ETATest", "Before check if closeButton exists");
+                if (closeButton.exists()) {
+                    Log.d("ETATest", "closeButton - Before click");
+                    closeButton.click();
+                    Log.d("ETATest", "closeButton - After click");
+                }
+            } else {
+                Log.d("ETATest", "Before check if waitButton exists");
+                if (waitButton.exists()) {
+                    Log.d("ETATest", "waitButton - Before click");
+                    waitButton.click();
+                    Log.d("ETATest", "waitButton - After click");
+                }
+            }
+            Log.d("ETATest", "Before waitForIdle");
+            device.waitForIdle();
+            Log.d("ETATest", "After waitForIdle");
+            Log.d("ETATest", "ANR Dialog should now be closed.");
+        } else {
+            Log.d("ETATest", "No ANR Dialog open. Continuing.");
         }
     }
 
