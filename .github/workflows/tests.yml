@@ -53,6 +53,9 @@ jobs:
           fi
           echo "done"
 
+      - name: Display environment variables
+        run: set
+
       - name: Create ninja wrapper
         if: ${{ env.ANDROID_CMAKE_IS_LOCAL_DOWNLOAD == 1 }}
         run: |
@@ -239,6 +242,9 @@ jobs:
             echo "ANDROID_CMAKE_IS_LOCAL_DOWNLOAD=1" >> $GITHUB_ENV
           fi
           echo "done"
+
+      - name: Display environment variables
+        run: set
 
       # Switch to java 11 since AGP requires java 11
       - uses: actions/setup-java@v3
