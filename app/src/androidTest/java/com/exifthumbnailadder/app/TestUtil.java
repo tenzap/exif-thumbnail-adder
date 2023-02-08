@@ -322,7 +322,7 @@ public class TestUtil {
                 //   When in the advancedMenu , the parent will be a RelativeLayout
                 waitResult = device.wait(Until.hasObject(By.clazz("android.widget.RelativeLayout").hasChild(By.res("android:id/title"))), 4000);
             } else {
-                waitResult = device.wait(Until.hasObject(By.res(docUIStrings.getDocumentsUiPackageName() + ":id/content")), 4000);
+                waitResult = device.wait(Until.hasObject(By.clazz("android.widget.LinearLayout").res(docUIStrings.getDocumentsUiPackageName() + ":id/content")), 4000);
             }
 
             if (waitResult.equals(Boolean.TRUE)) {
