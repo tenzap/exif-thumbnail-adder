@@ -42,6 +42,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -57,10 +58,13 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.espresso.intent.rule.IntentsRule;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
+import androidx.test.uiautomator.Until;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -179,6 +183,19 @@ public class AddThumbsCommon {
 
         // Add Folder in settings
         TestUtil.addSourceFolder(dir.copyPath());
+
+        // Wait until we are back to the MainActivity (check presence of 'Add' button)
+        BySelector addButtonSelector = By.res(context.getPackageName() + ":id/select_path_button");
+        Log.d("ETATest", "'Add' button: Start waiting for object.");
+        Boolean waitAddButton = uiDevice.wait(Until.hasObject(addButtonSelector), 10000);
+        Log.d("ETATest", "'Add' button: Finished waiting for object.");
+
+        if (!waitAddButton.equals(Boolean.TRUE)) {
+            Log.e("ETATest", "'Add' button: Not found before timeout.");
+            throw new UiObjectNotFoundException("'Add' button: Not found before timeout.");
+        }
+        Log.d("ETATest", "'Add' button: Now displayed on screen.");
+
         uiDevice.waitForIdle();
 
         // Check that folder is in the list
