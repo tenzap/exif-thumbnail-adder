@@ -3,6 +3,10 @@ on: [push, pull_request]
 
 env:
   GRADLE_COMMON_ARGS:
+  # Emulator already has '-noaudio' option. But in logcat there are many such errors
+  # W audio_hw_generic: Not supplying enough data to HAL, expected position 5964952 , only wrote 5964864
+  # This is trial to see if it removes these warnings
+  QEMU_AUDIO_DRV: none
 
 jobs:
 
