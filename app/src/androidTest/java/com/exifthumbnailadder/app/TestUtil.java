@@ -525,7 +525,23 @@ public class TestUtil {
         onView(withId(R.id.SyncFragment)).perform(click(click()));
     }
 
-    public static void clickPermissionAllowButton() throws Exception {
+    public static void clickPermissionButton(String action) throws Exception {
+        String res_suffix;
+
+        switch (action) {
+            case "allow":
+                res_suffix = ":id/permission_allow_button";
+                break;
+            case "deny":
+                res_suffix = ":id/permission_deny_button";
+                break;
+            case "deny_dont_ask_again":
+                res_suffix = ":id/permission_deny_dont_ask_again_button";
+                break;
+            default:
+                throw new UnsupportedOperationException("action '" + action + "' not supported in clickPermissionButton().");
+        }
+
         UiDevice device = UiDevice.getInstance(getInstrumentation());
         String resource, permPackage;
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
@@ -533,44 +549,59 @@ public class TestUtil {
         } else {
             permPackage = "com.android.permissioncontroller";
         }
-        resource = permPackage + ":id/permission_allow_button";
+        resource = permPackage + res_suffix;
 
         // Wait until permission controller is displayed
-        device.waitForWindowUpdate(permPackage, 5000);
-        UiObject uiElement = device.findObject(new UiSelector().clickable(true).resourceId(resource));
-        uiElement.clickAndWaitForNewWindow();
+        BySelector buttonSelector = By.res(resource).clickable(true);
+
+        Log.d("ETATest", action + "Button: Start waiting for object.");
+        Boolean waitResultButton = device.wait(Until.hasObject(buttonSelector), 10000);
+        Log.d("ETATest", action + "Button: Finished waiting for object.");
+
+        if (!waitResultButton.equals(Boolean.TRUE)) {
+            Log.e("ETATest", action + "Button: Not found before timeout.");
+            throw new UiObjectNotFoundException(action + "Button: Not found before timeout.");
+        }
+        Log.d("ETATest", action + "Button: Now displayed on screen.");
+
+        UiObject2 button = device.findObject(buttonSelector);
+        Log.d("ETATest", action + "Button: After call to findObject.");
+
+        if (button != null) {
+            Log.d("ETATest", action + "Button: Click on it.");
+
+            // Wait for idle, sometimes there can be delay.
+            Log.d("ETATest", "Before waitForIdle");
+            device.waitForIdle();
+            Log.d("ETATest", "After waitForIdle");
+
+            Log.d("ETATest", "Before click");
+            button.click();
+            Log.d("ETATest", "After click");
+
+            Log.d("ETATest", action + "Button: Before wait until gone.");
+            device.wait(Until.gone(buttonSelector), 10000);
+            Log.d("ETATest", action + "Button: After wait until gone.");
+
+            Log.d("ETATest", "Before waitForIdle: ");
+            device.waitForIdle();
+            Log.d("ETATest", "After waitForIdle: ");
+        } else {
+            Log.e("ETATest", action + "Button: Couldn't find matching object.");
+            throw new UiObjectNotFoundException(action + "Button: Couldn't find matching object.");
+        }
+    }
+
+    public static void clickPermissionAllowButton() throws Exception {
+        clickPermissionButton("allow");
     }
 
     public static void clickPermissionDenyButton() throws Exception {
-        UiDevice device = UiDevice.getInstance(getInstrumentation());
-        String resource, permPackage;
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            permPackage = "com.android.packageinstaller";
-        } else {
-            permPackage = "com.android.permissioncontroller";
-        }
-        resource = permPackage + ":id/permission_deny_button";
-
-        // Wait until permission controller is displayed
-        device.waitForWindowUpdate(permPackage, 5000);
-        UiObject uiElement = device.findObject(new UiSelector().clickable(true).resourceId(resource));
-        uiElement.clickAndWaitForNewWindow();
+        clickPermissionButton("deny");
     }
 
     public static void clickPermissionDontAskAgainButton() throws Exception {
-        UiDevice device = UiDevice.getInstance(getInstrumentation());
-        String resource, permPackage;
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
-            permPackage = "com.android.packageinstaller";
-        } else {
-            permPackage = "com.android.permissioncontroller";
-        }
-        resource = permPackage + ":id/permission_deny_dont_ask_again_button";
-
-        // Wait until permission controller is displayed
-        device.waitForWindowUpdate(permPackage, 5000);
-        UiObject uiElement = device.findObject(new UiSelector().clickable(true).resourceId(resource));
-        uiElement.clickAndWaitForNewWindow();
+        clickPermissionButton("deny_dont_ask_again");
     }
 
     public static void clearDocumentsUI() throws Exception {
