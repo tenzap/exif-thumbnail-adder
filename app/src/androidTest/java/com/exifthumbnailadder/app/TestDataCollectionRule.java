@@ -22,9 +22,8 @@ package com.exifthumbnailadder.app;
 
 import android.util.Log;
 
-import java.util.Calendar;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -32,28 +31,29 @@ import org.junit.runner.Description;
 // Inspired from https://medium.com/jumio/how-to-record-screen-captures-during-ui-tests-on-android-67ba5dedb7e1
 public class TestDataCollectionRule extends TestWatcher {
 
-    private Date testStartTime;
+    private LocalDateTime testStartTime;
 
     private void setTestStartDate() {
         if (testStartTime == null) {
-            testStartTime = Calendar.getInstance().getTime();
+            testStartTime = LocalDateTime.now();
         }
     }
 
-    private Date getTestStartDate() {
+    private LocalDateTime getTestStartDate() {
         return testStartTime;
     }
 
-    private String formatDateForTestName(Date date) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
-        return simpleDateFormat.format(date);
+    private String formatDateForTestName(LocalDateTime date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+        return date.format(formatter);
     }
 
-    private String formatDateForLogcat(Date date) {
+    private String formatDateForLogcat(LocalDateTime date) {
         // We can't use the date format with a space because executeShellCommand
         // doesn't support it.
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss.SSS");
-        return simpleDateFormat.format(date);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss.SSS");
+        // Return the test start time minus 2sec to catch also what happens in @BeforeClass & @Before
+        return date.minusSeconds(2).format(formatter);
     }
 
     private String getTestName(Description description) {
