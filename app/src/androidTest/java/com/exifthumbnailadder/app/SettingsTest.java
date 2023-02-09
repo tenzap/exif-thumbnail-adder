@@ -35,12 +35,8 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.UiObject;
-import androidx.test.uiautomator.UiObjectNotFoundException;
-import androidx.test.uiautomator.UiSelector;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,12 +44,9 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 
 @RunWith(AndroidJUnit4.class)
-public class SettingsTest {
+public class SettingsTest extends TestCommons {
     Context context;
     SharedPreferences prefs;
-
-    @Rule
-    public TestDataCollectionRule testDataCollectionRule = new TestDataCollectionRule();
 
     @Rule
     public ActivityScenarioRule <MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
@@ -66,20 +59,6 @@ public class SettingsTest {
         uiDevice.executeShellCommand("mkdir -p /storage/emulated/0/DCIM/test_pics");
         TestUtil.clearETA();
         TestUtil.clearDocumentsUI();
-    }
-
-    // https://stackoverflow.com/a/54203607
-    @BeforeClass
-    public static void dismissANRSystemDialog() throws UiObjectNotFoundException {
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        int resId = context.getResources().getIdentifier("wait", "string", "android");
-        String wait = context.getResources().getString(resId);
-        UiDevice device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
-
-        UiObject waitButton = device.findObject(new UiSelector().textMatches("(?i)" + wait));
-        if (waitButton.exists()) {
-            waitButton.click();
-        }
     }
 
     @Test

@@ -61,9 +61,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
-import androidx.test.uiautomator.UiObject;
 import androidx.test.uiautomator.UiObjectNotFoundException;
-import androidx.test.uiautomator.UiSelector;
 import androidx.test.uiautomator.Until;
 
 import org.hamcrest.Matcher;
@@ -83,7 +81,7 @@ import java.util.HashMap;
 
 
 @RunWith(AndroidJUnit4.class)
-public class AddThumbsCommon {
+public class AddThumbsCommon extends TestCommons {
     Context context;
     SharedPreferences prefs;
     public Dirs dir;
@@ -92,60 +90,14 @@ public class AddThumbsCommon {
     private IdlingResource mWorkingDirPermIdlingResource;
     UiDevice uiDevice;
 
-    static {
-        BuildConfig.IS_TESTING.set(true);
-    }
-
     @Rule
     public TestName testname = new TestName();
-
-    @Rule
-    public TestDataCollectionRule testDataCollectionRule = new TestDataCollectionRule();
 
     @Rule
     public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
 
     @Rule
     public IntentsRule intentsTestRule = new IntentsRule();
-
-    // https://stackoverflow.com/a/54203607
-    @BeforeClass
-    public static void dismissANRSystemDialog() throws UiObjectNotFoundException {
-        UiDevice device = UiDevice.getInstance(getInstrumentation());
-
-        UiObject dialogTitle = device.findObject(new UiSelector().resourceId("android:id/alertTitle"));
-        UiObject closeButton = device.findObject(new UiSelector().resourceId("android:id/aerr_close"));
-        UiObject waitButton = device.findObject(new UiSelector().resourceId("android:id/aerr_wait"));
-
-        if (dialogTitle.exists()) {
-            Log.d("ETATest", "ANR Dialog open.");
-            Log.d("ETATest", "Title: " + dialogTitle.getText());
-
-            if (dialogTitle.getText().startsWith("System UI")) {
-                // On API 33, when ANR dialog is 'System UI is not responding',
-                // wait doesn't seem sufficient because the ANR dialog reappears. So click 'Close app'
-                Log.d("ETATest", "Before check if closeButton exists");
-                if (closeButton.exists()) {
-                    Log.d("ETATest", "closeButton - Before click");
-                    closeButton.click();
-                    Log.d("ETATest", "closeButton - After click");
-                }
-            } else {
-                Log.d("ETATest", "Before check if waitButton exists");
-                if (waitButton.exists()) {
-                    Log.d("ETATest", "waitButton - Before click");
-                    waitButton.click();
-                    Log.d("ETATest", "waitButton - After click");
-                }
-            }
-            Log.d("ETATest", "Before waitForIdle");
-            device.waitForIdle();
-            Log.d("ETATest", "After waitForIdle");
-            Log.d("ETATest", "ANR Dialog should now be closed.");
-        } else {
-            Log.d("ETATest", "No ANR Dialog open. Continuing.");
-        }
-    }
 
     @BeforeClass
     public static void clear() throws Exception {
