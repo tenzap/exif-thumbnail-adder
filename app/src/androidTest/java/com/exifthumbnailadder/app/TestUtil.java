@@ -252,7 +252,7 @@ public class TestUtil {
 
         // Wait until drawer_roots closed
         Log.d("ETATest", "drawer_roots: Start waiting it closed.");
-        Boolean drawerRootWaitCloseResult = device.wait(Until.gone(drawerRootsSelector), 15000);
+        Boolean drawerRootWaitCloseResult = device.wait(Until.gone(drawerRootsSelector), 10000);
         Log.d("ETATest", "drawer_roots: Finished waiting it closed.");
 
         if (!drawerRootWaitCloseResult.equals(Boolean.TRUE))
