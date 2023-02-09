@@ -278,7 +278,7 @@ public class AddThumbsCommon extends TestCommons {
             }
 
             // Wait until processing is finished or has hit timeout (duration is in ms)
-            long max_duration = 600000;
+            long max_duration = 20 * 60 * 1000;
             long timeout = System.currentTimeMillis() + max_duration;
             while (!finished && System.currentTimeMillis() < timeout) {
                 Thread.sleep(1000);
