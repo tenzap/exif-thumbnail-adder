@@ -54,9 +54,10 @@ public class TestCommons {
 
         if (dialogTitle.exists()) {
             Log.d("ETATest", "ANR Dialog open.");
-            Log.d("ETATest", "Title: " + dialogTitle.getText());
+            String titleText = dialogTitle.getText();
+            Log.d("ETATest", "Title: " + titleText);
 
-            if (dialogTitle.getText().startsWith("System UI")) {
+            if (titleText.startsWith("System UI") || titleText.startsWith("Process system")) {
                 // On API 33, when ANR dialog is 'System UI is not responding',
                 // wait doesn't seem sufficient because the ANR dialog reappears. So click 'Close app'
                 Log.d("ETATest", "Before check if closeButton exists");
