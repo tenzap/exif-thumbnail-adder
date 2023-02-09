@@ -245,8 +245,8 @@ public class TestUtil {
             // clicking somewhere else doesn't seems a strategy with good results
             UiObject drawerRootsObj = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_roots"));
             Log.d("ETATest", "drawerRoots exists? " + drawerRootsObj.exists());
-            drawerRootsObj.swipeLeft(10);
-            device.waitForIdle();
+            drawerRootsObj.swipeLeft(50);
+            //device.waitForIdle();
             retValue = false;
         }
 
