@@ -36,6 +36,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -140,6 +141,12 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        if (BuildConfig.IS_TESTING.get()) {
+                            // For Debug purposes: to try to understand this rare exception
+                            // java.lang.IndexOutOfBoundsException: setSpan (0 ... -1) has end before start
+                            Log.v("ETATest", "textViewLog: " + textViewLog.getText());
+                            Log.v("ETATest", "spannableLog: " + spannableLog);
+                        }
                         textViewLog.setText(spannableLog);
                         // Stuff that updates the UI
                         scrollview.post(new Runnable() {

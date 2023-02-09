@@ -55,6 +55,7 @@ android {
 
         // No automatic import :( [see: https://stackoverflow.com/a/54105322/15401262]
         buildConfigField "java.util.concurrent.atomic.AtomicBoolean", "IS_SCREENSHOTS", "new java.util.concurrent.atomic.AtomicBoolean(false)"
+        buildConfigField "java.util.concurrent.atomic.AtomicBoolean", "IS_TESTING", "new java.util.concurrent.atomic.AtomicBoolean(false)"
 
         externalNativeBuild {
             cmake {

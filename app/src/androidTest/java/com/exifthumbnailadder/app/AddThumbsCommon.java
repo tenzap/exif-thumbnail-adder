@@ -92,6 +92,10 @@ public class AddThumbsCommon {
     private IdlingResource mWorkingDirPermIdlingResource;
     UiDevice uiDevice;
 
+    static {
+        BuildConfig.IS_TESTING.set(true);
+    }
+
     @Rule
     public TestName testname = new TestName();
 
