@@ -68,6 +68,7 @@ import org.hamcrest.TypeSafeMatcher;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Pattern;
 
 public class TestUtil {
 
@@ -459,19 +460,58 @@ public class TestUtil {
 
         waitForDocumentsUiReadiness(device, docUIStrings);
 
+        String label;
+        BySelector selector;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSave()));
-            clickObject(device, uiElement);
-            uiElement = device.findObject(new UiSelector().clickable(true).textContains(docUIStrings.getAllowAccessTo()));
-            clickObject(device, uiElement);
-            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllow()));
-            clickObject(device, uiElement);
+            label = docUIStrings.getSave();
+            selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE));
+            clickObject(device, selector, label);
+
+            label = docUIStrings.getAllowAccessTo();
+            selector = By.clickable(true).text(Pattern.compile(label + ".*", Pattern.CASE_INSENSITIVE));
+            clickObject(device, selector, label);
+
+            label = docUIStrings.getAllow();
+            selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE));
+            clickObject(device, selector, label);
         } else {
-            device.waitForIdle();
-            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSave()));
-            clickObject(device, uiElement);
-            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSelect()));
-            clickObject(device, uiElement);
+            label = docUIStrings.getSave();
+            selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE));
+            clickObject(device, selector, label);
+
+            label = docUIStrings.getSelect();
+            selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE));
+            clickObject(device, selector, label);
+        }
+    }
+
+    private static void clickObject(UiDevice device, BySelector selector, String label) throws UiObjectNotFoundException {
+        Log.d("ETATest", "'" + label + "' object: Before wait hasObject");
+        Boolean waitResult = device.wait(Until.hasObject(selector), 10000);
+
+        if (!waitResult.equals(Boolean.TRUE)) {
+            Log.e("ETATest", "'" + label + "' object: didn't open before timeout");
+            throw new UiObjectNotFoundException("'" + label + "' object: didn't open before timeout");
+        }
+
+        Log.d("ETATest", "'" + label + "' object: Before findObject");
+        UiObject2 object = device.findObject(selector);
+
+        if (object == null) {
+            Log.e("ETATest", "'" + label + "' object: Couldn't find matching object.");
+            throw new UiObjectNotFoundException("'" + label + "' object: Couldn't find matching object.");
+        }
+
+        Log.d("ETATest", "'" + label + "' object: Before click");
+        object.click();
+
+        Log.d("ETATest", "'" + label + "' object: Before wait gone");
+        waitResult =  device.wait(Until.gone(selector), 10000);
+
+        if (!waitResult.equals(Boolean.TRUE)) {
+            Log.e("ETATest", "'" + label + "' object: didn't disappear before timeout");
+            throw new UiObjectNotFoundException("'" + label + "' object: didn't disappear before timeout");
         }
     }
 
