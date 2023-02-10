@@ -295,21 +295,23 @@ jobs:
 
       - name: create AVD and generate snapshot for caching (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
         if: ${{ env.with_avd_cache == 'true' &&  steps.avd-cache.outputs.cache-hit != 'true' }}
-        uses: tenzap/android-emulator-runner@v2
+        uses: Wandalen/wretry.action@master
         with:
-          api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
-          arch: ${{ matrix.arch }}
-          ram-size: ${{ matrix.ram-size }}
-          profile: pixel_2
-          heap-size: 512M
-          disk-size: 8G
-          sdcard-path-or-size: 200M
-          after-boot-delay: 300
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: false
-          script: echo "Generated AVD snapshot for caching."
+          action: tenzap/android-emulator-runner@v2
+          with: |
+            api-level: ${{ matrix.api-level }}
+            target: ${{ matrix.target }}
+            arch: ${{ matrix.arch }}
+            ram-size: ${{ matrix.ram-size }}
+            profile: pixel_2
+            heap-size: 512M
+            disk-size: 8G
+            sdcard-path-or-size: 200M
+            after-boot-delay: 300
+            force-avd-creation: false
+            emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+            disable-animations: false
+            script: echo "Generated AVD snapshot for caching."
 
       - name: run tests with avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
         id: test_with_cache
