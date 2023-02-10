@@ -242,12 +242,24 @@ public class TestUtil {
             clickObject(device, volumeName);
             retValue = true;
         } else {
-            // Get out of drawer/hamburger menu. Swipe on the drawer, because
-            // clicking somewhere else doesn't seems a strategy with good results
-            UiObject drawerRootsObj = device.findObject(new UiSelector().resourceId(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_roots"));
-            Log.d("ETATest", "drawerRoots exists? " + drawerRootsObj.exists());
-            drawerRootsObj.swipeLeft(50);
-            //device.waitForIdle();
+            // Get out of drawer/hamburger menu. Click on the 1st item in the drawer. Because:
+            //  - Swipe on the drawer doesn't always respond correctly (esp on API29): too slow, nothing happens
+            //  - clicking somewhere else doesn't seems a strategy with good results
+
+            String resRootsList = docUIStrings.getDocumentsUiPackageName() + ":id/roots_list";
+
+            // Select the first child of ":id/roots_list"
+            UiSelector uiSelector = new UiSelector().resourceId(resRootsList).childSelector(new UiSelector().className("android.widget.LinearLayout")).index(0);
+
+            UiObject drawerItem = device.findObject(uiSelector);
+
+            Log.d("ETATest", "drawerItem exists? " + drawerItem.exists());
+
+            if (drawerItem.exists()) {
+                Log.d("ETATest", "drawerItem exists. Open menu.");
+                clickObject(device, drawerItem);
+            }
+
             retValue = false;
         }
 
