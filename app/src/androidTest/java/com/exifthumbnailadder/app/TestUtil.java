@@ -552,6 +552,9 @@ public class TestUtil {
         Log.d("ETATest", "Before scroll() & click() on WorkingDirPermActivity button");
         materialButton3.perform(scrollTo(), click());
         Log.d("ETATest", "After scroll() & click() on WorkingDirPermActivity button");
+
+        device.wait(Until.gone(By.res(InstrumentationRegistry.getInstrumentation().getTargetContext().getPackageName() + ":string/working_dir_button_create_dir_and_set_permissions")), 10000);
+
     }
 
     public static void openSettingsFragment() throws Exception {
