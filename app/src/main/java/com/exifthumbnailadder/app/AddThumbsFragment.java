@@ -152,13 +152,26 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        String textViewLogStringBeforeUpdate = null;
                         if (BuildConfig.IS_TESTING.get()) {
                             // For Debug purposes: to try to understand this rare exception
                             // java.lang.IndexOutOfBoundsException: setSpan (0 ... -1) has end before start
-                            Log.v("ETATest", "textViewLog: " + textViewLog.getText());
-                            Log.v("ETATest", "spannableLog: " + spannableLog);
+                            textViewLogStringBeforeUpdate = textViewLog.getText().toString();
                         }
-                        textViewLog.setText(spannableLog);
+                        try {
+                            textViewLog.setText(spannableLog);
+                        } catch (IndexOutOfBoundsException e) {
+                            String msg = e.getMessage();
+                            if (msg != null && msg.startsWith("setSpan")) {
+                                e.printStackTrace();
+                                Log.e("ETATest", "Crash with message: " + msg);
+                                Log.v("ETATest", "textViewLog Before: " + textViewLogStringBeforeUpdate);
+                                Log.v("ETATest", "spannableLog: " + spannableLog);
+                                Log.v("ETATest", "textViewLog After: " + textViewLog.getText());
+                            } else {
+                                throw e;
+                            }
+                        }
                         // Stuff that updates the UI
                         scrollview.post(new Runnable() {
                             @Override

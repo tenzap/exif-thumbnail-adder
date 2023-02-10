@@ -366,6 +366,14 @@ jobs:
             ls tests/output
           fi
 
+      # Check for some pattern in logcat
+      - name: Check for some pattern in logcat
+        continue-on-error: true
+        if: always()
+        run: |
+          set -x
+          cd tests && ./check_logcat_match.sh
+
       # actions/upload-artifact@v3 doesn't keep timestamps, so use tar as an intermediate
       # Moreover, by using this intermediate file, the files created by the test suite won't be inside the artifact
       - name: Tar tests/output artifacts
