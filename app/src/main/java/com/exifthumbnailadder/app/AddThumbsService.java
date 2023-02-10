@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
@@ -124,7 +125,11 @@ public class AddThumbsService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Notification ID cannot be 0.
-        startForeground(NOTIFICATION_ID, getMyActivityNotification(""));
+        if (Build.VERSION.SDK_INT <= 28) {
+            startForeground(NOTIFICATION_ID, getMyActivityNotification(""));
+        } else {
+            startForeground(NOTIFICATION_ID, getMyActivityNotification(""), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+        }
 
         LastServiceLiveData.get().setLastService(this.getClass().getName());
 
