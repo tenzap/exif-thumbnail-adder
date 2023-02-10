@@ -458,7 +458,9 @@ public class TestUtil {
 
         UiDevice device = UiDevice.getInstance(getInstrumentation());
 
+        Log.d("ETATest", "Before waitForDocumentsUiReadiness()");
         waitForDocumentsUiReadiness(device, docUIStrings);
+        Log.d("ETATest", "After waitForDocumentsUiReadiness()");
 
         String label;
         BySelector selector;
@@ -547,7 +549,9 @@ public class TestUtil {
                                         withId(R.id.permScrollView),
                                         0),
                                 1)));
+        Log.d("ETATest", "Before scroll() & click() on WorkingDirPermActivity button");
         materialButton3.perform(scrollTo(), click());
+        Log.d("ETATest", "After scroll() & click() on WorkingDirPermActivity button");
     }
 
     public static void openSettingsFragment() throws Exception {

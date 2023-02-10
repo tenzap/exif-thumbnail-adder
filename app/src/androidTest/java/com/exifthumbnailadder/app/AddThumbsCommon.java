@@ -274,7 +274,9 @@ public class AddThumbsCommon extends TestCommons {
                 TestUtil.workingDirPermActivityCheckPermission();
                 IdlingRegistry.getInstance().unregister(mWorkingDirPermIdlingResource);
 
+                Log.d("ETATest", "Before givePermissionToWorkingDir()");
                 TestUtil.givePermissionToWorkingDir();
+                Log.d("ETATest", "After givePermissionToWorkingDir()");
             }
 
             // Wait until processing is finished or has hit timeout (duration is in ms)
