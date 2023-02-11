@@ -360,6 +360,7 @@ jobs:
 
           if [ ! -d tests/output ]; then
             fastlane get_output_of_tests
+            adb shell logcat -d > tests/output/screenrecords/0_final_logcat.txt
           else
             echo "tests/output exists."
             echo "Content:"
