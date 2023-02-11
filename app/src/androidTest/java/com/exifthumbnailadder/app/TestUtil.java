@@ -537,8 +537,8 @@ public class TestUtil {
         // Additional wait because the screen refreshes itself even after the
         // first display (especially the first time DocumentsUI is loaded)
         // The next times, we might hit the timeout because the windows doesn't refresh itself.
-        device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 5000);
-        Log.d("ETATest", "after waitForWindowUpdate");
+//        device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 5000);
+//        Log.d("ETATest", "after waitForWindowUpdate");
 
         // Wait until the device is idle (this is usually very short, maybe useless)
         device.waitForIdle();
