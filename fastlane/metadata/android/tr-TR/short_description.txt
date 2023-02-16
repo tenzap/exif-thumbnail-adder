@@ -1,0 +1,1 @@
+JPEG resminin EXIF etiketine küçük resim ekleme (toplu işleme)
