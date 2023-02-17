@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AndroidManifest.xml -->
+    <!--    <string name="title_activity_settings">Settings</string>-->
+    <!--    <string name="title_activity_sync">Sync. deletions</string>-->
+    <string name="title_activity_about">Sobre</string>
+    <!-- Toolbar action menu labels -->
+    <string name="action_settings">Configurações</string>
+    <string name="action_add_thumbs">Adicionar miniaturas</string>
+    <!-- About Activity -->
+    <string name="about_version">Versão</string>
+    <string name="about_homepage_source">Página do projeto e código-fonte:</string>
+    <string name="about_license">Licença:</string>
+    <string name="about_authors">Autores:</string>
+    <string name="about_translations">Traduções</string>
+    <string name="about_anonymous">anônimo</string>
+    <string name="about_external_libraries">Bibliotecas externas</string>
+    <!-- Working dir perm activity -->
+    <!-- AddThumbs Fragment -->
+    <string name="stop">Parar</string>
+    <string name="frag1_log_starting">Iniciando…\n</string>
+    <string name="frag1_log_stopped_by_user">Interrompido pelo usuário.</string>
+    <string name="frag1_log_processing_dir">Processando %1$s</string>
+    <string name="frag1_log_processing_path_filename">Processando… Caminho: %1$s Nome do arquivo: %2$s</string>
+    <string name="frag1_log_checking_perm">Verificando permissões…</string>
+    <string name="frag1_log_skipping_file_missing">Ignorando (arquivo faltando)</string>
+    <string name="frag1_log_skipping_not_jpeg">Pulando (não é JPEG)\n</string>
+    <string name="frag1_log_skipping_empty_file">Ignorando (arquivo vazio)\n</string>
+    <string name="frag1_log_skipping_has_thumbnail">Pulando (possui miniatura)\n</string>
+    <string name="frag1_log_skipping_bad_image">Pulando (imagem ruim?)\n</string>
+    <string name="frag1_log_skipping_error">Pulando (ERRO): %1$s</string>
+    <string name="frag1_log_file_exists">O arquivo já existe: %1$s</string>
+    <string name="frag1_log_finished">\nConcluído.</string>
+    <string name="frag1_log_pixymeta_missing">A biblioteca pixymeta-android não está disponível nesta compilação. Selecione outra biblioteca nas configurações.</string>
+    <string name="frag1_log_done">\u00A0Feito</string>
+    <string name="frag1_log_successful">\u00A0Concluído</string>
+    <string name="frag1_log_unsuccessful">\u00A0Falhou</string>
+    <string name="frag1_log_count_files_to_process">%1$d arquivo(s) para processar.</string>
+    <string name="frag1_log_error">ERRO: %1$s</string>
+    <!-- Settings -->
+    <string name="settings_dialog_all_files_access_not_supported">Seu dispositivo não suporta o acesso a todos os arquivos</string>
+    <string name="settings_button_remove_all_dirs">Remover todas as pastas</string>
+    <string name="settings_button_add_dir">Adicionar</string>
+    <string name="pref_categ_folders">Pastas</string>
+    <string name="pref_dirToProcess_title">Pastas a processar</string>
+    <string name="pref_allFilesAccess_title">Acesso a todos os arquivos (somente para Android 11+)</string>
+    <string name="pref_categ_options">Opções</string>
+    <string name="pref_rotateThumbnail_title">Girar miniaturas</string>
+    <string name="pref_rotateThumbnail_summary">Girar miniaturas para corresponder à imagem. A maioria dos aplicativos precisa que a miniatura seja girada (por ex. importação de fotos do Win10)</string>
+    <string name="pref_skipPicsHavingThumbnail_title">Pular imagens com miniatura</string>
+    <string name="pref_skipPicsHavingThumbnail_summary">Pular o processamento se a imagem já tiver uma miniatura</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_title">Corrigir etiquetas faltando em imagens com miniatura</string>
+    <string name="pref_backupOriginalPic_title">Criar backup da imagem de origem</string>
+    <string name="pref_overwriteDestPic_title">Substituir a imagem no destino</string>
+    <string name="pref_keepTimeStampOnBackup_title">Copiar timestamp para o backup</string>
+    <string name="pref_exifLibrary_cannotDisableSkipPicsHavingThumbnail">Não é possível desativar a opção \'%1$s\' usando Android-Exif-Extended. Ativando novamente.</string>
+    <string name="pref_categ_libexif_settings">Configurações do libexif</string>
+    <string name="pref_libexifSkipOnError_title">Pular em caso de erro do libexif</string>
+    <string name="pref_libexifSkipOnError_summary">Pular imagem se o libexif relatar um erro</string>
+    <string name="pref_excludedSecVolPrefix_defaultValue">cópia_de_</string>
+    <string name="pref_categ_debug">Opções de depuração</string>
+    <string name="pref_useSAF_title">usar o Storage Access Framework</string>
+    <string name="pref_useSAF_summary">ATIVADO=\'usar o SAF\' ; DESATIVADO=\'usar Files\'</string>
+    <!-- Sync Activity -->
+    <string name="sync_log_checking">Verificando: %1$s</string>
+    <string name="sync_log_failure_to_delete_file">Falha ao excluir arquivo</string>
+    <string name="sync_log_files_to_remove">Arquivos para remover (não estão mais na fonte):</string>
+</resources>
