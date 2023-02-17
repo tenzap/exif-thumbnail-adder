@@ -1,0 +1,61 @@
+Android cihazlar için olan bu uygulama cihaz üzerindeki resimleri (JPEG) arıyor ve <b>küçük resmi yoksa ekliyor.</b> Kapak resimleri EXIF üstveri yapısına eklenir.
+
+Android Oreo'dan (android 8, SDK 26) çalışmak üzere tasarlanmıştır.
+
+Lütfen sorunları buradan bildirin: <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnail-adder/issues</a>
+
+Daha fazla bilgi, bilinen bazı durumlar ve nasıl katkıda bulunabileceğiniz için [proje ana sayfasına][1] bakın.
+
+<b>Gerekçe</b>
+
+Bazı akıllı telefonlarda, resimleri Windows'a (veya MTP veya PTP protokollerini destekleyen herhangi bir cihaza/işletim sistemine) aktarmak istediğimde, resimlerin içe aktarma sihirbazında (Fotoğraflar uygulaması veya Windows Explorer içe aktarma özelliği aracılığıyla) bir küçük resim göstermeyebileceğini fark ettim.
+
+Bu davranışın iki olası nedeni var. İlk olarak, genellikle resmi oluşturan uygulama bir küçük resim eklemediği için küçük resim resimde mevcut değildir. İkinci olarak, bir küçük resim var ancak bazı EXIF etiketleri eksik olduğu için yok sayılıyor.
+
+
+<b>Özellikler</b>
+
+- Halihazırda kapak resmi olmayan fotoğraflara (JPEG) kapak resmi ekleme
+- Lanczos algoritması kullanarak fotoğraf boyutlarını küçültme, [FFmpeg'in swscale kütüphanesine teşekkürler][2]
+- Hafızadan taranacak bir veya daha fazla klasör seçin (dahil, SDCard...) Örneğin DCIM, Pictures...
+- Seçili dizinlerden bir alt dizini dahil etmeme
+- Resimlerin zaman-damgalarını saklama
+- İşleme kaydı
+- Kaynak dizindeki silinmiş dosyaları yedekleme ve çalışma dizinine senkronize edin (böylece kaynak klasörde artık sahip olmadığınız resimleri yedekleme klasöründe tutmazsınız)
+- Korunumlu varsayılan seçenekler (resimleri yedekle, bozuk dosyaları atla)
+- Uygulamayı dahili depolama alanına veya harici depolama alanına yükleme
+- Varsayılan EXIF kütüphanesi: [Exiv2][3].
+- Alternatif kütüphaneler: Android-Exif-Extended, libexif, pixymeta-android. Her kütüphanenin avantajları ve dezavantajları hakkında daha fazla bilgi edinmek için proje sayfasındaki bilinen gerçeklere bakın.
+- Ayarlar: 
+&emsp;- Küçük resmi döndürme
+&emsp;- Mevcut küçük resmi değiştirme
+&emsp;- Orijinal resimlerin yedeklenmesi (küçük resmi ilk konumundaki giriş dosyasına eklemeyi seçerseniz, yedekleme oluşturulduktan sonra uygulama tarafından asla üzerine yazılmaz)
+&emsp;- Hatalı biçimlendirilmiş meta verilere sahip resimleri atla (bu, bozuk etiketlere sahip dosyaları da işlemek için devre dışı bırakılabilir)
+&emsp;- Resmi yerinde değiştirin veya yeni resmi başka bir dizine yazın
+
+<b>İstenilen izinler</b>
+
+- <i>READ_EXTERNAL_STORAGE</i> ve <i>WRITE_EXTERNAL_STORAGE</i>
+&emsp;- resimlerin zaman bilgisini tutmak için
+- <i>MANAGE_EXTERNAL_STORAGE</i>
+&emsp;- resimlerin zaman bilgisini korumak için yalnızca Android 11 ve üzeri çalıştıran cihazlar için F-Droid'de gönderilen <i>standart</i> çeşit ile talep edilir
+- proje ana sayfasından daha fazla bilgi alın
+
+<b>Kurulum</b>
+
+- Ön gereksinimler: minimum android Oreo (android 8, SDK 26). Uygulama Android 11'e kadar test edildi.
+- F-Droid uygulaması aracılığıyla [buradan][4] indirin
+- APK'yı [sürüm sayfasından][5] indirin
+
+<b>Lisans</b>
+
+GPL-3.0 (proje ana sayfasındaki "KOPYALAMA" dosyasına bakın)
+
+<b>URLler</b>
+
+- [1]: <a href="https://github.com/tenzap/exif-thumbnail-adder">https://github.com/tenzap/exif-thumbnail-adder</a>
+- [2]: <a href="https://ffmpeg.org/libswscale.html">https://ffmpeg.org/libswscale.html</a>
+- [3]: <a href="https://www.exiv2.org">https://www.exiv2.org</a>
+- [4]: <a href="https://f-droid.org/packages/com.exifthumbnailadder.app">https://f-droid.org/packages/com.exifthumbnailadder.app</a>
+- [5]: <a href="https://github.com/tenzap/exif-thumbnail-adder/releases">https://github.com/tenzap/exif-thumbnail-adder/releases</a>
+
