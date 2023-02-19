@@ -1,0 +1,61 @@
+Este aplicativo para Android procura por imagens (JPEG) no seu dispositivo e <b>adiciona uma miniatura</b> se elas ainda não tiverem uma. As miniaturas são adicionadas à estrutura de metadados EXIF.
+
+Ele foi desenvolvido para funcionar a partir do Android Oreo (Android 8, SDK 26).
+
+Por favor, reporte os problemas aqui: <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnail-adder/issues</a>
+
+Para mais informações, alguns fatos conhecidos e como você pode contribuir, consulte a [página do projeto][1].
+
+<b>Rationale</b>
+
+Em alguns smartphones, quando quiser importar imagens para Windows (ou qualquer dispositivo/sistema operacional que suporte MTP ou protocolos PTP), eu notei que as imagens podem não exibir uma miniatura no assistente de importação (seja através do aplicativo Fotos, ou através do recurso de importação do Windows Explorer).
+
+Existem dois motivos possíveis para esse comportamento. Primeiro, a miniatura não está presente na imagem, geralmente porque o app que criou a imagem não adicionou uma miniatura. Segundo, há uma miniatura, mas ela é ignorada porque algumas tags EXIF estão faltando.
+
+
+<b>Recursos</b>
+
+- Adicionar uma miniatura para imagens (JPEG) que ainda não têm uma
+- Lanczos algorithm to downsample picture thanks to [FFmpeg's swscale library][2] for best results.
+- Selecione uma ou mais pastas para escanear a partir de qualquer armazenamento (interno, cartão SD, ...). Por exemplo: DCIM, Pictures...
+- Excluir um subdiretório dos diretórios selecionados
+- Preservar os horários das fotos
+- Processing log
+- Synchronize deleted files in the source directory to the backup and working directory (so that you don't keep in the backup folder pictures you don't have anymore in the source folder)
+- Conservative default options (backup pictures, skip corrupt files)
+- Instalar app no armazenamento interno ou externo
+- Default EXIF library: [Exiv2][3].
+- Alternative libraries: Android-Exif-Extended, libexif, pixymeta-android. Veja os fatos conhecidos na página do projeto para saber mais sobre benefícios e desvantagens de cada biblioteca.
+- Configurações: 
+&emsp;- Rotate the thumbnail
+&emsp;- Substituir miniatura existente
+&emsp;- Backup of original pictures (backup is never overwritten by the app once created if you choose to add the thumbnail to the input file in its initial location)
+&emsp;- Skip pictures having malformed metadata (this can be disabled to process also files having corrupt tags)
+&emsp;- Replace picture in place or write new picture to another directory
+
+<b>Permissões necessárias</b>
+
+- <i>READ_EXTERNAL_STORAGE</i> e <i>WRITE_EXTERNAL_STORAGE</i>
+&emsp;- para manter a marcação de hora das imagens
+- <i>MANAGE_EXTERNAL_STORAGE</i>
+&emsp;- requested only with the <i>standard</i> flavor that is shipped on F-Droid for devices running Android 11 and above to keep the timestamp of the pictures
+- get more details on the project homepage
+
+<b>Instalação</b>
+
+- Pré-requisitos: Android 8 (Oreo, SDK 26) ou superior. O app foi testado até o Android 11.
+- Baixar a partir do aplicativo F-Droid [here][4]
+- Baixar o APK da [página de lançamento][5]
+
+<b>Licença</b>
+
+GPL-3.0 (ver arquivo "COPYING" na página inicial do projeto)
+
+<b>URLs</b>
+
+- [1]: <a href="https://github.com/tenzap/exif-thumbnail-adder">https://github.com/tenzap/exif-thumbnail-adder</a>
+- [2]: <a href="https://ffmpeg.org/libswscale.html">https://ffmpeg.org/libswscale.html</a>
+- [3]: <a href="https://www.exiv2.org">https://www.exiv2.org</a>
+- [4]: <a href="https://f-droid.org/packages/com.exifthumbnailadder.app">https://f-droid.org/packages/com.exifthumbnailadder.app</a>
+- [5]: <a href="https://github.com/tenzap/exif-thumbnail-adder/releases">https://github.com/tenzap/exif-thumbnail-adder/releases</a>
+
