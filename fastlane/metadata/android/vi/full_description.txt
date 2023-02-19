@@ -1,6 +1,6 @@
 Ứng dụng dành cho các thiết bị Android này tìm kiếm các bức ảnh (JPEG) trên thiết bị và <b>thêm hình thu nhỏ</b> nếu chúng chưa có nó. Hình thu nhỏ được thêm vào cấu trúc siêu dữ liệu EXIF.
 
-Nó được thiết kế để hoạt động từ Android Oreo (Android 8, SDK 26) và đã được thử nghiệm trên thiết bị thật chạy Android 10 và thiết bị ảo chạy Android 8 và 11.
+It is designed to work from android Oreo (android 8, SDK 26).
 
 Vui lòng báo cáo các vấn đề ở đây: <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnail-adder/issues</a>
 
@@ -8,7 +8,10 @@ Vui lòng báo cáo các vấn đề ở đây: <a href="https://github.com/tenz
 
 <b>Lý luận</b>
 
-Trên điện thoại của tôi (Xiaomi Redmi Note 9S), khi tôi muốn nhập các bức ảnh vào Windows (hoặc bất kỳ thiết bị/hệ điều hành nào có hỗ trợ giao thức MTP hoặc PTP), tôi nhận thấy là các bức ảnh không hiển thị hình thu nhỏ trong trình hướng dẫn nhập (qua ứng dụng Ảnh, hoặc qua tính năng nhập của Windows Explorer). Việc này là do điện thoại của tôi đã không thêm hình thu nhỏ vào các bức ảnh tôi chụp bằng máy ảnh.
+On some smartphones, when wanting to import pictures to Windows (or any device/operating system supporting MTP or PTP protocols), I noticed the pictures may not display a thumbnail in the import wizard (whether through the Photos app, or through the Windows Explorer import feature).
+
+There are two possible reasons for that behaviour. First, the thumbnail is not present in the picture, usually because the app that created the picture didn't add a thumbnail. Second, there is a thumbnail but it is ignored because some EXIF tags are missing.
+
 
 <b>Các tính năng</b>
 
@@ -22,7 +25,7 @@ Trên điện thoại của tôi (Xiaomi Redmi Note 9S), khi tôi muốn nhập 
 - Các tuỳ chọn mặc định có tính thận trọng (sao lưu ảnh, bỏ qua tệp bị hỏng)
 - Cài đặt ứng dụng trên bộ nhớ trong hoặc bộ nhớ ngoài
 - Thư viện EXIF mặc định: [Exiv2][3].
-- Các thư viện thay thế: Android-Exif-Extended (được tích hợp), libexif (được tích hợp), pixymeta-android (cần biên dịch thủ công từ mã nguồn). Hãy xem các sự thật đã biết trên trang chủ dự án để tìm hiểu thêm về các lợi ích và bất lợi của mỗi thư viện.
+- Alternative libraries: Android-Exif-Extended, libexif, pixymeta-android. Hãy xem các sự thật đã biết trên trang chủ dự án để tìm hiểu thêm về các lợi ích và bất lợi của mỗi thư viện.
 - Cài đặt: 
 &emsp;- Xoay hình thu nhỏ
 &emsp;-Thay thế hình thu nhỏ hiện có

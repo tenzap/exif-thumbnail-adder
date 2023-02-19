@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Settings: ListPreference: exiflib -->
+    <!-- Settings: ListPreference: exiv2SkipOnLogLevel -->
+    <string-array name="exiv2SkipLevel_entries">
+        <item>Uyarı</item>
+        <item>Hata</item>
+        <item>Asla atlama, hata olduğunda bile</item>
+    </string-array>
+</resources>
