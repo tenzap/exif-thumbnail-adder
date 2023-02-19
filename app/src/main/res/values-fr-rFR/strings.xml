@@ -58,7 +58,12 @@
     <string name="stop">Arrêter</string>
     <string name="frag1_text_processing_log">Journal du traitement</string>
     <string name="frag1_perm_request_title">Demande de permission</string>
+    <string name="frag1_perm_request_message_timestamp">La permission pour le stockage externe est nécessaire pour conserver l\'horodatage des fichiers.\n
+        Si vous refusez, le traitement se fera sans conserver l\'horodatage.\n
+        Une fois la permission accordée, vous devez relancer le traitement.</string>
     <string name="frag1_perm_request_deny">Refuser la permission</string>
+    <string name="frag1_perm_request_message_Files">La permission pour le stockage externe est nécessaire. Après accord vous devez relancer le traitement.</string>
+    <string name="frag1_check_write_perm">Vérification de la permission WRITE_EXTERNAL_STORAGE…</string>
     <string name="frag1_continue_without_timestamps">\u00A0Permission non accordée. Poursuite sans conservation de l\'horodatage.</string>
     <string name="frag1_log_skipping_excluded_dir">Saute le rép. %1$s dans %2$s</string>
     <string name="frag1_log_copying_attr">Copie des attributs…</string>
