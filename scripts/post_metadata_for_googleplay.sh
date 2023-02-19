@@ -17,9 +17,9 @@ PROJECT_ROOT="$(realpath "$SCRIPT_DIR/..")"
 echo "Postparing metadata after submission to Google Play"
 
 # Rename language dirs
-if [ -d "$PROJECT_ROOT/fastlane/metadata/android/vi" ]; then
-  mv "$PROJECT_ROOT/fastlane/metadata/android/vi" "$PROJECT_ROOT/fastlane/metadata/android/vi-VN"
-fi
+#if [ -d "$PROJECT_ROOT/fastlane/metadata/android/vi" ]; then
+#  mv "$PROJECT_ROOT/fastlane/metadata/android/vi" "$PROJECT_ROOT/fastlane/metadata/android/vi-VN"
+#fi
 
 # Restore modified files to previous state
 git checkout "$PROJECT_ROOT/fastlane/metadata/"

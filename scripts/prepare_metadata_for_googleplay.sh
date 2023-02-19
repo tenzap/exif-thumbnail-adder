@@ -16,7 +16,7 @@
 #
 # Languages:
 #  - language code should be same as in the google play console
-#    - vi-VN doesn't exist. Use 'vi' instead
+#    - vi-VN doesn't exist. Use 'vi' instead (THIS HAS BEEN UPDATED in CROWDIN & the repo directly)
 #
 #
 # Max 8 screenshots for each: smartphone, tablet 7", tablet 10"
@@ -89,4 +89,4 @@ if [ "$MODIFIED_FILES_IN_METADATA" -ne 0 ]; then
 fi
 
 # Rename language dirs
-mv "$PROJECT_ROOT/fastlane/metadata/android/vi-VN" "$PROJECT_ROOT/fastlane/metadata/android/vi"
+# mv "$PROJECT_ROOT/fastlane/metadata/android/vi-VN" "$PROJECT_ROOT/fastlane/metadata/android/vi"
