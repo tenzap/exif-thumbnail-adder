@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Exif Küçük Resim Toplayıcısı</string>
+    <!-- AndroidManifest.xml -->
+    <!--    <string name="title_activity_settings">Settings</string>-->
+    <!--    <string name="title_activity_sync">Sync. deletions</string>-->
+    <string name="title_activity_about">Hakkında</string>
+    <string name="title_activity_working_dir_perm">Çalışan dir yetkileri</string>
+    <!-- Toolbar action menu labels -->
+    <string name="action_settings">Ayarlar</string>
+    <string name="action_sync">Silinenleri eşitle</string>
+    <string name="action_about">Hakkında</string>
+    <string name="action_add_thumbs">Küçük resimler ekleyin</string>
+    <!-- About Activity -->
+    <string name="about_about_title">Hakkında</string>
+    <string name="about_content">Hakkında…</string>
+    <string name="about_version">Sürüm</string>
+    <string name="about_homepage_source">Proje sayfası &amp; kaynak kodu:</string>
+    <string name="about_license">Lisans:</string>
+    <string name="about_authors">Yazanlar:</string>
+    <string name="about_translations">Çeviriler</string>
+    <string name="about_anonymous">anonim</string>
+    <string name="about_external_libraries">Harici kütüphaneler</string>
+    <!-- Working dir perm activity -->
+    <string name="working_dir_perm_permissions_set_retry">WorkingDir izni ayarlı değil, lütfen tekrar deneyiniz.</string>
+    <string name="working_dir_button_create_dir_and_set_permissions">Diz. Oluştur &amp; izinleri ayarla</string>
+    <!-- AddThumbs Fragment -->
+    <string name="frag1_text_description">Seçili asıl dosyalardan küçük resimleri resimlere ekle</string>
+    <string name="frag1_text_list_of_dirs_to_process">İşlem için kaynak dosyaların listesi</string>
+    <string name="frag1_text_no_dir_selected">Bir dosya seçili değil. Bir tane seçmek için ayarlara gidin.</string>
+    <string name="frag1_text_all_files_access_permissions_is_not_granted">Cihazınızda \'Tüm dosyalara erişim\' izni verilmemiş. Bu uygulamayı normal şekilde kullanmaya devam edebilirsiniz, ancak lütfen dosyalarınızın saat ve tarihinin şimdiki zamana ayarlanacağını anlayın. Bu, resimlerinizin EXIF ​​etiketlerinde saklanan saati/tarihi etkilemez. Ayarlardan izin verebilirsiniz.</string>
+    <string name="frag1_button_settings">Ayarlar</string>
+    <string name="frag1_button_start_processing">İşlemi başlat</string>
+    <string name="stop">Dur</string>
+    <string name="frag1_text_processing_log">İşleme Kaydı</string>
+    <string name="frag1_perm_request_title">İzin isteği</string>
+    <string name="frag1_perm_request_deny">Izin vermeyi reddet</string>
+    <string name="frag1_log_copying_attr">Nitelikler kopyalanıyor…</string>
+    <string name="frag1_log_starting">Başlatılıyor…\n</string>
+    <string name="frag1_log_stopped_by_user">Kullanıcı tarafından durduruldu.</string>
+    <string name="frag1_log_processing_dir">%1$s işleniyor</string>
+    <string name="frag1_log_processing_path_filename">İşleniyor… Patika: %1$s Dosya adı: %2$s</string>
+    <string name="frag1_log_skipping_path_filename">Geçiliyor… Patika: %1$s Dosya adı: %2$s</string>
+    <string name="frag1_log_checking_workingdir_perm">Çalışma dizini yetkileri kontrol ediliyor…</string>
+    <string name="frag1_log_checking_perm">İzinler denetleniyor…</string>
+    <string name="frag1_log_skipping_file_missing">Atlanıyor (dosya kayıp)</string>
+    <string name="frag1_log_skipping_not_jpeg">Atlanıyor (JPEG değil)\n</string>
+    <string name="frag1_log_skipping_empty_file">Atlanıyor (boş dosya)\n</string>
+    <string name="frag1_log_skipping_has_thumbnail">Atlanıyor (kapak resmine sahip)\n</string>
+    <string name="frag1_log_skipping_bad_image">Atlanıyor (problemli resim?)\n</string>
+    <string name="frag1_log_skipping_error">Atlanıyor (HATA): %1$s</string>
+    <string name="frag1_log_continue_despite_error_as_per_setting">Ayarlara göre işlemeye devam et…</string>
+    <string name="frag1_log_file_exists">Dosya zaten mevcut: %1$s</string>
+    <string name="frag1_log_finished">\nBitti.</string>
+    <string name="frag1_log_pixymeta_missing">Bu sürüm için Pixymeta-android kütüphanesi mevcut değil. Lütfen ayarlardan başka bir kütüphane seçiniz.</string>
+    <string name="frag1_log_done">\u00A0Bitti</string>
+    <string name="frag1_log_successful">\u00A0Başarılı</string>
+    <string name="frag1_log_not_granted">\u00A0Sağlanmadı. Lütfen ayarlardan klasörü tekrar ekleyiniz.</string>
+    <string name="frag1_log_unsuccessful">\u00A0Başarısız</string>
+    <string name="frag1_log_error_moving_doc">Belgeyi taşırken HATA: %1$s</string>
+    <string name="frag1_log_error_copying_doc">Belgeyi kopyalarken HATA: %1$s</string>
+    <string name="frag1_log_count_files_to_process">işlenecek %1$d dosya</string>
+    <string name="frag1_log_error">HATA: %1$s</string>
+    <!-- Settings -->
+    <string name="settings_dialog_all_files_access_not_supported">Aygıtınız tüm dosyalara erişimi desteklemiyor</string>
+    <string name="settings_button_remove_all_dirs">Tüm klasörleri kaldır</string>
+    <string name="settings_button_add_dir">Ekle</string>
+    <string name="pref_categ_folders">Klasörler</string>
+    <string name="pref_dirToProcess_title">İşlenecek klasörler</string>
+    <string name="pref_workingDir_title"><![CDATA[Yedekleme & çalışma dizini]]></string>
+    <string name="pref_allFilesAccess_title">Tüm dosyalara erişim (Sadece Android 11+ için)</string>
+    <string name="pref_categ_options">Seçenekler</string>
+    <string name="pref_rotateThumbnail_title">Küçük resimleri çevir</string>
+    <string name="pref_rotateThumbnail_summary">Küçük resimleri resme karşılık gelecek şekilde döndür. Çoğu uygulamanın küçük resmin döndürülmesine ihtiyacı vardır (ör. Win10 fotoğraf aktarma)</string>
+    <string name="pref_skipPicsHavingThumbnail_title">Küçük resimli görüntüleri geç</string>
+    <string name="pref_skipPicsHavingThumbnail_summary">Eğer görüntünün bir küçük resmi varsa, işlem yapma</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_title">Küçük resimlerdeki eksik etiketleri düzelt</string>
+    <string name="pref_backupOriginalPic_title">Görüntünün kaynağının yedeğini oluştur</string>
+    <string name="pref_backupOriginalPic_summary">Yedek çalışma dizinine konulur. Eğer aynı isimle başka bir dosya varsa üstüne yazılmaz</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_title">Kaynak lokasyonunda güncelleme</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Kaynak klasörün görüntüsüne küçük resim ekle</string>
+    <string name="pref_overwriteDestPic_title">Hedefteki görüntünün üzerine yazma</string>
+    <string name="pref_keepTimeStampOnBackup_title">Yedeklemede tarih bilgisini kopyala</string>
+    <string name="pref_categ_backend">Arka uç/Kütüphane</string>
+    <string name="pref_exifLibrary_title">EXIF küçük resimlerini bununla yaz</string>
+    <string name="pref_categ_exiv2_settings">Exiv2 ayarları</string>
+    <string name="pref_exiv2SkipOnLogLevel_title">Exiv2 hata düzeyinden atlama</string>
+    <string name="pref_categ_libexif_settings">libexif ayarları</string>
+    <string name="pref_libexifSkipOnError_title">Libexif hatası olduğunda atla</string>
+    <string name="pref_libexifSkipOnError_summary">Libexif bir hata bildirirse resmi atla</string>
+    <string name="pref_categ_extra">Diğer</string>
+    <string name="pref_excludedSecVolPrefix_title">Dahil olmayan klasör için önek</string>
+    <string name="pref_categ_debug">Hata ayıklama seçenekleri</string>
+    <string name="pref_useSAF_title">Depolama Erişimi Sistemini kullan</string>
+    <!-- Sync Activity -->
+    <string name="sync_text_description"><![CDATA[Kaynak klasörlerde yapılan silmeleri, yedekleme ve çalışma dizinindeki dosyalara senkronize edin]]></string>
+    <string name="sync_button_del_files">Sil</string>
+    <string name="sync_button_list_files">Liste</string>
+    <string name="sync_log_checking">%1$s kontrol ediliyor</string>
+    <string name="sync_log_failure_to_delete_file">Dosya silinemedi</string>
+    <string name="sync_log_files_to_remove">Silinecek dosyalar (kaynakta bulunmayan):</string>
+</resources>
