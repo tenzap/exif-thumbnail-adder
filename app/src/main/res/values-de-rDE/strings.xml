@@ -54,7 +54,12 @@
     <string name="stop">Anhalten</string>
     <string name="frag1_text_processing_log">Verarbeitungsprotokoll</string>
     <string name="frag1_perm_request_title">Berechtigungsabfrage</string>
+    <string name="frag1_perm_request_message_timestamp">Die Berechtigung für den externen Speicher ist notwendig, um die Zeitstempel der Dateien zu erhalten.\n
+        Wenn du die Berechtigung verweigerst, erfolgt die Verarbeitung ohne den Erhalt der Zeitstempel.\n
+        Nach Erteilung der Berechtigung muss die Verarbeitung neu gestartet werden.</string>
     <string name="frag1_perm_request_deny">Berechtigung verweigern</string>
+    <string name="frag1_perm_request_message_Files">Die Berechtigung für den externen Speicher ist notwendig. Nach Erteilung der Berechtigung muss die Verarbeitung neu gestartet werden.</string>
+    <string name="frag1_check_write_perm">Prüfung der Berechtigung WRITE_EXTERNAL_STORAGE…</string>
     <string name="frag1_continue_without_timestamps">\u00A0Berechtigung nicht erteilt, ohne Erhalt der Zeitstempel weitermachen.</string>
     <string name="frag1_log_skipping_excluded_dir">Ausgeschlossenes Verzeichnis %1$s in %2$s überspringen</string>
     <string name="frag1_log_copying_attr">Attribute kopieren…</string>
