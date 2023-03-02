@@ -1,0 +1,7 @@
+- Add support for Android 13 (+ set targetSdk to 33)
+- Fine grained permission requests
+- No need to resart processing after permissions are granted
+- Refresh MediaStore after picture was processed
+- Update pt-BR & tr-TR translations
+- Technical changes: update build tools (Studio, Gradle, NDK...), improve tests
+- keep only 'standard' flavor
