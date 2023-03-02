@@ -146,8 +146,8 @@ if [ -z "$REPLY" ] || [[ "$REPLY" =~ [yY] ]]; then
   git checkout "$VER"
   bundle exec fastlane build_release
   mkdir -p 0_personal/signed_releases
-  mv -n "app/build/outputs/apk/standard/release/"*.apk 0_personal/signed_releases
-  mv -n "app/build/outputs/bundle/standardRelease/"exifthumbnailadder-*-standard-release.aab 0_personal/signed_releases
+  cp -a "app/build/outputs/apk/standard/release/"*.apk 0_personal/signed_releases
+  cp -a "app/build/outputs/bundle/standardRelease/"exifthumbnailadder-*-standard-release.aab 0_personal/signed_releases
   echo
   echo "Signed APK & AAB are in: 0_personal/signed_releases"
   echo
