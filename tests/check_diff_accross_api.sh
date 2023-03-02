@@ -42,6 +42,6 @@ for REF in $APIS; do
           fi
         fi
       done
-    } | tee "diff-$REF-$API.diff"
+    } | tee "output/diff-$REF-$API.diff"
   done
 done
