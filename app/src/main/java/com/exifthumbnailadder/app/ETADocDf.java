@@ -61,7 +61,11 @@ public class ETADocDf extends ETADoc {
     public ETADocDf(DocumentFile docFile, Context ctx, ETASrcDirUri root, boolean withVolumeName) {
         super(ctx, root, root.getVolumeName(), root.getVolumeRootPath(), withVolumeName);
         this.etaDoc = docFile;
-        this._uri = docFile.getUri();
+        if (Build.VERSION.SDK_INT >= 29) {
+            this._uri = MediaStore.setRequireOriginal(docFile.getUri());
+        } else {
+            this._uri = docFile.getUri();
+        }
         this._uriAuthority = _uri.getAuthority();
         this.isFile = docFile.isFile();
         this.isDirectory = docFile.isDirectory();
@@ -151,7 +155,11 @@ public class ETADocDf extends ETADoc {
         }
 
         if (enableLog) Log.i(TAG, "Writing files for '" + dirId + "' to: " + fullDir);
-        return outUri;
+        if (Build.VERSION.SDK_INT >= 29) {
+            return MediaStore.setRequireOriginal(outUri);
+        } else {
+            return outUri;
+        }
     }
 
     public Uri getBackupUri() {
@@ -170,7 +178,11 @@ public class ETADocDf extends ETADoc {
         Uri outUri = DocumentsContract.buildDocumentUriUsingTree(treeRootUri, fullDir);
 
         createNomediaFile(treeRootUri, baseDir, getMainDir());
-        return outUri;
+        if (Build.VERSION.SDK_INT >= 29) {
+            return MediaStore.setRequireOriginal(outUri);
+        } else {
+            return outUri;
+        }
     }
 
     public Uri getDestUri() {
@@ -198,7 +210,11 @@ public class ETADocDf extends ETADoc {
         if (! suffixes.get(dirId).isEmpty()) {
             createNomediaFile(treeRootUri, baseDir, getMainDir());
         }
-        return outUri;
+        if (Build.VERSION.SDK_INT >= 29) {
+            return MediaStore.setRequireOriginal(outUri);
+        } else {
+            return outUri;
+        }
     }
 
     public Path getTmpPath() {
@@ -303,7 +319,11 @@ public class ETADocDf extends ETADoc {
     public Object getOutputInTmp() {
         String filename = getName() + THUMB_EXT;
         Uri outputTmpFileUri = getOutputFileUri(getTmpUri(), filename);
-        return outputTmpFileUri; // Uri
+        if (Build.VERSION.SDK_INT >= 29) {
+            return MediaStore.setRequireOriginal(outputTmpFileUri);
+        } else {
+            return outputTmpFileUri; // Uri
+        }
     }
 
     public boolean deleteOutputInTmp() {
@@ -371,7 +391,11 @@ public class ETADocDf extends ETADoc {
             e.printStackTrace();
         }
 
-        return outputFileUri;
+        if (Build.VERSION.SDK_INT >= 29) {
+            return MediaStore.setRequireOriginal(outputFileUri);
+        } else {
+            return outputFileUri;
+        }
     }
 
     public boolean isFile() {
@@ -396,7 +420,12 @@ public class ETADocDf extends ETADoc {
 
     public Uri getSrcUri(String srcDirMainDir, String srcDirTreeId) throws Exception {
         try {
-            return getSrcDocumentUriFor(_uri, srcDirMainDir, srcDirTreeId, withVolumeName);
+            Uri outUri = getSrcDocumentUriFor(_uri, srcDirMainDir, srcDirTreeId, withVolumeName);
+            if (Build.VERSION.SDK_INT >= 29) {
+                return MediaStore.setRequireOriginal(outUri);
+            } else {
+                return outUri;
+            }
         } catch (Exception e) {
             throw e;
         }

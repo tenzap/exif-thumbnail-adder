@@ -332,8 +332,6 @@ public class PermissionManager {
         // 2. Permission to access the Exif tags related to GPS location
         if (Build.VERSION.SDK_INT >= 29) {
             s.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
-            // TODO: Make use of setRequireOriginal when using the MediaStore
-            // https://developer.android.com/reference/android/provider/MediaStore#setRequireOriginal(android.net.Uri)
         }
 
         // 3. Permission for notifications
