@@ -40,6 +40,7 @@ import com.exifthumbnailadder.app.exception.LibexifException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -822,7 +823,23 @@ public class AddThumbsService extends Service {
 
     private Uri copyDocumentWithStream(Uri sourceUri, Uri targetUri) throws Exception {
         try {
-            InputStream is = getContentResolver().openInputStream(sourceUri);
+            InputStream is = null;
+
+            if (Build.VERSION.SDK_INT >= 31 && Build.VERSION.SDK_INT <= 32) {
+                // Workaround for API 31 & 32 which don't copy GPS tags with sourceUri
+                // Workaround is to access it through file path
+                // See bugs https://issuetracker.google.com/issues/257336283
+                // & https://issuetracker.google.com/issues/257336282
+                String sourceFile = null;
+                if (sourceUri.getScheme().equals("file")) {
+                    sourceFile = sourceUri.getPath();
+                } else {
+                    sourceFile = FileUtil.getFullDocIdPathFromTreeUri(sourceUri, this);
+                }
+                is = new FileInputStream(sourceFile);
+            } else {
+                is = getContentResolver().openInputStream(sourceUri);
+            }
             OutputStream os = getContentResolver().openOutputStream(targetUri);
 
             byte[] buf = new byte[8192];
