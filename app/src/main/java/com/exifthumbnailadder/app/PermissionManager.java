@@ -311,9 +311,7 @@ public class PermissionManager {
         //
         if (Build.VERSION.SDK_INT >= 30 && Build.VERSION.SDK_INT <= 32) {
             if (prefs.getBoolean("useSAF", true)) {
-                if (prefs.getString("exif_library", "").equals("exiflib_libexif")) {
-                    s.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-                }
+                s.add(Manifest.permission.READ_EXTERNAL_STORAGE);
             } else {
                 s.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
             }
