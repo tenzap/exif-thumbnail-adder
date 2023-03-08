@@ -426,7 +426,6 @@ public class AddThumbsService extends Service {
                             try {
                                 String outFilepath = doc.getTmpFSPathWithFilename();
 
-                                NativeLibHelper.writeFile(doc.getFullFSPath());
                                 new NativeLibHelper().writeThumbnailWithLibexifThroughFile(
                                         doc.getFullFSPath(),
                                         outFilepath,
