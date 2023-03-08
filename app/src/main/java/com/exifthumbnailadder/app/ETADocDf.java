@@ -39,6 +39,7 @@ import com.exifthumbnailadder.app.exception.CopyAttributesFailedException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -218,7 +219,16 @@ public class ETADocDf extends ETADoc {
 
     public InputStream inputStream() throws Exception {
         try {
-            return ctx.getContentResolver().openInputStream(_uri);
+            if (Build.VERSION.SDK_INT >= 31 && Build.VERSION.SDK_INT <= 32) {
+                // Workaround for API 31 & 32 which don't copy GPS tags with sourceUri
+                // Workaround is to access it through file path
+                // See bugs https://issuetracker.google.com/issues/257336283
+                // & https://issuetracker.google.com/issues/257336282
+                String sourceFile = FileUtil.getFullDocIdPathFromTreeUri(_uri, ctx);
+                return new FileInputStream(sourceFile);
+            } else {
+                return ctx.getContentResolver().openInputStream(_uri);
+            }
         } catch (Exception e) {
             throw e;
         }
