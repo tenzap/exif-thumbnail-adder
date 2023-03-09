@@ -93,6 +93,7 @@ import pixy.meta.adobe.IRB;
 import pixy.meta.adobe.ImageResourceID;
 import pixy.meta.adobe._8BIM;
 import pixy.meta.exif.Exif;
+import pixy.meta.exif.ExifTag;
 import pixy.meta.exif.ExifThumbnail;
 import pixy.meta.adobe.ThumbnailResource;
 import pixy.meta.icc.ICCProfile;
@@ -656,11 +657,11 @@ public class JPGMeta {
 		int app0Index = -1;
 		// Copy the original image and insert EXIF data
 		boolean finished = false;
-		int length = 0;	
+		int length = 0;
 		short marker;
 		Marker emarker;
 				
-		// The very first marker should be the start_of_image marker!	
+		// The very first marker should be the start_of_image marker!
 		if(Marker.fromShort(IOUtils.readShortMM(is)) != Marker.SOI)	{
 			throw new IOException("Invalid JPEG image, expected SOI marker not found!");
 		}
@@ -682,16 +683,20 @@ public class JPGMeta {
 		    	IFD newExifSubIFD = exif.getExifIFD();
 		    	IFD newGpsSubIFD = exif.getGPSIFD();
 		    	IFD newImageIFD = exif.getImageIFD();
-		    	ExifThumbnail newThumbnail = exif.getThumbnail();	    
+		    	IFD newInteropSubIFD = exif.getInteropIFD();
+		    	ExifThumbnail newThumbnail = exif.getThumbnail();  
 		    	// Define new IFDs
 		    	IFD exifSubIFD = null;
 		    	IFD gpsSubIFD = null;
+		    	IFD interopSubIFD = null;
 		    	IFD imageIFD = null;
 		    	// Got to do something to keep the old data
 		    	if(update && oldExif != null) {
 		    		IFD oldImageIFD = oldExif.getImageIFD();
 			    	IFD oldExifSubIFD = oldExif.getExifIFD();
 			    	IFD oldGpsSubIFD = oldExif.getGPSIFD();
+			    	IFD oldInteropSubIFD = oldExif.getInteropIFD();
+			    	
 			    	ExifThumbnail thumbnail = oldExif.getThumbnail();
 			    	
 			    	if(oldImageIFD != null) {
@@ -705,6 +710,10 @@ public class JPGMeta {
 			    	if(oldExifSubIFD != null) {
 			    		exifSubIFD = new IFD();
 			    		exifSubIFD.addFields(oldExifSubIFD.getFields());
+			    	}
+			    	if(oldInteropSubIFD != null) {
+			    		interopSubIFD = new IFD();
+			    		interopSubIFD.addFields(oldInteropSubIFD.getFields());
 			    	}
 			    	if(oldGpsSubIFD != null) {
 			    		gpsSubIFD = new IFD();
@@ -721,6 +730,11 @@ public class JPGMeta {
 		    			exifSubIFD.addFields(newExifSubIFD.getFields());
 		    	} else
 		    		exifSubIFD = newExifSubIFD;
+		    	if(interopSubIFD != null) {
+		    		if(newInteropSubIFD != null)
+		    			interopSubIFD.addFields(newInteropSubIFD.getFields());
+		    	} else
+		    		interopSubIFD = newInteropSubIFD;
 		    	if(gpsSubIFD != null) {
 		    		if(newGpsSubIFD != null)
 		    			gpsSubIFD.addFields(newGpsSubIFD.getFields());
@@ -728,18 +742,23 @@ public class JPGMeta {
 		    		gpsSubIFD = newGpsSubIFD;
 		    	// If we have ImageIFD, set Image IFD attached with EXIF and GPS
 		     	if(imageIFD != null) {
-		    		if(exifSubIFD != null)
+		    		if(exifSubIFD != null) {
 			    		imageIFD.addChild(TiffTag.EXIF_SUB_IFD, exifSubIFD);
+			    		if(interopSubIFD != null) {
+				    		exifSubIFD.addChild(ExifTag.EXIF_INTEROPERABILITY_OFFSET, interopSubIFD);
+			    		}
+		    		}
 		    		if(gpsSubIFD != null)
 			    		imageIFD.addChild(TiffTag.GPS_SUB_IFD, gpsSubIFD);
 		    		exif.setImageIFD(imageIFD);
 		    	} else { // Otherwise, set EXIF and GPS IFD separately
 		    		exif.setExifIFD(exifSubIFD);
 		    		exif.setGPSIFD(gpsSubIFD);
+		    		exif.setInteropIFD(interopSubIFD);
 		    	}
 		   		exif.setThumbnail(newThumbnail);
 		   		// Now insert the new EXIF to the JPEG
-		   		exif.write(os);		     	
+		   		exif.write(os);
 		     	// Copy the remaining segments
 				for(int i = app0Index + 1; i < segments.size(); i++) {
 					segments.get(i).write(os);
@@ -771,13 +790,13 @@ public class JPGMeta {
 						if(exifBytes.length >= EXIF_ID.length() && new String(exifBytes, 0, EXIF_ID.length()).equals(EXIF_ID)) { // We assume EXIF data exist only in one APP1
 							oldExif = new JpegExif(ArrayUtils.subArray(exifBytes, EXIF_ID.length(), length - EXIF_ID.length() - 2));
 							segments.remove(segments.size() - 1);
-						}									
+						}											
 						marker = IOUtils.readShortMM(is);
 						break;
 				    case APP0:
-				    	app0Index = segments.size();			
+				    	app0Index = segments.size();
 				    default:
-					    length = IOUtils.readUnsignedShortMM(is);					
+					    length = IOUtils.readUnsignedShortMM(is);				
 					    byte[] buf = new byte[length - 2];
 					    IOUtils.readFully(is, buf);
 					    if(emarker == Marker.UNKNOWN)
