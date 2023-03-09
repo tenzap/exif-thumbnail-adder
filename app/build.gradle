@@ -22,8 +22,8 @@ android {
         targetSdkVersion 33
         versionCode finalVersionCode
         versionName finalVersionName
-        versionCode 536
-        versionName "0.9.18"
+//        versionCode 536
+//        versionName "0.9.18"
 
         file("../version_last_tag.txt").text = "version: " + lastTagVersionName + "+" + lastTagVersionCode
         //file("../version_head.txt").text = "version: " + finalVersionName + "+" + finalVersionCode
