@@ -120,7 +120,7 @@ public class TakeScreenshots {
 //        String g = Build.HARDWARE;
 //        String f = Build.DISPLAY;
 
-        int i = 0;
+        int i = 1;
         // Main screen
         Screengrab.screenshot(String.format("%03d", ++i));
 
@@ -250,7 +250,7 @@ public class TakeScreenshots {
         LocalBroadcastManager.getInstance(context)
                 .unregisterReceiver(receiver);
 
-        Screengrab.screenshot(String.format("%03d", ++i));
+        Screengrab.screenshot(String.format("%03d", 1));
 
         // Delete WorkingDir
         deleteDirectory(Paths.get("/storage/emulated/0/ThumbAdder-sg").toFile());
