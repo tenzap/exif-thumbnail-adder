@@ -210,7 +210,7 @@ public enum ExifTag implements Tag {
 	EXIF_IMAGE_HEIGHT("ExifImageHeight", (short)0xa003),
 	RELATED_SOUND_FILE("RelatedSoundFile", (short)0xa004),
 	
-	EXIF_INTEROPERABILITY_OFFSET("ExifInteroperabilityOffset", (short)0xa005) {
+	EXIF_INTEROPERABILITY_OFFSET("ExifInteroperabilitySubIFD", (short)0xa005) {
 		public FieldType getFieldType() {
 			return FieldType.LONG;
 		}
