@@ -1,0 +1,21 @@
+0.9.18
+- Fix bug on Android 12 where GPS metadata was lost. Unfortunately GPS metadata was lost on backups too.
+- Reminder: translate the app on crowdin https://crowdin.com/project/exif-thumbnail-adder
+
+0.9.17
+- Add support for Android 13 (+ set targetSdk to 33)
+- Fine grained permission requests
+- No need to resart processing after permissions are granted
+- Refresh MediaStore after picture was processed
+- Update pt-BR & tr-TR translations
+- Technical changes: update build tools (Studio, Gradle, NDK...), improve tests
+- keep only 'standard' flavor
+
+0.9.16.1
+- fix crash at startup
+- Fix rotation of thumbnail when rotation was disabled in settings
+- Fix crash on Android >= 12
+- Don't crash app if ffmpeg crashes when creating thubmnail
+- Fix crash when using libexif on x86_64 devices
+- Fix "AccessDenied" error when 'All files access' is not granted on devices with Android >= 11
+- Fix issue when reading picture with orientation tag different than Horizontal on Android Pie/9
