@@ -453,7 +453,7 @@ public class TestUtil {
             Log.d("ETATest", "AllowAccessTo exists? " + uiElement.exists());
             clickObject(device, uiElement);
 
-            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllow()));
+            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllow().toUpperCase()));
             Log.d("ETATest", "Allow exists? " + uiElement.exists());
             clickObject(device, uiElement);
         } else {
@@ -487,7 +487,7 @@ public class TestUtil {
             clickObject(device, selector, label);
 
             label = docUIStrings.getAllow();
-            selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE));
+            selector = By.clickable(true).text(Pattern.compile(label.toUpperCase(), Pattern.CASE_INSENSITIVE));
             clickObject(device, selector, label);
         } else {
             label = docUIStrings.getSave();
