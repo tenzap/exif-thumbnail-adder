@@ -98,7 +98,7 @@ public class TestUtil {
 
             onView(withText(R.string.pref_allFilesAccess_title)).perform(click());
 
-            UiObject uiElement2 = device.findObject(new UiSelector().textMatches("(?i)" + permit_manage_external_storage));
+            UiObject uiElement2 = device.findObject(new UiSelector().text(permit_manage_external_storage));
             uiElement2.click();
             device.pressBack();
         }
