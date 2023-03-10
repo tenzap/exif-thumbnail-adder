@@ -343,6 +343,10 @@ public abstract class Exif extends Metadata {
 		this.gpsSubIFD = gpsSubIFD;
 	}
 	
+	public void setInteropIFD(IFD interopSubIFD) {
+		this.interopSubIFD = interopSubIFD;
+	}
+	
 	public void setImageIFD(IFD imageIFD) {
 		if(imageIFD == null)
 			throw new IllegalArgumentException("Input image IFD is null");
