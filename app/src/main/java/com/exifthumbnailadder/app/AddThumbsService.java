@@ -68,7 +68,7 @@ import pixy.image.tiff.UndefinedField;
 import pixy.meta.Metadata;
 import pixy.meta.exif.ExifTag;
 import pixy.meta.exif.ExifThumbnail;
-import pixy.meta.exif.JpegExif;
+import pixy.meta.jpeg.JpegExif;
 
 import static com.exifthumbnailadder.app.MainApplication.enableLog;
 import static com.exifthumbnailadder.app.MainApplication.TAG;
