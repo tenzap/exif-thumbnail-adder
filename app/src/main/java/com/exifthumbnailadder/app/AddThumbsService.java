@@ -54,6 +54,7 @@ import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.UserPrincipal;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -66,6 +67,7 @@ import pixy.image.tiff.TiffFieldEnum;
 import pixy.image.tiff.TiffTag;
 import pixy.image.tiff.UndefinedField;
 import pixy.meta.Metadata;
+import pixy.meta.MetadataType;
 import pixy.meta.exif.ExifTag;
 import pixy.meta.exif.ExifThumbnail;
 import pixy.meta.jpeg.JpegExif;
@@ -378,7 +380,7 @@ public class AddThumbsService extends Service {
                             writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, doc, thumbnail);
                             break;
                         case "exiflib_pixymeta":
-                            writeThumbnailWithPixymeta(srcImgIs, newImgOs, doc, thumbnail);
+                            writeThumbnailWithPixymeta(doc, newImgOs, thumbnail);
                             break;
                     }
 
@@ -952,37 +954,56 @@ public class AddThumbsService extends Service {
     }
 
     private void writeThumbnailWithPixymeta (
-            InputStream srcImgIs, OutputStream newImgOs, ETADoc doc, Bitmap thumbnail)
+            ETADoc doc, OutputStream newImgOs, Bitmap thumbnail)
             throws Exception {
-        // PixyMeta doesn't copy correctly the IFDInterop
         try {
-            IFD tbIFD = new IFD();
-            ExifThumbnail exifTb = new ExifThumbnail(thumbnail.getWidth(), thumbnail.getHeight(), ExifThumbnail.DATA_TYPE_KJpegRGB, NativeLibHelper.bitmapToJPEGBytearray(thumbnail), tbIFD);
-            JpegExif jpegExif = new JpegExif();
-            jpegExif.setThumbnail(exifTb);
+            JpegExif additionalExif = new JpegExif();
 
+            // Thumbnail
+            IFD tbIFD = new IFD();
             // set other mandatory tags for IFD1 (compression, resolution, res unit)
             tbIFD.addField(new ShortField(TiffTag.COMPRESSION.getValue(), new short[]{(short) TiffFieldEnum.Compression.OLD_JPG.getValue()}));
             tbIFD.addField(new ShortField(TiffTag.RESOLUTION_UNIT.getValue(), new short[]{2}));
             tbIFD.addField(new RationalField(TiffTag.X_RESOLUTION.getValue(), new int[] {72,1}));
             tbIFD.addField(new RationalField(TiffTag.Y_RESOLUTION.getValue(), new int[] {72,1}));
+            ExifThumbnail exifTb = new ExifThumbnail(thumbnail.getWidth(), thumbnail.getHeight(), ExifThumbnail.DATA_TYPE_KJpegRGB, NativeLibHelper.bitmapToJPEGBytearray(thumbnail), tbIFD);
+            additionalExif.setThumbnail(exifTb);
+
+            // Get current Exif metadata of input file
+            InputStream srcImgIs = doc.inputStream();
+            Map<MetadataType, Metadata> srcMetadata = Metadata.readMetadata(srcImgIs);
+            srcImgIs.close();
+            Metadata exifMetadata = srcMetadata.get(MetadataType.EXIF);
+            JpegExif srcJpegExif = null;
+            if (exifMetadata != null) {
+                byte[] srcMetadataByteArray = exifMetadata.getData();
+                srcJpegExif = new JpegExif(srcMetadataByteArray);
+            }
+
+            IFD srcExifIFD = null;
+            if (srcJpegExif != null) {
+                srcExifIFD = srcJpegExif.getExifIFD();
+            }
 
             // set other mandatory tags on exifIfd
-            IFD exifIfd = jpegExif.getExifIFD();
-            if (exifIfd == null) {
-                exifIfd = new IFD();
+            IFD exifIfd = new IFD();
+            if (srcExifIFD == null || srcExifIFD.getField(ExifTag.EXIF_VERSION) == null)
                 exifIfd.addField(new UndefinedField(ExifTag.EXIF_VERSION.getValue(), new byte[]{48, 50, 50, 48}));
+            if (srcExifIFD == null || srcExifIFD.getField(ExifTag.COMPONENT_CONFIGURATION) == null)
                 exifIfd.addField(new UndefinedField(ExifTag.COMPONENT_CONFIGURATION.getValue(), new byte[]{1, 2, 3, 0}));
+            if (srcExifIFD == null || srcExifIFD.getField(ExifTag.FLASH_PIX_VERSION) == null)
                 exifIfd.addField(new UndefinedField(ExifTag.FLASH_PIX_VERSION.getValue(), new byte[]{48, 49, 48, 48}));
-                exifIfd.addField(new ShortField(ExifTag.COLOR_SPACE.getValue(), new short[]{(short)0xffff}));
-            }
-            exifIfd.removeField(ExifTag.EXIF_IMAGE_WIDTH);
-            exifIfd.addField(new ShortField(ExifTag.EXIF_IMAGE_WIDTH.getValue(), new short[]{(short)doc.getWidth()}));
-            exifIfd.removeField(ExifTag.EXIF_IMAGE_HEIGHT);
-            exifIfd.addField(new ShortField(ExifTag.EXIF_IMAGE_HEIGHT.getValue(), new short[]{(short)doc.getHeight()}));
-            jpegExif.setExifIFD(exifIfd);
+            if (srcExifIFD == null || srcExifIFD.getField(ExifTag.COLOR_SPACE) == null)
+                exifIfd.addField(new ShortField(ExifTag.COLOR_SPACE.getValue(), new short[]{(short) 0xffff}));
+            if (srcExifIFD == null || srcExifIFD.getField(ExifTag.EXIF_IMAGE_WIDTH) == null)
+                exifIfd.addField(new ShortField(ExifTag.EXIF_IMAGE_WIDTH.getValue(), new short[]{(short)doc.getWidth()}));
+            if (srcExifIFD == null || srcExifIFD.getField(ExifTag.EXIF_IMAGE_HEIGHT) == null)
+                exifIfd.addField(new ShortField(ExifTag.EXIF_IMAGE_HEIGHT.getValue(), new short[]{(short)doc.getHeight()}));
+            additionalExif.setExifIFD(exifIfd);
 
-            Metadata.insertExif(srcImgIs, newImgOs, jpegExif, true);
+            srcImgIs = doc.inputStream();
+            Metadata.insertExif(srcImgIs, newImgOs, additionalExif, true);
+            srcImgIs.close();
         } catch (Exception e) {
             throw e;
         }
