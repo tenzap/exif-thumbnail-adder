@@ -40,6 +40,7 @@ import pixy.io.MemoryCacheRandomAccessOutputStream;
 import pixy.io.RandomAccessOutputStream;
 import pixy.io.WriteStrategyMM;
 import pixy.meta.exif.Exif;
+import pixy.meta.exif.ExifTag;
 
 public class JpegExif extends Exif {
 
@@ -93,7 +94,11 @@ public class JpegExif extends Exif {
 		// Attach EXIIF and/or GPS SubIFD to main image IFD
 		if(exifSubIFD != null) {
 			imageIFD.addField(new LongField(TiffTag.EXIF_SUB_IFD.getValue(), new int[]{0})); // Place holder
-			imageIFD.addChild(TiffTag.EXIF_SUB_IFD, exifSubIFD);			
+			imageIFD.addChild(TiffTag.EXIF_SUB_IFD, exifSubIFD);
+			if(interopSubIFD != null) {
+				exifSubIFD.addField(new LongField(ExifTag.EXIF_INTEROPERABILITY_OFFSET.getValue(), new int[]{0})); // Place holder
+				exifSubIFD.addChild(ExifTag.EXIF_INTEROPERABILITY_OFFSET, interopSubIFD);			
+			}
 		}
 		if(gpsSubIFD != null) {
 			imageIFD.addField(new LongField(TiffTag.GPS_SUB_IFD.getValue(), new int[]{0})); // Place holder
