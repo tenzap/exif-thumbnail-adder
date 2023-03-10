@@ -520,7 +520,12 @@ public class ETADocDf extends ETADoc {
         }
 
         Bitmap b = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), _uri);
-        this.imageWidth = b.getWidth();
-        this.imageHeight = b.getHeight();
+        if (b != null) {
+            this.imageWidth = b.getWidth();
+            this.imageHeight = b.getHeight();
+        } else {
+            this.imageWidth = -1;
+            this.imageHeight = -1;
+        }
     }
 }
