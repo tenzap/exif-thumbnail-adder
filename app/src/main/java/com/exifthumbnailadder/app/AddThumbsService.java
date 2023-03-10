@@ -24,7 +24,6 @@ import android.provider.MediaStore;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.documentfile.provider.DocumentFile;
 import androidx.exifinterface.media.ExifInterface;
@@ -320,7 +319,6 @@ public class AddThumbsService extends Service {
                 }
 
                 // a. check if sourceFile already has Exif Thumbnail
-                ExifInterface srcImgExifInterface = null;
 
                 boolean srcImgHasThumbnail = false;
                 int srcImgDegrees = 0;
@@ -330,7 +328,7 @@ public class AddThumbsService extends Service {
 
                 try {
                     InputStream srcImgIs = doc.inputStream();
-                    srcImgExifInterface = new ExifInterface(srcImgIs);
+                    ExifInterface srcImgExifInterface = new ExifInterface(srcImgIs);
                     if (srcImgExifInterface != null) {
                         srcImgHasThumbnail = srcImgExifInterface.hasThumbnail();
                         srcImgDegrees = srcImgExifInterface.getRotationDegrees();
@@ -348,7 +346,7 @@ public class AddThumbsService extends Service {
                             updateLog(getString(R.string.frag1_log_skipping_has_thumbnail));
                             continue;
                         }
-                }
+                    }
 
                     if (srcImgWidth == 0) {
                         srcImgWidth = doc.getWidth();
