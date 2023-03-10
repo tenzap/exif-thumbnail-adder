@@ -321,8 +321,6 @@ public class AddThumbsService extends Service {
 
                 // a. check if sourceFile already has Exif Thumbnail
                 ExifInterface srcImgExifInterface = null;
-                InputStream srcImgIs = null;
-                ByteArrayOutputStream newImgOs = new ByteArrayOutputStream();
 
                 boolean srcImgHasThumbnail = false;
                 int srcImgDegrees = 0;
@@ -331,7 +329,7 @@ public class AddThumbsService extends Service {
                 int srcImgHeight = 0;
 
                 try {
-                    srcImgIs = doc.inputStream();
+                    InputStream srcImgIs = doc.inputStream();
                     srcImgExifInterface = new ExifInterface(srcImgIs);
                     if (srcImgExifInterface != null) {
                         srcImgHasThumbnail = srcImgExifInterface.hasThumbnail();
@@ -365,6 +363,8 @@ public class AddThumbsService extends Service {
                 }
 
                 Bitmap thumbnail;
+                ByteArrayOutputStream newImgOs = null;
+
                 // a. extract thumbnail & write to output stream
                 try {
                     //if (enableLog) Log.i(TAG, "Creating thumbnail");
@@ -373,20 +373,15 @@ public class AddThumbsService extends Service {
                             prefs.getBoolean("rotateThumbnails", true),
                             srcImgFlipped,
                             srcImgDegrees);
-                    srcImgIs = doc.inputStream();
 
                     switch (prefs.getString("exif_library", "exiflib_exiv2")) {
                         case "exiflib_android-exif-extended":
-                            writeThumbnailWithAndroidExifExtended(srcImgIs, newImgOs, doc, thumbnail);
+                            newImgOs = writeThumbnailWithAndroidExifExtended(doc, thumbnail);
                             break;
                         case "exiflib_pixymeta":
-                            writeThumbnailWithPixymeta(doc, newImgOs, thumbnail);
+                            newImgOs = writeThumbnailWithPixymeta(doc, thumbnail);
                             break;
                     }
-
-                    // Close Streams
-                    srcImgIs.close();
-                    newImgOs.close();
                 } catch (BadOriginalImageException e) {
                     updateLog(getString(R.string.frag1_log_skipping_bad_image));
                     e.printStackTrace();
@@ -901,8 +896,8 @@ public class AddThumbsService extends Service {
         }
     }
 
-    private void writeThumbnailWithAndroidExifExtended (
-            InputStream srcImgIs, OutputStream newImgOs, ETADoc doc, Bitmap thumbnail)
+    private ByteArrayOutputStream writeThumbnailWithAndroidExifExtended (
+            ETADoc doc, Bitmap thumbnail)
             throws Exception, AssertionError {
         try {
             // Andoid-Exif-Extended will write twice the APP1 structure to the file,
@@ -913,7 +908,12 @@ public class AddThumbsService extends Service {
 
             it.sephiroth.android.library.exif2.ExifInterface sInExif = new it.sephiroth.android.library.exif2.ExifInterface();
 
+            InputStream srcImgIs = doc.inputStream();
             sInExif.readExif(srcImgIs, it.sephiroth.android.library.exif2.ExifInterface.Options.OPTION_ALL );
+            // Close & Reopen InputStream, otherwise writeExif will fail with an exception
+            // because srcImgIs was already read
+            srcImgIs.close();
+
             sInExif.setCompressedThumbnail(thumbnail);
 
             //set other mandatory tags for IFD1 (compression, resolution, res unit)
@@ -938,23 +938,24 @@ public class AddThumbsService extends Service {
             sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_X_DIMENSION, IfdId.TYPE_IFD_EXIF, doc.getWidth()));
             sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_Y_DIMENSION, IfdId.TYPE_IFD_EXIF, doc.getHeight()));
 
-            // Close & Reopen InputStream, otherwise writeExif will fail with an exception
-            // because srcImgIs was already read
-            srcImgIs.close();
             srcImgIs = doc.inputStream();
+            ByteArrayOutputStream newImgOs = new ByteArrayOutputStream();
 
             // writeExif recopies anyway the tags that are in srcImgIs (which will be added
             // to those already in sInExif). It is necessary to call readExif,
             // otherwise addition of tags will crash (internal_writer needs a base coming
             // from another file, ie. for the SOS tag
             sInExif.writeExif(srcImgIs, newImgOs);
+            srcImgIs.close();
+            newImgOs.close();
+            return newImgOs;
         } catch (Exception e) {
             throw e;
         }
     }
 
-    private void writeThumbnailWithPixymeta (
-            ETADoc doc, OutputStream newImgOs, Bitmap thumbnail)
+    private ByteArrayOutputStream writeThumbnailWithPixymeta (
+            ETADoc doc, Bitmap thumbnail)
             throws Exception {
         try {
             JpegExif additionalExif = new JpegExif();
@@ -1002,8 +1003,12 @@ public class AddThumbsService extends Service {
             additionalExif.setExifIFD(exifIfd);
 
             srcImgIs = doc.inputStream();
+            ByteArrayOutputStream newImgOs = new ByteArrayOutputStream();
+
             Metadata.insertExif(srcImgIs, newImgOs, additionalExif, true);
             srcImgIs.close();
+            newImgOs.close();
+            return newImgOs;
         } catch (Exception e) {
             throw e;
         }
