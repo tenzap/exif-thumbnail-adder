@@ -156,6 +156,7 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                         if (BuildConfig.IS_TESTING.get()) {
                             // For Debug purposes: to try to understand this rare exception
                             // java.lang.IndexOutOfBoundsException: setSpan (0 ... -1) has end before start
+                            // https://issuetracker.google.com/issues/272576535
                             textViewLogStringBeforeUpdate = textViewLog.getText().toString();
                         }
                         try {
