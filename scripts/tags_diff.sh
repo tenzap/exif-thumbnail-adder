@@ -205,3 +205,5 @@ EOF
     done
   fi
 done
+
+git checkout .gitattributes
