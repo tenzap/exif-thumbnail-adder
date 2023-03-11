@@ -362,40 +362,6 @@ public class AddThumbsService extends Service {
                     continue;
                 }
 
-                Bitmap thumbnail;
-                ByteArrayOutputStream newImgOs = null;
-
-                // a. extract thumbnail & write to output stream
-                try {
-                    //if (enableLog) Log.i(TAG, "Creating thumbnail");
-                    thumbnail = doc.getThumbnail(
-                            "ffmpeg",
-                            prefs.getBoolean("rotateThumbnails", true),
-                            srcImgFlipped,
-                            srcImgDegrees);
-
-                    switch (prefs.getString("exif_library", "exiflib_exiv2")) {
-                        case "exiflib_android-exif-extended":
-                            newImgOs = writeThumbnailWithAndroidExifExtended(doc, thumbnail);
-                            break;
-                        case "exiflib_pixymeta":
-                            newImgOs = writeThumbnailWithPixymeta(doc, thumbnail);
-                            break;
-                    }
-                } catch (BadOriginalImageException e) {
-                    updateLog(getString(R.string.frag1_log_skipping_bad_image));
-                    e.printStackTrace();
-                    continue;
-                } catch (Exception e) {
-                    updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
-                    e.printStackTrace();
-                    continue;
-                } catch (AssertionError e) {
-                    updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
-                    e.printStackTrace();
-                    continue;
-                }
-
                 // a. create output dirs
                 doc.createDirForTmp();
                 doc.createDirForBackup();
@@ -408,11 +374,37 @@ public class AddThumbsService extends Service {
                     e.printStackTrace();
                 }
 
-                // a. write outputstream to disk
-                try  {
-                    doc.writeInTmp(newImgOs);
+                Bitmap thumbnail;
+
+                // a. extract thumbnail & write to output stream
+                try {
+                    //if (enableLog) Log.i(TAG, "Creating thumbnail");
+                    thumbnail = doc.getThumbnail(
+                            "ffmpeg",
+                            prefs.getBoolean("rotateThumbnails", true),
+                            srcImgFlipped,
+                            srcImgDegrees);
+
+                    switch (prefs.getString("exif_library", "exiflib_exiv2")) {
+                        case "exiflib_android-exif-extended":
+                            ByteArrayOutputStream newImgOs = writeThumbnailWithAndroidExifExtended(doc, thumbnail);
+                            doc.writeInTmp(newImgOs);
+                            break;
+                        case "exiflib_pixymeta":
+                            newImgOs = writeThumbnailWithPixymeta(doc, thumbnail);
+                            doc.writeInTmp(newImgOs);
+                            break;
+                    }
+                } catch (BadOriginalImageException e) {
+                    updateLog(getString(R.string.frag1_log_skipping_bad_image));
+                    e.printStackTrace();
+                    continue;
                 } catch (Exception e) {
                     updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                    e.printStackTrace();
+                    continue;
+                } catch (AssertionError e) {
+                    updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.toString()) + "</span><br>", 1));
                     e.printStackTrace();
                     continue;
                 }
