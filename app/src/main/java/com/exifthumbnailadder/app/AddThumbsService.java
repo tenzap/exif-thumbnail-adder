@@ -922,21 +922,15 @@ public class AddThumbsService extends Service {
             sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_X_RESOLUTION,IfdId.TYPE_IFD_1, new Rational(72,1)));
             sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_Y_RESOLUTION,IfdId.TYPE_IFD_1, new Rational(72,1)));
 
-            // set other mandatory tags on exifIfd
-            if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_EXIF_VERSION, IfdId.TYPE_IFD_EXIF) == null) {
-                sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_EXIF_VERSION, IfdId.TYPE_IFD_EXIF, new byte[]{48, 50, 50, 48}));
+            // set other mandatory tags on exifIfd (only if there is not at least one)
+            if (!hasOneMandatoryTagAEE(sInExif)) {
+                addAllMandatoryTagsAEE(sInExif, doc);
+            } else {
+                // For now, we need only the existence of ExifIFD which is
+                // the case as soon as one tag is present in there. So don't
+                // add missing mandatory tags.
+//                addMissingMandatoryTagsAEE(sInExif, doc);
             }
-            if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COMPONENTS_CONFIGURATION, IfdId.TYPE_IFD_EXIF) == null) {
-                sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COMPONENTS_CONFIGURATION, IfdId.TYPE_IFD_EXIF, new byte[]{1, 2, 3, 0}));
-            }
-            if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_FLASHPIX_VERSION, IfdId.TYPE_IFD_EXIF) == null) {
-                sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_FLASHPIX_VERSION, IfdId.TYPE_IFD_EXIF, new byte[]{48, 49, 48, 48}));
-            }
-            if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COLOR_SPACE, IfdId.TYPE_IFD_EXIF) == null) {
-                sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COLOR_SPACE, IfdId.TYPE_IFD_EXIF, 0xffff));
-            }
-            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_X_DIMENSION, IfdId.TYPE_IFD_EXIF, doc.getWidth()));
-            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_Y_DIMENSION, IfdId.TYPE_IFD_EXIF, doc.getHeight()));
 
             srcImgIs = doc.inputStream();
             ByteArrayOutputStream newImgOs = new ByteArrayOutputStream();
@@ -952,6 +946,53 @@ public class AddThumbsService extends Service {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    private boolean hasOneMandatoryTagAEE(it.sephiroth.android.library.exif2.ExifInterface sInExif) {
+        if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_EXIF_VERSION, IfdId.TYPE_IFD_EXIF) != null)
+            return true;
+        if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COMPONENTS_CONFIGURATION, IfdId.TYPE_IFD_EXIF) != null)
+            return true;
+        if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_FLASHPIX_VERSION, IfdId.TYPE_IFD_EXIF) != null)
+            return true;
+        if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COLOR_SPACE, IfdId.TYPE_IFD_EXIF) != null)
+            return true;
+        if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_X_DIMENSION, IfdId.TYPE_IFD_EXIF) != null)
+            return true;
+        if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_Y_DIMENSION, IfdId.TYPE_IFD_EXIF) != null)
+            return true;
+
+        return false;
+    }
+
+    private void addMissingMandatoryTagsAEE(it.sephiroth.android.library.exif2.ExifInterface sInExif, ETADoc doc) throws Exception {
+        if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_EXIF_VERSION, IfdId.TYPE_IFD_EXIF) == null) {
+            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_EXIF_VERSION, IfdId.TYPE_IFD_EXIF, new byte[]{48, 50, 50, 48}));
+        }
+        if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COMPONENTS_CONFIGURATION, IfdId.TYPE_IFD_EXIF) == null) {
+            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COMPONENTS_CONFIGURATION, IfdId.TYPE_IFD_EXIF, new byte[]{1, 2, 3, 0}));
+        }
+        if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_FLASHPIX_VERSION, IfdId.TYPE_IFD_EXIF) == null) {
+            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_FLASHPIX_VERSION, IfdId.TYPE_IFD_EXIF, new byte[]{48, 49, 48, 48}));
+        }
+        if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COLOR_SPACE, IfdId.TYPE_IFD_EXIF) == null) {
+            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COLOR_SPACE, IfdId.TYPE_IFD_EXIF, 0xffff));
+        }
+        if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_X_DIMENSION, IfdId.TYPE_IFD_EXIF) == null) {
+            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_X_DIMENSION, IfdId.TYPE_IFD_EXIF, doc.getWidth()));
+        }
+        if (sInExif.getTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_Y_DIMENSION, IfdId.TYPE_IFD_EXIF) == null) {
+            sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_Y_DIMENSION, IfdId.TYPE_IFD_EXIF, doc.getHeight()));
+        }
+    }
+
+    private void addAllMandatoryTagsAEE(it.sephiroth.android.library.exif2.ExifInterface sInExif, ETADoc doc) throws Exception {
+        sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_EXIF_VERSION, IfdId.TYPE_IFD_EXIF, new byte[]{48, 50, 50, 48}));
+        sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COMPONENTS_CONFIGURATION, IfdId.TYPE_IFD_EXIF, new byte[]{1, 2, 3, 0}));
+        sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_FLASHPIX_VERSION, IfdId.TYPE_IFD_EXIF, new byte[]{48, 49, 48, 48}));
+        sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_COLOR_SPACE, IfdId.TYPE_IFD_EXIF, 0xffff));
+        sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_X_DIMENSION, IfdId.TYPE_IFD_EXIF, doc.getWidth()));
+        sInExif.setTag(sInExif.buildTag(it.sephiroth.android.library.exif2.ExifInterface.TAG_PIXEL_Y_DIMENSION, IfdId.TYPE_IFD_EXIF, doc.getHeight()));
     }
 
     private ByteArrayOutputStream writeThumbnailWithPixymeta (
