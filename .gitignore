@@ -24,11 +24,11 @@ library/pixymeta-android/lib
 library/pixymeta-android/.classpath
 library/pixymeta-android/.project
 library/pixymeta-android/.gitattributes
-library/exiv2-0.27.5-Source/contrib
-library/exiv2-0.27.5-Source/fuzz
-library/exiv2-0.27.5-Source/po
-library/exiv2-0.27.5-Source/test
-library/exiv2-0.27.5-Source/tests
+library/exiv2-*-Source/contrib
+library/exiv2-*-Source/fuzz
+library/exiv2-*-Source/po
+library/exiv2-*-Source/test
+library/exiv2-*-Source/tests
 
 # The directory that holds the config of "bundle" the Ruby Dependency Manager
 .bundle
