@@ -72,7 +72,7 @@ GPL-3.0 (see "COPYING" file on project homepage)
     - Improve theme/layout
     - Implement other backends
     - keep [XMP*] metadata when using libexif. See these posts [a](https://stackoverflow.com/q/67264563/15401262), [b](https://sourceforge.net/p/libexif/bugs/121/), [c](https://stackoverflow.com/a/22504601/15401262).
-    - fix pixymeta bug reports [1](https://github.com/dragon66/pixymeta-android/issues/15) & [2](https://github.com/dragon66/pixymeta-android/issues/16).
+    - fix pixymeta bug reports [1](https://github.com/dragon66/pixymeta-android/issues/15).
 
 
 ## Known facts
@@ -98,11 +98,9 @@ GPL-3.0 (see "COPYING" file on project homepage)
 - **usage is discouraged** until some pixymeta bugs are fixed
 - the existing EXIF tags are read and metadata is rewritten from scratch using what was read
 - [XMP*] tags are kept
-- Some tags are incorrectly rewritten. See bug reports [1](https://github.com/dragon66/pixymeta-android/issues/15) & [2](https://github.com/dragon66/pixymeta-android/issues/16).
-  - Some makernotes get altered (eg Canon, or Olympus)
+- Some tags are incorrectly rewritten. See bug reports [1](https://github.com/dragon66/pixymeta-android/issues/15).
+  - Some makernotes get altered (eg Canon, Nikon, Olympus, Sanyo...)
   - ByteOrder gets modified from Little-endian (Intel, II) to Big-endian (Motorola, MM)
-  - ColorSpace (from sRGB to uncalibrated in some cases)
-  - ComponentsConfiguration
 
 
 ## Concerning `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`
