@@ -976,21 +976,15 @@ public class AddThumbsService extends Service {
                 srcExifIFD = srcJpegExif.getExifIFD();
             }
 
-            // set other mandatory tags on exifIfd
-            IFD exifIfd = new IFD();
-            if (srcExifIFD == null || srcExifIFD.getField(ExifTag.EXIF_VERSION) == null)
-                exifIfd.addField(new UndefinedField(ExifTag.EXIF_VERSION.getValue(), new byte[]{48, 50, 50, 48}));
-            if (srcExifIFD == null || srcExifIFD.getField(ExifTag.COMPONENT_CONFIGURATION) == null)
-                exifIfd.addField(new UndefinedField(ExifTag.COMPONENT_CONFIGURATION.getValue(), new byte[]{1, 2, 3, 0}));
-            if (srcExifIFD == null || srcExifIFD.getField(ExifTag.FLASH_PIX_VERSION) == null)
-                exifIfd.addField(new UndefinedField(ExifTag.FLASH_PIX_VERSION.getValue(), new byte[]{48, 49, 48, 48}));
-            if (srcExifIFD == null || srcExifIFD.getField(ExifTag.COLOR_SPACE) == null)
-                exifIfd.addField(new ShortField(ExifTag.COLOR_SPACE.getValue(), new short[]{(short) 0xffff}));
-            if (srcExifIFD == null || srcExifIFD.getField(ExifTag.EXIF_IMAGE_WIDTH) == null)
-                exifIfd.addField(new ShortField(ExifTag.EXIF_IMAGE_WIDTH.getValue(), new short[]{(short)doc.getWidth()}));
-            if (srcExifIFD == null || srcExifIFD.getField(ExifTag.EXIF_IMAGE_HEIGHT) == null)
-                exifIfd.addField(new ShortField(ExifTag.EXIF_IMAGE_HEIGHT.getValue(), new short[]{(short)doc.getHeight()}));
-            additionalExif.setExifIFD(exifIfd);
+            // set other mandatory tags on exifIfd (only if there is not at least one)
+            if (!hasOneMandatoryTagPixymeta(srcExifIFD)) {
+                additionalExif.setExifIFD(getAllMandatoryTagsPixymeta(doc));
+            } else {
+                // For now, we need only the existence of ExifIFD which is
+                // the case as soon as one tag is present in there. So don't
+                // add missing mandatory tags.
+//                additionalExif.setExifIFD(getMissingMandatoryTagsPixymeta(srcExifIFD, doc));
+            }
 
             srcImgIs = doc.inputStream();
             ByteArrayOutputStream newImgOs = new ByteArrayOutputStream();
@@ -1002,6 +996,54 @@ public class AddThumbsService extends Service {
         } catch (Exception e) {
             throw e;
         }
+    }
+
+    private boolean hasOneMandatoryTagPixymeta(IFD srcExifIFD) {
+        if (srcExifIFD == null)
+            return false;
+
+        if (srcExifIFD.getField(ExifTag.EXIF_VERSION) != null)
+            return true;
+        if (srcExifIFD.getField(ExifTag.COMPONENT_CONFIGURATION) != null)
+            return true;
+        if (srcExifIFD.getField(ExifTag.FLASH_PIX_VERSION) != null)
+            return true;
+        if (srcExifIFD.getField(ExifTag.COLOR_SPACE) != null)
+            return true;
+        if (srcExifIFD.getField(ExifTag.EXIF_IMAGE_WIDTH) != null)
+            return true;
+        if (srcExifIFD.getField(ExifTag.EXIF_IMAGE_HEIGHT) != null)
+            return true;
+
+        return false;
+    }
+
+    private IFD getMissingMandatoryTagsPixymeta(IFD srcExifIFD, ETADoc doc) throws Exception {
+        IFD exifIfd = new IFD();
+        if (srcExifIFD == null || srcExifIFD.getField(ExifTag.EXIF_VERSION) == null)
+            exifIfd.addField(new UndefinedField(ExifTag.EXIF_VERSION.getValue(), new byte[]{48, 50, 50, 48}));
+        if (srcExifIFD == null || srcExifIFD.getField(ExifTag.COMPONENT_CONFIGURATION) == null)
+            exifIfd.addField(new UndefinedField(ExifTag.COMPONENT_CONFIGURATION.getValue(), new byte[]{1, 2, 3, 0}));
+        if (srcExifIFD == null || srcExifIFD.getField(ExifTag.FLASH_PIX_VERSION) == null)
+            exifIfd.addField(new UndefinedField(ExifTag.FLASH_PIX_VERSION.getValue(), new byte[]{48, 49, 48, 48}));
+        if (srcExifIFD == null || srcExifIFD.getField(ExifTag.COLOR_SPACE) == null)
+            exifIfd.addField(new ShortField(ExifTag.COLOR_SPACE.getValue(), new short[]{(short) 0xffff}));
+        if (srcExifIFD == null || srcExifIFD.getField(ExifTag.EXIF_IMAGE_WIDTH) == null)
+            exifIfd.addField(new ShortField(ExifTag.EXIF_IMAGE_WIDTH.getValue(), new short[]{(short) doc.getWidth()}));
+        if (srcExifIFD == null || srcExifIFD.getField(ExifTag.EXIF_IMAGE_HEIGHT) == null)
+            exifIfd.addField(new ShortField(ExifTag.EXIF_IMAGE_HEIGHT.getValue(), new short[]{(short) doc.getHeight()}));
+        return exifIfd;
+    }
+
+    private IFD getAllMandatoryTagsPixymeta(ETADoc doc) throws Exception {
+        IFD exifIfd = new IFD();
+        exifIfd.addField(new UndefinedField(ExifTag.EXIF_VERSION.getValue(), new byte[]{48, 50, 50, 48}));
+        exifIfd.addField(new UndefinedField(ExifTag.COMPONENT_CONFIGURATION.getValue(), new byte[]{1, 2, 3, 0}));
+        exifIfd.addField(new UndefinedField(ExifTag.FLASH_PIX_VERSION.getValue(), new byte[]{48, 49, 48, 48}));
+        exifIfd.addField(new ShortField(ExifTag.COLOR_SPACE.getValue(), new short[]{(short) 0xffff}));
+        exifIfd.addField(new ShortField(ExifTag.EXIF_IMAGE_WIDTH.getValue(), new short[]{(short) doc.getWidth()}));
+        exifIfd.addField(new ShortField(ExifTag.EXIF_IMAGE_HEIGHT.getValue(), new short[]{(short) doc.getHeight()}));
+        return exifIfd;
     }
 
     private void copyFileAttributes(Path inFilePath, Path outFilePath) throws Exception {
