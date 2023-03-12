@@ -1,1 +1,1 @@
-Ajoute des vignettes dans les données EXIF des images JPEG qui n'en ont pas
+Ajoute des miniatures dans les données EXIF des images JPEG qui n'en ont pas
