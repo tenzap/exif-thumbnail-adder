@@ -1,4 +1,4 @@
-Cette application pour appareils Android cherche les images (JPEG) et <b>ajoute une vignette</b> s'il n'y en a pas encore. Les vignettes sont ajoutées à la structure de métadonnées EXIF.
+Cette application pour appareils Android cherche les images (JPEG) et <b>ajoute une miniature</b> s'il n'y en a pas encore. Les miniatures sont ajoutées à la structure de métadonnées EXIF.
 
 Il est conçu pour fonctionner à partir d'Android Oreo (android 8, SDK 26).
 
@@ -8,14 +8,14 @@ Plus d'informations, certains faits connus et comment contribuer, sont sur la [p
 
 <b>Logique/raisonnement</b>
 
-Avec certains smartphones, lors de l'import d'images dans Windows (ou tout autre système d'exploitation prenant en charge les protocoles MTP ou PTP), j'ai remarqué que pour certaines images les vignettes ne sont pas affichées par l'outil d'importation (que ce soit avec l'app 'Photos' ou via la fonctionnalité d'import de Windows Explorer).
+Avec certains smartphones, lors de l'import d'images dans Windows (ou tout autre système d'exploitation prenant en charge les protocoles MTP ou PTP), j'ai remarqué que pour certaines images les miniatures ne sont pas affichées par l'outil d'importation (que ce soit avec l'app 'Photos' ou via la fonctionnalité d'import de Windows Explorer).
 
-Deux raisons peuvent expliquer ce comportement. Premièrement, la vignette n'est pas présente dans l'image, généralement parce que l'application qui a créé l'image n'a pas ajouté de vignette. Deuxièmement, il y a une vignette, mais elle est ignorée parce que certaines balises EXIF sont manquantes.
+Deux raisons peuvent expliquer ce comportement. Premièrement, la miniature n'est pas présente dans l'image, généralement parce que l'application qui a créé l'image n'a pas ajouté de miniature. Deuxièmement, il y a une miniature, mais elle est ignorée parce que certaines balises EXIF sont manquantes.
 
 
 <b>Fonctionnalités</b>
 
-- Ajout de vignette aux images (JPEG) qui n'en ont pas
+- Ajout de miniature aux images (JPEG) qui n'en ont pas
 - Algorithme Lanczos pour redimensionner les images grâce à la [bibliothèque swscale de FFmpeg][2] pour un meilleur résultat.
 - Sélection d'un ou plusieurs dossiers à scanner (sur stockage interne, carte SD...). Par exemple DCIM, Pictures...
 - Exclusion d'un sous-dossier des dossiers sélectionnés
@@ -27,11 +27,11 @@ Deux raisons peuvent expliquer ce comportement. Premièrement, la vignette n'est
 - Bibliothèque EXIF par défaut: [Exiv2][3].
 - Bibliothèques alternatives : Android-Exif-Extended, libexif, pixymeta-android. Cf "known facts" sur la page du projet pour connaître les avantages et inconvénients de chacun.
 - Paramètres 
-&emsp;- Rotation des vignettes
-&emsp;- Remplacement de la vignette existante
+&emsp;- Rotation des miniatures
+&emsp;- Remplacement de la miniature existante
 &emsp;- Sauvegarde de l'image originale
 &emsp;- Saute les images ayant des métadonnées malformées (désactivable, afin de traiter aussi les fichiers avec étiquettes corrompues)
-&emsp;- Modifie les images à leur emplacement ou ajoute la vignette à une copie dans un autre dossier
+&emsp;- Modifie les images à leur emplacement ou ajoute la miniature à une copie dans un autre dossier
 
 <b>Permissions demandées</b>
 
