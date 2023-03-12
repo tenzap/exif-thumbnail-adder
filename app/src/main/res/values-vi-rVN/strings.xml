@@ -54,12 +54,7 @@
     <string name="stop">Dừng</string>
     <string name="frag1_text_processing_log">Nhật ký xử lý</string>
     <string name="frag1_perm_request_title">Yêu cầu quyền</string>
-    <string name="frag1_perm_request_message_timestamp">Quyền bộ nhớ ngoài là cần thiết để giữ dấu thời gian của tệp.\n
-        Nếu bạn từ chối quyền, việc xử lý sẽ được thực hiện mà không giữ dấu thời gian.\n
-        Sau khi quyền được cấp, bạn cần bắt đầu lại việc xử lý.</string>
     <string name="frag1_perm_request_deny">Từ chối quyền</string>
-    <string name="frag1_perm_request_message_Files">Quyền bộ nhớ ngoài là cần thiết. Sau khi quyền được cấp, bạn cần bắt đầu lại việc xử lý.</string>
-    <string name="frag1_check_write_perm">Đang kiểm tra quyền WRITE_EXTERNAL_STORAGE…</string>
     <string name="frag1_continue_without_timestamps">\u00A0Quyền chưa được cấp, sẽ tiếp tục mà không giữ dấu thời gian.</string>
     <string name="frag1_log_skipping_excluded_dir">Đang bỏ qua thư mục đã loại trừ %1$s trong %2$s</string>
     <string name="frag1_log_copying_attr">Đang sao chép thuộc tính…</string>
@@ -68,7 +63,6 @@
     <string name="frag1_log_processing_dir">Đang xử lý %1$s</string>
     <string name="frag1_log_processing_path_filename">Đang xử lý… Đường dẫn: %1$s Tên tệp: %2$s</string>
     <string name="frag1_log_skipping_path_filename">Đang bỏ qua… Đường dẫn: %1$s Tên tệp: %2$s</string>
-    <string name="frag1_log_checking_workingdir_perm">Đang kiểm tra quyền thư mục hoạt động…</string>
     <string name="frag1_log_checking_perm">Đang kiểm tra quyền…</string>
     <string name="frag1_log_skipping_file_missing">Đang bỏ qua (tệp bị thiếu)</string>
     <string name="frag1_log_skipping_not_jpeg">Đang bỏ qua (không phải JPEG)\n</string>
