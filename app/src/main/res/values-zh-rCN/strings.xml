@@ -63,7 +63,6 @@
     <string name="frag1_log_processing_dir">正在处理 %1$s</string>
     <string name="frag1_log_processing_path_filename">正在处理… 路径: %1$s 文件名: %2$s</string>
     <string name="frag1_log_skipping_path_filename">正在跳过… 路径： %1$s 文件名： %2$s</string>
-    <string name="frag1_log_checking_workingdir_perm">检查工作目录权限…</string>
     <string name="frag1_log_checking_perm">正在检查权限...</string>
     <string name="frag1_log_skipping_file_missing">正在跳过(文件缺失)</string>
     <string name="frag1_log_skipping_not_jpeg">跳过(不是 JPEG)\n</string>
@@ -92,6 +91,11 @@
     <string name="settings_dialog_all_files_access_not_supported">你的设备不支持所有文件访问</string>
     <string name="settings_button_remove_all_dirs">删除所有文件夹</string>
     <string name="settings_button_add_dir">添加</string>
+    <string name="settings_option_not_available">选项不可用</string>
+    <string name="settings_all_files_access_unavailable">未给予应用程序的这个变体 \'访问所有文件\' 的权限。
+        \n\n可以在 %1$s 上找到带有此功能的变体。
+        \n\n提示：要成功安装，你必须先卸载 %2$s 的这个变体。</string>
+    <string name="settings_show_in_">转到 %1$s</string>
     <string name="pref_categ_folders">文件夹</string>
     <string name="pref_dirToProcess_title">要处理的文件夹</string>
     <string name="pref_workingDir_title"><![CDATA[备份和工作目录]]></string>
@@ -139,4 +143,8 @@
     <string name="sync_log_checking">正在检查：%1$s</string>
     <string name="sync_log_failure_to_delete_file">删除文件失败</string>
     <string name="sync_log_files_to_remove">要删除的文件 (不再在源中)：</string>
+    <string name="close">关闭</string>
+    <string name="notification_status">通知状态…</string>
+    <string name="enabled">\u00A0已启用</string>
+    <string name="disabled">\u00A0已禁用</string>
 </resources>
