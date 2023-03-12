@@ -36,6 +36,7 @@ import com.exifthumbnailadder.app.exception.DestinationFileExistsException;
 import com.exifthumbnailadder.app.exception.Exiv2ErrorException;
 import com.exifthumbnailadder.app.exception.Exiv2WarnException;
 import com.exifthumbnailadder.app.exception.LibexifException;
+import com.exifthumbnailadder.app.exception.PixymetaUnsupportedOperationException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -413,6 +414,14 @@ public class AddThumbsService extends Service {
                             try {
                                 ByteArrayOutputStream newImgOs = writeThumbnailWithPixymeta(doc, thumbnail);
                                 doc.writeInTmp(newImgOs);
+                            } catch (PixymetaUnsupportedOperationException e) {
+                                if (e.getMessage().equals("MakerNotes present in metadata. This is not well supported by pixymeta engine.")) {
+                                    updateLog(getString(R.string.frag1_log_skipping_unsupported_pixymeta_makernotes));
+                                } else {
+                                    updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                }
+                                e.printStackTrace();
+                                continue;
                             } catch (Exception e) {
                                 updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                                 e.printStackTrace();
@@ -997,7 +1006,7 @@ public class AddThumbsService extends Service {
 
     private ByteArrayOutputStream writeThumbnailWithPixymeta (
             ETADoc doc, Bitmap thumbnail)
-            throws Exception {
+            throws PixymetaUnsupportedOperationException, Exception {
         try {
             JpegExif additionalExif = new JpegExif();
 
@@ -1025,6 +1034,10 @@ public class AddThumbsService extends Service {
             IFD srcExifIFD = null;
             if (srcJpegExif != null) {
                 srcExifIFD = srcJpegExif.getExifIFD();
+                if (srcExifIFD.getField(ExifTag.MAKER_NODE) != null) {
+                    // Skip files with MakerNotes as this is not well supported by Pixymeta
+                    throw new PixymetaUnsupportedOperationException("MakerNotes present in metadata. This is not well supported by pixymeta engine.");
+                }
             }
 
             // set other mandatory tags on exifIfd (only if there is not at least one)
