@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PermissionInfo;
 import android.os.Build;
 import android.os.Environment;
 import android.text.Html;
@@ -99,6 +100,8 @@ public class PermissionManager {
     public boolean checkPermissions() {
         boolean hasMissingPermission = false;
 
+        AddThumbsLogLiveData.get().appendLog(Html.fromHtml(fragment.getString(R.string.frag1_log_checking_perm) + "<br>", 1));
+
         for (String permission : getRequiredPermissions(prefs)) {
             if (logIdlingResourceChanges)
                 Log.d("ETA", "setIdlingResourceState: false (" + permission + ")");
@@ -115,23 +118,21 @@ public class PermissionManager {
 
     public boolean checkPermission(String permission) {
         String label, outcome_success, outcome_failure;
+        label = "⋅ " + getPermissionLabel(permission) + ":";
         switch (permission) {
             case Manifest.permission.POST_NOTIFICATIONS:
-                label = fragment.getString(R.string.notification_status);
                 outcome_success = "<span style='color:green'>" + fragment.getString(R.string.enabled) + "</span><br>";
                 outcome_failure = "<span style='color:blue'>" + fragment.getString(R.string.disabled) + "</span><br>";
                 break;
             case Manifest.permission.MANAGE_EXTERNAL_STORAGE:
-                label = "Checking 'All files access' permission";
                 outcome_success = "<span style='color:green'>" + fragment.getString(R.string.enabled) + "</span><br>";
-                outcome_failure = "<span style='color:red'>" + "Disabled. This can be changed in the settings." + "</span><br>";
+                outcome_failure = "<span style='color:red'>" + fragment.getString(R.string.perm_outcome_MANAGE_EXTERNAL_STORAGE_failure) + "</span><br>";
                 break;
             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
             case Manifest.permission.READ_EXTERNAL_STORAGE:
             case Manifest.permission.READ_MEDIA_IMAGES:
             case Manifest.permission.ACCESS_MEDIA_LOCATION:
             default:
-                label = fragment.getString(R.string.frag1_check_write_perm);
                 outcome_success = "<span style='color:green'>" + fragment.getString(R.string.frag1_log_successful) + "</span><br>";
                 outcome_failure = "<span style='color:red'>" + fragment.getString(R.string.frag1_log_unsuccessful) + "</span><br>";
                 break;
@@ -164,7 +165,7 @@ public class PermissionManager {
     }
 
     private boolean checkWorkingDirPermission() {
-        AddThumbsLogLiveData.get().appendLog(Html.fromHtml(fragment.getString(R.string.frag1_log_checking_workingdir_perm), 1));
+        AddThumbsLogLiveData.get().appendLog(Html.fromHtml(fragment.getString(R.string.frag1_log_checking_workingdir_perm_v2), 1));
         if (WorkingDirPermActivity.isWorkingDirPermOk(fragment.getContext())) {
             AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + fragment.getString(R.string.frag1_log_successful) + "</span><br>", 1));
             return true;
@@ -190,22 +191,29 @@ public class PermissionManager {
             alertBuilder.setTitle(R.string.frag1_perm_request_title);
 
             int msg_id, msg_positive_button, msg_neutral_button, msg_negative_button;
+            String message = null;
 
             switch (permission) {
                 case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                     if (prefs.getBoolean("useSAF", true) && Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q)
-                        msg_id = R.string.frag1_perm_request_message_timestamp;
+                        message = fragment.getString(R.string.perm_request_message_WRITE_EXTERNAL_STORAGE_for_timestamp, getPermissionLabel(permission));
                     else
-                        msg_id = R.string.frag1_perm_request_message_Files;
+                        message = fragment.getString(R.string.perm_request_message_WRITE_EXTERNAL_STORAGE_using_Files_API, getPermissionLabel(permission));
                     break;
                 case Manifest.permission.POST_NOTIFICATIONS:
-                    msg_id = R.string.notification_permission_message;
+                    message = fragment.getString(R.string.perm_request_message_POST_NOTIFICATIONS, getPermissionLabel(permission));
                     break;
                 case Manifest.permission.READ_EXTERNAL_STORAGE:
+                    message = fragment.getString(R.string.perm_request_message_READ_EXTERNAL_STORAGE, getPermissionLabel(permission));
+                    break;
                 case Manifest.permission.READ_MEDIA_IMAGES:
+                    message = fragment.getString(R.string.perm_request_message_READ_EXTERNAL_STORAGE, getPermissionLabel(permission));
+                    break;
                 case Manifest.permission.ACCESS_MEDIA_LOCATION:
+                    message = fragment.getString(R.string.perm_request_message_ACCESS_MEDIA_LOCATION, getPermissionLabel(permission));
+                    break;
                 default:
-                    msg_id = R.string.frag1_perm_request_message_Files;
+                    message = "No label here. Please report a bug.";
                     break;
             }
 
@@ -213,7 +221,7 @@ public class PermissionManager {
             msg_neutral_button = android.R.string.cancel;
             msg_negative_button = R.string.frag1_perm_request_deny;
 
-            alertBuilder.setMessage(msg_id);
+            alertBuilder.setMessage(message);
             alertBuilder.setPositiveButton(msg_positive_button, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     synchronized (sync) {
@@ -398,5 +406,17 @@ public class PermissionManager {
             e.printStackTrace();
         }
         return granted;
+    }
+
+    public String getPermissionLabel(String permission) {
+        try {
+            PermissionInfo pinfo = fragment.getContext().getPackageManager().getPermissionInfo(permission, PackageManager.GET_META_DATA);
+            String label = pinfo.loadLabel(fragment.getContext().getPackageManager()).toString();
+            if (label.equals("android.permission.MANAGE_EXTERNAL_STORAGE"))
+                return fragment.getString(R.string.perm_label_MANAGE_EXTERNAL_STORAGE);
+            return label;
+        } catch (PackageManager.NameNotFoundException e) {
+            return permission;
+        }
     }
 }

@@ -220,7 +220,9 @@ public class SyncService extends Service {
 
             // Check permission in case we use SAF...
             // If we don't have permission, continue to next srcDir
-            updateLogAndNotif(Html.fromHtml(getString(R.string.frag1_log_checking_perm), 1));
+            updateLogAndNotif(Html.fromHtml(getString(R.string.frag1_log_checking_perm) + "<br>", 1));
+            updateLogAndNotif(Html.fromHtml(getString(R.string.frag1_log_checking_srcdir_perm), 1));
+
             if (! etaSrcDir.isPermOk()) {
                 updateLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
                 continue;
