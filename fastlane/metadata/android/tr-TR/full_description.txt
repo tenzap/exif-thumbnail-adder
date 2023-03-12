@@ -35,10 +35,10 @@ Bu davranışın iki olası nedeni var. İlk olarak, genellikle resmi oluşturan
 
 <b>İstenilen izinler</b>
 
-- <i>READ_EXTERNAL_STORAGE</i> ve <i>WRITE_EXTERNAL_STORAGE</i>
-&emsp;- resimlerin zaman bilgisini tutmak için
+- <i>WRITE_EXTERNAL_STORAGE</i>, <i>READ_EXTERNAL_STORAGE</i>, <i>READ_MEDIA_IMAGES</i>
 - <i>MANAGE_EXTERNAL_STORAGE</i>
-&emsp;- resimlerin zaman bilgisini korumak için yalnızca Android 11 ve üzeri çalıştıran cihazlar için F-Droid'de gönderilen <i>standart</i> çeşit ile talep edilir
+- <i>ACCESS_MEDIA_LOCATION</i>
+- <i>POST_NOTIFICATIONS</i>
 - proje ana sayfasından daha fazla bilgi alın
 
 <b>Kurulum</b>
