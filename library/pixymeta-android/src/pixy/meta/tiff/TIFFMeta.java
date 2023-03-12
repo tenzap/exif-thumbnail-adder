@@ -700,9 +700,11 @@ public class TIFFMeta {
 		IFD imageIFD = ifds.get(pageNumber);
 		IFD exifSubIFD = imageIFD.getChild(TiffTag.EXIF_SUB_IFD);
 		IFD gpsSubIFD = imageIFD.getChild(TiffTag.GPS_SUB_IFD);
+		IFD interopSubIFD = (exifSubIFD != null)? exifSubIFD.getChild(ExifTag.EXIF_INTEROPERABILITY_OFFSET) : null;
 		IFD newImageIFD = exif.getImageIFD();
 		IFD newExifSubIFD = exif.getExifIFD();
 		IFD newGpsSubIFD = exif.getGPSIFD();
+		IFD newInteropSubIFD = exif.getInteropIFD();
 		
 		if(newImageIFD != null) {
 			Collection<TiffField<?>> fields = newImageIFD.getFields();
@@ -721,7 +723,15 @@ public class TIFFMeta {
 		
 		if(newExifSubIFD != null) {
 			imageIFD.addField(new LongField(TiffTag.EXIF_SUB_IFD.getValue(), new int[]{0})); // Place holder
-			imageIFD.addChild(TiffTag.EXIF_SUB_IFD, newExifSubIFD);		
+			imageIFD.addChild(TiffTag.EXIF_SUB_IFD, newExifSubIFD);
+			if(update && interopSubIFD != null && newInteropSubIFD != null) {
+				interopSubIFD.addFields(newInteropSubIFD.getFields());
+				newInteropSubIFD = interopSubIFD;
+			}
+			if(newInteropSubIFD != null) {
+				newExifSubIFD.addField(new LongField(ExifTag.EXIF_INTEROPERABILITY_OFFSET.getValue(), new int[]{0})); // Place holder
+				newExifSubIFD.addChild(ExifTag.EXIF_INTEROPERABILITY_OFFSET, newInteropSubIFD);		
+			}
 		}
 		
 		if(update && gpsSubIFD != null && newGpsSubIFD != null) {
