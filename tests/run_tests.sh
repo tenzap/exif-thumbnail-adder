@@ -866,6 +866,17 @@ for API in $APIs; do
       tr ' ' '\n' <<< "$PROBLEMS"
     fi
 
+    # Test not image
+    test_number=$(( test_number+1 ))
+    TESTNAME="addThumbsSettingsExiv2"
+    echo -en "[$test_number] File that is not a picture ($API, $VARIANT): \t"
+    update_log_to_one_liner "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt"
+    if grep "${TEXT_WITH_JPG_EXT}... Skipping (bad image?)" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
+        success
+    else
+        failure
+    fi
+
     echo
   done
 done
