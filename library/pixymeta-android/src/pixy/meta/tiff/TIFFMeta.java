@@ -709,7 +709,7 @@ public class TIFFMeta {
 			for(TiffField<?> field : fields) {
 				Tag tag = TiffTag.fromShort(field.getTag());
 				if(imageIFD.getField(tag) != null && tag.isCritical())
-					throw new RuntimeException("Duplicate Tag: " + tag);
+					throw new RuntimeException("Override of TIFF critical Tag - " + tag.getName() + " is not allowed!");
 				imageIFD.addField(field);
 			}
 		}
