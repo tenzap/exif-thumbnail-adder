@@ -4,6 +4,17 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+if [ "$PWD" = "$SCRIPT_DIR" ]; then
+    echo "Script is called from $PWD: OK!"
+else
+    echo
+    echo "Must be run from project tests dir: ./$( basename "${BASH_SOURCE[0]}" )"
+    echo
+    exit 1;
+fi
+
 VARIANTS="standard"
 TEST_OUTPUT_DIR="output/test_output"
 TEST_PICS="output/test_pics"

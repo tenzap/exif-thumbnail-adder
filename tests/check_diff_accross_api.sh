@@ -9,6 +9,17 @@
 #     Between API29 & API30, starting from API30: the logs will show "Could not copy file timestamps & attributes: java.nio.file.AccessDeniedException"
 #     Between API29 & API30, starting from API30: on test withoutSAF: Will show "ERROR moving document:" Maybe TODO?
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+if [ "$PWD" = "$SCRIPT_DIR" ]; then
+    echo "Script is called from $PWD: OK!"
+else
+    echo
+    echo "Must be run from project tests dir: ./$( basename "${BASH_SOURCE[0]}" )"
+    echo
+    exit 1;
+fi
+
 APIS="26 27 28 29 30 31 32 33"
 
 for REF in $APIS; do
