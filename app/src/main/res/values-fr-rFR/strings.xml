@@ -10,7 +10,7 @@
     <string name="action_settings">Paramètres</string>
     <string name="action_sync">Sync. les suppressions</string>
     <string name="action_about">A propos de</string>
-    <string name="action_add_thumbs">Ajouter les vignettes</string>
+    <string name="action_add_thumbs">Ajouter les miniatures</string>
     <!-- About Activity -->
     <string name="about_about_title">A propos de</string>
     <string name="about_content">A propos de…</string>
@@ -46,7 +46,7 @@
     Une fois les permissions accordées, vous serez renvoyé vers l\'écran principal et
         pourrez relancer le traitement.\n</string>
     <!-- AddThumbs Fragment -->
-    <string name="frag1_text_description">Ajoute des vignettes aux images des dossiers sélectionnés</string>
+    <string name="frag1_text_description">Ajoute des miniatures aux images des dossiers sélectionnés</string>
     <string name="frag1_text_list_of_dirs_to_process">Liste des dossiers à traiter</string>
     <string name="frag1_text_no_dir_selected">Pas de dossier sélectionné. Allez dans les paramètres pour en sélectionner.</string>
     <string name="frag1_text_all_files_access_permissions_is_not_granted">La permission \'Accès à tous les fichiers\'
@@ -79,7 +79,7 @@
     <string name="frag1_log_skipping_file_missing">Saute (fichier manquant)</string>
     <string name="frag1_log_skipping_not_jpeg">Saute (pas JPEG)\n</string>
     <string name="frag1_log_skipping_empty_file">Saute (fichier vide)\n</string>
-    <string name="frag1_log_skipping_has_thumbnail">Saute (contient vignette)\n</string>
+    <string name="frag1_log_skipping_has_thumbnail">Saute (contient miniature)\n</string>
     <string name="frag1_log_fix_has_thumbnail_but_missing_tags">Miniature présente mais certains champs sont manquants. → Mise à jour de la miniature…</string>
     <string name="frag1_log_skipping_bad_image">Saute (mauvaise image?)\n</string>
     <string name="frag1_log_skipping_error">Saute (ERREUR): %1$s</string>
@@ -114,17 +114,17 @@
         L\'horodatage de vos images stockés dans les étiquettes EXIF n\'est pas
         affecté quelque soit la valeur de cette option.</string>
     <string name="pref_categ_options">Options</string>
-    <string name="pref_rotateThumbnail_title">Pivoter la vignette</string>
-    <string name="pref_rotateThumbnail_summary">Pivote la vignette pour correspondre à l\'image. La plupart des programmes nécessitent une vignette pivotée (par ex. l\'outil d\'import de photos de Win10)</string>
-    <string name="pref_skipPicsHavingThumbnail_title">Sauter les fichiers avec vignette</string>
-    <string name="pref_skipPicsHavingThumbnail_summary">Si le fichier a déjà une vignette ne pas la traiter</string>
-    <string name="pref_fixHavingThumbnailButMissingTags_title">Corriger les balises manquantes dans les images avec vignette</string>
-    <string name="pref_fixHavingThumbnailButMissingTags_summary">Si l\'image a une vignette mais que des balises obligatoires sont manquantes, traiter l\'image. Cela remplace la vignette actuelle même si vous avez choisi de sauter les images avec vignette.</string>
+    <string name="pref_rotateThumbnail_title">Pivoter la miniature</string>
+    <string name="pref_rotateThumbnail_summary">Pivote la miniature pour correspondre à l\'image. La plupart des programmes nécessitent une miniature pivotée (par ex. l\'outil d\'import de photos de Win10)</string>
+    <string name="pref_skipPicsHavingThumbnail_title">Sauter les fichiers avec miniature</string>
+    <string name="pref_skipPicsHavingThumbnail_summary">Si le fichier a déjà une miniature ne pas la traiter</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_title">Corriger les balises manquantes dans les images avec miniature</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_summary">Si l\'image a une miniature mais que des balises obligatoires sont manquantes, traiter l\'image. Cela remplace la miniature actuelle même si vous avez choisi de sauter les images avec miniature.</string>
     <string name="pref_backupOriginalPic_title">Faire une sauvegarde de l\'image source</string>
     <string name="pref_backupOriginalPic_summary">La sauvegarde est placée dans le répertoire de travail. Si un fichier de même nom existe il n\'est pas écrasé</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">Modifier dans le dossier source</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ajoute la vignette dans l\'image du dossier source</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Ajoute la vignette à une copie de l\'image source dans le répertoire de travail (dans \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ajoute la miniature dans l\'image du dossier source</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Ajoute la miniature à une copie de l\'image source dans le répertoire de travail (dans \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
     <string name="pref_overwriteDestPic_title">Ecraser l\'image du répertoire cible</string>
     <string name="pref_overwriteDestPic_summary">Ecrase le fichier de même nom dans le répertoire de travail (les sauvegardes ne sont pas concernées et ne sont jamais écrasés)</string>
     <string name="pref_keepTimeStampOnBackup_title">Copier l\'horodatage sur la sauvegarde</string>
@@ -135,7 +135,7 @@
     <string name="pref_writeTmpToCacheDir_summaryOn">Ecrit les images temporaires crées pendant le traitement dans le répertoire cache de l\'application</string>
     <string name="pref_writeTmpToCacheDir_summaryOff">Ecrit les images temporaires crées pendant le traitement dans le répertoire de travail</string>
     <string name="pref_categ_backend">Bibliothèque</string>
-    <string name="pref_exifLibrary_title">Ecrire les vignettes EXIF avec</string>
+    <string name="pref_exifLibrary_title">Ecrire les miniatures EXIF avec</string>
     <string name="pref_exifLibrary_cannotDisableSkipPicsHavingThumbnail">Impossible de désactiver \'%1$s\' avec Android-Exif-Extended. L\'option a été réactivée.</string>
     <string name="pref_categ_exiv2_settings">Paramètres Exiv2</string>
     <string name="pref_exiv2SkipOnLogLevel_title">Sauter à partir du niveau d\'erreur Exiv2</string>
