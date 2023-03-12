@@ -29,6 +29,7 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 
+import com.exifthumbnailadder.app.exception.AEEException;
 import com.exifthumbnailadder.app.exception.BadOriginalImageException;
 import com.exifthumbnailadder.app.exception.CopyAttributesFailedException;
 import com.exifthumbnailadder.app.exception.DestinationFileExistsException;
@@ -406,6 +407,10 @@ public class AddThumbsService extends Service {
                             try {
                                 ByteArrayOutputStream newImgOs = writeThumbnailWithAndroidExifExtended(doc, thumbnail);
                                 doc.writeInTmp(newImgOs);
+                            } catch (AEEException e) {
+                                updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                e.printStackTrace();
+                                continue;
                             } catch (Exception e) {
                                 updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                                 e.printStackTrace();
@@ -939,7 +944,12 @@ public class AddThumbsService extends Service {
             it.sephiroth.android.library.exif2.ExifInterface sInExif = new it.sephiroth.android.library.exif2.ExifInterface();
 
             InputStream srcImgIs = doc.inputStream();
-            sInExif.readExif(srcImgIs, it.sephiroth.android.library.exif2.ExifInterface.Options.OPTION_ALL );
+            try {
+                sInExif.readExif(srcImgIs, it.sephiroth.android.library.exif2.ExifInterface.Options.OPTION_ALL);
+            } catch (Exception e) {
+                throw new AEEException("AEE error: while reading metadata: " + e.getMessage());
+            }
+
             // Close & Reopen InputStream, otherwise writeExif will fail with an exception
             // because srcImgIs was already read
             srcImgIs.close();
@@ -969,7 +979,11 @@ public class AddThumbsService extends Service {
             // to those already in sInExif). It is necessary to call readExif,
             // otherwise addition of tags will crash (internal_writer needs a base coming
             // from another file, ie. for the SOS tag
-            sInExif.writeExif(srcImgIs, newImgOs);
+            try {
+                sInExif.writeExif(srcImgIs, newImgOs);
+            } catch (Exception e) {
+                throw new AEEException("AEE error: while writing metadata: " + e.getMessage());
+            }
             srcImgIs.close();
             newImgOs.close();
             return newImgOs;
