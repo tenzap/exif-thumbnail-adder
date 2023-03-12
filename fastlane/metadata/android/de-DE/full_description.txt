@@ -35,10 +35,10 @@ Es gibt zwei mögliche Gründe für dieses Verhalten. Erstens, die Miniaturansic
 
 <b>Geforderte Berechtigungen</b>
 
-- <i>READ_EXTERNAL_STORAGE</i> und <i>WRITE_EXTERNAL_STORAGE</i>
+- <i>WRITE_EXTERNAL_STORAGE</i>, <i>READ_EXTERNAL_STORAGE</i>, <i>READ_MEDIA_IMAGES</i>
 - <i>MANAGE_EXTERNAL_STORAGE</i>
-&emsp;- nur beim <i>standard</i>-Flavor gefordert, der auf F-Droid für Geräte ausgeliefert wird, auf denen Android 11 oder höher läuft, um den Zeitstempel der Bilder zu erhalten
-&emsp;- um die Zeitstempel der Bilder zu erhalten
+- <i>ACCESS_MEDIA_LOCATION</i>
+- <i>POST_NOTIFICATIONS</i>
 - Weitere Einzelheiten dazu auf der Homepage des Projekts
 
 <b>Installation</b>
