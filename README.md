@@ -112,13 +112,14 @@ GPL-3.0 (see "COPYING" file on project homepage)
   - ByteOrder gets modified from Little-endian (Intel, II) to Big-endian (Motorola, MM)
 
 
-## Concerning `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`
-- permit to read and write/update the picture from the storage of your device
-- requested on Android 10 and before
+## Concerning some permissions
+
+### `WRITE_EXTERNAL_STORAGE`, `READ_EXTERNAL_STORAGE` or `READ_MEDIA_IMAGES`
 - these permissions are required to keep the timestamp of the pictures
+- they are also required with most exif libraries during processing of files
 
 
-## Concerning `MANAGE_EXTERNAL_STORAGE`
+### `MANAGE_EXTERNAL_STORAGE`
 Since the app uses targetSdk >= 30 (ie Android 11+), I needed to use the `MANAGE_EXTERNAL_STORAGE` permission.
 
 Some explanations:
@@ -129,10 +130,21 @@ So in the App, when one is on Android 11+ with targetSdk >= 30, one is invited t
 
 Please note that this is about the timestamps of the files (not the ones in the EXIF tags)
 
+
+### `ACCESS_MEDIA_LOCATION`
+- to keep location (GPS) metadata when processing files. Otherwise, GPS metadata will be lost because Android will hide it to the app.
+
+
+### `POST_NOTIFICATIONS`
+- to show progress of processing in notification drawer. Useful when letting the app work in the background.
+
+
 ## Development / Building from source
 This project has been developed in "Android Studio", you may use that to build the app yourself.
 
-In addition to Android Studio you need these components (android studio can install them for you thanks to the SDK Manager):
+Version 0.9.18 requires Android Studio Dolphin (2021.3) or above.
+
+In addition to Android Studio you need these SDK components which will be installed by Android Studio's SDK Manager:
 
 * SDK
 * NDK
@@ -147,6 +159,28 @@ The app can be compiled in any of the following flavors:
 
 ### To create screenshots
 From within the root directory of the project run:
-```Shell
-ANDROID_SDK_ROOT=~/Android/Sdk/ bundle exec fastlane screenshots
-```
+
+  ```Shell
+  ANDROID_SDK_ROOT=~/Android/Sdk/ bundle exec fastlane screenshots
+  ```
+
+### To run the tests
+1. Get the test pictures:
+
+    ```Shell
+    cd tests/data/exif-samples
+    git clone https://github.com/ianare/exif-samples
+    ```
+
+1. run the test suite
+
+    ```Shell
+    ANDROID_SDK_ROOT=~/Android/Sdk/ bundle exec fastlane connectedCheck_with_screenrecord
+    ```
+
+1. run the test scripts
+
+    ```Shell
+    cd tests
+    ./run_tests.sh
+    ```
