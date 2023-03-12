@@ -1,4 +1,4 @@
-Android cihazlar için olan bu uygulama cihaz üzerindeki resimleri (JPEG) arıyor ve <b>küçük resmi yoksa ekliyor.</b> Kapak resimleri EXIF üstveri yapısına eklenir.
+Android cihazlar için olan bu uygulama cihaz üzerindeki resimleri (JPEG) arıyor ve <b>küçük resmi yoksa ekliyor.</b> Kapak resimleri EXIF üstveri yapısına eklenir. Kapak resimleri EXIF üstveri yapısına eklenir.
 
 Android Oreo'dan (android 8, SDK 26) çalışmak üzere tasarlanmıştır.
 
@@ -6,7 +6,7 @@ Lütfen sorunları buradan bildirin: <a href="https://github.com/tenzap/exif-thu
 
 Daha fazla bilgi, bilinen bazı durumlar ve nasıl katkıda bulunabileceğiniz için [proje ana sayfasına][1] bakın.
 
-<b>Gerekçe</b>
+<b>Kurulum</b>
 
 Bazı akıllı telefonlarda, resimleri Windows'a (veya MTP veya PTP protokollerini destekleyen herhangi bir cihaza/işletim sistemine) aktarmak istediğimde, resimlerin içe aktarma sihirbazında (Fotoğraflar uygulaması veya Windows Explorer içe aktarma özelliği aracılığıyla) bir küçük resim göstermeyebileceğini fark ettim.
 
@@ -17,7 +17,7 @@ Bu davranışın iki olası nedeni var. İlk olarak, genellikle resmi oluşturan
 
 - Halihazırda kapak resmi olmayan fotoğraflara (JPEG) kapak resmi ekleme
 - Lanczos algoritması kullanarak fotoğraf boyutlarını küçültme, [FFmpeg'in swscale kütüphanesine teşekkürler][2]
-- Hafızadan taranacak bir veya daha fazla klasör seçin (dahil, SDCard...) Örneğin DCIM, Pictures...
+- Hafızadan taranacak bir veya daha fazla klasör seçin (dahil, SDCard...) Örneğin DCIM, Pictures... Örneğin DCIM, Pictures...
 - Seçili dizinlerden bir alt dizini dahil etmeme
 - Resimlerin zaman-damgalarını saklama
 - İşleme kaydı
@@ -35,13 +35,13 @@ Bu davranışın iki olası nedeni var. İlk olarak, genellikle resmi oluşturan
 
 <b>İstenilen izinler</b>
 
-- <i>WRITE_EXTERNAL_STORAGE</i>, <i>READ_EXTERNAL_STORAGE</i>, <i>READ_MEDIA_IMAGES</i>
+- <i>READ_EXTERNAL_STORAGE</i> ve <i>WRITE_EXTERNAL_STORAGE</i>
 - <i>MANAGE_EXTERNAL_STORAGE</i>
 - <i>ACCESS_MEDIA_LOCATION</i>
-- <i>POST_NOTIFICATIONS</i>
+&emsp;- resimlerin zaman bilgisini tutmak için
 - proje ana sayfasından daha fazla bilgi alın
 
-<b>Kurulum</b>
+<b>Gerekçe</b>
 
 - Ön gereksinimler: minimum android Oreo (android 8, SDK 26). Uygulama Android 11'e kadar test edildi.
 - F-Droid uygulaması aracılığıyla [buradan][4] indirin
