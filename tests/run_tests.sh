@@ -493,7 +493,7 @@ for API in $APIs; do
     TESTNAME="addThumbsSettingsLibExif"
     echo -en "[$test_number] Libexif skip containing XMP ($API, $VARIANT): \t"
     update_log_to_one_liner "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt"
-    if grep "${PICTURE_WITH_XMP}... XMP present in metadata" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
+    if grep "${PICTURE_WITH_XMP}... Skipping (XMP present in metadata)" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
         success
     else
         failure
@@ -526,7 +526,7 @@ for API in $APIs; do
     TESTNAME="addThumbsSettingsPixymeta"
     echo -en "[$test_number] Pixymeta skip containing makernote ($API, $VARIANT): \t"
     update_log_to_one_liner "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt"
-    if grep "${PICTURE_WITH_MAKERNOTES}... MakerNotes present in metadata" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
+    if grep "${PICTURE_WITH_MAKERNOTES}... Skipping (MakerNotes present in metadata)" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
         success
     else
         failure
