@@ -164,12 +164,18 @@ public enum TiffTag implements Tag {
 		public FieldType getFieldType() {
 			return FieldType.ASCII;
 		}
+		public boolean isCritical() {
+	    	return false;
+	    }
 	},
 	
 	MAKE("Make", (short)0x010F, Attribute.BASELINE) {
 		public FieldType getFieldType() {
 			return FieldType.ASCII;
 		}
+		public boolean isCritical() {
+	    	return false;
+	    }
 	},
 	
 	MODEL("Model", (short)0x0110, Attribute.BASELINE) {
@@ -383,6 +389,9 @@ public enum TiffTag implements Tag {
 		public FieldType getFieldType() {
 			return FieldType.ASCII;
 		}
+		public boolean isCritical() {
+	    	return false;
+	    }
 	},
 	
 	DATETIME("DateTime", (short)0x0132, Attribute.BASELINE) {
