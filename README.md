@@ -90,15 +90,14 @@ GPL-3.0 (see "COPYING" file on project homepage)
 ### Android-Exif-Extended
 - all the existing EXIF structure is kept and a new APP1 structure containing the thumbnail is added to the existing APP1.
 - this means that **all EXIF tags will be duplicate** if checked by exiftool
-- Any other tags (XMP for example) are kept
+- Any other metadata (XMP for example) are kept
 
 ### Exiv2
-- [XMP*] is kept
 - If Exiv2 detects some problems (errors) in a file, it is skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
 
 ### libexif
 - **To avoid loosing XMP metadata, Exif Thumbnail Adder skips the pictures that have XMP metadata.** This is because libexif doesn't keep [XMP\*] metadata, and all XMP tags would get deleted.
-- Some or all tags of [Olympus] [Canon] group might be deleted.
+- **Some or all tags of [Olympus] [Canon] group might be deleted.**
 - The tags supported by libexif and exif structure are rewritten from what libexif could read.
 - It is almost like running "exif --create-exif --remove-thumbnail --insert-thumbnail tb.jpg" from the exif command line.
 - If libexif detects some problems (errors) in a file, it is skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
@@ -106,7 +105,6 @@ GPL-3.0 (see "COPYING" file on project homepage)
 ### pixymeta-android
 - **To avoid loosing makernotes metadata, Exif Thumbnail Adder skips the pictures that have makernotes metadata.** This is because pixymeta-android doesn't support makernotes well.
 - the existing EXIF tags are read and metadata is rewritten from scratch using what was read
-- [XMP*] tags are kept
 - Some tags are incorrectly rewritten. See bug reports [1](https://github.com/dragon66/pixymeta-android/issues/15).
   - Some makernotes get altered (eg Canon, Nikon, Olympus, Sanyo...)
   - ByteOrder gets modified from Little-endian (Intel, II) to Big-endian (Motorola, MM)
