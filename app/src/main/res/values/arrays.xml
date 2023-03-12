@@ -3,7 +3,7 @@
     <string-array name="exif_library_entries">
         <item>Android-Exif-Extended</item>
         <item>Exiv2</item>
-        <item>libexif (⚠️ strips XMP, see README)</item>
+        <item>libexif</item>
     </string-array>
 
     <string-array name="exif_library_values" translatable="false">
@@ -13,7 +13,7 @@
     </string-array>
 
     <string-array name="exif_library_pixymeta_entries">
-        <item>pixymeta-android (⚠️ problems with InteropIFD, see README)</item>
+        <item>pixymeta-android</item>
     </string-array>
 
     <string-array name="exif_library_pixymeta_values" translatable="false">

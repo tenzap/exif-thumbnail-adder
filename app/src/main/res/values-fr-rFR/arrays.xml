@@ -4,10 +4,10 @@
     <string-array name="exif_library_entries">
         <item>Android-Exif-Extended</item>
         <item>Exiv2</item>
-        <item>libexif (⚠️ supprime XMP, voir README)</item>
+        <item>libexif</item>
     </string-array>
     <string-array name="exif_library_pixymeta_entries">
-        <item>pixymeta-android (⚠️ problèmes avec InteropIFD,️ voir README)</item>
+        <item>pixymeta-android</item>
     </string-array>
     <!-- Settings: ListPreference: exiv2SkipOnLogLevel -->
     <string-array name="exiv2SkipLevel_entries">
