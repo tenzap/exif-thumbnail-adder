@@ -175,8 +175,8 @@
     <string name="notification_status">Notification status…</string>
     <string name="enabled">\u00A0Enabled</string>
     <string name="disabled">\u00A0Disabled</string>
-    <string name="frag1_log_skipping_unsupported_pixymeta_makernotes">MakerNotes present in metadata. This is not well supported by pixymeta library.\n</string>
-    <string name="frag1_log_skipping_unsupported_libexif_xmp">XMP present in metadata. This is not well supported by libexif library.\n</string>
+    <string name="frag1_log_skipping_unsupported_pixymeta_makernotes">Skipping (MakerNotes present in metadata)\n</string>
+    <string name="frag1_log_skipping_unsupported_libexif_xmp">Skipping (XMP present in metadata)\n</string>
     <string name="frag1_info_library">⚠️ Library is set to %1$s. Please be aware of the consequences by reading the %2$snotes%3$s.</string>
     <string name="sync_log_src_dir_missing">Source dir doesn\'t exist.</string>
     <string name="perm_outcome_MANAGE_EXTERNAL_STORAGE_failure">\u00A0Disabled. This can be changed in the settings.</string>
