@@ -88,7 +88,7 @@ GPL-3.0 (see "COPYING" file on project homepage)
 - If Exiv2 detects some problems (errors) in a file, it is skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
 
 ### libexif
-- **All [XMP\*] metadata groups and tags get deleted.**
+- **To avoid loosing XMP metadata, Exif Thumbnail Adder skips the pictures that have XMP metadata.** This is because libexif doesn't keep [XMP\*] metadata, and all XMP tags would get deleted.
 - Some or all tags of [Olympus] [Canon] group might be deleted.
 - The tags supported by libexif and exif structure are rewritten from what libexif could read.
 - It is almost like running "exif --create-exif --remove-thumbnail --insert-thumbnail tb.jpg" from the exif command line.
