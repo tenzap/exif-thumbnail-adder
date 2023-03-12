@@ -63,7 +63,6 @@
     <string name="frag1_log_processing_dir">Đang xử lý %1$s</string>
     <string name="frag1_log_processing_path_filename">Đang xử lý… Đường dẫn: %1$s Tên tệp: %2$s</string>
     <string name="frag1_log_skipping_path_filename">Đang bỏ qua… Đường dẫn: %1$s Tên tệp: %2$s</string>
-    <string name="frag1_log_checking_workingdir_perm">Đang kiểm tra quyền thư mục hoạt động…</string>
     <string name="frag1_log_checking_perm">Đang kiểm tra quyền…</string>
     <string name="frag1_log_skipping_file_missing">Đang bỏ qua (tệp bị thiếu)</string>
     <string name="frag1_log_skipping_not_jpeg">Đang bỏ qua (không phải JPEG)\n</string>

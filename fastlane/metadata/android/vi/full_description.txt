@@ -35,10 +35,10 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
 
 <b>Các quyền được yêu cầu</b>
 
-- <i>READ_EXTERNAL_STORAGE</i> và <i>WRITE_EXTERNAL_STORAGE</i>
-&emsp;- để giữ dấu thời gian của các bức ảnh
+- <i>WRITE_EXTERNAL_STORAGE</i>, <i>READ_EXTERNAL_STORAGE</i>, <i>READ_MEDIA_IMAGES</i>
 - <i>MANAGE_EXTERNAL_STORAGE</i>
-&emsp;- chỉ được yêu cầu với bản <i>tiêu chuẩn</i> có trên F-Droid cho các thiết bị chạy Android 11 và cao hơn để giữ dấu thời gian của các bức ảnh
+- <i>ACCESS_MEDIA_LOCATION</i>
+- <i>POST_NOTIFICATIONS</i>
 - lấy thêm chi tiết trên trang chủ dự án
 
 <b>Cài đặt</b>

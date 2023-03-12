@@ -35,10 +35,10 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
 
 <b>Requested permissions</b>
 
-- <i>READ_EXTERNAL_STORAGE</i> and <i>WRITE_EXTERNAL_STORAGE</i>
-&emsp;- to keep the timestamp of the pictures
+- <i>WRITE_EXTERNAL_STORAGE</i>, <i>READ_EXTERNAL_STORAGE</i>, <i>READ_MEDIA_IMAGES</i>
 - <i>MANAGE_EXTERNAL_STORAGE</i>
-&emsp;- requested only with the <i>standard</i> flavor that is shipped on F-Droid for devices running Android 11 and above to keep the timestamp of the pictures
+- <i>ACCESS_MEDIA_LOCATION</i>
+- <i>POST_NOTIFICATIONS</i>
 - get more details on the project homepage
 
 <b>Installation</b>

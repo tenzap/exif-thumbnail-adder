@@ -63,7 +63,6 @@
     <string name="frag1_log_processing_dir">Verarbeitung von %1$s</string>
     <string name="frag1_log_processing_path_filename">Verarbeiten… Pfad: %1$s Dateiname: %2$s</string>
     <string name="frag1_log_skipping_path_filename">Überspringen… Pfad: %1$s Dateiname: %2$s</string>
-    <string name="frag1_log_checking_workingdir_perm">Prüfung der Arbeitsverzeichnis-Berechtigungen…</string>
     <string name="frag1_log_checking_perm">Prüfung der Berechtigungen…</string>
     <string name="frag1_log_skipping_file_missing">Überspringen (Datei fehlt)</string>
     <string name="frag1_log_skipping_not_jpeg">Überspringen (nicht JPEG)\n</string>
