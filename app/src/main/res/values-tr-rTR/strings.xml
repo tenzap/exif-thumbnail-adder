@@ -41,7 +41,6 @@
     <string name="frag1_log_processing_dir">%1$s işleniyor</string>
     <string name="frag1_log_processing_path_filename">İşleniyor… Patika: %1$s Dosya adı: %2$s</string>
     <string name="frag1_log_skipping_path_filename">Geçiliyor… Patika: %1$s Dosya adı: %2$s</string>
-    <string name="frag1_log_checking_workingdir_perm">Çalışma dizini yetkileri kontrol ediliyor…</string>
     <string name="frag1_log_checking_perm">İzinler denetleniyor…</string>
     <string name="frag1_log_skipping_file_missing">Atlanıyor (dosya kayıp)</string>
     <string name="frag1_log_skipping_not_jpeg">Atlanıyor (JPEG değil)\n</string>
