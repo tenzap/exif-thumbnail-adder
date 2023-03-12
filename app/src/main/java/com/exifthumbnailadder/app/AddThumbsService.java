@@ -36,12 +36,14 @@ import com.exifthumbnailadder.app.exception.Exiv2ErrorException;
 import com.exifthumbnailadder.app.exception.Exiv2WarnException;
 import com.exifthumbnailadder.app.exception.LibexifException;
 import com.exifthumbnailadder.app.exception.LibexifUnsupportedOperationException;
+import com.exifthumbnailadder.app.exception.PixymetaException;
 import com.exifthumbnailadder.app.exception.PixymetaUnsupportedOperationException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.AtomicMoveNotSupportedException;
@@ -424,6 +426,10 @@ public class AddThumbsService extends Service {
                                 } else {
                                     updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                                 }
+                                e.printStackTrace();
+                                continue;
+                            } catch (PixymetaException e) {
+                                updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                                 e.printStackTrace();
                                 continue;
                             } catch (Exception e) {
@@ -1021,7 +1027,7 @@ public class AddThumbsService extends Service {
 
     private ByteArrayOutputStream writeThumbnailWithPixymeta (
             ETADoc doc, Bitmap thumbnail)
-            throws PixymetaUnsupportedOperationException, Exception {
+            throws PixymetaUnsupportedOperationException, PixymetaException, Exception {
         try {
             JpegExif additionalExif = new JpegExif();
 
@@ -1037,7 +1043,13 @@ public class AddThumbsService extends Service {
 
             // Get current Exif metadata of input file
             InputStream srcImgIs = doc.inputStream();
-            Map<MetadataType, Metadata> srcMetadata = Metadata.readMetadata(srcImgIs);
+            Map<MetadataType, Metadata> srcMetadata = null;
+            try {
+                srcMetadata = Metadata.readMetadata(srcImgIs);
+            } catch (Exception e) {
+                throw new PixymetaException("pixymeta error: while reading Metadata: " + e.getMessage());
+            }
+
             srcImgIs.close();
             Metadata exifMetadata = srcMetadata.get(MetadataType.EXIF);
             JpegExif srcJpegExif = null;
@@ -1049,7 +1061,7 @@ public class AddThumbsService extends Service {
             IFD srcExifIFD = null;
             if (srcJpegExif != null) {
                 srcExifIFD = srcJpegExif.getExifIFD();
-                if (srcExifIFD.getField(ExifTag.MAKER_NODE) != null) {
+                if (srcExifIFD != null && srcExifIFD.getField(ExifTag.MAKER_NODE) != null) {
                     // Skip files with MakerNotes as this is not well supported by Pixymeta
                     throw new PixymetaUnsupportedOperationException("MakerNotes present in metadata. This is not well supported by pixymeta engine.");
                 }
