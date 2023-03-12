@@ -47,7 +47,6 @@ public enum ExifTag implements Tag {
   	//EXIF_SUB_IFD("ExifSubIFD", (short)0x8769),	
 	EXPOSURE_PROGRAM("ExposureProgram", (short)0x8822),
 	SPECTRAL_SENSITIVITY("SpectralSensitivity", (short)0x8824),
-	//GPS_SUB_IFD("GPSSubIFD", (short)0x8825),
 	ISO_SPEED_RATINGS("ISOSpeedRatings", (short)0x8827),
 	OECF("OECF", (short)0x8828),
 	
