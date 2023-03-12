@@ -26,6 +26,9 @@ PICTURE_EXIV2_WARNING=Konica_Minolta_DiMAGE_Z3.jpg
 
 PICTURE_LIBEXIF_ERROR=Kodak_CX7530.jpg
 
+# To test that Pixymeta skips the file
+PICTURE_WITH_MAKERNOTES="Canon_DIGITAL_IXUS_400.jpg"
+
 # Pictures having various values for the ORIENTATION tag.
 #1 = Horizontal (normal)
 #2 = Mirror horizontal
@@ -499,6 +502,17 @@ for API in $APIs; do
     echo -en "[$test_number] Libexif skip on error FALSE. ($API, $VARIANT): \t"
      update_log_to_one_liner "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt"
     if grep "${PICTURE_LIBEXIF_ERROR}.*Done$" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
+        success
+    else
+        failure
+    fi
+
+    # Test pixymeta skip containing makernote
+    test_number=$(( test_number+1 ))
+    TESTNAME="addThumbsSettingsPixymeta"
+    echo -en "[$test_number] Pixymeta skip containing makernote ($API, $VARIANT): \t"
+    update_log_to_one_liner "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt"
+    if grep "${PICTURE_WITH_MAKERNOTES}... MakerNotes present in metadata" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
         success
     else
         failure
