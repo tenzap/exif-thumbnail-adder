@@ -35,10 +35,10 @@
 
 <b>请求的权限</b>
 
-- <i>WRITE_EXTERNAL_STORAGE</i>, <i>READ_EXTERNAL_STORAGE</i>, <i>READ_MEDIA_IMAGES</i>
+- <i>READ_EXTERNAL_STORAGE</i> 和 <i>WRITE_EXTERNAL_STORAGE</i>
 <i>MANAGE_EXTERNAL_STORAGE</i>
-- <i>ACCESS_MEDIA_LOCATION</i>
-- <i>POST_NOTIFICATIONS</i>
+&emsp;- 只有当发布于F-Driod 上的<i>标准</i> Apk 安装在运行Android 11及以上设备时才会请求该权限，目的是保留图片的时间戳。
+&emsp;- 保留图片的时间戳
 - 在项目主页获取更多详细信息
 
 <b>安装</b>
