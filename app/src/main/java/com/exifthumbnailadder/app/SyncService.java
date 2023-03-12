@@ -236,6 +236,10 @@ public class SyncService extends Service {
                 etaDocSrc = new ETADocFile((File)srcDirs[j], getApplicationContext(), (ETASrcDirFile)etaSrcDir, true);
             }
             if (etaDocSrc == null) throw new UnsupportedOperationException();
+            if (!etaDocSrc.exists()) {
+                updateLog(Html.fromHtml("<span style='color:#FFA500'>"+getString(R.string.sync_log_src_dir_missing)+"</span><br>", 1));
+                continue;
+            }
 
             // Process backupUri
             ETASrcDir etaSrcDirBackup = null;
