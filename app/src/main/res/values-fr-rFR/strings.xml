@@ -10,7 +10,7 @@
     <string name="action_settings">Paramètres</string>
     <string name="action_sync">Sync. les suppressions</string>
     <string name="action_about">A propos de</string>
-    <string name="action_add_thumbs">Ajouter les miniatures</string>
+    <string name="action_add_thumbs">Ajouter les vignettes</string>
     <!-- About Activity -->
     <string name="about_about_title">A propos de</string>
     <string name="about_content">A propos de…</string>
@@ -46,7 +46,7 @@
     Une fois les permissions accordées, vous serez renvoyé vers l\'écran principal et
         pourrez relancer le traitement.\n</string>
     <!-- AddThumbs Fragment -->
-    <string name="frag1_text_description">Ajoute des miniatures aux images des dossiers sélectionnés</string>
+    <string name="frag1_text_description">Ajoute des vignettes aux images des dossiers sélectionnés</string>
     <string name="frag1_text_list_of_dirs_to_process">Liste des dossiers à traiter</string>
     <string name="frag1_text_no_dir_selected">Pas de dossier sélectionné. Allez dans les paramètres pour en sélectionner.</string>
     <string name="frag1_text_all_files_access_permissions_is_not_granted">La permission \'Accès à tous les fichiers\'
@@ -63,8 +63,8 @@
     <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_using_Files_API">La permission \'%1$s\' est nécessaire pour lire les images et les modifier.</string>
     <string name="frag1_perm_request_deny">Refuser la permission</string>
     <string name="perm_request_message_READ_EXTERNAL_STORAGE">La permission \'%1$s\' est nécessaire pour lire les images.</string>
-    <string name="perm_request_message_ACCESS_MEDIA_LOCATION">La permission \'%1$s\' est nécessaire pour conserver les informations de localisation (GPS) enrégistrées dans vos images. Si la permission n\'est pas accordée, cette information sera perdue.</string>
-    <string name="perm_request_message_POST_NOTIFICATIONS">La permission \'%1$s\' est nécessaire pour afficher l\'avancement du traitement dans le tirroir des notifications. La notification disparaît automatiquement dès que le traitement est terminé.</string>
+    <string name="perm_request_message_ACCESS_MEDIA_LOCATION">La permission \'%1$s\' est nécessaire pour conserver les informations de localisation (GPS) enregistrées dans vos images. Si la permission n\'est pas accordée, cette information sera perdue.</string>
+    <string name="perm_request_message_POST_NOTIFICATIONS">La permission \'%1$s\' est nécessaire pour afficher l\'avancement du traitement dans le tiroir des notifications. La notification disparaît automatiquement dès que le traitement est terminé.</string>
     <string name="frag1_continue_without_timestamps">\u00A0Permission non accordée. Poursuite sans conservation de l\'horodatage.</string>
     <string name="frag1_log_skipping_excluded_dir">Saute le rép. %1$s dans %2$s</string>
     <string name="frag1_log_copying_attr">Copie des attributs…</string>
@@ -73,13 +73,13 @@
     <string name="frag1_log_processing_dir">Traitement de %1$s</string>
     <string name="frag1_log_processing_path_filename">Traite… Chemin: %1$s Fichier: %2$s</string>
     <string name="frag1_log_skipping_path_filename">Saute… Chemin: %1$s Fichier: %2$s</string>
-    <string name="frag1_log_checking_workingdir_perm_v2">⋅ accès au répertoire de travail…</string>
-    <string name="frag1_log_checking_srcdir_perm">⋅ accès au dossier source…</string>
+    <string name="frag1_log_checking_workingdir_perm_v2">⋅ accès au répertoire de travail:</string>
+    <string name="frag1_log_checking_srcdir_perm">⋅ accès au dossier source:</string>
     <string name="frag1_log_checking_perm">Vérification des permissions…</string>
     <string name="frag1_log_skipping_file_missing">Saute (fichier manquant)</string>
     <string name="frag1_log_skipping_not_jpeg">Saute (pas JPEG)\n</string>
     <string name="frag1_log_skipping_empty_file">Saute (fichier vide)\n</string>
-    <string name="frag1_log_skipping_has_thumbnail">Saute (contient miniature)\n</string>
+    <string name="frag1_log_skipping_has_thumbnail">Saute (contient vignette)\n</string>
     <string name="frag1_log_fix_has_thumbnail_but_missing_tags">Miniature présente mais certains champs sont manquants. → Mise à jour de la miniature…</string>
     <string name="frag1_log_skipping_bad_image">Saute (mauvaise image?)\n</string>
     <string name="frag1_log_skipping_error">Saute (ERREUR): %1$s</string>
@@ -103,6 +103,11 @@
     <string name="settings_dialog_all_files_access_not_supported">Votre appareil ne prend pas en charge l\'accès à tous les fichiers</string>
     <string name="settings_button_remove_all_dirs">Supprimer tous les dossiers</string>
     <string name="settings_button_add_dir">Ajouter</string>
+    <string name="settings_option_not_available">Option non disponible</string>
+    <string name="settings_all_files_access_unavailable">Cette variante de l\'application ne permet pas de donner l\'autorisation d\'accès à tous les fichiers.
+        \n\nUne variante avec cette fonctionnalité est disponible sur %1$s.
+        \n\nAstuce : pour que l\'installation réussisse, vous devez d\'abord désinstaller cette variante de %2$s.</string>
+    <string name="settings_show_in_">Aller à %1$s</string>
     <string name="pref_categ_folders">Dossiers</string>
     <string name="pref_dirToProcess_title">Dossiers à traiter</string>
     <string name="pref_workingDir_title"><![CDATA[Répertoire de sauvegarde et de travail]]></string>
@@ -114,17 +119,17 @@
         L\'horodatage de vos images stockés dans les étiquettes EXIF n\'est pas
         affecté quelque soit la valeur de cette option.</string>
     <string name="pref_categ_options">Options</string>
-    <string name="pref_rotateThumbnail_title">Pivoter la miniature</string>
-    <string name="pref_rotateThumbnail_summary">Pivote la miniature pour correspondre à l\'image. La plupart des programmes nécessitent une miniature pivotée (par ex. l\'outil d\'import de photos de Win10)</string>
-    <string name="pref_skipPicsHavingThumbnail_title">Sauter les fichiers avec miniature</string>
-    <string name="pref_skipPicsHavingThumbnail_summary">Si le fichier a déjà une miniature ne pas la traiter</string>
-    <string name="pref_fixHavingThumbnailButMissingTags_title">Corriger les balises manquantes dans les images avec miniature</string>
-    <string name="pref_fixHavingThumbnailButMissingTags_summary">Si l\'image a une miniature mais que des balises obligatoires sont manquantes, traiter l\'image. Cela remplace la miniature actuelle même si vous avez choisi de sauter les images avec miniature.</string>
+    <string name="pref_rotateThumbnail_title">Pivoter la vignette</string>
+    <string name="pref_rotateThumbnail_summary">Pivote la vignette pour correspondre à l\'image. La plupart des programmes nécessitent une vignette pivotée (par ex. l\'outil d\'import de photos de Win10)</string>
+    <string name="pref_skipPicsHavingThumbnail_title">Sauter les fichiers avec vignette</string>
+    <string name="pref_skipPicsHavingThumbnail_summary">Si le fichier a déjà une vignette ne pas la traiter</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_title">Corriger les balises manquantes dans les images avec vignette</string>
+    <string name="pref_fixHavingThumbnailButMissingTags_summary">Si l\'image a une vignette mais que des balises obligatoires sont manquantes, traiter l\'image. Cela remplace la vignette actuelle même si vous avez choisi de sauter les images avec vignette.</string>
     <string name="pref_backupOriginalPic_title">Faire une sauvegarde de l\'image source</string>
     <string name="pref_backupOriginalPic_summary">La sauvegarde est placée dans le répertoire de travail. Si un fichier de même nom existe il n\'est pas écrasé</string>
     <string name="pref_writeThumbnailedToOriginalFolder_title">Modifier dans le dossier source</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ajoute la miniature dans l\'image du dossier source</string>
-    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Ajoute la miniature à une copie de l\'image source dans le répertoire de travail (dans \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOn">Ajoute la vignette dans l\'image du dossier source</string>
+    <string name="pref_writeThumbnailedToOriginalFolder_summaryOff"><![CDATA[Ajoute la vignette à une copie de l\'image source dans le répertoire de travail (dans \'<Volume>/ThumbAdder/<orig_dir>.new\')]]></string>
     <string name="pref_overwriteDestPic_title">Ecraser l\'image du répertoire cible</string>
     <string name="pref_overwriteDestPic_summary">Ecrase le fichier de même nom dans le répertoire de travail (les sauvegardes ne sont pas concernées et ne sont jamais écrasés)</string>
     <string name="pref_keepTimeStampOnBackup_title">Copier l\'horodatage sur la sauvegarde</string>
@@ -135,7 +140,7 @@
     <string name="pref_writeTmpToCacheDir_summaryOn">Ecrit les images temporaires crées pendant le traitement dans le répertoire cache de l\'application</string>
     <string name="pref_writeTmpToCacheDir_summaryOff">Ecrit les images temporaires crées pendant le traitement dans le répertoire de travail</string>
     <string name="pref_categ_backend">Bibliothèque</string>
-    <string name="pref_exifLibrary_title">Ecrire les miniatures EXIF avec</string>
+    <string name="pref_exifLibrary_title">Ecrire les vignettes EXIF avec</string>
     <string name="pref_exifLibrary_cannotDisableSkipPicsHavingThumbnail">Impossible de désactiver \'%1$s\' avec Android-Exif-Extended. L\'option a été réactivée.</string>
     <string name="pref_categ_exiv2_settings">Paramètres Exiv2</string>
     <string name="pref_exiv2SkipOnLogLevel_title">Sauter à partir du niveau d\'erreur Exiv2</string>
@@ -159,15 +164,14 @@
     <string name="sync_log_checking">Vérification de : %1$s</string>
     <string name="sync_log_failure_to_delete_file">Erreur à la suppression</string>
     <string name="sync_log_files_to_remove">Fichiers à supprimer (ils ne sont plus dans la source) :</string>
-    <string name="ffmpegServiceDescription" translatable="false">Build thumbnail from ThumbnailProject with ffmpeg\'s swscale</string>
     <string name="close">Fermer</string>
     <string name="notification_status">Etat des notifications…</string>
     <string name="enabled">\u00A0Activé</string>
     <string name="disabled">\u00A0Désactivé</string>
-    <string name="frag1_log_skipping_unsupported_pixymeta_makernotes">Saute (notes du consutructeur (MakerNotes) présentes.)\n</string>
-    <string name="frag1_log_skipping_unsupported_libexif_xmp">Saute (métaonnées XMP présentes.)\n</string>
+    <string name="frag1_log_skipping_unsupported_pixymeta_makernotes">Saute (notes du constructeur (MakerNotes) présentes.)\n</string>
+    <string name="frag1_log_skipping_unsupported_libexif_xmp">Saute (métadonnées XMP présentes.)\n</string>
     <string name="frag1_info_library">⚠️ La bibliothèque choisie est %1$s. Veuillez prendre connaissance des conséquences dans les %2$snotes%3$s.</string>
     <string name="sync_log_src_dir_missing">Le dossier source n\'existe pas.</string>
-    <string name="perm_outcome_MANAGE_EXTERNAL_STORAGE_failure">\u00A0Desactivé. Cela peut-être modifié dans les paramètres.</string>
+    <string name="perm_outcome_MANAGE_EXTERNAL_STORAGE_failure">\u00A0Desactivé. Cela peut être modifié dans les paramètres.</string>
     <string name="perm_label_MANAGE_EXTERNAL_STORAGE">accès à tous les fichiers</string>
 </resources>
