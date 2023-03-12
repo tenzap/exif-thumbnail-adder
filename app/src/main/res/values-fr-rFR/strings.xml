@@ -58,12 +58,13 @@
     <string name="stop">Arrêter</string>
     <string name="frag1_text_processing_log">Journal du traitement</string>
     <string name="frag1_perm_request_title">Demande de permission</string>
-    <string name="frag1_perm_request_message_timestamp">La permission pour le stockage externe est nécessaire pour conserver l\'horodatage des fichiers.\n
-        Si vous refusez, le traitement se fera sans conserver l\'horodatage.\n
-        Une fois la permission accordée, vous devez relancer le traitement.</string>
+    <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_for_timestamp">La permission \'%1$s\' est nécessaire pour conserver l\'horodatage des fichiers.\n
+        Si vous refusez, le traitement se fera sans conserver l\'horodatage.</string>
+    <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_using_Files_API">La permission \'%1$s\' est nécessaire pour lire les images et les modifier.</string>
     <string name="frag1_perm_request_deny">Refuser la permission</string>
-    <string name="frag1_perm_request_message_Files">La permission pour le stockage externe est nécessaire. Après accord vous devez relancer le traitement.</string>
-    <string name="frag1_check_write_perm">Vérification de la permission WRITE_EXTERNAL_STORAGE…</string>
+    <string name="perm_request_message_READ_EXTERNAL_STORAGE">La permission \'%1$s\' est nécessaire pour lire les images.</string>
+    <string name="perm_request_message_ACCESS_MEDIA_LOCATION">La permission \'%1$s\' est nécessaire pour conserver les informations de localisation (GPS) enrégistrées dans vos images. Si la permission n\'est pas accordée, cette information sera perdue.</string>
+    <string name="perm_request_message_POST_NOTIFICATIONS">La permission \'%1$s\' est nécessaire pour afficher l\'avancement du traitement dans le tirroir des notifications. La notification disparaît automatiquement dès que le traitement est terminé.</string>
     <string name="frag1_continue_without_timestamps">\u00A0Permission non accordée. Poursuite sans conservation de l\'horodatage.</string>
     <string name="frag1_log_skipping_excluded_dir">Saute le rép. %1$s dans %2$s</string>
     <string name="frag1_log_copying_attr">Copie des attributs…</string>
@@ -72,7 +73,8 @@
     <string name="frag1_log_processing_dir">Traitement de %1$s</string>
     <string name="frag1_log_processing_path_filename">Traite… Chemin: %1$s Fichier: %2$s</string>
     <string name="frag1_log_skipping_path_filename">Saute… Chemin: %1$s Fichier: %2$s</string>
-    <string name="frag1_log_checking_workingdir_perm">Vérification des permissions du répertoire de travail…</string>
+    <string name="frag1_log_checking_workingdir_perm_v2">⋅ accès au répertoire de travail…</string>
+    <string name="frag1_log_checking_srcdir_perm">⋅ accès au dossier source…</string>
     <string name="frag1_log_checking_perm">Vérification des permissions…</string>
     <string name="frag1_log_skipping_file_missing">Saute (fichier manquant)</string>
     <string name="frag1_log_skipping_not_jpeg">Saute (pas JPEG)\n</string>
@@ -157,4 +159,15 @@
     <string name="sync_log_checking">Vérification de : %1$s</string>
     <string name="sync_log_failure_to_delete_file">Erreur à la suppression</string>
     <string name="sync_log_files_to_remove">Fichiers à supprimer (ils ne sont plus dans la source) :</string>
+    <string name="ffmpegServiceDescription" translatable="false">Build thumbnail from ThumbnailProject with ffmpeg\'s swscale</string>
+    <string name="close">Fermer</string>
+    <string name="notification_status">Etat des notifications…</string>
+    <string name="enabled">\u00A0Activé</string>
+    <string name="disabled">\u00A0Désactivé</string>
+    <string name="frag1_log_skipping_unsupported_pixymeta_makernotes">Saute (notes du consutructeur (MakerNotes) présentes.)\n</string>
+    <string name="frag1_log_skipping_unsupported_libexif_xmp">Saute (métaonnées XMP présentes.)\n</string>
+    <string name="frag1_info_library">⚠️ La bibliothèque choisie est %1$s. Veuillez prendre connaissance des conséquences dans les %2$snotes%3$s.</string>
+    <string name="sync_log_src_dir_missing">Le dossier source n\'existe pas.</string>
+    <string name="perm_outcome_MANAGE_EXTERNAL_STORAGE_failure">\u00A0Desactivé. Cela peut-être modifié dans les paramètres.</string>
+    <string name="perm_label_MANAGE_EXTERNAL_STORAGE">accès à tous les fichiers</string>
 </resources>

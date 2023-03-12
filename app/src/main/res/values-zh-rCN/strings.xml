@@ -54,12 +54,7 @@
     <string name="stop">停止</string>
     <string name="frag1_text_processing_log">处理日志</string>
     <string name="frag1_perm_request_title">权限请求</string>
-    <string name="frag1_perm_request_message_timestamp">需要外部存储权限来保留文件的时间戳\n
-        如果拒绝权限，处理将在不保留时间戳的情况下进行。\n
-        授予权限之后，你需要重新开始处理。</string>
     <string name="frag1_perm_request_deny">拒绝权限</string>
-    <string name="frag1_perm_request_message_Files">外部存储权限是必需的。授予权限之后，你需要重新开始处理。</string>
-    <string name="frag1_check_write_perm">正在检查WRITE_EXTERNAL_STORAGE 权限…</string>
     <string name="frag1_continue_without_timestamps">\u00A0权限未被授予，可以继续操作但应用将不会保留时间戳</string>
     <string name="frag1_log_skipping_excluded_dir">正跳过已排除目录 %1$s ，其位于 %2$s</string>
     <string name="frag1_log_copying_attr">正在复制属性…</string>
