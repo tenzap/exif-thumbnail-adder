@@ -1,5 +1,13 @@
 name: ETA tests
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - '*'
+      - '!l10n_master'
+  pull_request:
+    branches:
+      - '*'
+      - '!l10n_master'
 
 env:
   GRADLE_COMMON_ARGS:
