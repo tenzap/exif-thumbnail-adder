@@ -26,6 +26,9 @@ PICTURE_EXIV2_WARNING=Konica_Minolta_DiMAGE_Z3.jpg
 
 PICTURE_LIBEXIF_ERROR=Kodak_CX7530.jpg
 
+# To test that libexif skips the file
+PICTURE_WITH_XMP="Canon_DIGITAL_IXUS_400.jpg"
+
 # To test that Pixymeta skips the file
 PICTURE_WITH_MAKERNOTES="Canon_DIGITAL_IXUS_400.jpg"
 
@@ -480,6 +483,17 @@ for API in $APIs; do
     echo -en "[$test_number] Exiv2 skip from log level none option. ($API, $VARIANT): \t"
      update_log_to_one_liner "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt"
     if grep "${PICTURE_EXIV2_ERROR}.*Done$" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
+        success
+    else
+        failure
+    fi
+
+    # Test Libexif skip containing XMP
+    test_number=$(( test_number+1 ))
+    TESTNAME="addThumbsSettingsLibExif"
+    echo -en "[$test_number] Libexif skip containing XMP ($API, $VARIANT): \t"
+    update_log_to_one_liner "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt"
+    if grep "${PICTURE_WITH_XMP}... XMP present in metadata" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
         success
     else
         failure
