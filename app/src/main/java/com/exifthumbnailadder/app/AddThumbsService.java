@@ -26,7 +26,6 @@ import android.text.Spanned;
 import android.util.Log;
 
 import androidx.documentfile.provider.DocumentFile;
-import androidx.exifinterface.media.ExifInterface;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
 
@@ -36,6 +35,7 @@ import com.exifthumbnailadder.app.exception.DestinationFileExistsException;
 import com.exifthumbnailadder.app.exception.Exiv2ErrorException;
 import com.exifthumbnailadder.app.exception.Exiv2WarnException;
 import com.exifthumbnailadder.app.exception.LibexifException;
+import com.exifthumbnailadder.app.exception.LibexifUnsupportedOperationException;
 import com.exifthumbnailadder.app.exception.PixymetaUnsupportedOperationException;
 
 import java.io.ByteArrayOutputStream;
@@ -322,6 +322,7 @@ public class AddThumbsService extends Service {
                 // a. check if sourceFile already has Exif Thumbnail
 
                 boolean srcImgHasThumbnail = false;
+                boolean srcImgHasXmp = false;
                 int srcImgDegrees = 0;
                 boolean srcImgFlipped = false;
                 int srcImgWidth = 0;
@@ -329,13 +330,14 @@ public class AddThumbsService extends Service {
 
                 try {
                     InputStream srcImgIs = doc.inputStream();
-                    ExifInterface srcImgExifInterface = new ExifInterface(srcImgIs);
+                    ETAExifInterface srcImgExifInterface = new ETAExifInterface(srcImgIs);
                     if (srcImgExifInterface != null) {
                         srcImgHasThumbnail = srcImgExifInterface.hasThumbnail();
+                        srcImgHasXmp = srcImgExifInterface.hasXmpMetadataFromSeparateMarker();
                         srcImgDegrees = srcImgExifInterface.getRotationDegrees();
                         srcImgFlipped = srcImgExifInterface.isFlipped();
-                        srcImgWidth = srcImgExifInterface.getAttributeInt(ExifInterface.TAG_PIXEL_X_DIMENSION, 0);
-                        srcImgHeight = srcImgExifInterface.getAttributeInt(ExifInterface.TAG_PIXEL_Y_DIMENSION, 0);
+                        srcImgWidth = srcImgExifInterface.getAttributeInt(ETAExifInterface.TAG_PIXEL_X_DIMENSION, 0);
+                        srcImgHeight = srcImgExifInterface.getAttributeInt(ETAExifInterface.TAG_PIXEL_Y_DIMENSION, 0);
                     }
                     srcImgIs.close();
                     srcImgExifInterface = null;
@@ -430,6 +432,9 @@ public class AddThumbsService extends Service {
                             break;
                         case "exiflib_libexif":
                             try {
+                                if (srcImgHasXmp)
+                                    throw new LibexifUnsupportedOperationException("XMP present in metadata. This is not well supported by libexif engine.");
+
                                 String outFilepath = doc.getTmpFSPathWithFilename();
 
                                 new NativeLibHelper().writeThumbnailWithLibexifThroughFile(
@@ -448,6 +453,14 @@ public class AddThumbsService extends Service {
                                     updateLog(Html.fromHtml("<span style='color:#FFA500'>" + e.getMessage() + "</span>", 1));
                                     updateLog(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_continue_despite_error_as_per_setting) + "</span>", 1));
                                 }
+                            } catch (LibexifUnsupportedOperationException e) {
+                                if (e.getMessage().equals("XMP present in metadata. This is not well supported by libexif engine.")) {
+                                    updateLog(getString(R.string.frag1_log_skipping_unsupported_libexif_xmp));
+                                } else {
+                                    updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
+                                }
+                                e.printStackTrace();
+                                continue;
                             } catch (Exception e) {
                                 updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.frag1_log_skipping_error, e.getMessage()) + "</span><br>", 1));
                                 e.printStackTrace();

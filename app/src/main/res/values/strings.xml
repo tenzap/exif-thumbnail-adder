@@ -175,4 +175,5 @@
     <string name="enabled">\u00A0Enabled</string>
     <string name="disabled">\u00A0Disabled</string>
     <string name="frag1_log_skipping_unsupported_pixymeta_makernotes">MakerNotes present in metadata. This is not well supported by pixymeta library.\n</string>
+    <string name="frag1_log_skipping_unsupported_libexif_xmp">XMP present in metadata. This is not well supported by libexif library.\n</string>
 </resources>
