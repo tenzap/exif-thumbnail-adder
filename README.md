@@ -80,7 +80,7 @@ GPL-3.0 (see "COPYING" file on project homepage)
 
 ### Android-Exif-Extended
 - all the existing EXIF structure is kept and a new APP1 structure containing the thumbnail is added to the existing APP1.
-- this means that all EXIF tags will be duplicate if checked by exiftool
+- this means that **all EXIF tags will be duplicate** if checked by exiftool
 - Any other tags (XMP for example) are kept
 
 ### Exiv2
