@@ -36,11 +36,20 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
 
 
 ## Requested permissions
-- `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE`
-    - to keep the timestamp of the pictures
-- `MANAGE_EXTERNAL_STORAGE`
-    - requested on devices running Android 11 and above to keep the timestamp of the pictures
+- By Android version:
+  - Android 8-9: `WRITE_EXTERNAL_STORAGE`
+  - Android 10: `WRITE_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`
+  - Android 11-12L: `READ_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`, (optionally `MANAGE_EXTERNAL_STORAGE`)
+  - Android 13: `READ_MEDIA_IMAGES`, `ACCESS_MEDIA_LOCATION`, `POST_NOTIFICATIONS`, (optionally `MANAGE_EXTERNAL_STORAGE`)
 
+- `WRITE_EXTERNAL_STORAGE`, `READ_EXTERNAL_STORAGE` or `READ_MEDIA_IMAGES`
+  - to keep the timestamp of the pictures and for file processing
+- `MANAGE_EXTERNAL_STORAGE`
+  - to keep the timestamp of the pictures (on devices running Android 11 and above)
+- `ACCESS_MEDIA_LOCATION`
+  - to keep location (GPS) metadata when processing files
+- `POST_NOTIFICATIONS`
+  - to show progress of processing in notification drawer
 
 
 ## Privacy notice

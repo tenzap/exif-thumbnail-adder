@@ -35,10 +35,10 @@ Deux raisons peuvent expliquer ce comportement. Premièrement, la miniature n'es
 
 <b>Permissions demandées</b>
 
-- <i>READ_EXTERNAL_STORAGE</i> et <i>WRITE_EXTERNAL_STORAGE</i>
-&emsp;- pour garder l'horodatage des images
+- <i>WRITE_EXTERNAL_STORAGE</i>, <i>READ_EXTERNAL_STORAGE</i>, <i>READ_MEDIA_IMAGES</i>
 - <i>MANAGE_EXTERNAL_STORAGE</i>
-&emsp;- demandé seulement avec le 'flavor' <i>standard</i> qui est livré sur F-Droid pour les appareils avec Android 11 et supérieur pour conserver l'horodatage des fichiers
+- <i>ACCESS_MEDIA_LOCATION</i>
+- <i>POST_NOTIFICATIONS</i>
 - obtenez plus de détails sur la page du projet
 
 <b>Installation</b>
