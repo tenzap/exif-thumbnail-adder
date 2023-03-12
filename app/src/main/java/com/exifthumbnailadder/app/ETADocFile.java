@@ -216,6 +216,13 @@ public class ETADocFile extends ETADoc {
         return BitmapFactory.decodeFile(etaDoc.getPath(), bmo);
     }
 
+    public boolean isImage() throws Exception {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(etaDoc.getPath(), options);
+        return options.outWidth != -1 && options.outHeight != -1;
+    }
+
     public Path toPath() {
         return etaDoc.toPath();
     }

@@ -23,7 +23,9 @@ package com.exifthumbnailadder.app;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageDecoder;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.storage.StorageManager;
@@ -35,11 +37,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.exifthumbnailadder.app.exception.BadOriginalImageException;
 import com.exifthumbnailadder.app.exception.CopyAttributesFailedException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -277,7 +281,7 @@ public class ETADocDf extends ETADoc {
     }
 
     @TargetApi(Build.VERSION_CODES.P)
-    private Bitmap toBitmapImageDecoder() throws Exception {
+    private Bitmap toBitmapImageDecoder() throws IOException, BadOriginalImageException {
         // We need a bitmap that has not Config.HARDWARE
         // for this we have to set it mutable
         // This is for use in ffmpeg
@@ -289,11 +293,33 @@ public class ETADocDf extends ETADoc {
                 decoder.setMutableRequired(true);
             }
         };
-        Bitmap b = ImageDecoder.decodeBitmap(source, listener);
+
+        Bitmap b = null;
+        try {
+            b = ImageDecoder.decodeBitmap(source, listener);
+        } catch (ImageDecoder.DecodeException e) {
+            boolean isImage = false;
+            try {
+                isImage = isImage();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+            if (!isImage)
+                throw new BadOriginalImageException(BadOriginalImageException.NOT_IMAGE);
+            else
+                throw e;
+        }
 
         // decodeBitmap returns a bitmap that is already rotated according to EXIF tags, so set to true
         toBitmapReturnsRotatedBitmap = true;
         return b;
+    }
+
+    public boolean isImage() throws Exception {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(inputStream(), new Rect(), options);
+        return options.outWidth != -1 && options.outHeight != -1;
     }
 
     public Path toPath() {
