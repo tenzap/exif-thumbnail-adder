@@ -25,9 +25,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -142,6 +146,42 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                 ll.setVisibility(View.VISIBLE);
         } else {
             ll.setVisibility(View.GONE);
+        }
+
+        String version = null;
+        try {
+            PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
+            version = pInfo.versionName;
+            if (version.contains("dirty"))
+                version = "master";
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (version == null || version.contains("dirty"))
+            version = "master";
+
+        SpannableStringBuilder info = new SpannableStringBuilder();
+        switch (prefs.getString("exif_library", "exiflib_exiv2")) {
+            case "exiflib_libexif":
+                String anchor_open = "<a href=\"https://github.com/tenzap/exif-thumbnail-adder/blob/" + version + "/README.md#libexif\">";
+                info.append(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_info_library, "<b>libexif</b>", anchor_open, "</a>") + "</span>", 1));
+                break;
+            case "exiflib_pixymeta":
+                anchor_open = "<a href=\"https://github.com/tenzap/exif-thumbnail-adder/blob/" + version + "/README.md#pixymeta-android\">";
+                info.append(Html.fromHtml("<span style='color:#FFA500'>" + getString(R.string.frag1_info_library, "<b>pixymeta-android</b>", anchor_open, "</a>") + "</span>", 1));
+                break;
+        }
+
+        LinearLayout ll_info = view.findViewById(R.id.block_info);
+        if (info.length() != 0)
+        {
+            TextView textViewInfo = view.findViewById(R.id.textview_info);
+            // Make URL clickable https://stackoverflow.com/a/14517468/15401262
+            textViewInfo.setMovementMethod(LinkMovementMethod.getInstance());
+            textViewInfo.setText(info);
+            ll_info.setVisibility(View.VISIBLE);
+        } else {
+            ll_info.setVisibility(View.GONE);
         }
 
         // Create the observer which updates the UI.

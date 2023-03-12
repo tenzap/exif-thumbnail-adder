@@ -57,6 +57,25 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/block_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <View
+            android:id="@+id/divider_block_info"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+        <TextView
+            android:id="@+id/textview_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="" />
+
+    </LinearLayout>
+
     <View
         android:id="@+id/divider2"
         android:layout_width="match_parent"
