@@ -224,10 +224,10 @@ public class SyncService extends Service {
             updateLogAndNotif(Html.fromHtml(getString(R.string.frag1_log_checking_srcdir_perm), 1));
 
             if (! etaSrcDir.isPermOk()) {
-                updateLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_not_granted)+"</span><br>", 1));
+                updateLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.denied) + " " + getString(R.string.add_folder_again) + "</span><br>", 1));
                 continue;
             }
-            updateLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+            updateLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.allowed) + "</span><br>", 1));
 
 
             ETADoc etaDocSrc = null;

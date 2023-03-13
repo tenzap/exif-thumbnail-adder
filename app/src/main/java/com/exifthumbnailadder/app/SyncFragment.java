@@ -249,12 +249,12 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
                 {
                     SyncLogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm_v2), 1));
                     if (!WorkingDirPermActivity.isWorkingDirPermOk(getContext())) {
-                        SyncLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>"+getString(R.string.frag1_log_unsuccessful)+"</span><br>", 1));
+                        SyncLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>" + getString(R.string.denied) + "</span><br>", 1));
                         setIsProcessFalse();
                         stopProcessing = false;
                         return;
                     }
-                    SyncLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>"+getString(R.string.frag1_log_successful)+"</span><br>", 1));
+                    SyncLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + getString(R.string.allowed) + "</span><br>", 1));
                 }
 
                 syncServiceIntent = new Intent(getContext(), SyncService.class);

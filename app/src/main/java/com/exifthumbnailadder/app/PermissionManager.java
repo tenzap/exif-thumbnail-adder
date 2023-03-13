@@ -121,20 +121,20 @@ public class PermissionManager {
         label = "⋅ " + getPermissionLabel(permission) + ":";
         switch (permission) {
             case Manifest.permission.POST_NOTIFICATIONS:
-                outcome_success = "<span style='color:green'>" + fragment.getString(R.string.enabled) + "</span><br>";
-                outcome_failure = "<span style='color:blue'>" + fragment.getString(R.string.disabled) + "</span><br>";
+                outcome_success = "<span style='color:green'>" + fragment.getString(R.string.allowed) + "</span><br>";
+                outcome_failure = "<span style='color:blue'>" + fragment.getString(R.string.denied) + "</span><br>";
                 break;
             case Manifest.permission.MANAGE_EXTERNAL_STORAGE:
                 outcome_success = "<span style='color:green'>" + fragment.getString(R.string.enabled) + "</span><br>";
-                outcome_failure = "<span style='color:red'>" + fragment.getString(R.string.perm_outcome_MANAGE_EXTERNAL_STORAGE_failure) + "</span><br>";
+                outcome_failure = "<span style='color:red'>" + fragment.getString(R.string.denied) + " " + fragment.getString(R.string.can_be_changed_in_settings) + "</span><br>";
                 break;
             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
             case Manifest.permission.READ_EXTERNAL_STORAGE:
             case Manifest.permission.READ_MEDIA_IMAGES:
             case Manifest.permission.ACCESS_MEDIA_LOCATION:
             default:
-                outcome_success = "<span style='color:green'>" + fragment.getString(R.string.frag1_log_successful) + "</span><br>";
-                outcome_failure = "<span style='color:red'>" + fragment.getString(R.string.frag1_log_unsuccessful) + "</span><br>";
+                outcome_success = "<span style='color:green'>" + fragment.getString(R.string.allowed) + "</span><br>";
+                outcome_failure = "<span style='color:red'>" + fragment.getString(R.string.denied) + "</span><br>";
                 break;
         }
 
@@ -167,10 +167,10 @@ public class PermissionManager {
     private boolean checkWorkingDirPermission() {
         AddThumbsLogLiveData.get().appendLog(Html.fromHtml(fragment.getString(R.string.frag1_log_checking_workingdir_perm_v2), 1));
         if (WorkingDirPermActivity.isWorkingDirPermOk(fragment.getContext())) {
-            AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + fragment.getString(R.string.frag1_log_successful) + "</span><br>", 1));
+            AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:green'>" + fragment.getString(R.string.allowed) + "</span><br>", 1));
             return true;
         } else {
-            AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>" + fragment.getString(R.string.frag1_log_unsuccessful) + "</span><br>", 1));
+            AddThumbsLogLiveData.get().appendLog(Html.fromHtml("<span style='color:red'>" + fragment.getString(R.string.denied) + "</span><br>", 1));
         }
         return false;
     }
