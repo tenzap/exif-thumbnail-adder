@@ -172,6 +172,5 @@
     <string name="frag1_log_skipping_unsupported_libexif_xmp">Saute (métadonnées XMP présentes.)\n</string>
     <string name="frag1_info_library">⚠️ La bibliothèque choisie est %1$s. Veuillez prendre connaissance des conséquences dans les %2$snotes%3$s.</string>
     <string name="sync_log_src_dir_missing">Le dossier source n\'existe pas.</string>
-    <string name="perm_outcome_MANAGE_EXTERNAL_STORAGE_failure">\u00A0Desactivé. Cela peut être modifié dans les paramètres.</string>
     <string name="perm_label_MANAGE_EXTERNAL_STORAGE">accès à tous les fichiers</string>
 </resources>
