@@ -54,7 +54,13 @@
     <string name="stop">停止</string>
     <string name="frag1_text_processing_log">处理日志</string>
     <string name="frag1_perm_request_title">权限请求</string>
+    <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_for_timestamp">需要权限%1$s\'来保留文件的时间戳。\n
+        如果你拒绝权限，处理将不会保留时间戳。</string>
+    <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_using_Files_API">需要权限\'%1$s\'才能读取并修改你的图片。</string>
     <string name="frag1_perm_request_deny">拒绝权限</string>
+    <string name="perm_request_message_READ_EXTERNAL_STORAGE">需要权限\'%1$s\'才能读取你的图片。</string>
+    <string name="perm_request_message_ACCESS_MEDIA_LOCATION">需要权限%1$s\'才能将位置信息 (GPS) 存储在你的图片中。 如果未授予该权限，这些信息将丢失。</string>
+    <string name="perm_request_message_POST_NOTIFICATIONS">需要权限\'%1$s\'才能在通知抽屉中显示处理进度。处理完成后它会自动消失。</string>
     <string name="frag1_continue_without_timestamps">\u00A0权限未被授予，可以继续操作但应用将不会保留时间戳</string>
     <string name="frag1_log_skipping_excluded_dir">正跳过已排除目录 %1$s ，其位于 %2$s</string>
     <string name="frag1_log_copying_attr">正在复制属性…</string>
@@ -63,6 +69,8 @@
     <string name="frag1_log_processing_dir">正在处理 %1$s</string>
     <string name="frag1_log_processing_path_filename">正在处理… 路径: %1$s 文件名: %2$s</string>
     <string name="frag1_log_skipping_path_filename">正在跳过… 路径： %1$s 文件名： %2$s</string>
+    <string name="frag1_log_checking_workingdir_perm_v2">⋅ 访问工作目录：</string>
+    <string name="frag1_log_checking_srcdir_perm">⋅ 访问源目录：</string>
     <string name="frag1_log_checking_perm">正在检查权限...</string>
     <string name="frag1_log_skipping_file_missing">正在跳过(文件缺失)</string>
     <string name="frag1_log_skipping_not_jpeg">跳过(不是 JPEG)\n</string>
@@ -147,4 +155,9 @@
     <string name="notification_status">通知状态…</string>
     <string name="enabled">\u00A0已启用</string>
     <string name="disabled">\u00A0已禁用</string>
+    <string name="frag1_log_skipping_unsupported_pixymeta_makernotes">跳过 (MakerNotes 存在于元数据中)\n</string>
+    <string name="frag1_log_skipping_unsupported_libexif_xmp">跳过 (XMP 存在于元数据中)\n</string>
+    <string name="frag1_info_library">⚠️ 库已设置为 %1$s。请阅读 %2$s笔记%3$s 以了解其后果。</string>
+    <string name="sync_log_src_dir_missing">源目录不存在。</string>
+    <string name="perm_label_MANAGE_EXTERNAL_STORAGE">访问所有文件</string>
 </resources>
