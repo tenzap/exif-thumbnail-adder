@@ -63,7 +63,7 @@
     <string name="frag1_perm_request_title">Permission request</string>
     <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_for_timestamp">Permission \'%1$s\' is required to keep timestamps of files.\n
         If you deny permission, processing will be done without keeping timestamps.</string>
-    <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_using_Files_API">Permission \'%1$s\' is required to be able to read your picture and modify them.</string>
+    <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_using_Files_API">Permission \'%1$s\' is required to be able to read your pictures and modify them.</string>
     <string name="frag1_perm_request_deny">Deny permission</string>
     <string name="perm_request_message_READ_EXTERNAL_STORAGE">Permission \'%1$s\' is required to be able to read your pictures.</string>
     <string name="perm_request_message_ACCESS_MEDIA_LOCATION">Permission \'%1$s\' is required to be able to keep the location information (GPS) stored in your pictures. If not given, this information will be lost.</string>
