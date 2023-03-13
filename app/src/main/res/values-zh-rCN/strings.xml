@@ -160,4 +160,8 @@
     <string name="frag1_info_library">⚠️ 库已设置为 %1$s。请阅读 %2$s笔记%3$s 以了解其后果。</string>
     <string name="sync_log_src_dir_missing">源目录不存在。</string>
     <string name="perm_label_MANAGE_EXTERNAL_STORAGE">访问所有文件</string>
+    <string name="allowed">\u00A0已允许。</string>
+    <string name="denied">\u00A0已拒绝。</string>
+    <string name="add_folder_again">在设置中再次添加该文件夹。</string>
+    <string name="can_be_changed_in_settings">这可以在设置中进行更改。</string>
 </resources>
