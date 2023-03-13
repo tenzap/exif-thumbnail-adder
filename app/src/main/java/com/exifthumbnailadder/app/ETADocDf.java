@@ -276,6 +276,9 @@ public class ETADocDf extends ETADoc {
     @SuppressWarnings("deprecation")
     private Bitmap toBitmapLegacy() throws Exception {
         Bitmap b = MediaStore.Images.Media.getBitmap(ctx.getContentResolver(), _uri);
+        if (b == null) {
+            throw new BadOriginalImageException(BadOriginalImageException.NOT_IMAGE);
+        }
         if (enableLog) Log.i(TAG, "BitmapConfig: "+ b.getConfig().toString());
         return b;
     }
