@@ -128,9 +128,9 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
             }
         });
 
-        textViewLog = (TextView)view.findViewById(R.id.sync_textview_log);
-        textViewDirList = (TextView)view.findViewById(R.id.sync_textview_dir_list);
-        scrollview = ((ScrollView)view.findViewById(R.id.sync_scrollview));
+        textViewLog = (TextView) view.findViewById(R.id.sync_textview_log);
+        textViewDirList = (TextView) view.findViewById(R.id.sync_textview_dir_list);
+        scrollview = ((ScrollView) view.findViewById(R.id.sync_scrollview));
         AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
 
         // Create the observer which updates the UI.
@@ -179,7 +179,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if ( key.equals("srcUris")) {
+        if (key.equals("srcUris")) {
             AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
         }
     }
@@ -278,7 +278,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
     public void displayStopButton() {
         Button list = (Button) getView().findViewById(R.id.sync_button_list_files);
         Button start = (Button) getView().findViewById(R.id.sync_button_del_files);
-        Button stop = (Button)getView().findViewById(R.id.sync_button_stop);
+        Button stop = (Button) getView().findViewById(R.id.sync_button_stop);
         list.setVisibility(Button.GONE);
         start.setVisibility(Button.GONE);
         stop.setVisibility(Button.VISIBLE);
