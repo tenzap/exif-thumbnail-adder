@@ -125,7 +125,7 @@ public class PermissionManager {
                 outcome_failure = "<span style='color:blue'>" + fragment.getString(R.string.denied) + "</span><br>";
                 break;
             case Manifest.permission.MANAGE_EXTERNAL_STORAGE:
-                outcome_success = "<span style='color:green'>" + fragment.getString(R.string.enabled) + "</span><br>";
+                outcome_success = "<span style='color:green'>" + fragment.getString(R.string.allowed) + "</span><br>";
                 outcome_failure = "<span style='color:red'>" + fragment.getString(R.string.denied) + " " + fragment.getString(R.string.can_be_changed_in_settings) + "</span><br>";
                 break;
             case Manifest.permission.WRITE_EXTERNAL_STORAGE:
