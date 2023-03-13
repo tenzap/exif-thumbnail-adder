@@ -3,11 +3,13 @@ on:
   push:
     branches:
       - '*'
+      - '!master'
       - '!l10n_master'
+    tags:
+      - '*'
   pull_request:
     branches:
-      - '*'
-      - '!l10n_master'
+      - 'master'
 
 env:
   GRADLE_COMMON_ARGS:
