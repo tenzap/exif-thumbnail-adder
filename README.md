@@ -107,7 +107,6 @@ GPL-3.0 (see "COPYING" file on project homepage)
 - the existing EXIF tags are read and metadata is rewritten from scratch using what was read
 - Some tags are incorrectly rewritten. See bug reports [1](https://github.com/dragon66/pixymeta-android/issues/15).
   - Some makernotes get altered (eg Canon, Nikon, Olympus, Sanyo...)
-  - ByteOrder gets modified from Little-endian (Intel, II) to Big-endian (Motorola, MM)
 
 
 ## Concerning some permissions
