@@ -72,6 +72,7 @@ public abstract class Exif extends Metadata {
 	protected IFD gpsSubIFD;
 	protected IFD interopSubIFD;
 	protected ExifThumbnail thumbnail;
+	protected short preferedEndian = IOUtils.BIG_ENDIAN;
 	
 	private boolean containsThumbnail;
 	private boolean isThumbnailRequired;
@@ -267,6 +268,10 @@ public abstract class Exif extends Metadata {
 		return isThumbnailRequired;
 	}
 	
+	public short getPreferedEndian() {
+		return preferedEndian;
+	}
+	
 	public Iterator<MetadataEntry> iterator() {
 		ensureDataRead();
 		List<MetadataEntry> items = new ArrayList<MetadataEntry>();
@@ -287,6 +292,9 @@ public abstract class Exif extends Metadata {
 			RandomAccessInputStream exifIn = new FileCacheRandomAccessInputStream(new ByteArrayInputStream(data));
 			List<IFD> ifds = new ArrayList<IFD>(3);
 			TIFFMeta.readIFDs(ifds, exifIn);
+			
+			preferedEndian = exifIn.getEndian();
+			
 			if(ifds.size() > 0) {
 				imageIFD = ifds.get(0);
 				exifSubIFD = imageIFD.getChild(TiffTag.EXIF_SUB_IFD);
@@ -371,6 +379,12 @@ public abstract class Exif extends Metadata {
 	
 	public void setThumbnailRequired(boolean isThumbnailRequired) {
 		this.isThumbnailRequired = isThumbnailRequired;
+	}
+	
+	public void setPreferedEndian(short preferedEndian) {
+		if(preferedEndian != IOUtils.BIG_ENDIAN && preferedEndian != IOUtils.LITTLE_ENDIAN)
+			throw new IllegalArgumentException("Invalid Exif endian!");
+		this.preferedEndian = preferedEndian;
 	}
 		
 	public abstract void write(OutputStream os) throws IOException;

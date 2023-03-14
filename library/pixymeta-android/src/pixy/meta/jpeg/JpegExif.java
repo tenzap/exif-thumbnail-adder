@@ -39,6 +39,7 @@ import pixy.io.IOUtils;
 import pixy.io.MemoryCacheRandomAccessOutputStream;
 import pixy.io.RandomAccessOutputStream;
 import pixy.io.WriteStrategyMM;
+import pixy.io.WriteStrategyII;
 import pixy.meta.exif.Exif;
 import pixy.meta.exif.ExifTag;
 
@@ -80,10 +81,9 @@ public class JpegExif extends Exif {
 		// Writes APP1 marker
 		IOUtils.writeShortMM(os, Marker.APP1.getValue());		
 		// TIFF structure starts here
-		short endian = IOUtils.BIG_ENDIAN;
 		short tiffID = 0x2a; //'*'
-		randOS.setWriteStrategy(WriteStrategyMM.getInstance());
-		randOS.writeShort(endian);
+		randOS.setWriteStrategy((preferedEndian == IOUtils.BIG_ENDIAN)? WriteStrategyMM.getInstance():WriteStrategyII.getInstance());
+		randOS.writeShort(preferedEndian);
 		randOS.writeShort(tiffID);
 		// First IFD offset relative to TIFF structure
 		randOS.seek(0x04);
