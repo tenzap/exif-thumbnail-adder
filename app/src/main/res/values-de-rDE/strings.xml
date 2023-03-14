@@ -157,6 +157,7 @@
     <string name="disabled">\u00A0deaktiviert</string>
     <string name="frag1_log_skipping_unsupported_pixymeta_makernotes">Überspringen (Metadaten enthalten MakerNotes)\n</string>
     <string name="frag1_log_skipping_unsupported_libexif_xmp">Überspringen (Metadaten enthalten XMP)\n</string>
+    <string name="frag1_info_library">⚠️ %1$s ist als Bibliothek festgelegt. Lies bitte die %2$sHinweise%3$s, welche Konsequenzen das hat.</string>
     <string name="sync_log_src_dir_missing">Quellverzeichnis nicht vorhanden.</string>
     <string name="perm_label_MANAGE_EXTERNAL_STORAGE">Zugriff auf alle Dateien</string>
     <string name="allowed">\u00A0gewährt.</string>
