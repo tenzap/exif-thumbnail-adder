@@ -122,6 +122,10 @@ for engine in exiv2 libexif pixymeta AEE; do
 
   TESTDIR="$ETA_REPO_PATH/tests/output/test_output/$API/standard_addThumbsSettings${ENGINEID}/DCIM/test_standard_addThumbsSettings${ENGINEID}"
 
+  if [ ! -e "$TESTDIR" ]; then
+    continue
+  fi
+
   FILES=$(find "$ETA_REPO_PATH/tests/output/test_pics/" -type f | sort | sed -e "s|$ETA_REPO_PATH/tests/output/test_pics/||")
 
   for file in $FILES; do
