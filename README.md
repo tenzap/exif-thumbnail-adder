@@ -103,10 +103,8 @@ GPL-3.0 (see "COPYING" file on project homepage)
 - If libexif detects some problems (errors) in a file, it is skipped (reported error is displayed in the app). This setting can be changed in the app configuration.
 
 ### pixymeta-android
-- **To avoid loosing makernotes metadata, Exif Thumbnail Adder skips the pictures that have makernotes metadata.** This is because pixymeta-android doesn't support makernotes well.
+- **To avoid loosing makernotes metadata, Exif Thumbnail Adder skips the pictures that have makernotes metadata.** This is because pixymeta-android doesn't support makernotes well. See bug reports [1](https://github.com/dragon66/pixymeta-android/issues/15): for example ETA didn't skip these pictures, makernotes of Canon, Nikon, Olympus, Sanyo... might get corrupted.
 - the existing EXIF tags are read and metadata is rewritten from scratch using what was read
-- Some tags are incorrectly rewritten. See bug reports [1](https://github.com/dragon66/pixymeta-android/issues/15).
-  - Some makernotes get altered (eg Canon, Nikon, Olympus, Sanyo...)
 
 
 ## Concerning some permissions
