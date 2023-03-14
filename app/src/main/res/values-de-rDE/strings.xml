@@ -54,7 +54,13 @@
     <string name="stop">Anhalten</string>
     <string name="frag1_text_processing_log">Verarbeitungsprotokoll</string>
     <string name="frag1_perm_request_title">Berechtigungsabfrage</string>
+    <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_for_timestamp">Die Berechtigung \'%1$s\' wird benötigt, um die Zeitstempel der Dateien zu erhalten.\n
+        Wenn die Berechtigung nicht gewährt wird, findet die Bearbeitung ohne Erhalt der Zeitstempel statt.</string>
+    <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_using_Files_API">Die Berechtigung \'%1$s\' wird benötigt, um deine Bilder einlesen und bearbeiten zu können.</string>
     <string name="frag1_perm_request_deny">Berechtigung verweigern</string>
+    <string name="perm_request_message_READ_EXTERNAL_STORAGE">Die Berechtigung \'%1$s\' wird benötigt, um deine Bilder einlesen zu können.</string>
+    <string name="perm_request_message_ACCESS_MEDIA_LOCATION">Die Berechtigung \'%1$s\' wird benötigt, um die in deinen Bildern gespeicherten Standortinformationen (GPS-Daten) erhalten zu können. Wird sie nicht gewährt, gehen diese Informationen verloren.</string>
+    <string name="perm_request_message_POST_NOTIFICATIONS">Die Berechtigung \'%1$s\' wird benötigt, um den Bearbeitungsfortschritt in der Benachrichtigungsleiste anzuzeigen. Sie verschwindet automatisch, wenn die Bearbeitung abgeschlossen ist.</string>
     <string name="frag1_continue_without_timestamps">\u00A0Berechtigung nicht erteilt, ohne Erhalt der Zeitstempel weitermachen.</string>
     <string name="frag1_log_skipping_excluded_dir">Ausgeschlossenes Verzeichnis %1$s in %2$s überspringen</string>
     <string name="frag1_log_copying_attr">Attribute kopieren…</string>
@@ -63,6 +69,8 @@
     <string name="frag1_log_processing_dir">Verarbeitung von %1$s</string>
     <string name="frag1_log_processing_path_filename">Verarbeiten… Pfad: %1$s Dateiname: %2$s</string>
     <string name="frag1_log_skipping_path_filename">Überspringen… Pfad: %1$s Dateiname: %2$s</string>
+    <string name="frag1_log_checking_workingdir_perm_v2">⋅ Zugriff auf Arbeitsverzeichnis:</string>
+    <string name="frag1_log_checking_srcdir_perm">⋅ Zugriff auf Quellverzeichnis:</string>
     <string name="frag1_log_checking_perm">Prüfung der Berechtigungen…</string>
     <string name="frag1_log_skipping_file_missing">Überspringen (Datei fehlt)</string>
     <string name="frag1_log_skipping_not_jpeg">Überspringen (nicht JPEG)\n</string>
@@ -91,6 +99,11 @@
     <string name="settings_dialog_all_files_access_not_supported">Dein Gerät unterstützt keinen Zugriff auf alle Dateien</string>
     <string name="settings_button_remove_all_dirs">Alle Ordner entfernen</string>
     <string name="settings_button_add_dir">Hinzufügen</string>
+    <string name="settings_option_not_available">Option nicht verfügbar</string>
+    <string name="settings_all_files_access_unavailable">Diese App-Variante erlaubt nicht, eine \'Zugriff auf alle Dateien\'-Berechtigung zu erteilen.
+        \n\nEine Variante mit diesem Merkmal ist bei %1$s erhältlich.
+        \n\nTipp: Für eine erfolgreiche Installation musst du zuerst diese Variante von %2$s deinstallieren.</string>
+    <string name="settings_show_in_">Zu %1$s wechseln</string>
     <string name="pref_categ_folders">Ordner</string>
     <string name="pref_dirToProcess_title">Zu verarbeitende Ordner</string>
     <string name="pref_workingDir_title"><![CDATA[Sicherungs- und Arbeitsverzeichnis]]></string>
@@ -138,4 +151,16 @@
     <string name="sync_log_checking">Prüfung: %1$s</string>
     <string name="sync_log_failure_to_delete_file">Löschen der Datei fehlgeschlagen</string>
     <string name="sync_log_files_to_remove">Zu entfernende Dateien (nicht mehr in der Quelle):</string>
+    <string name="close">Schließen</string>
+    <string name="notification_status">Benachrichtigungsstatus …</string>
+    <string name="enabled">\u00A0aktiviert</string>
+    <string name="disabled">\u00A0deaktiviert</string>
+    <string name="frag1_log_skipping_unsupported_pixymeta_makernotes">Überspringen (Metadaten enthalten MakerNotes)\n</string>
+    <string name="frag1_log_skipping_unsupported_libexif_xmp">Überspringen (Metadaten enthalten XMP)\n</string>
+    <string name="sync_log_src_dir_missing">Quellverzeichnis nicht vorhanden.</string>
+    <string name="perm_label_MANAGE_EXTERNAL_STORAGE">Zugriff auf alle Dateien</string>
+    <string name="allowed">\u00A0gewährt.</string>
+    <string name="denied">\u00A0verweigert.</string>
+    <string name="add_folder_again">Ordner in den Einstellungen wieder hinzufügen.</string>
+    <string name="can_be_changed_in_settings">Kann in den Einstellungen geändert werden.</string>
 </resources>
