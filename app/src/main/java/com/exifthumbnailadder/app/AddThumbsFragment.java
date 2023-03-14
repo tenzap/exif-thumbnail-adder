@@ -136,18 +136,6 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
         scrollview = ((NestedScrollView)  view.findViewById(R.id.scrollview));
         AddThumbsFragment.updateTextViewDirList(getContext(), textViewDirList);
 
-        LinearLayout ll = (LinearLayout)view.findViewById(R.id.block_allFilesAccess);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // Use of "All Files Access Permissions" may result in rejection from the google play store
-            // We use it only to be able to update the attributes of the files (ie timestamps)
-            if (PermissionManager.hasAllFilesAccessPermission())
-                ll.setVisibility(View.GONE);
-            else
-                ll.setVisibility(View.VISIBLE);
-        } else {
-            ll.setVisibility(View.GONE);
-        }
-
         String version = null;
         try {
             PackageInfo pInfo = getContext().getPackageManager().getPackageInfo(getContext().getPackageName(), 0);
@@ -172,17 +160,14 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
                 break;
         }
 
-        LinearLayout ll_info = view.findViewById(R.id.block_info);
-        if (info.length() != 0)
-        {
+        if (info.length() != 0) {
             TextView textViewInfo = view.findViewById(R.id.textview_info);
             // Make URL clickable https://stackoverflow.com/a/14517468/15401262
             textViewInfo.setMovementMethod(LinkMovementMethod.getInstance());
             textViewInfo.setText(info);
-            ll_info.setVisibility(View.VISIBLE);
-        } else {
-            ll_info.setVisibility(View.GONE);
         }
+
+        displayStartButton();
 
         // Create the observer which updates the UI.
         final Observer<SpannableStringBuilder> ETAObserver = new Observer<SpannableStringBuilder>() {
@@ -391,18 +376,53 @@ public class AddThumbsFragment extends Fragment implements SharedPreferences.OnS
             });
 
     private void displayStartButton() {
+        if (textViewLog == null || textViewLog.getText().toString().isEmpty()) {
+            LinearLayout ll_all_files_access = getView().findViewById(R.id.block_allFilesAccess);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                // We use it only to be able to update the attributes of the files (ie timestamps)
+                if (PermissionManager.hasAllFilesAccessPermission())
+                    ll_all_files_access.setVisibility(View.GONE);
+                else
+                    ll_all_files_access.setVisibility(View.VISIBLE);
+            } else {
+                ll_all_files_access.setVisibility(View.GONE);
+            }
+
+            TextView textViewInfo = getView().findViewById(R.id.textview_info);
+            LinearLayout ll_info = getView().findViewById(R.id.block_info);
+            TextView blank_line = getView().findViewById(R.id.textview_one_blank_line);
+            if (textViewInfo.getText().toString().isEmpty()) {
+                ll_info.setVisibility(View.GONE);
+                blank_line.setVisibility(View.GONE);
+            } else {
+                ll_info.setVisibility(View.VISIBLE);
+                blank_line.setVisibility(View.VISIBLE);
+            }
+        }
+
         Button start = (Button) getView().findViewById(R.id.button_addThumbs);
         Button stop = (Button) getView().findViewById(R.id.button_stopProcess);
         start.setVisibility(Button.VISIBLE);
         stop.setVisibility(Button.GONE);
+
         setBottomBarMenuItemsEnabled(true);
     }
 
     private void displayStopButton() {
+        LinearLayout ll_all_files_access = getView().findViewById(R.id.block_allFilesAccess);
+        ll_all_files_access.setVisibility(View.GONE);
+
+        LinearLayout ll_info = getView().findViewById(R.id.block_info);
+        ll_info.setVisibility(View.GONE);
+
+        TextView blank_line = getView().findViewById(R.id.textview_one_blank_line);
+        blank_line.setVisibility(View.GONE);
+
         Button start = (Button) getView().findViewById(R.id.button_addThumbs);
         Button stop = (Button) getView().findViewById(R.id.button_stopProcess);
         start.setVisibility(Button.GONE);
         stop.setVisibility(Button.VISIBLE);
+
         setBottomBarMenuItemsEnabled(false);
     }
 

@@ -82,6 +82,12 @@
         android:layout_height="1dp"
         android:background="?android:attr/listDivider" />
 
+    <TextView
+        android:id="@+id/textview_one_blank_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="" />
+
     <Button
         android:id="@+id/button_addThumbs"
         android:layout_width="wrap_content"
