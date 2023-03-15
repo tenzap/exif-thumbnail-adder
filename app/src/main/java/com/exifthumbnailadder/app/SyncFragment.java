@@ -246,6 +246,8 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
                 SyncLogLiveData.get().clear();
                 SyncLogLiveData.get().appendLog(getString(R.string.frag1_log_starting));
 
+                SyncLogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_perm) + "<br>", 1));
+
                 {
                     SyncLogLiveData.get().appendLog(Html.fromHtml(getString(R.string.frag1_log_checking_workingdir_perm_v2), 1));
                     if (!WorkingDirPermActivity.isWorkingDirPermOk(getContext())) {
