@@ -113,7 +113,7 @@ public class AddThumbsCommon extends TestCommons {
 
         finished = false;
 
-        dir = new Dirs("DCIM/test_pics");
+        dir = new Dirs("DCIM/test_pics", testname);
         uiDevice.executeShellCommand("mkdir -p " + dir.pathInStorage());
         uiDevice.executeShellCommand("rm -rf " + dir.copyPathAbsolute());
         if (Build.VERSION.SDK_INT == 26) {
@@ -311,15 +311,22 @@ public class AddThumbsCommon extends TestCommons {
         assertTrue("Processing couldn't finish (timeout?)", finished);
     }
 
-    public class Dirs {
+    static class Dirs {
 
         public final String ROOT = "/storage/emulated/0";
         public final String OUTPUT_STORAGE_ROOT = "/data/local/tmp/test_output/" + Build.VERSION.SDK_INT;
 
         Path path;
+        String suffix = null;
+        TestName testname;
 
-        public Dirs(String path) {
+        public Dirs(String path, TestName testname) {
             this.path = Paths.get(path);
+            this.testname = testname;
+        }
+
+        public void setSuffix(String suffix) {
+            this.suffix = suffix;
         }
 
         public String copyPath() {
@@ -343,8 +350,12 @@ public class AddThumbsCommon extends TestCommons {
         }
 
         public String suffix() {
-            // <FLAVOR>_<TESTNAME>
-            return BuildConfig.FLAVOR + "_" + testname.getMethodName();
+            if (suffix == null) {
+                // <FLAVOR>_<TESTNAME>
+                return BuildConfig.FLAVOR + "_" + testname.getMethodName();
+            } else {
+                return suffix;
+            }
         }
 
         public String copyForUri() {
