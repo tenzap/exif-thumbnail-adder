@@ -153,6 +153,9 @@ The app can be compiled in any of the following flavors:
 
 
 ### To create screenshots
+
+With screengrab 2.1.1 you must run them on API <= 30. See [screengrab bugreport](https://github.com/fastlane/fastlane/issues/21140).
+
 From within the root directory of the project run:
 
   ```Shell
