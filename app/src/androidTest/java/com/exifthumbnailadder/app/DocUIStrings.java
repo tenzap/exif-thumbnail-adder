@@ -70,7 +70,7 @@ public class DocUIStrings {
                 allow = resources.getString(resId);
                 resId = resources.getIdentifier("open_tree_button", "string", documentsUiPackageName);
                 allowAccessTo = resources.getString(resId);
-                allowAccessTo = allowAccessTo.replaceFirst(".%1\\$s..*", ""); //remove "%1$s"
+                allowAccessTo = allowAccessTo.replaceFirst("%1\\$s", ".*"); //replace "%1$s" by regex
 
             } else {
                 resId = resources.getIdentifier("button_select", "string", documentsUiPackageName);

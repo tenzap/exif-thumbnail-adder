@@ -449,7 +449,7 @@ public class TestUtil {
 
         // Confirm/Validate the selected dir
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            uiElement = device.findObject(new UiSelector().clickable(true).textContains(docUIStrings.getAllowAccessTo()));
+            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllowAccessTo().toUpperCase()));
             Log.d("ETATest", "AllowAccessTo exists? " + uiElement.exists());
             clickObject(device, uiElement);
 
@@ -483,7 +483,7 @@ public class TestUtil {
             clickObject(device, selector, label);
 
             label = docUIStrings.getAllowAccessTo();
-            selector = By.clickable(true).text(Pattern.compile(label + ".*", Pattern.CASE_INSENSITIVE));
+            selector = By.clickable(true).text(Pattern.compile(label.toUpperCase(), Pattern.CASE_INSENSITIVE));
             clickObject(device, selector, label);
 
             label = docUIStrings.getAllow();
