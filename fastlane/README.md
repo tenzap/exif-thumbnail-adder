@@ -103,14 +103,6 @@ Postpare matadata - This restores to the state before the 'prepare'
 
 Build debug and test APK for screenshots
 
-### android copy_test_pics_for_screengrab
-
-```sh
-[bundle exec] fastlane android copy_test_pics_for_screengrab
-```
-
-Copy sample pictures to the device
-
 ### android screenshots
 
 ```sh

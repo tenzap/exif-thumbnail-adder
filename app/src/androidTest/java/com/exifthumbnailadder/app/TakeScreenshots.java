@@ -39,6 +39,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.uiautomator.UiDevice;
 
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -58,9 +59,11 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -81,6 +84,9 @@ public class TakeScreenshots {
     private IdlingResource mIdlingResource;
     private IdlingResource mWorkingDirPermIdlingResource;
     public boolean finished;
+    private UiDevice uiDevice = UiDevice.getInstance(getInstrumentation());;
+    AddThumbsCommon.Dirs dir;
+    Context context;
 
     @ClassRule
     public static final LocaleTestRule localeTestRule = new LocaleTestRule();
@@ -88,9 +94,48 @@ public class TakeScreenshots {
     @Rule
     public ActivityScenarioRule<MainActivity> activityScenarioRule = new ActivityScenarioRule<>(MainActivity.class);
 
+    @Rule
+    public TestName testname = new TestName();
+
     @BeforeClass
-    public static void beforeAll() {
-        //Screengrab.setDefaultScreenshotStrategy(new UiAutomatorScreenshotStrategy());
+    public static void clear() throws Exception {
+        TestUtil.clearETA();
+        TestUtil.clearDocumentsUI();
+    }
+
+    @Before
+    public void init() throws Exception {
+        context = getInstrumentation().getTargetContext();
+        finished = false;
+
+        dir = new AddThumbsCommon.Dirs("DCIM/test_pics", testname);
+        dir.setSuffix("sg");
+        uiDevice.executeShellCommand("mkdir -p " + dir.pathInStorage());
+        uiDevice.executeShellCommand("rm -rf " + dir.copyPathAbsolute());
+        uiDevice.executeShellCommand("mkdir -p " + dir.copyPathAbsolute());
+
+        String files[] = {
+                "/Fujifilm_FinePix_E500.jpg", //PICTURE_WITHOUT_THUMBNAIL
+                "/Canon_40D.jpg", //PICTURE_WITH_THUMBNAIL
+                "/Konica_Minolta_DiMAGE_Z3.jpg", //PICTURE_EXIV2_WARNING
+                "/Nikon_COOLPIX_P1.jpg", //PICTURE_EXIV2_ERROR
+                "/tests/67-0_length_string.jpg", //Skipping (ERROR): exiv2: Warning: Failed to decode XMP metadata. Error: XMP Toolkit error 201: Error in XMLValidator
+                "/Ricoh_Caplio_RR330.jpg", //PICTURE_WITHOUT_THUMBNAIL_AS_PER_ANDROID
+        };
+
+        for (String file : files) {
+            if (Build.VERSION.SDK_INT == 26) {
+                // On Android O (API26), cp doesn't understand --preserve=timestamps,mode,ownership
+                // But it understands --preserve=a.
+                uiDevice.executeShellCommand("cp -a --preserve=a " + dir.origPathAbsolute() + file + " " + dir.copyPathAbsolute());
+            } else if (Build.VERSION.SDK_INT <= 28) {
+                // On Android P (API28), timestamps are not kept despite use of -a.
+                // So add --preserve=timestamps,mode,ownership
+                uiDevice.executeShellCommand("cp -a --preserve=timestamps,mode,ownership " + dir.origPathAbsolute() + file + " " + dir.copyPathAbsolute());
+            } else {
+                uiDevice.executeShellCommand("cp -a " + dir.origPathAbsolute() + file + " " + dir.copyPathAbsolute());
+            }
+        }
     }
 
     @Test
@@ -120,33 +165,41 @@ public class TakeScreenshots {
 //        String g = Build.HARDWARE;
 //        String f = Build.DISPLAY;
 
-        int i = 1;
         // Main screen
-        Screengrab.screenshot(String.format("%03d", ++i));
+        Screengrab.screenshot(String.format("%03d", 8));
 
-        // Your custom onView...
+        // Go to settings fragment
+        onView(withId(R.id.SettingsFragment)).perform(click());
 
-        // Sync screen
-        onView(withId(R.id.SyncFragment)).perform(click());
-        Screengrab.screenshot(String.format("%03d", ++i));
+        // Add source folder
+        TestUtil.addSourceFolder("DCIM/test_sg");
+
+        // Set some preferences for screenshots
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("overwriteDestPic", true);
+        editor.putBoolean("writeThumbnailedToOriginalFolder", false);
+        editor.commit();
+
+        // give all files access (we need it to delete folders)
+        TestUtil.requestAllFilesAccess();
 
         // Settings screen (start)
-        onView(withId(R.id.SettingsFragment)).perform(click());
-        Screengrab.screenshot(String.format("%03d", ++i));
+        Screengrab.screenshot(String.format("%03d", 3));
 
         // Settings screen (got to bottom & scroll to "Options" category)
         onView(allOf(withId(R.id.nav_host_fragment), hasContentDescription())).perform(swipeUp());
         onView(withId(androidx.preference.R.id.recycler_view))
                 .perform(RecyclerViewActions.actionOnItem(hasDescendant(withText(R.string.pref_backupOriginalPic_title)),
                         scrollTo()));
-        Screengrab.screenshot(String.format("%03d", ++i));
+        Screengrab.screenshot(String.format("%03d", 4));
 
         // Settings screen (got to bottom & scroll to "Backend/Library" category)
         onView(allOf(withId(R.id.nav_host_fragment), hasContentDescription())).perform(swipeUp());
         onView(withId(androidx.preference.R.id.recycler_view))
                 .perform(RecyclerViewActions.actionOnItem(hasDescendant(withText(R.string.pref_categ_libexif_settings)),
                         scrollTo()));
-        Screengrab.screenshot(String.format("%03d", ++i));
+        Screengrab.screenshot(String.format("%03d", 5));
 
         // Settings screen (return to top)
         onView(allOf(withId(R.id.nav_host_fragment), hasContentDescription())).perform(swipeDown());
@@ -155,28 +208,10 @@ public class TakeScreenshots {
         //onView(withId(R.id.settings)).perform(pressBack());
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         onView(withText(R.string.action_about)).perform(click());
-        Screengrab.screenshot(String.format("%03d", ++i));
+        Screengrab.screenshot(String.format("%03d", 7));
 
         // Return to previous screen
         Espresso.pressBack();
-
-        // Add source folder
-        TestUtil.addSourceFolder("DCIM/sg");
-
-        // Set some preferences for screenshots
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("overwriteDestPic", true);
-        editor.putBoolean("writeThumbnailedToOriginalFolder", false);
-        editor.putString("working_dir", "ThumbAdder-sg");
-        editor.commit();
-
-        // give all files access (we need it to delete folders)
-        TestUtil.requestAllFilesAccess();
-
-        // Delete existing WorkingDir (so that we can go to the "WorkingDirPermActivity")
-        deleteDirectory(Paths.get("/storage/emulated/0/ThumbAdder-sg").toFile());
 
         // Go to "Add thumbnails" fragment
         onView(withId(R.id.AddThumbsFragment)).perform(click());
@@ -217,7 +252,7 @@ public class TakeScreenshots {
             }
         }
 
-        Screengrab.screenshot(String.format("%03d", ++i));
+        Screengrab.screenshot(String.format("%03d", 6));
 
         // Give permissions to the WorkingDir
         IdlingRegistry.getInstance().register(mWorkingDirPermIdlingResource);
@@ -252,8 +287,11 @@ public class TakeScreenshots {
 
         Screengrab.screenshot(String.format("%03d", 1));
 
-        // Delete WorkingDir
-        deleteDirectory(Paths.get("/storage/emulated/0/ThumbAdder-sg").toFile());
+        // Sync screen
+        deletePicture("Fujifilm_FinePix_E500.jpg");
+        AddThumbsCommon.sync(context, "List");
+        Screengrab.screenshot(String.format("%03d", 2));
+
     }
 
     boolean deleteDirectory(File directoryToBeDeleted) {
@@ -283,4 +321,9 @@ public class TakeScreenshots {
             IdlingRegistry.getInstance().unregister(mIdlingResource);
         }
     }
+
+    protected void deletePicture(String filename) throws IOException {
+        uiDevice.executeShellCommand("rm " + dir.copyPathAbsolute() + "/" + filename);
+    }
+
 }

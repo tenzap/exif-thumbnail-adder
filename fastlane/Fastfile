@@ -126,34 +126,10 @@ platform :android do
     )
   end
 
-  desc "Copy sample pictures to the device"
-  lane :copy_test_pics_for_screengrab do
-    adb(
-      #serial: 'emulator-5554',
-      command: 'shell rm -fr /storage/emulated/0/ThumbAdder-sg'
-    )
-    adb(
-      #serial: 'emulator-5554',
-      command: 'shell rm -fr /storage/emulated/0/DCIM/sg'
-    )
-    adb(
-      #serial: 'emulator-5554',
-      command: 'shell mkdir -p /storage/emulated/0/DCIM/sg'
-    )
-    adb(
-      #serial: 'emulator-5554',
-      command: 'push tests/data/exif-samples/jpg/Fujifilm_FinePix_E500.jpg /storage/emulated/0/DCIM/sg'
-    )
-    adb(
-      #serial: 'emulator-5554',
-      command: 'push tests/data/exif-samples/jpg/Olympus_C8080WZ.jpg /storage/emulated/0/DCIM/sg'
-    )
-  end
-
   desc "Do screenshots"
   lane :screenshots do
     build_for_screengrab
-    copy_test_pics_for_screengrab
+    prepare_device_for_tests
     capture_android_screenshots(
       use_timestamp_suffix: false,
       clear_previous_screenshots: true,
