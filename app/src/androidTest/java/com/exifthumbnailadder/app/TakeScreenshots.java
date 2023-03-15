@@ -117,7 +117,7 @@ public class TakeScreenshots {
         String files[] = {
                 "/Fujifilm_FinePix_E500.jpg", //PICTURE_WITHOUT_THUMBNAIL
                 "/Canon_40D.jpg", //PICTURE_WITH_THUMBNAIL
-                "/Konica_Minolta_DiMAGE_Z3.jpg", //PICTURE_EXIV2_WARNING
+//                "/Konica_Minolta_DiMAGE_Z3.jpg", //PICTURE_EXIV2_WARNING
                 "/Nikon_COOLPIX_P1.jpg", //PICTURE_EXIV2_ERROR
                 "/tests/67-0_length_string.jpg", //Skipping (ERROR): exiv2: Warning: Failed to decode XMP metadata. Error: XMP Toolkit error 201: Error in XMLValidator
                 "/Ricoh_Caplio_RR330.jpg", //PICTURE_WITHOUT_THUMBNAIL_AS_PER_ANDROID
