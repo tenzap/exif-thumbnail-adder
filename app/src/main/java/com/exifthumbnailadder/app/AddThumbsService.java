@@ -332,10 +332,12 @@ public class AddThumbsService extends Service {
                 boolean srcImgFlipped = false;
                 int srcImgWidth = 0;
                 int srcImgHeight = 0;
+                boolean srcHasOneMandatoryTag = false;
 
                 try {
                     InputStream srcImgIs = doc.inputStream();
                     ETAExifInterface srcImgExifInterface = new ETAExifInterface(srcImgIs);
+                    srcImgIs.close();
                     if (srcImgExifInterface != null) {
                         srcImgHasThumbnail = srcImgExifInterface.hasThumbnail();
                         srcImgHasXmp = srcImgExifInterface.hasXmpMetadataFromSeparateMarker();
@@ -343,12 +345,11 @@ public class AddThumbsService extends Service {
                         srcImgFlipped = srcImgExifInterface.isFlipped();
                         srcImgWidth = srcImgExifInterface.getAttributeInt(ETAExifInterface.TAG_PIXEL_X_DIMENSION, 0);
                         srcImgHeight = srcImgExifInterface.getAttributeInt(ETAExifInterface.TAG_PIXEL_Y_DIMENSION, 0);
+                        srcHasOneMandatoryTag = srcImgExifInterface.hasOneMandatoryTag();
                     }
-                    srcImgIs.close();
-                    srcImgExifInterface = null;
 
                     if (srcImgHasThumbnail && prefs.getBoolean("skipPicsHavingThumbnail", true)) {
-                        if (srcImgWidth == 0 && srcImgHeight == 0 && prefs.getBoolean("fixHavingThumbnailButMissingTags", false)) {
+                        if (!srcHasOneMandatoryTag && prefs.getBoolean("fixHavingThumbnailButMissingTags", false)) {
                             updateLog(Html.fromHtml("<span style='color:blue'>&nbsp;" + getString(R.string.frag1_log_fix_has_thumbnail_but_missing_tags) + "</span>", 1));
                         } else {
                             updateLog(getString(R.string.frag1_log_skipping_has_thumbnail));

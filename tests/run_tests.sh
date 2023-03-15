@@ -28,7 +28,9 @@ PICTURE_WITHOUT_THUMBNAIL_AS_PER_ANDROID="Ricoh_Caplio_RR330.jpg"
 PICTURE_WITHOUT_THUMBNAIL="Fujifilm_FinePix_E500.jpg"
 
 PICTURE_WITH_THUMBNAIL_BUT_MISSING_MANDATORY_EXIF_TAG=exif-org/kodak-dc210.jpg
+PICTURE_WITH_THUMBNAIL_BUT_NO_MANDATORY_EXIF_TAG=Canon_PowerShot_S40-WithoutMandatoryTags.jpg
 PICTURE_WITHOUT_THUMBNAIL_WITH_EXIF_BUT_MISSING_MANDATORY_EXIF_TAG=orientation/portrait_4.jpg
+PICTURE_WITHOUT_THUMBNAIL_WITH_EXIF_BUT_NO_MANDATORY_EXIF_TAG=Canon_PowerShot_S40-WithoutMandatoryTagsNoTb.jpg
 
 PICTURE_WITHOUT_EXIF=noexif.jpg
 
@@ -543,11 +545,22 @@ for API in $APIs; do
         failure
     fi
 
-    # MandatoryExifTags: FixON, withoutThumb, withPartialEXIF. Check has at least 1 tag
+    # MandatoryExifTags: FixON, withoutThumb, withPartialEXIF, some MandatoryExifTags. Check has at least 1 tag
     TESTNAME=addThumbsSettingsDefault
     test_number=$(( test_number+1 ))
-    echo -ne "[$test_number] MandatoryExifTags: FixON, withoutThumb, withPartialEXIF ($TESTNAME). ($API, $VARIANT): \t"
+    echo -ne "[$test_number] MandatoryExifTags: FixON, withoutThumb, withPartialEXIF, some MandatoryExifTags ($TESTNAME). ($API, $VARIANT): \t"
     PIC="$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/DCIM/test_${VARIANT}_${TESTNAME}/${PICTURE_WITHOUT_THUMBNAIL_WITH_EXIF_BUT_MISSING_MANDATORY_EXIF_TAG}"
+    if ./has_mandatory_tags.sh "$PIC" "one"; then
+      success
+    else
+      failure
+    fi
+
+    # MandatoryExifTags: FixON, withoutThumb, withPartialEXIF, no MandatoryExifTags. Check has at least 1 tag
+    TESTNAME=addThumbsSettingsDefault
+    test_number=$(( test_number+1 ))
+    echo -ne "[$test_number] MandatoryExifTags: FixON, withoutThumb, withPartialEXIF, no MandatoryExifTags ($TESTNAME). ($API, $VARIANT): \t"
+    PIC="$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/DCIM/test_${VARIANT}_${TESTNAME}/${PICTURE_WITHOUT_THUMBNAIL_WITH_EXIF_BUT_NO_MANDATORY_EXIF_TAG}"
     if ./has_mandatory_tags.sh "$PIC" "one"; then
       success
     else
@@ -565,10 +578,10 @@ for API in $APIs; do
       failure
     fi
 
-    # MandatoryExifTags: FixON, withThumb, withPartialEXIF. Check has at least 1 tag
+    # MandatoryExifTags: FixON, withThumb, withPartialEXIF, some MandatoryExifTags. Check has at least 1 tag
     TESTNAME=addThumbsSettingsExiv2
     test_number=$(( test_number+1 ))
-    echo -ne "[$test_number] MandatoryExifTags: FixON, withThumb, withPartialEXIF. ($TESTNAME). ($API, $VARIANT): \t"
+    echo -ne "[$test_number] MandatoryExifTags: FixON, withThumb, withPartialEXIF, some MandatoryExifTags. ($TESTNAME). ($API, $VARIANT): \t"
     PIC="$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/DCIM/test_${VARIANT}_${TESTNAME}/${PICTURE_WITH_THUMBNAIL_BUT_MISSING_MANDATORY_EXIF_TAG}"
     update_log_to_one_liner "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt"
     if grep "${PICTURE_WITH_THUMBNAIL_BUT_MISSING_MANDATORY_EXIF_TAG}....*Done" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null &&
@@ -578,25 +591,50 @@ for API in $APIs; do
       failure
     fi
 
-    # MandatoryExifTags: FixON, SkipHasThumbnailsON, withThumb, withPartialEXIF. Check file is processed.
-    TESTNAME=addThumbsSettingsDefault
+    # MandatoryExifTags: FixON, withThumb, withPartialEXIF, no MandatoryExifTags. Check has at least 1 tag
+    TESTNAME=addThumbsSettingsExiv2
     test_number=$(( test_number+1 ))
-    echo -ne "[$test_number] MandatoryExifTags: FixON, SkipHasThumbnailsON, withThumb, withPartialEXIF. ($TESTNAME). ($API, $VARIANT): \t"
-    PIC="$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/DCIM/test_${VARIANT}_${TESTNAME}/${PICTURE_WITH_THUMBNAIL_BUT_MISSING_MANDATORY_EXIF_TAG}"
+    echo -ne "[$test_number] MandatoryExifTags: FixON, withThumb, withPartialEXIF, no MandatoryExifTags. ($TESTNAME). ($API, $VARIANT): \t"
+    PIC="$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/DCIM/test_${VARIANT}_${TESTNAME}/${PICTURE_WITH_THUMBNAIL_BUT_NO_MANDATORY_EXIF_TAG}"
     update_log_to_one_liner "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt"
-    if grep "${PICTURE_WITH_THUMBNAIL_BUT_MISSING_MANDATORY_EXIF_TAG}.*Thumbnail present but some fields are missing..*Updating thumbnail" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
+    if grep "${PICTURE_WITH_THUMBNAIL_BUT_NO_MANDATORY_EXIF_TAG}....*Done" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null &&
+      ./has_mandatory_tags.sh "$PIC" "one"; then
       success
     else
       failure
     fi
 
-    # MandatoryExifTags: FixMissingOFF, SkipHasThumbnailsON, withThumb, withPartialEXIF. Check file is not processed
+    # MandatoryExifTags: FixON, SkipHasThumbnailsON, withThumb, withPartialEXIF, some MandatoryExifTags. Check file is processed.
+    TESTNAME=addThumbsSettingsDefault
+    test_number=$(( test_number+1 ))
+    echo -ne "[$test_number] MandatoryExifTags: FixON, SkipHasThumbnailsON, withThumb, withPartialEXIF, some MandatoryExifTags. ($TESTNAME). ($API, $VARIANT): \t"
+    PIC="$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/DCIM/test_${VARIANT}_${TESTNAME}/${PICTURE_WITH_THUMBNAIL_BUT_MISSING_MANDATORY_EXIF_TAG}"
+    update_log_to_one_liner "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt"
+    if ! grep "${PICTURE_WITH_THUMBNAIL_BUT_MISSING_MANDATORY_EXIF_TAG}.*Done" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
+      success
+    else
+      failure
+    fi
+
+    # MandatoryExifTags: FixMissingOFF, SkipHasThumbnailsON, withThumb, withPartialEXIF, some MandatoryExifTags. Check file is not processed
     TESTNAME=addThumbsSettingsFixMissingOff
     test_number=$(( test_number+1 ))
-    echo -ne "[$test_number] MandatoryExifTags: FixMissingOFF, SkipHasThumbnailsON, withThumb, withPartialEXIF. ($TESTNAME). ($API, $VARIANT): \t"
+    echo -ne "[$test_number] MandatoryExifTags: FixMissingOFF, SkipHasThumbnailsON, withThumb, withPartialEXIF, some MandatoryExifTags. ($TESTNAME). ($API, $VARIANT): \t"
     PIC="$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/DCIM/test_${VARIANT}_${TESTNAME}/${PICTURE_WITH_THUMBNAIL_BUT_MISSING_MANDATORY_EXIF_TAG}"
     update_log_to_one_liner "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt"
     if grep "${PICTURE_WITH_THUMBNAIL_BUT_MISSING_MANDATORY_EXIF_TAG}.*Skipping (has thumbnail)" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
+      success
+    else
+      failure
+    fi
+
+    # MandatoryExifTags: FixMissingOFF, SkipHasThumbnailsON, withThumb, withPartialEXIF, no MandatoryExifTags. Check file is not processed
+    TESTNAME=addThumbsSettingsFixMissingOff
+    test_number=$(( test_number+1 ))
+    echo -ne "[$test_number] MandatoryExifTags: FixMissingOFF, SkipHasThumbnailsON, withThumb, withPartialEXIF, no MandatoryExifTags. ($TESTNAME). ($API, $VARIANT): \t"
+    PIC="$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/DCIM/test_${VARIANT}_${TESTNAME}/${PICTURE_WITH_THUMBNAIL_BUT_NO_MANDATORY_EXIF_TAG}"
+    update_log_to_one_liner "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt"
+    if grep "${PICTURE_WITH_THUMBNAIL_BUT_NO_MANDATORY_EXIF_TAG}.*Skipping (has thumbnail)" "$TEST_OUTPUT_DIR/$API/${VARIANT}_${TESTNAME}/log.txt1" > /dev/null ; then
       success
     else
       failure

@@ -56,7 +56,7 @@ fi
 if [ $DEBUG -eq 1 ]; then
   grep -f mandatory_exif_tags.txt "${PICTURE}_exif"
 fi
-MATCHED_LINES_COUNT=$(grep -f mandatory_exif_tags.txt "${PICTURE}_exif" -c)
+MATCHED_LINES_COUNT=$(grep -f mandatory_exif_tags.txt "${PICTURE}_exif" -c || true)
 
 if [ "$MODE" = "all" ] || [ "a$MODE" = "a" ]; then
   if [ "$TAG_COUNT" -eq "$MATCHED_LINES_COUNT" ]; then

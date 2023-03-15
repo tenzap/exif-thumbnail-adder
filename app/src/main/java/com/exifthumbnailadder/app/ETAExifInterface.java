@@ -63,4 +63,21 @@ public class ETAExifInterface extends ExifInterface {
             throw e;
         }
     }
+
+    public boolean hasOneMandatoryTag() {
+        if (hasAttribute(ETAExifInterface.TAG_EXIF_VERSION))
+            return true;
+        if (hasAttribute(ETAExifInterface.TAG_COMPONENTS_CONFIGURATION))
+            return true;
+        if (hasAttribute(ETAExifInterface.TAG_FLASHPIX_VERSION))
+            return true;
+        if (hasAttribute(ETAExifInterface.TAG_COLOR_SPACE))
+            return true;
+        if (hasAttribute(ETAExifInterface.TAG_PIXEL_X_DIMENSION))
+            return true;
+        if (hasAttribute(ETAExifInterface.TAG_PIXEL_Y_DIMENSION))
+            return true;
+
+        return false;
+    }
 }
