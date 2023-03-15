@@ -1,4 +1,4 @@
 include ':library:Android-Exif-Extended'
 include ':library:pixymeta-android'
 include ':app'
-rootProject.name = "Exif Thumbnail Adder"
+rootProject.name = 'Exif Thumbnail Adder'
