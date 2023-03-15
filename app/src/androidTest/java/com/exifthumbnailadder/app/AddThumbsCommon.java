@@ -85,7 +85,7 @@ public class AddThumbsCommon extends TestCommons {
     Context context;
     SharedPreferences prefs;
     public Dirs dir;
-    public boolean finished;
+    private static boolean finished;
     private IdlingResource mIdlingResource;
     private IdlingResource mWorkingDirPermIdlingResource;
     UiDevice uiDevice;
@@ -438,7 +438,7 @@ public class AddThumbsCommon extends TestCommons {
         moveOnFSWithShell(dir.copyPathAbsolute() + "/" + filename, dir.storageBasePathAbsolute());
     }
 
-    void syncList() throws Exception {
+    public static void sync(Context context, String action) throws Exception {
         // Go to Sync Fragment
         TestUtil.openSyncFragment();
 
@@ -461,8 +461,14 @@ public class AddThumbsCommon extends TestCommons {
         LocalBroadcastManager.getInstance(context)
                 .registerReceiver(receiver, filter);
 
-        // Click "List files" button
-        onView(withId(R.id.sync_button_list_files)).perform(click());
+
+        if (action.equals("List")) {
+            // Click "List files" button
+            onView(withId(R.id.sync_button_list_files)).perform(click());
+        } else if (action.equals("Delete")) {
+            // Click "Delete" button
+            onView(withId(R.id.sync_button_del_files)).perform(click());
+        }
 
         // Wait until processing is finished or has hit timeout (duration is in ms)
         long max_duration = 300000;
@@ -484,57 +490,18 @@ public class AddThumbsCommon extends TestCommons {
         // Unregister BroadcastReceiver
         LocalBroadcastManager.getInstance(context)
                 .unregisterReceiver(receiver);
+
+    }
+
+    void syncList() throws Exception {
+        sync(context, "List");
 
         String log = getText(withId(R.id.sync_textview_log));
         writeTextToFile("sync_log.txt", log);
     }
 
     void syncDelete() throws Exception {
-        // Go to Sync Fragment
-        TestUtil.openSyncFragment();
-
-        finished = false;
-        // Register BroadcastReceiver of the signal saying that processing is finished
-        BroadcastReceiver receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                switch (intent.getAction()) {
-                    case "com.exifthumbnailadder.app.SYNC_FRAGMENT_FINISHED":
-                        finished = true;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("com.exifthumbnailadder.app.SYNC_FRAGMENT_FINISHED");
-        LocalBroadcastManager.getInstance(context)
-                .registerReceiver(receiver, filter);
-
-        // Click "Delete" button
-        onView(withId(R.id.sync_button_del_files)).perform(click());
-
-        // Wait until processing is finished or has hit timeout (duration is in ms)
-        long max_duration = 300000;
-        long timeout = System.currentTimeMillis() + max_duration;
-        while (!finished && System.currentTimeMillis() < timeout) {
-            Thread.sleep(1000);
-        }
-
-        // Stop processing if not finished
-        if (!finished) {
-            try {
-                onView(withId(R.id.sync_button_stop)).perform(click());
-            } catch (PerformException e) {
-                // This exception happens when button_stopProcess is not in the view.
-                e.printStackTrace();
-            }
-        }
-
-        // Unregister BroadcastReceiver
-        LocalBroadcastManager.getInstance(context)
-                .unregisterReceiver(receiver);
+        sync(context, "Delete");
 
         String log = getText(withId(R.id.sync_textview_log));
         writeTextToFile("sync_log.txt", log);
