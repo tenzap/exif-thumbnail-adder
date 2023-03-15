@@ -189,31 +189,12 @@ jobs:
     #continue-on-error: true
     env:
       with_avd_cache: false
+      api-level: 33
+      target: google_apis
+      arch: x86_64
+      ram-size: 3072M
     runs-on: macos-latest
     needs: build
-    strategy:
-      fail-fast: false
-      matrix:
-        api-level: [26, 27, 28, 29, 30, 31]
-        #target: [default, google_apis] #Keep only 1 target until https://github.com/ReactiveCircus/android-emulator-runner/issues/278 is fixed
-        target: [google_apis]
-        include:
-          - arch: x86
-          - ram-size: 3072M
-# Re-enable below when default target is enabled again
-#          - api-level: 30
-#            target: default
-#            arch: x86_64
-          - api-level: 31
-            arch: x86_64
-          - api-level: 32
-            target: google_apis
-            arch: x86_64
-            ram-size: 3072M
-          - api-level: 33
-            target: google_apis
-            arch: x86_64
-            ram-size: 3072M
 
     steps:
       - name: checkout
@@ -299,16 +280,16 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}
+          key: avd-${{ env.api-level }}-${{ env.target }}-${{ env.arch }}
 
-      - name: create AVD and generate snapshot for caching (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
+      - name: create AVD and generate snapshot for caching (${{ env.api-level }}, ${{ env.target }}, ${{ env.arch }})
         if: ${{ env.with_avd_cache == 'true' &&  steps.avd-cache.outputs.cache-hit != 'true' }}
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
-          arch: ${{ matrix.arch }}
-          ram-size: ${{ matrix.ram-size }}
+          api-level: ${{ env.api-level }}
+          target: ${{ env.target }}
+          arch: ${{ env.arch }}
+          ram-size: ${{ env.ram-size }}
           profile: pixel_2
           heap-size: 512M
           disk-size: 8G
@@ -326,10 +307,10 @@ jobs:
         timeout-minutes: 240
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
-          arch: ${{ matrix.arch }}
-          ram-size: ${{ matrix.ram-size }}
+          api-level: ${{ env.api-level }}
+          target: ${{ env.target }}
+          arch: ${{ env.arch }}
+          ram-size: ${{ env.ram-size }}
           profile: pixel_2
           heap-size: 512M
           disk-size: 8G
@@ -347,10 +328,10 @@ jobs:
         timeout-minutes: 240
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
-          target: ${{ matrix.target }}
-          arch: ${{ matrix.arch }}
-          ram-size: ${{ matrix.ram-size }}
+          api-level: ${{ env.api-level }}
+          target: ${{ env.target }}
+          arch: ${{ env.arch }}
+          ram-size: ${{ env.ram-size }}
           profile: pixel_2
           heap-size: 512M
           disk-size: 8G
@@ -464,7 +445,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: test-api${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}-run${{ github.run_attempt }}-reports
+          name: test-api${{ env.api-level }}-${{ env.target }}-${{ env.arch }}-run${{ github.run_attempt }}-reports
           path: |
             version_last_tag.txt
             app/build/reports/
@@ -472,7 +453,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: test-api${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}-run${{ github.run_attempt }}-screenrecords
+          name: test-api${{ env.api-level }}-${{ env.target }}-${{ env.arch }}-run${{ github.run_attempt }}-screenrecords
           path: |
             version_last_tag.txt
             tests/output/screenrecords/
@@ -480,7 +461,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: test-api${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}-run${{ github.run_attempt }}-output
+          name: test-api${{ env.api-level }}-${{ env.target }}-${{ env.arch }}-run${{ github.run_attempt }}-output
           path: |
             test_output_artifact.tar
 
