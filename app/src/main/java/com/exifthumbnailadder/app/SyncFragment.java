@@ -296,7 +296,7 @@ public class SyncFragment extends Fragment implements SharedPreferences.OnShared
     }
 
     private void sendFinished() {
-        Intent intent = new Intent("com.exifthumbnailadder.app.ADD_THUMBS_FRAGMENT_FINISHED");
+        Intent intent = new Intent("com.exifthumbnailadder.app.SYNC_FRAGMENT_FINISHED");
         broadcaster.sendBroadcast(intent);
     }
 }
