@@ -17,6 +17,30 @@ opt_out_usage
 
 default_platform(:android)
 
+def retry_adb_command(adb_command)
+    adb_success = false
+    iter = 0
+    pause = 2
+    max_duration = 90
+    while adb_success != true && iter < max_duration/pause do
+      begin
+        iter = iter + 1
+        adb(
+          command: adb_command
+        )
+      rescue => ex
+        sleep pause
+        adb_success = false
+        UI.error(ex)
+      else
+        adb_success = true
+      end
+    end
+    if adb_success == false
+      UI.shell_error! "Problem with adb command."
+    end
+end
+
 platform :android do
   desc "Runs all the tests"
   lane :test do
@@ -188,66 +212,23 @@ platform :android do
     # Sometimes, the '/storage/emulated/0' mountpoint is not ready. Leading to:
     #   rm: /storage/emulated/0/DCIM/test_pics: Transport endpoint is not connected
     # This would make the github job fail. Catch the failure and retry.
-    adb_success = false
-    iter = 0
-    pause = 2
-    max_duration = 90
-    while adb_success != true && iter < max_duration/pause do
-      begin
-        iter = iter + 1
-        adb(
-          command: 'shell rm -fr /storage/emulated/0/DCIM/test_pics'
-        )
-      rescue => ex
-        sleep pause
-        adb_success = false
-        UI.error(ex)
-      else
-        adb_success = true
-      end
-    end
-    if adb_success == false
-      UI.shell_error! "Problem with adb command."
-    end
+    retry_adb_command('shell rm -fr /storage/emulated/0/DCIM/test_pics')
 
     # Sometimes, the command returns:
     #   mkdir: '/storage/emulated/0/DCIM': Permission denied
     # This would make the github job fail. Catch the failure and retry.
-    adb_success = false
-    iter = 0
-    pause = 2
-    max_duration = 90
-    while adb_success != true && iter < max_duration/pause do
-      begin
-        iter = iter + 1
-        adb(
-          command: 'shell mkdir -p /storage/emulated/0/DCIM/test_pics'
-        )
-      rescue => ex
-        sleep pause
-        adb_success = false
-        UI.error(ex)
-      else
-        adb_success = true
-      end
-    end
-    if adb_success == false
-      UI.shell_error! "Problem with adb command."
-    end
+    retry_adb_command('shell mkdir -p /storage/emulated/0/DCIM/test_pics')
 
-    adb(
-      #serial: 'emulator-5554',
-      command: 'push tests/data/exif-samples/jpg/* /storage/emulated/0/DCIM/test_pics'
-    )
-    adb(
-      #serial: 'emulator-5554',
-      command: 'push tests/data/empty_file tests/data/*.jpg tests/data/text_file.txt /storage/emulated/0/DCIM/test_pics'
-    )
+    retry_adb_command('push tests/data/exif-samples/jpg/* /storage/emulated/0/DCIM/test_pics')
+
+    retry_adb_command('push tests/data/empty_file tests/data/*.jpg tests/data/text_file.txt /storage/emulated/0/DCIM/test_pics')
+
     # Uninstall the app so as to reset the MANAGE_EXTERNAL_STORAGE permission.
     # I haven't found another way to remove this permission once it's granted
     adb(
       command: 'shell pm uninstall com.exifthumbnailadder.app.debug || echo'
     )
+
     # Uninstall the previously installed test package. On github actions, don't removing it may give
     # Failed to install APK(s): exifthumbnailadder-*-standard-debug-androidTest.apk
     # INSTALL_FAILED_UPDATE_INCOMPATIBLE: Package com.exifthumbnailadder.app.debug.test signatures do not match the previously installed version; ignoring!
