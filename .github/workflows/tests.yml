@@ -30,7 +30,7 @@ jobs:
 
       # Fix timestamps
       - name: restore timestamps
-        uses: chetan/git-restore-mtime-action@v1
+        uses: chetan/git-restore-mtime-action@v2
 
       # Since NDK & Cmake timestamps are used by ninja to determine if a target is up-to-date
       # and since installation of these files with SKD manager gives the files the timestamp of installation
@@ -225,7 +225,7 @@ jobs:
 
       # Fix timestamps
       - name: restore timestamps
-        uses: chetan/git-restore-mtime-action@v1
+        uses: chetan/git-restore-mtime-action@v2
 
       # Get test pictures
       - name: checkout
