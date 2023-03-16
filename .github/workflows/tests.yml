@@ -188,7 +188,7 @@ jobs:
   test:
     #continue-on-error: true
     env:
-      with_avd_cache: true
+      with_avd_cache: false
     runs-on: macos-latest
     needs: build
     strategy:
