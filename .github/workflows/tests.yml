@@ -315,6 +315,7 @@ jobs:
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
+          emulator-boot-timeout: 900
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
@@ -334,6 +335,7 @@ jobs:
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
+          emulator-boot-timeout: 900
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
@@ -353,6 +355,7 @@ jobs:
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
+          emulator-boot-timeout: 900
           script: API_LEVEL=${{ matrix.api-level }} fastlane connectedCheck_with_screenrecord
 
       # Get test output if nothing was downloaded from device. Typically, if the step has hit timeout
