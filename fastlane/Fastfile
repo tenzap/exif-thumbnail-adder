@@ -184,10 +184,32 @@ platform :android do
   desc "Prepare device for tests"
   lane :prepare_device_for_tests do
     disable_animation
-    adb(
-      #serial: 'emulator-5554',
-      command: 'shell rm -fr /storage/emulated/0/DCIM/test_pics'
-    )
+
+    # Sometimes, the '/storage/emulated/0' mountpoint is not ready. Leading to:
+    #   rm: /storage/emulated/0/DCIM/test_pics: Transport endpoint is not connected
+    # This would make the github job fail. Catch the failure and retry.
+    adb_success = false
+    iter = 0
+    pause = 2
+    max_duration = 90
+    while adb_success != true && iter < max_duration/pause do
+      begin
+        iter = iter + 1
+        adb(
+          command: 'shell rm -fr /storage/emulated/0/DCIM/test_pics'
+        )
+      rescue => ex
+        sleep pause
+        adb_success = false
+        UI.error(ex)
+      else
+        adb_success = true
+      end
+    end
+    if adb_success == false
+      UI.shell_error! "Problem with adb command."
+    end
+
     adb(
       #serial: 'emulator-5554',
       command: 'shell mkdir -p /storage/emulated/0/DCIM/test_pics'
