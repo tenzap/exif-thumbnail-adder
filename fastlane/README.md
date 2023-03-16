@@ -111,6 +111,14 @@ Build debug and test APK for screenshots
 
 Do screenshots
 
+### android screenshots_sevenInch
+
+```sh
+[bundle exec] fastlane android screenshots_sevenInch
+```
+
+Do screenshots (sevenInch tablet)
+
 ### android disable_animation
 
 ```sh
