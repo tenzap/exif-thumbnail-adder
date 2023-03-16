@@ -20,8 +20,8 @@ default_platform(:android)
 def retry_adb_command(adb_command)
     adb_success = false
     iter = 0
-    pause = 2
-    max_duration = 90
+    pause = 4
+    max_duration = 240
     while adb_success != true && iter < max_duration/pause do
       begin
         iter = iter + 1
