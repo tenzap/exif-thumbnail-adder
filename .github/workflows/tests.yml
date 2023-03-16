@@ -305,7 +305,7 @@ jobs:
 
       - name: create AVD and generate snapshot for caching (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
         if: ${{ env.with_avd_cache == 'true' &&  steps.avd-cache.outputs.cache-hit != 'true' }}
-        uses: tenzap/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
@@ -315,7 +315,6 @@ jobs:
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
-          after-boot-delay: 300
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: false
@@ -325,7 +324,7 @@ jobs:
         id: test_with_cache
         if: ${{ env.with_avd_cache == 'true' }}
         timeout-minutes: 240
-        uses: tenzap/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
@@ -344,7 +343,7 @@ jobs:
         id: test_without_cache
         if: ${{ env.with_avd_cache != 'true' }}
         timeout-minutes: 240
-        uses: tenzap/android-emulator-runner@v2
+        uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: ${{ matrix.api-level }}
           target: ${{ matrix.target }}
@@ -354,7 +353,6 @@ jobs:
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
-          after-boot-delay: 300
           script: API_LEVEL=${{ matrix.api-level }} fastlane connectedCheck_with_screenrecord
 
       # Get test output if nothing was downloaded from device. Typically, if the step has hit timeout
