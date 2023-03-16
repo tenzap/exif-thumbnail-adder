@@ -329,11 +329,21 @@ public class TestUtil {
 
             // Wait until advancedMenu is really open
             Boolean waitResult = null;
-            if (Build.VERSION.SDK_INT <= 28) {
-                // Use a BySelector by class, because, there can be id/title in the main DocumentsUI window
-                //  Hierarchy is on API28/phone for main docUi windows:  LinearLayout[]/FrameLayout[]/LinearLayout[]/TextView["id/title"]
-                //  Hierarchy is on API28/phone for advancedMenu:  LinearLayout[]/LinearLayout["id/content"]/RelativeLayout[]/TextView["id/title"]
-                //  Hierarchy is on API28/tablet7" for advancedMenu:  LinearLayout[]/LinearLayout["id/content"]/TextView[id:title]
+
+            // Use a BySelector by class, because, there can be id/title in the main DocumentsUI window
+            //  Hierarchy is on API28/phone & API26/phone for main docUi windows:  LinearLayout[]/FrameLayout[]/LinearLayout[]/TextView["id/title"]
+            //  Hierarchy is on API26/phone & API26/tablet7" for advancedMenu:  LinearLayout[]/RelativeLayout[]/TextView["id/title"]
+            //  Hierarchy is on API28/phone for advancedMenu:  LinearLayout[]/LinearLayout["id/content"]/RelativeLayout[]/TextView["id/title"]
+            //  Hierarchy is on API28/tablet7" for advancedMenu:  LinearLayout[]/LinearLayout["id/content"]/TextView[id:title]
+            if (Build.VERSION.SDK_INT <= 27) {
+                waitResult = device.wait(Until.hasObject(
+                        By.clazz("android.widget.LinearLayout")
+                                .hasChild(By.clazz("android.widget.RelativeLayout")
+                                        .hasChild(By.clazz("android.widget.TextView").res("android:id/title")
+                                        )
+                                )
+                ), 4000);
+            } else if (Build.VERSION.SDK_INT == 28) {
                 waitResult = device.wait(Until.hasObject(
                         By.clazz("android.widget.LinearLayout")
                                 .hasChild(By.clazz("android.widget.LinearLayout").res("android:id/content")
