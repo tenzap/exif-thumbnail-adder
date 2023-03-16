@@ -331,9 +331,29 @@ public class TestUtil {
             Boolean waitResult = null;
             if (Build.VERSION.SDK_INT <= 28) {
                 // Use a BySelector by class, because, there can be id/title in the main DocumentsUI window
-                //   When in the main documentsUI window, the parent will be a LinearLayout
-                //   When in the advancedMenu , the parent will be a RelativeLayout
-                waitResult = device.wait(Until.hasObject(By.clazz("android.widget.RelativeLayout").hasChild(By.res("android:id/title"))), 4000);
+                //  Hierarchy is on API28/phone for main docUi windows:  LinearLayout[]/FrameLayout[]/LinearLayout[]/TextView["id/title"]
+                //  Hierarchy is on API28/phone for advancedMenu:  LinearLayout[]/LinearLayout["id/content"]/RelativeLayout[]/TextView["id/title"]
+                //  Hierarchy is on API28/tablet7" for advancedMenu:  LinearLayout[]/LinearLayout["id/content"]/TextView[id:title]
+                waitResult = device.wait(Until.hasObject(
+                        By.clazz("android.widget.LinearLayout")
+                                .hasChild(By.clazz("android.widget.LinearLayout").res("android:id/content")
+                                        .hasChild(By.clazz("android.widget.RelativeLayout")
+                                                .hasChild(By.clazz("android.widget.TextView").res("android:id/title")
+                                                )
+                                        )
+                                )
+                ), 4000);
+                if (!waitResult.equals(Boolean.TRUE)) {
+                    Log.e("ETATest", "object not found, checking the case for a tablet");
+                    // On a tablet with API 28, there is a linearlayout, not a relativelayout
+                    waitResult = device.wait(Until.hasObject(
+                            By.clazz("android.widget.LinearLayout")
+                                    .hasChild(By.clazz("android.widget.LinearLayout").res("android:id/content")
+                                            .hasChild(By.clazz("android.widget.TextView").res("android:id/title")
+                                            )
+                                    )
+                    ), 2000);
+                }
             } else {
                 waitResult = device.wait(Until.hasObject(By.clazz("android.widget.LinearLayout").res(docUIStrings.getDocumentsUiPackageName() + ":id/content")), 4000);
             }
