@@ -564,11 +564,15 @@ public class TestUtil {
         device.wait(Until.hasObject(By.pkg(docUIStrings.getDocumentsUiPackageName())), 60000);
         Log.d("ETATest", "After wait until hasObject from documentsUi");
 
+        // Wait until the :id/dir_list pane is there because it can take a long time to display
+        device.wait(Until.hasObject(By.res(docUIStrings.getDocumentsUiPackageName() + ":id/dir_list")), 60000);
+        Log.d("ETATest", "after wait until hasObject :id/dir_list");
+
         // Additional wait because the screen refreshes itself even after the
         // first display (especially the first time DocumentsUI is loaded)
         // The next times, we might hit the timeout because the windows doesn't refresh itself.
-        device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 5000);
-        Log.d("ETATest", "after waitForWindowUpdate");
+//        device.waitForWindowUpdate(docUIStrings.getDocumentsUiPackageName(), 5000);
+//        Log.d("ETATest", "after waitForWindowUpdate");
 
         // Wait until the device is idle (this is usually very short, maybe useless)
         device.waitForIdle();
