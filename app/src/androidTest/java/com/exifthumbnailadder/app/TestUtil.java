@@ -236,6 +236,17 @@ public class TestUtil {
             throw new UiObjectNotFoundException("drawer_roots didn't open before timeout (drawers_root not displayed)." );
         Log.d("ETATest", "drawer_roots: Now displayed on screen.");
 
+        // Now check if roots_list is displayed
+        String resRootsList = docUIStrings.getDocumentsUiPackageName() + ":id/roots_list";
+        BySelector rootsListSelector = By.res(resRootsList);
+
+        Log.d("ETATest", "roots_list: Start waiting for object.");
+        waitResult = device.wait(Until.hasObject(rootsListSelector), 5000);
+        Log.d("ETATest", "roots_list: Finished waiting for object.");
+        if (!waitResult.equals(Boolean.TRUE))
+            throw new UiObjectNotFoundException("roots_list didn't display before timeout (drawers_root not displayed)." );
+        Log.d("ETATest", "roots_list: Now displayed on screen.");
+
         // If volumeName is displayed, click on it.
         if (volumeName.exists()) {
             Log.d("ETATest", "volumeName exists. Click on volumeName.");
@@ -245,8 +256,6 @@ public class TestUtil {
             // Get out of drawer/hamburger menu. Click on the 1st item in the drawer. Because:
             //  - Swipe on the drawer doesn't always respond correctly (esp on API29): too slow, nothing happens
             //  - clicking somewhere else doesn't seems a strategy with good results
-
-            String resRootsList = docUIStrings.getDocumentsUiPackageName() + ":id/roots_list";
 
             // Select the first child of ":id/roots_list"
             UiSelector uiSelector = new UiSelector().resourceId(resRootsList).childSelector(new UiSelector().className("android.widget.LinearLayout")).index(0);
