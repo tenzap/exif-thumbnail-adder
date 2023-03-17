@@ -189,7 +189,7 @@ jobs:
     #continue-on-error: true
     env:
       with_avd_cache: false
-      api-level: 33
+      api-level: 32
       target: google_apis
       arch: x86_64
       ram-size: 3072M
