@@ -279,8 +279,9 @@ platform :android do
       )
     end
 
-    if ENV["DELAY"]
+    if ENV["DELAY"] && ENV["CI"] == "true" && ENV["API_LEVEL"].to_i >= 33
       # Pause (in seconds) to let the system image in the emulator finish booting.
+      puts "Waiting " + ENV["DELAY"] + "seconds."
       sleep ENV["DELAY"].to_i
     end
 
