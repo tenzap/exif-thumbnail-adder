@@ -382,7 +382,7 @@ public class TestUtil {
                 throw new UiObjectNotFoundException("advancedMenu didn't open before timeout");
             }
 
-            // In the Advanced menu, click on "show internal storage" (if it is there)                Log.d("ETATest", "showInternalStorage exists? " + showInternalStorage.exists());
+            // In the Advanced menu, click on "show internal storage" (if it is there)
             if (showInternalStorage.exists()) {
                 Log.d("ETATest", "showInternalStorage exists. Click on it.");
                 clickObject(device, showInternalStorage);
