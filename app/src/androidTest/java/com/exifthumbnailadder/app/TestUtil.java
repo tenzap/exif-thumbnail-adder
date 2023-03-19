@@ -550,6 +550,17 @@ public class TestUtil {
             selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE));
             clickObject(device, selector, label);
 
+            Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            label = prefs.getString("working_dir", "ThumbAdder");
+            selector = By.clickable(true).text(label);
+            Log.d("ETATest", "'" + label + "' object: Before wait gone");
+            Boolean waitResult = device.wait(Until.gone(selector), 10000);
+            if (!waitResult.equals(Boolean.TRUE)) {
+                Log.e("ETATest", "'" + label + "' object: didn't get away from window");
+                throw new UiObjectNotFoundException("'" + label + "' object: didn't get away from window before timeout");
+            }
+
             label = docUIStrings.getAllowAccessTo();
             selector = By.clickable(true).text(Pattern.compile(label.toUpperCase(), Pattern.CASE_INSENSITIVE));
             clickObject(device, selector, label);
@@ -561,6 +572,17 @@ public class TestUtil {
             label = docUIStrings.getSave();
             selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE));
             clickObject(device, selector, label);
+
+            Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            label = prefs.getString("working_dir", "ThumbAdder");
+            selector = By.clickable(true).text(label);
+            Log.d("ETATest", "'" + label + "' object: Before wait gone");
+            Boolean waitResult = device.wait(Until.gone(selector), 10000);
+            if (!waitResult.equals(Boolean.TRUE)) {
+                Log.e("ETATest", "'" + label + "' object: didn't get away from window");
+                throw new UiObjectNotFoundException("'" + label + "' object: didn't get away from window before timeout");
+            }
 
             label = docUIStrings.getSelect();
             selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE));
