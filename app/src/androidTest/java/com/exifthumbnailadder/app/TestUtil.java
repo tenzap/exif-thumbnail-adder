@@ -480,6 +480,35 @@ public class TestUtil {
                 Log.d("ETATest", "Before waitForIdle: ");
                 device.waitForIdle();
                 Log.d("ETATest", "After waitForIdle: ");
+
+                // Wait until the folder is entered.
+                if (Build.VERSION.SDK_INT <= 29) {
+                    // Starting from API30, we can check the presence of "Files in <folder>" label
+                    folderSelector = By.res(docUIStrings.getDocumentsUiPackageName() + ":id/dropdown_breadcrumb").hasDescendant(By.text(basename));
+
+                    Log.d("ETATest", "Breadcrumb header text is '" + basename + "'. Start waiting for object.");
+                    waitResult = device.wait(Until.hasObject(folderSelector), 10000);
+                    Log.d("ETATest", "Breadcrumb header text is '" + basename + "'. Finished waiting for object.");
+
+                    if (!waitResult.equals(Boolean.TRUE)) {
+                        Log.e("ETATest", "Breadcrumb header text is '" + basename + "'. Not found before timeout.");
+                        throw new UiObjectNotFoundException("Breadcrumb header text is '" + basename + "'. Not found before timeout.");
+                    }
+                    Log.d("ETATest", "Breadcrumb header text is '" + basename + "'. Now displayed on screen.");
+                } else {
+                    // Starting from API30, we can check the presence of "Files in <folder>" label
+                    folderSelector = By.res(docUIStrings.getDocumentsUiPackageName() + ":id/header_title").text(Pattern.compile(docUIStrings.getFilesIn(basename), Pattern.CASE_INSENSITIVE));
+
+                    Log.d("ETATest", "label 'Files in " + basename + "'. Start waiting for object.");
+                    waitResult = device.wait(Until.hasObject(folderSelector), 10000);
+                    Log.d("ETATest", "label 'Files in " + basename + "'. Finished waiting for object.");
+
+                    if (!waitResult.equals(Boolean.TRUE)) {
+                        Log.e("ETATest", "label 'Files in " + basename + "'. Not found before timeout.");
+                        throw new UiObjectNotFoundException("label 'Files in " + basename + "'. Not found before timeout.");
+                    }
+                    Log.d("ETATest", "label 'Files in " + basename + "'. Now displayed on screen.");
+                }
             } else {
                 Log.e("ETATest", "Folder '" + basename + "'. Couldn't find matching object.");
                 throw new UiObjectNotFoundException("Folder '" + basename + "'. Couldn't find matching object.");

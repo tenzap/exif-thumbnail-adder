@@ -41,6 +41,7 @@ public class DocUIStrings {
     String moreOptions;
     int hamburgerIconId;
     String showRoots;
+    String filesIn;
 
     DocUIStrings() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -89,6 +90,14 @@ public class DocUIStrings {
 
             resId = resources.getIdentifier("drawer_open", "string", documentsUiPackageName);
             showRoots = resources.getString(resId);
+
+            if (Build.VERSION.SDK_INT >= 30) {
+                // <!-- Header title for list of documents in folder. [CHAR_LIMIT=60] -->
+                // <string name="root_info_header_folder">Files in <xliff:g id="folder" example="DCIM">%1$s</xliff:g></string>
+                resId = resources.getIdentifier("root_info_header_folder", "string", documentsUiPackageName);
+                filesIn = resources.getString(resId);
+
+            }
         } catch (Exception e) { e.printStackTrace(); }
     }
 
@@ -126,5 +135,9 @@ public class DocUIStrings {
 
     public String getShowRoots() {
         return showRoots;
+    }
+
+    public String getFilesIn(String dirname) {
+        return filesIn.replaceFirst("%1\\$s", dirname);
     }
 }
