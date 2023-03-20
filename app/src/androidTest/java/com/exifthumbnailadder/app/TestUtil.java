@@ -491,7 +491,7 @@ public class TestUtil {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             label = docUIStrings.getSave();
-            selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE));
+            selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE)).enabled(true);
             clickObject(device, selector, label);
 
             Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -509,7 +509,7 @@ public class TestUtil {
             clickObject(device, selector, label);
         } else {
             label = docUIStrings.getSave();
-            selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE));
+            selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE)).enabled(true);
             clickObject(device, selector, label);
 
             Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
