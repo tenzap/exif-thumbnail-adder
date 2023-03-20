@@ -253,15 +253,9 @@ platform :android do
       command: 'shell mkdir -p /storage/emulated/0/DCIM/test_pics/'
     )
 
-    adb(
-      command: 'pull -a /data/local/tmp/screenrecords/ tests/output/',
-    )
-    adb(
-      command: 'pull -a /data/local/tmp/test_output/ tests/output/',
-    )
-    adb(
-      command: 'pull -a /storage/emulated/0/DCIM/test_pics/ tests/output/',
-    )
+    retry_adb_command('pull -a /data/local/tmp/screenrecords/ tests/output/')
+    retry_adb_command('pull -a /data/local/tmp/test_output/ tests/output/')
+    retry_adb_command('pull -a /storage/emulated/0/DCIM/test_pics/ tests/output/')
   end
 
   desc "Run all the instrumented tests except screenshots"
