@@ -54,6 +54,8 @@
     <string name="stop">Dừng</string>
     <string name="frag1_text_processing_log">Nhật ký xử lý</string>
     <string name="frag1_perm_request_title">Yêu cầu quyền</string>
+    <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_for_timestamp">Ứng dụng cần quyền \'%1$s\' để giữ dấu thời gian của tệp.\n
+        Nếu bạn từ chối quyền này, việc xử lý sẽ không giữ dấu thời gian.</string>
     <string name="frag1_perm_request_deny">Từ chối quyền</string>
     <string name="frag1_continue_without_timestamps">\u00A0Quyền chưa được cấp, sẽ tiếp tục mà không giữ dấu thời gian.</string>
     <string name="frag1_log_skipping_excluded_dir">Đang bỏ qua thư mục đã loại trừ %1$s trong %2$s</string>
