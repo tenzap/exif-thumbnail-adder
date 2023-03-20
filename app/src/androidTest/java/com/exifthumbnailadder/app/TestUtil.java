@@ -380,7 +380,8 @@ public class TestUtil {
             // In the Advanced menu, click on "show internal storage" (if it is there)
             if (showInternalStorage.exists()) {
                 Log.d("ETATest", "showInternalStorage exists. Click on it.");
-                clickObject(device, showInternalStorage);
+                BySelector selector = By.text(docUIStrings.getShowInternalStorage());
+                clickObject(device, selector, "showInternalStorage");
 
                 if (hamburgerMenu.exists()) {
                     Log.d("ETATest", "hamburgerMenu exists. Open menu.");
