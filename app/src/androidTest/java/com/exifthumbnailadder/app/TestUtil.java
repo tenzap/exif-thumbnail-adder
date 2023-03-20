@@ -564,6 +564,7 @@ public class TestUtil {
             Log.e("ETATest", "'" + label + "' object: didn't get away from window");
             throw new UiObjectNotFoundException("'" + label + "' object: didn't get away from window before timeout");
         }
+        Log.d("ETATest", "'" + label + "' object: Now gone");
     }
 
     public static void waitForDocumentsUiReadiness(UiDevice device, DocUIStrings docUIStrings) throws Exception {
