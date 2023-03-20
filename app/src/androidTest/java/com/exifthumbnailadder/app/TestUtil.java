@@ -225,7 +225,7 @@ public class TestUtil {
         // Now check if roots_list is displayed
         String resRootsList = docUIStrings.getDocumentsUiPackageName() + ":id/roots_list";
         BySelector rootsListSelector = By.res(resRootsList);
-        waitUntilHasObject(device, rootsListSelector, ":id/roots_list");
+        waitUntilHasObject(device, rootsListSelector.hasChild(By.clazz("android.widget.LinearLayout")), ":id/roots_list");
 
         // If volumeName is displayed, click on it.
         if (volumeName.exists()) {
