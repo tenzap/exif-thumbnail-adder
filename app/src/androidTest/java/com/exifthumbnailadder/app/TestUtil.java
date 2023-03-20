@@ -479,7 +479,6 @@ public class TestUtil {
 
                 // Wait until the folder is entered.
                 if (Build.VERSION.SDK_INT <= 29) {
-                    // Starting from API30, we can check the presence of "Files in <folder>" label
                     folderSelector = By.res(docUIStrings.getDocumentsUiPackageName() + ":id/dropdown_breadcrumb").hasDescendant(By.text(basename));
 
                     Log.d("ETATest", "Breadcrumb header text is '" + basename + "'. Start waiting for object.");
