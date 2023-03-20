@@ -193,15 +193,7 @@ public class TestUtil {
         BySelector hamburgerMenuSelector = By.desc(docUIStrings.getShowRoots()).clickable(true).focusable(true);
 
         // First click on HamburgerMenu
-        Log.d("ETATest", "HamburgerMenu: Start waiting for object.");
-        Boolean waitResultHamburgerMenu = device.wait(Until.hasObject(hamburgerMenuSelector), 10000);
-        Log.d("ETATest", "HamburgerMenu: Finished waiting for object.");
-
-        if (!waitResultHamburgerMenu.equals(Boolean.TRUE)) {
-            Log.e("ETATest", "HamburgerMenu: Not found before timeout.");
-            throw new UiObjectNotFoundException("HamburgerMenu: Not found before timeout.");
-        }
-        Log.d("ETATest", "HamburgerMenu: Now displayed on screen.");
+        waitUntilHasObject(device, hamburgerMenuSelector, "HamburgerMenu");
 
         hamburgerMenu = device.findObject(hamburgerMenuSelector);
         Log.d("ETATest", "HamburgerMenu: After call to findObject.");
@@ -228,24 +220,12 @@ public class TestUtil {
 
         // Now check if it opened
         BySelector drawerRootsSelector = By.res(docUIStrings.getDocumentsUiPackageName() + ":id/drawer_roots");
-
-        Log.d("ETATest", "drawer_roots: Start waiting for object.");
-        Boolean waitResult = device.wait(Until.hasObject(drawerRootsSelector), 5000);
-        Log.d("ETATest", "drawer_roots: Finished waiting for object.");
-        if (!waitResult.equals(Boolean.TRUE))
-            throw new UiObjectNotFoundException("drawer_roots didn't open before timeout (drawers_root not displayed)." );
-        Log.d("ETATest", "drawer_roots: Now displayed on screen.");
+        waitUntilHasObject(device, drawerRootsSelector, "drawer_roots");
 
         // Now check if roots_list is displayed
         String resRootsList = docUIStrings.getDocumentsUiPackageName() + ":id/roots_list";
         BySelector rootsListSelector = By.res(resRootsList);
-
-        Log.d("ETATest", "roots_list: Start waiting for object.");
-        waitResult = device.wait(Until.hasObject(rootsListSelector), 5000);
-        Log.d("ETATest", "roots_list: Finished waiting for object.");
-        if (!waitResult.equals(Boolean.TRUE))
-            throw new UiObjectNotFoundException("roots_list didn't display before timeout (drawers_root not displayed)." );
-        Log.d("ETATest", "roots_list: Now displayed on screen.");
+        waitUntilHasObject(device, rootsListSelector, ":id/roots_list");
 
         // If volumeName is displayed, click on it.
         if (volumeName.exists()) {
@@ -340,41 +320,37 @@ public class TestUtil {
             //  Hierarchy is on API28/phone for advancedMenu:  LinearLayout[]/LinearLayout["id/content"]/RelativeLayout[]/TextView["id/title"]
             //  Hierarchy is on API28/tablet7" for advancedMenu:  LinearLayout[]/LinearLayout["id/content"]/TextView[id:title]
             if (Build.VERSION.SDK_INT <= 27) {
-                waitResult = device.wait(Until.hasObject(
+                waitUntilHasObject(device,
                         By.clazz("android.widget.LinearLayout")
                                 .hasChild(By.clazz("android.widget.RelativeLayout")
                                         .hasChild(By.clazz("android.widget.TextView").res("android:id/title")
                                         )
                                 )
-                ), 4000);
+                        , "advancedMenu");
             } else if (Build.VERSION.SDK_INT == 28) {
-                waitResult = device.wait(Until.hasObject(
-                        By.clazz("android.widget.LinearLayout")
-                                .hasChild(By.clazz("android.widget.LinearLayout").res("android:id/content")
-                                        .hasChild(By.clazz("android.widget.RelativeLayout")
-                                                .hasChild(By.clazz("android.widget.TextView").res("android:id/title")
-                                                )
-                                        )
-                                )
-                ), 4000);
-                if (!waitResult.equals(Boolean.TRUE)) {
+                try {
+                    waitUntilHasObject(device,
+                            By.clazz("android.widget.LinearLayout")
+                                    .hasChild(By.clazz("android.widget.LinearLayout").res("android:id/content")
+                                            .hasChild(By.clazz("android.widget.RelativeLayout")
+                                                    .hasChild(By.clazz("android.widget.TextView").res("android:id/title")
+                                                    )
+                                            )
+                                    )
+                            , "advancedMenu");
+                } catch (UiObjectNotFoundException e) {
                     Log.e("ETATest", "object not found, checking the case for a tablet");
                     // On a tablet with API 28, there is a linearlayout, not a relativelayout
-                    waitResult = device.wait(Until.hasObject(
+                    waitUntilHasObject(device,
                             By.clazz("android.widget.LinearLayout")
                                     .hasChild(By.clazz("android.widget.LinearLayout").res("android:id/content")
                                             .hasChild(By.clazz("android.widget.TextView").res("android:id/title")
                                             )
                                     )
-                    ), 2000);
+                            , "advancedMenu");
                 }
             } else {
-                waitResult = device.wait(Until.hasObject(By.clazz("android.widget.LinearLayout").res(docUIStrings.getDocumentsUiPackageName() + ":id/content")), 4000);
-            }
-
-            if (!waitResult.equals(Boolean.TRUE)) {
-                Log.e("ETATest", "advancedMenu didn't open before timeout");
-                throw new UiObjectNotFoundException("advancedMenu didn't open before timeout");
+                waitUntilHasObject(device, By.clazz("android.widget.LinearLayout").res(docUIStrings.getDocumentsUiPackageName() + ":id/content"), "advancedMenu");
             }
 
             // In the Advanced menu, click on "show internal storage" (if it is there)
@@ -446,16 +422,7 @@ public class TestUtil {
             BySelector folderSelector = By.text(basename);
             // On API >= 29 we could also use an additional filter ':id/item_root'
             //BySelector folderSelector = By.res(docUIStrings.getDocumentsUiPackageName() + ":id/item_root").hasDescendant(By.text(basename));
-
-            Log.d("ETATest", "Folder '" + basename + "'. Start waiting for object.");
-            Boolean waitResult = device.wait(Until.hasObject(folderSelector), 10000);
-            Log.d("ETATest", "Folder '" + basename + "'. Finished waiting for object.");
-
-            if (!waitResult.equals(Boolean.TRUE)) {
-                Log.e("ETATest", "Folder '" + basename + "'. Not found before timeout.");
-                throw new UiObjectNotFoundException("Folder '" + basename + "'. Not found before timeout.");
-            }
-            Log.d("ETATest", "Folder '" + basename + "'. Now displayed on screen.");
+            waitUntilHasObject(device, folderSelector, "Folder '" + basename + "'");
 
             //folder = device.findObject(new UiSelector().text(basename).resourceId("android:id/title"));
             folder = device.findObject(folderSelector);
@@ -480,29 +447,11 @@ public class TestUtil {
                 // Wait until the folder is entered.
                 if (Build.VERSION.SDK_INT <= 29) {
                     folderSelector = By.res(docUIStrings.getDocumentsUiPackageName() + ":id/dropdown_breadcrumb").hasDescendant(By.text(basename));
-
-                    Log.d("ETATest", "Breadcrumb header text is '" + basename + "'. Start waiting for object.");
-                    waitResult = device.wait(Until.hasObject(folderSelector), 10000);
-                    Log.d("ETATest", "Breadcrumb header text is '" + basename + "'. Finished waiting for object.");
-
-                    if (!waitResult.equals(Boolean.TRUE)) {
-                        Log.e("ETATest", "Breadcrumb header text is '" + basename + "'. Not found before timeout.");
-                        throw new UiObjectNotFoundException("Breadcrumb header text is '" + basename + "'. Not found before timeout.");
-                    }
-                    Log.d("ETATest", "Breadcrumb header text is '" + basename + "'. Now displayed on screen.");
+                    waitUntilHasObject(device, folderSelector, "Breadcrumb header text is '" + basename + "'");
                 } else {
                     // Starting from API30, we can check the presence of "Files in <folder>" label
                     folderSelector = By.res(docUIStrings.getDocumentsUiPackageName() + ":id/header_title").text(Pattern.compile(docUIStrings.getFilesIn(basename), Pattern.CASE_INSENSITIVE));
-
-                    Log.d("ETATest", "label 'Files in " + basename + "'. Start waiting for object.");
-                    waitResult = device.wait(Until.hasObject(folderSelector), 10000);
-                    Log.d("ETATest", "label 'Files in " + basename + "'. Finished waiting for object.");
-
-                    if (!waitResult.equals(Boolean.TRUE)) {
-                        Log.e("ETATest", "label 'Files in " + basename + "'. Not found before timeout.");
-                        throw new UiObjectNotFoundException("label 'Files in " + basename + "'. Not found before timeout.");
-                    }
-                    Log.d("ETATest", "label 'Files in " + basename + "'. Now displayed on screen.");
+                    waitUntilHasObject(device, folderSelector, "label 'Files in " + basename + "'");
                 }
             } else {
                 Log.e("ETATest", "Folder '" + basename + "'. Couldn't find matching object.");
@@ -576,13 +525,7 @@ public class TestUtil {
     }
 
     private static void clickObject(UiDevice device, BySelector selector, String label) throws UiObjectNotFoundException {
-        Log.d("ETATest", "'" + label + "' object: Before wait hasObject");
-        Boolean waitResult = device.wait(Until.hasObject(selector), 10000);
-
-        if (!waitResult.equals(Boolean.TRUE)) {
-            Log.e("ETATest", "'" + label + "' object: didn't open before timeout");
-            throw new UiObjectNotFoundException("'" + label + "' object: didn't open before timeout");
-        }
+        waitUntilHasObject(device, selector, label);
 
         Log.d("ETATest", "'" + label + "' object: Before findObject");
         UiObject2 object = device.findObject(selector);
@@ -598,6 +541,22 @@ public class TestUtil {
         waitUntilGone(device, selector, label);
     }
 
+    private static void waitUntilHasObject(UiDevice device, BySelector selector, String label) throws UiObjectNotFoundException {
+        waitUntilHasObject(device, selector, label, 10000);
+    }
+
+    private static void waitUntilHasObject(UiDevice device, BySelector selector, String label, int timeout) throws UiObjectNotFoundException {
+        Log.d("ETATest",  label + ": Start waiting for hasObject.");
+        Boolean waitResult = device.wait(Until.hasObject(selector), timeout);
+        Log.d("ETATest", label + ": Finished waiting for hasObject.");
+
+        if (!waitResult.equals(Boolean.TRUE)) {
+            Log.e("ETATest", label + ": Not found before timeout.");
+            throw new UiObjectNotFoundException(label + ": Not found before timeout.");
+        }
+        Log.d("ETATest", label + ": Now displayed on screen.");
+    }
+
     private static void waitUntilGone(UiDevice device, BySelector selector, String label) throws UiObjectNotFoundException {
         Log.d("ETATest", "'" + label + "' object: Before wait gone");
         Boolean waitResult = device.wait(Until.gone(selector), 10000);
@@ -609,12 +568,10 @@ public class TestUtil {
 
     public static void waitForDocumentsUiReadiness(UiDevice device, DocUIStrings docUIStrings) throws Exception {
         // DocumentsUI is very long to load the first time. ~10secs...
-        device.wait(Until.hasObject(By.pkg(docUIStrings.getDocumentsUiPackageName())), 60000);
-        Log.d("ETATest", "After wait until hasObject from documentsUi");
+        waitUntilHasObject(device, By.pkg(docUIStrings.getDocumentsUiPackageName()), "documentsUi package", 60000);
 
         // Wait until the :id/dir_list pane is there because it can take a long time to display
-        device.wait(Until.hasObject(By.res(docUIStrings.getDocumentsUiPackageName() + ":id/dir_list")), 60000);
-        Log.d("ETATest", "after wait until hasObject :id/dir_list");
+        waitUntilHasObject(device, By.pkg(docUIStrings.getDocumentsUiPackageName()), ":id/dir_list", 60000);
 
         // Additional wait because the screen refreshes itself even after the
         // first display (especially the first time DocumentsUI is loaded)
@@ -694,16 +651,7 @@ public class TestUtil {
 
         // Wait until permission controller is displayed
         BySelector buttonSelector = By.res(resource).clickable(true);
-
-        Log.d("ETATest", action + "Button: Start waiting for object.");
-        Boolean waitResultButton = device.wait(Until.hasObject(buttonSelector), 10000);
-        Log.d("ETATest", action + "Button: Finished waiting for object.");
-
-        if (!waitResultButton.equals(Boolean.TRUE)) {
-            Log.e("ETATest", action + "Button: Not found before timeout.");
-            throw new UiObjectNotFoundException(action + "Button: Not found before timeout.");
-        }
-        Log.d("ETATest", action + "Button: Now displayed on screen.");
+        waitUntilHasObject(device, buttonSelector, action + "Button");
 
         UiObject2 button = device.findObject(buttonSelector);
         Log.d("ETATest", action + "Button: After call to findObject.");
