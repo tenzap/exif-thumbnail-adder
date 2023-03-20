@@ -273,12 +273,7 @@ public class TestUtil {
         }
 
         // Wait until drawer_roots closed
-        Log.d("ETATest", "drawer_roots: Start waiting it closed.");
-        Boolean drawerRootWaitCloseResult = device.wait(Until.gone(drawerRootsSelector), 10000);
-        Log.d("ETATest", "drawer_roots: Finished waiting it closed.");
-
-        if (!drawerRootWaitCloseResult.equals(Boolean.TRUE))
-            throw new UiObjectNotFoundException("drawer_roots didn't close before timeout (drawers_root still displayed)." );
+        waitUntilGone(device, drawerRootsSelector, "drawer_roots");
 
         return retValue;
     }
@@ -554,12 +549,7 @@ public class TestUtil {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             label = prefs.getString("working_dir", "ThumbAdder");
             selector = By.clickable(true).text(label);
-            Log.d("ETATest", "'" + label + "' object: Before wait gone");
-            Boolean waitResult = device.wait(Until.gone(selector), 10000);
-            if (!waitResult.equals(Boolean.TRUE)) {
-                Log.e("ETATest", "'" + label + "' object: didn't get away from window");
-                throw new UiObjectNotFoundException("'" + label + "' object: didn't get away from window before timeout");
-            }
+            waitUntilGone(device, selector, label);
 
             label = docUIStrings.getAllowAccessTo();
             selector = By.clickable(true).text(Pattern.compile(label.toUpperCase(), Pattern.CASE_INSENSITIVE));
@@ -577,12 +567,7 @@ public class TestUtil {
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             label = prefs.getString("working_dir", "ThumbAdder");
             selector = By.clickable(true).text(label);
-            Log.d("ETATest", "'" + label + "' object: Before wait gone");
-            Boolean waitResult = device.wait(Until.gone(selector), 10000);
-            if (!waitResult.equals(Boolean.TRUE)) {
-                Log.e("ETATest", "'" + label + "' object: didn't get away from window");
-                throw new UiObjectNotFoundException("'" + label + "' object: didn't get away from window before timeout");
-            }
+            waitUntilGone(device, selector, label);
 
             label = docUIStrings.getSelect();
             selector = By.clickable(true).text(Pattern.compile(label, Pattern.CASE_INSENSITIVE));
@@ -610,12 +595,15 @@ public class TestUtil {
         Log.d("ETATest", "'" + label + "' object: Before click");
         object.click();
 
-        Log.d("ETATest", "'" + label + "' object: Before wait gone");
-        waitResult =  device.wait(Until.gone(selector), 10000);
+        waitUntilGone(device, selector, label);
+    }
 
+    private static void waitUntilGone(UiDevice device, BySelector selector, String label) throws UiObjectNotFoundException {
+        Log.d("ETATest", "'" + label + "' object: Before wait gone");
+        Boolean waitResult = device.wait(Until.gone(selector), 10000);
         if (!waitResult.equals(Boolean.TRUE)) {
-            Log.e("ETATest", "'" + label + "' object: didn't disappear before timeout");
-            throw new UiObjectNotFoundException("'" + label + "' object: didn't disappear before timeout");
+            Log.e("ETATest", "'" + label + "' object: didn't get away from window");
+            throw new UiObjectNotFoundException("'" + label + "' object: didn't get away from window before timeout");
         }
     }
 
@@ -732,9 +720,7 @@ public class TestUtil {
             button.click();
             Log.d("ETATest", "After click");
 
-            Log.d("ETATest", action + "Button: Before wait until gone.");
-            device.wait(Until.gone(buttonSelector), 10000);
-            Log.d("ETATest", action + "Button: After wait until gone.");
+            waitUntilGone(device, buttonSelector, action + " Button");
 
             Log.d("ETATest", "Before waitForIdle: ");
             device.waitForIdle();
