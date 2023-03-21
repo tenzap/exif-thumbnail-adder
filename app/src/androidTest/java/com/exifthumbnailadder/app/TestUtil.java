@@ -627,7 +627,7 @@ public class TestUtil {
 
     public static void openSettingsFragment() throws Exception {
         // The method below sometimes shows the Tooltip instead of opening the settings fragment (on API >= 31)
-        onView(withId(R.id.SettingsFragment)).perform(click(click()));
+        onView(withId(R.id.SettingsFragment)).perform(click(click(click(click()))));
 
         // So we use this one instead
 //        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -637,7 +637,7 @@ public class TestUtil {
     }
 
     public static void openSyncFragment() throws Exception {
-        onView(withId(R.id.SyncFragment)).perform(click(click()));
+        onView(withId(R.id.SyncFragment)).perform(click(click(click(click()))));
     }
 
     public static void clickPermissionButton(String action) throws Exception {
