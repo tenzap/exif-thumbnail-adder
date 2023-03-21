@@ -338,7 +338,7 @@ platform :android do
     puts "Start waiting until device is idle (" + Time.now.to_s + ")"
     command = 'shell uptime | cut -d , -f 3 | cut -f 2 -d :'
     load = retry_adb_command(command).strip.to_f
-    end_time = start_time + 600
+    end_time = start_time + 1800
     while load > load_threshold && Time.now < end_time do
       sleep 15
       load = retry_adb_command(command).strip.to_f
