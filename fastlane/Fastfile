@@ -25,7 +25,7 @@ def retry_adb_command(adb_command)
     while adb_success != true && iter < max_duration/pause do
       begin
         iter = iter + 1
-        adb(
+        res = adb(
           command: adb_command
         )
       rescue => ex
@@ -39,6 +39,7 @@ def retry_adb_command(adb_command)
     if adb_success == false
       UI.shell_error! "Problem with adb command."
     end
+    return res
 end
 
 platform :android do
@@ -279,6 +280,10 @@ platform :android do
       sleep ENV["DELAY"].to_i
     end
 
+    if ENV["CI"] == "true"
+      wait_for_idle
+    end
+
     prepare_device_for_tests
 
     gradle(
@@ -324,5 +329,23 @@ platform :android do
     if test_failed == true
       UI.shell_error! "connectedCheck lane failed."
     end
+  end
+
+  desc "Wait until device is considered idle"
+  lane :wait_for_idle do
+    start_time = Time.now
+    load_threshold = 0.9
+    puts "Start waiting until device is idle (" + Time.now.to_s + ")"
+    command = 'shell uptime | cut -d , -f 3 | cut -f 2 -d :'
+    load = retry_adb_command(command).strip.to_f
+    end_time = start_time + 600
+    while load > load_threshold && Time.now < end_time do
+      sleep 15
+      load = retry_adb_command(command).strip.to_f
+    end
+    if load > load_threshold
+      puts "Reached timeout before device is idle."  
+    end
+    puts "Waited until device is idle for " + (Time.now - start_time).to_i.to_s + " seconds."
   end
 end

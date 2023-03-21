@@ -159,6 +159,14 @@ Run all the instrumented tests except screenshots
 
 Run all the instrumented tests except screenshots and save screenrecords
 
+### android wait_for_idle
+
+```sh
+[bundle exec] fastlane android wait_for_idle
+```
+
+Wait until device is considered idle
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
