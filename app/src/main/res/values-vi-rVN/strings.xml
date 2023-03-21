@@ -54,7 +54,13 @@
     <string name="stop">Dừng</string>
     <string name="frag1_text_processing_log">Nhật ký xử lý</string>
     <string name="frag1_perm_request_title">Yêu cầu quyền</string>
+    <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_for_timestamp">Ứng dụng cần quyền \'%1$s\' để giữ dấu thời gian của tệp.\n
+        Nếu bạn từ chối quyền này, việc xử lý sẽ không giữ dấu thời gian.</string>
+    <string name="perm_request_message_WRITE_EXTERNAL_STORAGE_using_Files_API">Ứng dụng cần quyền \'%1$s\' để có thể đọc ảnh và sửa đổi chúng.</string>
     <string name="frag1_perm_request_deny">Từ chối quyền</string>
+    <string name="perm_request_message_READ_EXTERNAL_STORAGE">Ứng dụng cần quyền \'%1$s\' để có thể đọc ảnh.</string>
+    <string name="perm_request_message_ACCESS_MEDIA_LOCATION">Ứng dụng cần quyền \'%1$s\' để có thể giữ thông tin vị trí (GPS) có trong ảnh. Nếu không được cấp, thông tin này sẽ bị mất.</string>
+    <string name="perm_request_message_POST_NOTIFICATIONS">Ứng dụng cần quyền \'%1$s\' để hiển thị tiến trình xử lý trên thanh thông báo. Nó sẽ tự động biến mất khi xử lý xong.</string>
     <string name="frag1_continue_without_timestamps">\u00A0Quyền chưa được cấp, sẽ tiếp tục mà không giữ dấu thời gian.</string>
     <string name="frag1_log_skipping_excluded_dir">Đang bỏ qua thư mục đã loại trừ %1$s trong %2$s</string>
     <string name="frag1_log_copying_attr">Đang sao chép thuộc tính…</string>
@@ -63,6 +69,8 @@
     <string name="frag1_log_processing_dir">Đang xử lý %1$s</string>
     <string name="frag1_log_processing_path_filename">Đang xử lý… Đường dẫn: %1$s Tên tệp: %2$s</string>
     <string name="frag1_log_skipping_path_filename">Đang bỏ qua… Đường dẫn: %1$s Tên tệp: %2$s</string>
+    <string name="frag1_log_checking_workingdir_perm_v2">⋅ truy cập thư mục vận hành:</string>
+    <string name="frag1_log_checking_srcdir_perm">⋅ truy cập thư mục nguồn:</string>
     <string name="frag1_log_checking_perm">Đang kiểm tra quyền…</string>
     <string name="frag1_log_skipping_file_missing">Đang bỏ qua (tệp bị thiếu)</string>
     <string name="frag1_log_skipping_not_jpeg">Đang bỏ qua (không phải JPEG)\n</string>
@@ -91,6 +99,11 @@
     <string name="settings_dialog_all_files_access_not_supported">Thiết bị không hỗ trợ truy cập tất cả tệp</string>
     <string name="settings_button_remove_all_dirs">Xóa tất cả thư mục</string>
     <string name="settings_button_add_dir">Thêm</string>
+    <string name="settings_option_not_available">Tuỳ chọn không có sẵn</string>
+    <string name="settings_all_files_access_unavailable">Phiên bản ứng dụng này không cho phép cấp quyền \'Truy cập tất cả tệp\'.
+        \n\nPhiên bản có tính năng này hiện có trên %1$s.
+        \n\nMẹo: Để cài đặt thành công, trước hết bạn phải gỡ cài đặt phiên bản %2$s này.</string>
+    <string name="settings_show_in_">Đi đến %1$s</string>
     <string name="pref_categ_folders">Thư mục</string>
     <string name="pref_dirToProcess_title">Thư mục để xử lý</string>
     <string name="pref_workingDir_title"><![CDATA[Thư mục sao lưu & hoạt động]]></string>
@@ -138,4 +151,17 @@
     <string name="sync_log_checking">Đang kiểm tra: %1$s</string>
     <string name="sync_log_failure_to_delete_file">Xoá tệp thất bại</string>
     <string name="sync_log_files_to_remove">Các tệp để xoá (không còn ở trong nguồn):</string>
+    <string name="close">Đóng</string>
+    <string name="notification_status">Trạng thái thông báo…</string>
+    <string name="enabled">\u00A0Đã bật</string>
+    <string name="disabled">\u00A0Đã tắt</string>
+    <string name="frag1_log_skipping_unsupported_pixymeta_makernotes">Đang bỏ qua (có MakerNotes trong siêu dữ liệu)\n</string>
+    <string name="frag1_log_skipping_unsupported_libexif_xmp">Đang bỏ qua (có XMP trong siêu dữ liệu)\n</string>
+    <string name="frag1_info_library">⚠️ Thư viện đã được đặt thành %1$s. Vui lòng chú ý đến các hậu quả bằng cách đọc %2$sghi chú%3$s.</string>
+    <string name="sync_log_src_dir_missing">Thư mục nguồn không tồn tại.</string>
+    <string name="perm_label_MANAGE_EXTERNAL_STORAGE">truy cập tất cả tệp</string>
+    <string name="allowed">\u00A0đã cho phép.</string>
+    <string name="denied">\u00A0đã từ chối.</string>
+    <string name="add_folder_again">Hãy thêm lại thư mục này trong Cài đặt.</string>
+    <string name="can_be_changed_in_settings">Việc này có thể thay đổi trong cài đặt.</string>
 </resources>
