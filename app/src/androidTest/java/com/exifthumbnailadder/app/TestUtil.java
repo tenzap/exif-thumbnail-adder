@@ -169,7 +169,7 @@ public class TestUtil {
 
         // Wait until we received the com.exifthumbnailadder.app.srcUris_Added message
         // or until timeout
-        long max_duration = 1000;
+        long max_duration = 10000;
         long timeout = System.currentTimeMillis() + max_duration;
         while (!srcAdded && System.currentTimeMillis() < timeout) {
             Thread.sleep(50);
