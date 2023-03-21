@@ -585,10 +585,10 @@ public class TestUtil {
 
     public static void waitForDocumentsUiReadiness(UiDevice device, DocUIStrings docUIStrings) throws Exception {
         // DocumentsUI is very long to load the first time. ~10secs...
-        waitUntilHasObject(device, By.pkg(docUIStrings.getDocumentsUiPackageName()), "documentsUi package", 60000);
+        waitUntilHasObject(device, By.pkg(docUIStrings.getDocumentsUiPackageName()), "documentsUi package", 30000);
 
         // Wait until the :id/dir_list pane is there because it can take a long time to display
-        waitUntilHasObject(device, By.pkg(docUIStrings.getDocumentsUiPackageName()), ":id/dir_list", 60000);
+        waitUntilHasObject(device, By.res(docUIStrings.getDocumentsUiPackageName() + ":id/dir_list"), ":id/dir_list", 30000);
 
         // Additional wait because the screen refreshes itself even after the
         // first display (especially the first time DocumentsUI is loaded)
