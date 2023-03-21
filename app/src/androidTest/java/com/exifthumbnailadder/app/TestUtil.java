@@ -175,6 +175,10 @@ public class TestUtil {
             Thread.sleep(50);
         }
 
+        if (!srcAdded) {
+            throw new Exception("com.exifthumbnailadder.app.srcUris_Added message not received. Source folder not added.");
+        }
+
         LocalBroadcastManager.getInstance(context)
                 .unregisterReceiver(receiver);
     }
@@ -461,13 +465,13 @@ public class TestUtil {
 
         // Confirm/Validate the selected dir
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllowAccessTo().toUpperCase()));
-            Log.d("ETATest", "AllowAccessTo exists? " + uiElement.exists());
-            clickObject(device, uiElement);
+            String label = docUIStrings.getAllowAccessTo();
+            BySelector selector = By.clickable(true).text(Pattern.compile(label.toUpperCase(), Pattern.CASE_INSENSITIVE));
+            clickObject(device, selector, label);
 
-            uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getAllow().toUpperCase()));
-            Log.d("ETATest", "Allow exists? " + uiElement.exists());
-            clickObject(device, uiElement);
+            label = docUIStrings.getAllow();
+            selector = By.clickable(true).text(Pattern.compile(label.toUpperCase(), Pattern.CASE_INSENSITIVE));
+            clickObject(device, selector, label);
         } else {
             uiElement = device.findObject(new UiSelector().clickable(true).textMatches("(?i)" + docUIStrings.getSelect()));
             Log.d("ETATest", "Select exists? " + uiElement.exists());
