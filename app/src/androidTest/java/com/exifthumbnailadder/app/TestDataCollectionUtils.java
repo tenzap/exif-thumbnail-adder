@@ -45,7 +45,7 @@ public class TestDataCollectionUtils {
     public static void startScreenRecord(String fileName) {
         try {
             uiDevice.executeShellCommand("mkdir -p " + ScPath);
-            uiDevice.executeShellCommand("screenrecord --bit-rate 5M --bugreport " + ScPath + "/" + fileName + ".mp4");
+            uiDevice.executeShellCommand("screenrecord --size 1280x720 --bit-rate 1M --bugreport " + ScPath + "/" + fileName + ".mp4");
         } catch (IOException e) {
             e.printStackTrace();
         }
