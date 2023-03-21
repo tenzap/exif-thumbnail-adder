@@ -557,11 +557,11 @@ public class TestUtil {
         waitUntilGone(device, selector, label);
     }
 
-    private static void waitUntilHasObject(UiDevice device, BySelector selector, String label) throws UiObjectNotFoundException {
+    public static void waitUntilHasObject(UiDevice device, BySelector selector, String label) throws UiObjectNotFoundException {
         waitUntilHasObject(device, selector, label, 10000);
     }
 
-    private static void waitUntilHasObject(UiDevice device, BySelector selector, String label, int timeout) throws UiObjectNotFoundException {
+    public static void waitUntilHasObject(UiDevice device, BySelector selector, String label, int timeout) throws UiObjectNotFoundException {
         Log.d("ETATest",  label + ": Start waiting for hasObject.");
         Boolean waitResult = device.wait(Until.hasObject(selector), timeout);
         Log.d("ETATest", label + ": Finished waiting for hasObject.");
@@ -573,7 +573,7 @@ public class TestUtil {
         Log.d("ETATest", label + ": Now displayed on screen.");
     }
 
-    private static void waitUntilGone(UiDevice device, BySelector selector, String label) throws UiObjectNotFoundException {
+    public static void waitUntilGone(UiDevice device, BySelector selector, String label) throws UiObjectNotFoundException {
         Log.d("ETATest", "'" + label + "' object: Before wait gone");
         Boolean waitResult = device.wait(Until.gone(selector), 10000);
         if (!waitResult.equals(Boolean.TRUE)) {
