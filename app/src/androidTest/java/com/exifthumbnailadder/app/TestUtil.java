@@ -181,6 +181,10 @@ public class TestUtil {
 
         LocalBroadcastManager.getInstance(context)
                 .unregisterReceiver(receiver);
+
+        // Wait until we are back to the MainActivity (check presence of 'Add' button)
+        BySelector addButtonSelector = By.res(context.getPackageName() + ":id/select_path_button");
+        waitUntilHasObject(device, addButtonSelector, "'Add' button (to add source folder)");
     }
 
     private static boolean clickObject(UiDevice device, UiObject object) throws UiObjectNotFoundException {
