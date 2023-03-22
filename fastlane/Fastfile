@@ -352,23 +352,24 @@ platform :android do
     load = retry_adb_command(command).strip.to_f
     end_time = start_time + 1800
     while load > load_threshold && Time.now < end_time do
-      anr_package = retry_adb_command('shell dumpsys window windows | grep "mCurrentFocus.*Application Not Responding" | cut -f 2 -d : | sed -e "s/}//" -e "s/^ *//" ').strip
-      if anr_package != "" && load < 4
-        puts "ANR on screen for: " + anr_package + ". Restarting it."
-        # Some suggest that restarting the service with 'am startservice' should restart it,
-        # but it doesn't seem to work. So using killall.
-        # We additionally restart it, but with killall, system UI is restarted automatically
+      if load < 4
+        anr_package = adb(command: 'shell dumpsys window | grep -E "mCurrentFocus.*Application Not Responding" | cut -f 2 -d : | sed -e "s/}//" -e "s/^ *//" ').strip
+        if anr_package != ""
+            puts "ANR on screen for: " + anr_package + ". Restarting it."
+            # Some suggest that restarting the service with 'am startservice' should restart it,
+            # but it doesn't seem to work. So using killall.
+            # We additionally restart it, but with killall, system UI is restarted automatically
 
-        # Killing
-        adb(command: 'shell su 0 killall ' + anr_package + ' || echo')
+            # Killing
+            adb(command: 'shell su 0 killall ' + anr_package + ' || echo')
 
-        # Starting Service
-        adb(command: 'shell am start-service -a ' + anr_package + ' || echo')
-        cmd = 'shell pm dump ' + anr_package + ' | grep Services: -A1 | tail -n 1 | sed -e "s/.*{.* .* \(.*\)}.*/\1/"'
-        anr_package_service1 = adb(command: cmd).strip
-        adb(command: 'shell am start-service -a ' + anr_package_service1 + ' || echo')
+            # Starting Service
+            adb(command: 'shell am start-service -a ' + anr_package + ' || echo')
+            cmd = 'shell pm dump ' + anr_package + ' | grep Services: -A1 | tail -n 1 | sed -e "s/.*{.* .* \(.*\)}.*/\1/"'
+            anr_package_service1 = adb(command: cmd).strip
+            adb(command: 'shell am start-service -a ' + anr_package_service1 + ' || echo')
+        end
       end
-
       sleep 15
       load = retry_adb_command(command).strip.to_f
     end
