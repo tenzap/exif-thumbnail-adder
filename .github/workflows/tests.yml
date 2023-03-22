@@ -321,7 +321,7 @@ jobs:
           disable-animations: false
           script: echo "Generated AVD snapshot for caching."
 
-      - name: run tests with avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
+      - name: Start emulator with avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
         id: test_with_cache
         if: ${{ env.with_avd_cache == 'true' }}
         timeout-minutes: 240
@@ -339,9 +339,9 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: API_LEVEL=${{ matrix.api-level }} DELAY=300 fastlane connectedCheck_with_screenrecord
+          script: echo "Emulator started"
 
-      - name: run tests without avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
+      - name: Start emulator without avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
         id: test_without_cache
         if: ${{ env.with_avd_cache != 'true' }}
         timeout-minutes: 240
@@ -356,14 +356,23 @@ jobs:
           disk-size: 8G
           sdcard-path-or-size: 200M
           emulator-boot-timeout: 900
-          script: API_LEVEL=${{ matrix.api-level }} DELAY=300 fastlane connectedCheck_with_screenrecord
+          script: echo "Emulator started"
+
+      - name: wait until device is idle
+        id: run_wait_for_idle
+        run: bundle exec fastlane wait_for_idle
+
+      - name: run tests
+        id: run_tests
+        run: API_LEVEL=${{ matrix.api-level }} bundle exec fastlane connectedCheck_with_screenrecord
 
       # Get test output if nothing was downloaded from device. Typically, if the step has hit timeout
       - name: Get test output
-        if: always() && (steps.test_with_cache.outcome == 'failure' || steps.test_without_cache.outcome == 'failure' || steps.test_with_cache.outcome == 'cancelled' || steps.test_without_cache.outcome == 'cancelled')
+        if: always()
         run: |
           set -x
 
+          echo "Outcome of 'run_tests' ${{ steps.run_tests.outcome }}"
           echo "Outcome of 'test_with_cache' ${{ steps.test_with_cache.outcome }}"
           echo "Outcome of 'test_without_cache' ${{ steps.test_without_cache.outcome }}"
 
