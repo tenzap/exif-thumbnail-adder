@@ -244,15 +244,9 @@ platform :android do
     require 'fileutils'
     FileUtils.mkdir_p('../tests/output')
 
-    adb(
-      command: 'shell mkdir -p /data/local/tmp/screenrecords/'
-    )
-    adb(
-      command: 'shell mkdir -p /data/local/tmp/test_output/'
-    )
-    adb(
-      command: 'shell mkdir -p /storage/emulated/0/DCIM/test_pics/'
-    )
+    retry_adb_command('shell mkdir -p /data/local/tmp/screenrecords/')
+    retry_adb_command('shell mkdir -p /data/local/tmp/test_output/')
+    retry_adb_command('shell mkdir -p /storage/emulated/0/DCIM/test_pics/')
 
     retry_adb_command('pull -a /data/local/tmp/screenrecords/ tests/output/')
     retry_adb_command('pull -a /data/local/tmp/test_output/ tests/output/')
