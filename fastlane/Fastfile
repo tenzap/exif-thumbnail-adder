@@ -209,6 +209,7 @@ platform :android do
   desc "Prepare device for tests"
   lane :prepare_device_for_tests do
     disable_animation
+    disable_virtual_keyboards
 
     # Sometimes, the '/storage/emulated/0' mountpoint is not ready. Leading to:
     #   rm: /storage/emulated/0/DCIM/test_pics: Transport endpoint is not connected
@@ -251,6 +252,22 @@ platform :android do
     retry_adb_command('pull -a /data/local/tmp/screenrecords/ tests/output/')
     retry_adb_command('pull -a /data/local/tmp/test_output/ tests/output/')
     retry_adb_command('pull -a /storage/emulated/0/DCIM/test_pics/ tests/output/')
+  end
+
+  desc "Disable Virtual Keyboards"
+  lane :disable_virtual_keyboards do
+    # Disable virtual keyboards
+    #retry_adb_command('shell pm disable-user com.google.android.googlequicksearchbox || echo')
+    #retry_adb_command('shell pm disable-user com.google.android.inputmethod.latin || echo')
+    retry_adb_command('shell settings put secure show_ime_with_hard_keyboard 0 || echo')
+  end
+
+  desc "Enable Virtual Keyboards"
+  lane :enable_virtual_keyboards do
+    # Re-enable virtual keyboards
+    #retry_adb_command('shell pm enable com.google.android.googlequicksearchbox || echo')
+    #retry_adb_command('shell pm enable com.google.android.inputmethod.latin || echo')
+    retry_adb_command('shell settings put secure show_ime_with_hard_keyboard 1 || echo')
   end
 
   desc "Run all the instrumented tests except screenshots"
@@ -318,6 +335,7 @@ platform :android do
       end
     end
 
+    enable_virtual_keyboards
     get_output_of_tests
 
     if test_failed == true

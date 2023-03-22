@@ -143,6 +143,22 @@ Prepare device for tests
 
 Get test output from device
 
+### android disable_virtual_keyboards
+
+```sh
+[bundle exec] fastlane android disable_virtual_keyboards
+```
+
+Disable Virtual Keyboards
+
+### android enable_virtual_keyboards
+
+```sh
+[bundle exec] fastlane android enable_virtual_keyboards
+```
+
+Enable Virtual Keyboards
+
 ### android connectedCheck
 
 ```sh

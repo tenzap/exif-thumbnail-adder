@@ -315,6 +315,7 @@ jobs:
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
+          enable-hw-keyboard: true
           emulator-boot-timeout: 900
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
@@ -335,6 +336,7 @@ jobs:
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
+          enable-hw-keyboard: true
           emulator-boot-timeout: 900
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
@@ -355,6 +357,7 @@ jobs:
           heap-size: 512M
           disk-size: 8G
           sdcard-path-or-size: 200M
+          enable-hw-keyboard: true
           emulator-boot-timeout: 900
           script: API_LEVEL=${{ matrix.api-level }} DELAY=300 fastlane connectedCheck_with_screenrecord
 
