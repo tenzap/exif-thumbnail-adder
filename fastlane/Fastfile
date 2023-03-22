@@ -364,10 +364,12 @@ platform :android do
             adb(command: 'shell su 0 killall ' + anr_package + ' || echo')
 
             # Starting Service
-            adb(command: 'shell am start-service -a ' + anr_package + ' || echo')
-            cmd = 'shell pm dump ' + anr_package + ' | grep Services: -A1 | tail -n 1 | sed -e "s/.*{.* .* \(.*\)}.*/\1/"'
-            anr_package_service1 = adb(command: cmd).strip
-            adb(command: 'shell am start-service -a ' + anr_package_service1 + ' || echo')
+            if anr_package == "com.android.systemui"
+              adb(command: 'shell am start-service -n com.android.systemui/.SystemUIService || echo')
+            end
+            #cmd = 'shell pm dump ' + anr_package + ' | grep Services: -A1 | tail -n 1 | sed -e "s/.*{.* .* \(.*\)}.*/\1/"'
+            #anr_package_service1 = adb(command: cmd).strip
+            #adb(command: 'shell am start-service -a ' + anr_package_service1 + ' || echo')
         end
       end
       sleep 15
