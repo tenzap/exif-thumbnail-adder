@@ -358,6 +358,9 @@ jobs:
           emulator-boot-timeout: 900
           script: echo "Emulator started"
 
+      - name: Setup fastlane
+        run: sudo bundle install
+
       - name: wait until device is idle
         id: run_wait_for_idle
         run: bundle exec fastlane wait_for_idle
