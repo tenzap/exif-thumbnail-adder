@@ -195,15 +195,15 @@ jobs:
       fail-fast: false
       matrix:
         api-level: [26, 27, 28, 29, 30, 31]
-        #target: [default, google_apis] #Keep only 1 target until https://github.com/ReactiveCircus/android-emulator-runner/issues/278 is fixed
-        target: [google_apis]
+        target: [default, google_apis] #Keep only 1 target until https://github.com/ReactiveCircus/android-emulator-runner/issues/278 is fixed
+        #target: [google_apis]
         include:
           - arch: x86
           - ram-size: 3072M
 # Re-enable below when default target is enabled again
-#          - api-level: 30
-#            target: default
-#            arch: x86_64
+          - api-level: 30
+            target: default
+            arch: x86_64
           - api-level: 31
             arch: x86_64
           - api-level: 32
