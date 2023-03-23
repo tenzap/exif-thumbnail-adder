@@ -210,12 +210,10 @@ jobs:
             target: google_apis
             arch: x86_64
             ram-size: 3072M
-# Reenable when flakiness is solved on the github runner with API 32 & 33
-# See: https://github.com/ReactiveCircus/android-emulator-runner/discussions/286
-#          - api-level: 33
-#            target: google_apis
-#            arch: x86_64
-#            ram-size: 3072M
+          - api-level: 33
+            target: google_apis
+            arch: x86_64
+            ram-size: 3072M
 
     steps:
       - name: checkout
