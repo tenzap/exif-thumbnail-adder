@@ -672,32 +672,7 @@ public class TestUtil {
 
         // Wait until permission controller is displayed
         BySelector buttonSelector = By.res(resource).clickable(true);
-        waitUntilHasObject(device, buttonSelector, action + "Button");
-
-        UiObject2 button = device.findObject(buttonSelector);
-        Log.d("ETATest", action + "Button: After call to findObject.");
-
-        if (button != null) {
-            Log.d("ETATest", action + "Button: Click on it.");
-
-            // Wait for idle, sometimes there can be delay.
-            Log.d("ETATest", "Before waitForIdle");
-            device.waitForIdle();
-            Log.d("ETATest", "After waitForIdle");
-
-            Log.d("ETATest", "Before click");
-            button.click();
-            Log.d("ETATest", "After click");
-
-            waitUntilGone(device, buttonSelector, action + " Button");
-
-            Log.d("ETATest", "Before waitForIdle: ");
-            device.waitForIdle();
-            Log.d("ETATest", "After waitForIdle: ");
-        } else {
-            Log.e("ETATest", action + "Button: Couldn't find matching object.");
-            throw new UiObjectNotFoundException(action + "Button: Couldn't find matching object.");
-        }
+        clickObject(device, buttonSelector, action);
     }
 
     public static void clickPermissionAllowButton() throws Exception {
