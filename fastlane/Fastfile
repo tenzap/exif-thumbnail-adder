@@ -361,8 +361,14 @@ platform :android do
             # but it doesn't seem to work. So using killall.
             # We additionally restart it, but with killall, system UI is restarted automatically
 
-            # Killing
-            adb(command: 'shell su 0 killall ' + anr_package + ' || echo')
+            begin
+              # Killing
+              adb(command: 'shell su 0 killall ' + anr_package)
+            rescue => ex
+              UI.error(ex)
+              # Fallback to click if kill didn't work. This location is for a 1080x1920 screen
+              adb(command: 'shell input tap 540 935 || echo')
+            end
 
             # Starting Service
             if anr_package == "com.android.systemui"
