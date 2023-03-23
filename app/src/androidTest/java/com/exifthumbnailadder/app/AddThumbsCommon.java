@@ -194,7 +194,7 @@ public class AddThumbsCommon extends TestCommons {
         onView(withId(R.id.AddThumbsFragment)).perform(click(click(click())));
 
         try {
-            TestUtil.waitUntilHasObject(uiDevice, By.res(context.getPackageName() + ":id/AddThumbsFragment"), "Add Thumbs button");
+            TestUtil.waitUntilHasObject(uiDevice, By.res(context.getPackageName() + ":id/button_addThumbs"), "Add Thumbs button");
         } catch (UiObjectNotFoundException e) {
             // 2nd try to open fragment
             Log.d("ETATest", "'2nd try to open 'Add Thumbs' fragment");
