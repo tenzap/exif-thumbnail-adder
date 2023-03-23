@@ -341,7 +341,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: API_LEVEL=${{ matrix.api-level }} DELAY=300 fastlane connectedCheck_with_screenrecord
+          script: API_LEVEL=${{ matrix.api-level }} fastlane connectedCheck_with_screenrecord
 
       - name: run tests without avd cache (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
         id: test_without_cache
@@ -359,7 +359,7 @@ jobs:
           sdcard-path-or-size: 200M
           enable-hw-keyboard: true
           emulator-boot-timeout: 900
-          script: API_LEVEL=${{ matrix.api-level }} DELAY=300 fastlane connectedCheck_with_screenrecord
+          script: API_LEVEL=${{ matrix.api-level }} fastlane connectedCheck_with_screenrecord
 
       # Get test output if nothing was downloaded from device. Typically, if the step has hit timeout
       - name: Get test output
