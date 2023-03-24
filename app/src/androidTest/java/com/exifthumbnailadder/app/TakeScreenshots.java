@@ -248,7 +248,7 @@ public class TakeScreenshots {
                             PermissionManager.isPermissionGranted(context, Manifest.permission.READ_MEDIA_IMAGES))
                         continue;
                 }
-                TestUtil.clickPermissionAllowButton();
+                TestUtil.clickPermissionAllowButton(perm);
             }
         }
 

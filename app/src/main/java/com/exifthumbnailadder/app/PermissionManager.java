@@ -27,6 +27,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PermissionGroupInfo;
 import android.content.pm.PermissionInfo;
 import android.os.Build;
 import android.os.Environment;
@@ -414,6 +415,17 @@ public class PermissionManager {
             String label = pinfo.loadLabel(fragment.getContext().getPackageManager()).toString();
             if (label.equals("android.permission.MANAGE_EXTERNAL_STORAGE"))
                 return fragment.getString(R.string.perm_label_MANAGE_EXTERNAL_STORAGE);
+            return label;
+        } catch (PackageManager.NameNotFoundException e) {
+            return permission;
+        }
+    }
+
+    public static String getPermissionGroupDescription(Context ctx, String permission) {
+        try {
+            PermissionInfo pinfo = ctx.getPackageManager().getPermissionInfo(permission, PackageManager.GET_META_DATA);
+            PermissionGroupInfo pginfo = ctx.getPackageManager().getPermissionGroupInfo(pinfo.group, PackageManager.GET_META_DATA);
+            String label = pginfo.loadDescription(ctx.getPackageManager()).toString();
             return label;
         } catch (PackageManager.NameNotFoundException e) {
             return permission;

@@ -644,7 +644,8 @@ public class TestUtil {
         onView(withId(R.id.SyncFragment)).perform(click(click(click(click()))));
     }
 
-    public static void clickPermissionButton(String action) throws Exception {
+    public static void clickPermissionButton(String permission, String action) throws Exception {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         String res_suffix;
 
         switch (action) {
@@ -670,21 +671,32 @@ public class TestUtil {
         }
         resource = permPackage + res_suffix;
 
-        // Wait until permission controller is displayed
+        String permGroupDesc = PermissionManager.getPermissionGroupDescription(context, permission);
+        BySelector permGroupDescSelector = By.text(Pattern.compile(".*" + permGroupDesc + ".*"));
+
+        // Waiting until the description of the perm is displayed (to be sure we click
+        // on the action for the given permission)
+        waitUntilHasObject(device, permGroupDescSelector, "Perm description: " + permGroupDesc);
+
+        // Click on action button
         BySelector buttonSelector = By.res(resource).clickable(true);
         clickObject(device, buttonSelector, action);
+
+        // Waiting until the action button is gone is not sufficient in some cases (slow device?)
+        // Also wait until the description of the perm is gone.
+        waitUntilGone(device, permGroupDescSelector, "Perm description: " + permGroupDesc);
     }
 
-    public static void clickPermissionAllowButton() throws Exception {
-        clickPermissionButton("allow");
+    public static void clickPermissionAllowButton(String permission) throws Exception {
+        clickPermissionButton(permission, "allow");
     }
 
-    public static void clickPermissionDenyButton() throws Exception {
-        clickPermissionButton("deny");
+    public static void clickPermissionDenyButton(String permission) throws Exception {
+        clickPermissionButton(permission, "deny");
     }
 
-    public static void clickPermissionDontAskAgainButton() throws Exception {
-        clickPermissionButton("deny_dont_ask_again");
+    public static void clickPermissionDontAskAgainButton(String permission) throws Exception {
+        clickPermissionButton(permission, "deny_dont_ask_again");
     }
 
     public static void clearDocumentsUI() throws Exception {

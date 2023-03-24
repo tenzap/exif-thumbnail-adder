@@ -123,18 +123,18 @@ public class PermissionsTest extends TestCommons {
 
         switch (answer) {
             case "allow":
-                TestUtil.clickPermissionAllowButton();
+                TestUtil.clickPermissionAllowButton(permission);
                 assertTrue("Permissions " + permission + " should be granted.", PermissionManager.isPermissionGranted(context, permission));
                 break;
             case "allow_auto":
                 assertTrue("Permissions " + permission + " should be granted.", PermissionManager.isPermissionGranted(context, permission));
                 break;
             case "deny":
-                TestUtil.clickPermissionDenyButton();
+                TestUtil.clickPermissionDenyButton(permission);
                 assertFalse("Permissions " + permission + " should be denied.", PermissionManager.isPermissionGranted(context, permission));
                 break;
             case "first_deny":
-                TestUtil.clickPermissionDenyButton();
+                TestUtil.clickPermissionDenyButton(permission);
                 assertFalse("Permissions " + permission + " should be denied (first deny).", PermissionManager.isPermissionGranted(context, permission));
                 break;
             case "second_deny":
@@ -145,7 +145,7 @@ public class PermissionsTest extends TestCommons {
             case "ok_allow":
                 device.waitForIdle();
                 onView(withText(Matchers.equalToIgnoringCase(context.getString(android.R.string.ok)))).perform(click());
-                TestUtil.clickPermissionAllowButton();
+                TestUtil.clickPermissionAllowButton(permission);
                 assertTrue("Permissions " + permission + " should be granted.", PermissionManager.isPermissionGranted(context, permission));
                 break;
             default:
