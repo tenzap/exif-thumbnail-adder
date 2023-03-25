@@ -439,7 +439,7 @@ public class PermissionManager {
             } catch (PackageManager.NameNotFoundException e) {
                 return permission;
             }
-        } else {
+        } else if (Build.VERSION.SDK_INT < 33) {
             // On API >= 29, the method above doesn't work anymore because the permission group
             // is android.permission-group.UNDEFINED
             // Directly use the string from core framework.
@@ -466,9 +466,26 @@ public class PermissionManager {
                     resId = ctx.getResources().getIdentifier("permgroupdesc_readMediaVisual", "string", "android");
                     desc = ctx.getString(resId);
                     break;
+                default:
+                    desc = permission;
+            }
+            return desc;
+        } else {
+            // API33 and above
+            int resId = 0;
+            String desc = "UNSET";
+            switch (permission) {
+                case Manifest.permission.ACCESS_MEDIA_LOCATION:
+                    resId = ctx.getResources().getIdentifier("permgrouprequest_storage_isolated", "string", "com.android.permissioncontroller");
+                    desc = ctx.getString(resId).replaceFirst("%1\\$s", ".*");
+                    break;
+                case Manifest.permission.READ_MEDIA_IMAGES:
+                    resId = ctx.getResources().getIdentifier("permgroupdesc_readMediaVisual", "string", "android");
+                    desc = ctx.getString(resId);
+                    break;
                 case Manifest.permission.POST_NOTIFICATIONS:
                     resId = ctx.getResources().getIdentifier("permgroupdesc_notifications", "string", "android");
-                    desc =  ctx.getString(resId);
+                    desc = ctx.getString(resId);
                     break;
                 default:
                     desc = permission;
