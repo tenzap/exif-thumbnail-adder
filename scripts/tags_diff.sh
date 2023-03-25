@@ -137,7 +137,7 @@ EOF
       ;;
   esac
 
-  TEXTCONV_CMD="$(git config --get diff.$DIFFTOOL.textconv)"
+  TEXTCONV_CMD="$(git config --get diff.$DIFFTOOL.textconv || echo)"
 
   if [ ! a"$DIFFTOOL_CMD" = a"$TEXTCONV_CMD" ]; then
     if [ ! -z "$TEXTCONV_CMD" ]; then
