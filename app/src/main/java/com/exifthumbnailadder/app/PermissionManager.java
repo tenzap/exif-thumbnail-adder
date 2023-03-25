@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageItemInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PermissionGroupInfo;
 import android.content.pm.PermissionInfo;
@@ -35,6 +36,8 @@ import android.text.Html;
 import android.util.Log;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -422,13 +425,59 @@ public class PermissionManager {
     }
 
     public static String getPermissionGroupDescription(Context ctx, String permission) {
-        try {
-            PermissionInfo pinfo = ctx.getPackageManager().getPermissionInfo(permission, PackageManager.GET_META_DATA);
-            PermissionGroupInfo pginfo = ctx.getPackageManager().getPermissionGroupInfo(pinfo.group, PackageManager.GET_META_DATA);
-            String label = pginfo.loadDescription(ctx.getPackageManager()).toString();
-            return label;
-        } catch (PackageManager.NameNotFoundException e) {
-            return permission;
+        if (Build.VERSION.SDK_INT < 29) {
+            try {
+                PermissionInfo pinfo = ctx.getPackageManager().getPermissionInfo(permission, PackageManager.GET_META_DATA);
+                PackageItemInfo groupInfo = getGroupInfo(pinfo.group, ctx);
+                CharSequence description = null;
+                if (groupInfo instanceof PermissionGroupInfo) {
+                    description = ((PermissionGroupInfo) groupInfo).loadDescription(ctx.getPackageManager());
+                } else if (groupInfo instanceof PermissionInfo) {
+                    description = ((PermissionInfo) groupInfo).loadDescription(ctx.getPackageManager());
+                }
+                return description.toString();
+            } catch (PackageManager.NameNotFoundException e) {
+                return permission;
+            }
+        } else {
+            // On API >= 29, the method above doesn't work anymore because the permission group
+            // is android.permission-group.UNDEFINED
+            // Directly use the string from core framework.
+            int resId; String desc;
+            switch (permission) {
+                case Manifest.permission.READ_EXTERNAL_STORAGE:
+                case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                case Manifest.permission.ACCESS_MEDIA_LOCATION:
+                case Manifest.permission.READ_MEDIA_IMAGES:
+                    resId = ctx.getResources().getIdentifier("permgroupdesc_storage", "string", "android");
+                    desc = ctx.getString(resId);
+                    break;
+                case Manifest.permission.POST_NOTIFICATIONS:
+                    resId = ctx.getResources().getIdentifier("permgroupdesc_notifications", "string", "android");
+                    desc =  ctx.getString(resId);
+                    break;
+                default:
+                    desc = permission;
+            }
+            return desc;
         }
     }
+
+    // Taken from https://cs.android.com/android/platform/superproject/+/refs/heads/master:packages/modules/Permission/PermissionController/src/com/android/permissioncontroller/permission/utils/Utils.java;drc=a5cb8f33c3cb7b75385e04ed5d4cb0b126331028;l=681?q=permission_warning_template&ss=android%2Fplatform%2Fsuperproject
+    public static @Nullable
+    PackageItemInfo getGroupInfo(@NonNull String groupName,
+                                 @NonNull Context context) {
+        try {
+            return context.getPackageManager().getPermissionGroupInfo(groupName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            /* ignore */
+        }
+        try {
+            return context.getPackageManager().getPermissionInfo(groupName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            /* ignore */
+        }
+        return null;
+    }
+
 }
