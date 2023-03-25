@@ -443,13 +443,27 @@ public class PermissionManager {
             // On API >= 29, the method above doesn't work anymore because the permission group
             // is android.permission-group.UNDEFINED
             // Directly use the string from core framework.
-            int resId; String desc;
+            int resId = 0;
+            String desc = "UNSET";
             switch (permission) {
                 case Manifest.permission.READ_EXTERNAL_STORAGE:
                 case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                 case Manifest.permission.ACCESS_MEDIA_LOCATION:
-                case Manifest.permission.READ_MEDIA_IMAGES:
-                    resId = ctx.getResources().getIdentifier("permgroupdesc_storage", "string", "android");
+                    switch (Build.VERSION.SDK_INT) {
+                        case 29:
+                            resId = ctx.getResources().getIdentifier("permgroupdesc_storage", "string", "android");
+                            desc = ctx.getString(resId);
+                            break;
+                        case 30:
+                        case 31:
+                        case 32:
+                            resId = ctx.getResources().getIdentifier("permgrouprequest_storage_isolated", "string", "com.android.permissioncontroller");
+                            desc = ctx.getString(resId).replaceFirst("%1\\$s",".*");
+                            break;
+                    }
+                    break;
+                case Manifest.permission.READ_MEDIA_IMAGES: // Used since API 33
+                    resId = ctx.getResources().getIdentifier("permgroupdesc_readMediaVisual", "string", "android");
                     desc = ctx.getString(resId);
                     break;
                 case Manifest.permission.POST_NOTIFICATIONS:
