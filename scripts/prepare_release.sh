@@ -114,6 +114,7 @@ read -r
 git tag -d "$VER"
 
 git add fastlane/metadata/**
+git add version_last_tag.txt
 #sed s/+$VerCode$/+$((VerCode+1))/ version_last_tag.txt
 git commit -a --amend -m "release $VER"
 git tag -a -m "release $VER" "$VER"
