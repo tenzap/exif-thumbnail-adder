@@ -160,6 +160,7 @@ From within the root directory of the project run:
 
   ```Shell
   ANDROID_SDK_ROOT=~/Android/Sdk/ bundle exec fastlane screenshots
+  ANDROID_SDK_ROOT=~/Android/Sdk/ bundle exec fastlane screenshots_sevenInch
   ```
 
 ### To run the tests
