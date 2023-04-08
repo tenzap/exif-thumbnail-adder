@@ -20,10 +20,10 @@ android {
         applicationId "com.exifthumbnailadder.app"
         minSdkVersion 26
         targetSdkVersion 33
-//        versionCode finalVersionCode
-//        versionName finalVersionName
-        versionCode 679
-        versionName "0.9.19"
+        versionCode finalVersionCode
+        versionName finalVersionName
+//        versionCode 679
+//        versionName "0.9.19"
 
         file("../version_last_tag.txt").text = "version: " + lastTagVersionName + "+" + lastTagVersionCode
         //file("../version_head.txt").text = "version: " + finalVersionName + "+" + finalVersionCode
