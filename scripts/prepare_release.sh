@@ -47,8 +47,15 @@ echo "Sync-ing gradle"
 VerCode="$(cut -d'+' -f2 < version_last_tag.txt)"
 
 echo
-echo "Change build.gradle: use manual versionCode and versionName and set versionCode to $((VerCode+1)), then press Enter"
-read -r
+echo "Changing build.gradle: use manual versionCode and versionName and set versionCode to $((VerCode+1))"
+
+sed -i -e "/versionCode [0-9]\+/ s!.*\(versionCode\) \([0-9]\+\)!        versionCode $((VerCode+1))!" \
+ -e "/versionCode finalVersionCode/ s!.*!//        versionCode finalVersionCode!" \
+ app/build.gradle
+
+sed -i -e "/versionName \"$PREVIOUS_VER\"/ s!.*\(versionName\) \(\"$PREVIOUS_VER\"\)!        versionName \"$VER\"!" \
+ -e "/versionName finalVersionName/ s!.*!//        versionName finalVersionName!" \
+ app/build.gradle
 
 echo
 echo "Creating changelog file: ($((VerCode+1)).txt). Press Enter to start editing it."
@@ -124,8 +131,15 @@ git tag -a -m "release $VER" "$VER"
 git reflog expire --expire=90.days.ago --expire-unreachable=now --all
 
 echo
-echo "Change build.gradle: revert to automatic versionCode and versionName, then press Enter"
-read -r
+echo "Changing build.gradle: revert to automatic versionCode and versionName"
+
+sed -i -e "/versionCode [0-9]\+/ s!.*\(versionCode\) \([0-9]\+\)!//        versionCode \2!" \
+ -e "/versionCode finalVersionCode/ s!.*!        versionCode finalVersionCode!" \
+ app/build.gradle
+
+sed -i -e "/versionName \"$VER\"/ s!.*\(versionName\) \(\"$VER\"\)!//        versionName \2!" \
+ -e "/versionName finalVersionName/ s!.*!        versionName finalVersionName!" \
+ app/build.gradle
 
 echo "Sync-ing gradle"
 ./gradlew tasks > /dev/null
