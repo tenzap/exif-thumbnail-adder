@@ -30,6 +30,7 @@ import android.content.pm.PackageItemInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PermissionGroupInfo;
 import android.content.pm.PermissionInfo;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Environment;
 import android.text.Html;
@@ -445,6 +446,14 @@ public class PermissionManager {
             // Directly use the string from core framework.
             int resId = 0;
             String desc = "UNSET";
+
+            Resources permControllerRes = null;
+            try {
+                permControllerRes = ctx.getPackageManager().getResourcesForApplication(getPermissionControllerPkg(ctx));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             switch (permission) {
                 case Manifest.permission.READ_EXTERNAL_STORAGE:
                 case Manifest.permission.WRITE_EXTERNAL_STORAGE:
@@ -457,14 +466,12 @@ public class PermissionManager {
                         case 30:
                         case 31:
                         case 32:
-                            resId = ctx.getResources().getIdentifier("permgrouprequest_storage_isolated", "string", "com.android.permissioncontroller");
-                            desc = ctx.getString(resId).replaceFirst("%1\\$s",".*");
+                            if (permControllerRes != null) {
+                                resId = permControllerRes.getIdentifier("permgrouprequest_storage_isolated", "string", "com.android.permissioncontroller");
+                                desc = permControllerRes.getString(resId).replaceFirst("<b>%1\\$s</b>", ".*");
+                            }
                             break;
                     }
-                    break;
-                case Manifest.permission.READ_MEDIA_IMAGES: // Used since API 33
-                    resId = ctx.getResources().getIdentifier("permgroupdesc_readMediaVisual", "string", "android");
-                    desc = ctx.getString(resId);
                     break;
                 default:
                     desc = permission;
@@ -474,18 +481,27 @@ public class PermissionManager {
             // API33 and above
             int resId = 0;
             String desc = "UNSET";
+
+            Resources permControllerRes = null;
+            try {
+                permControllerRes = ctx.getPackageManager().getResourcesForApplication(getPermissionControllerPkg(ctx));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             switch (permission) {
                 case Manifest.permission.ACCESS_MEDIA_LOCATION:
-                    resId = ctx.getResources().getIdentifier("permgrouprequest_storage_isolated", "string", "com.android.permissioncontroller");
-                    desc = ctx.getString(resId).replaceFirst("%1\\$s", ".*");
-                    break;
                 case Manifest.permission.READ_MEDIA_IMAGES:
-                    resId = ctx.getResources().getIdentifier("permgroupdesc_readMediaVisual", "string", "android");
-                    desc = ctx.getString(resId);
+                    if (permControllerRes != null) {
+                        resId = permControllerRes.getIdentifier("permgrouprequest_read_media_visual", "string", "com.android.permissioncontroller");
+                        desc = permControllerRes.getString(resId).replaceFirst("<b>%1\\$s</b>", ".*");
+                    }
                     break;
                 case Manifest.permission.POST_NOTIFICATIONS:
-                    resId = ctx.getResources().getIdentifier("permgroupdesc_notifications", "string", "android");
-                    desc = ctx.getString(resId);
+                    if (permControllerRes != null) {
+                        resId = permControllerRes.getIdentifier("permgrouprequest_notifications", "string", "com.android.permissioncontroller");
+                        desc = permControllerRes.getString(resId).replaceFirst("<b>%1\\$s</b>", ".*");
+                    }
                     break;
                 default:
                     desc = permission;
@@ -509,6 +525,19 @@ public class PermissionManager {
             /* ignore */
         }
         return null;
+    }
+
+    public static String getPermissionControllerPkg(Context ctx) {
+        PackageManager manager = ctx.getPackageManager();
+        List<PackageInfo> packagesList = manager.getInstalledPackages(0);
+        for (PackageInfo pkg : packagesList) {
+            if (pkg.packageName.equals("com.android.permissioncontroller")) {
+                return "com.android.permissioncontroller";
+            } else if (pkg.packageName.equals("com.google.android.permissioncontroller")) {
+                return "com.google.android.permissioncontroller";
+            }
+        }
+        throw new UnsupportedOperationException("Couldn't find 'PermissionController' package.");
     }
 
 }
