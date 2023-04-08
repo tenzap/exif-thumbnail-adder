@@ -486,7 +486,7 @@ public class TestUtil {
                 waitUntilHasObject(device, folderSelector, "Breadcrumb header text is '" + basename + "'");
             } else {
                 // Starting from API30, we can check the presence of "Files in <folder>" label
-                folderSelector = By.res(docUIStrings.getDocumentsUiPackageName() + ":id/header_title").text(Pattern.compile(docUIStrings.getFilesIn(basename), Pattern.CASE_INSENSITIVE));
+                folderSelector = By.res(docUIStrings.getDocumentsUiPackageName() + ":id/header_title").text(Pattern.compile(docUIStrings.getFilesIn(basename).toUpperCase(), Pattern.CASE_INSENSITIVE));
                 waitUntilHasObject(device, folderSelector, "label 'Files in " + basename + "'");
             }
         } else {
