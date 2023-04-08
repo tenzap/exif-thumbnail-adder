@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Usage
-#   ./scripts/screenshots.sh [ask]
+#   ./scripts/screenshots.sh [--ask] [--type=phone|sevenInch]
 #
 #  Use 'ask' to prompt user if screenshots are desired.
 #
@@ -13,11 +13,31 @@
 #   - 0: screenshots produced
 #   - 51: missing env var
 #   - 52: screenshots not produced (skipped by user)
+#   - 52: screenshots type invalid or not specified
 #
 
 set -e
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+for i in "$@"; do
+  case $i in
+    --ask)
+      ASK=1
+      shift
+      ;;
+    -t=*|--type=*)
+      SCREENSHOTS_TYPE="${i#*=}"
+      shift
+      ;;
+    -*)
+      echo "Unknown option $i"
+      exit 1
+      ;;
+    *)
+      ;;
+  esac
+done
 
 if [ "$PWD/scripts" = "$SCRIPT_DIR" ]; then
     echo "Script is called from $PWD: OK!"
@@ -28,8 +48,8 @@ else
     exit 1;
 fi
 
-if [ "$1" = "ask" ]; then
-  echo "Do you want to create the screenshots? [Yn]"
+if [ a"$ASK" = a"1" ]; then
+  echo "Do you want to create the screenshots for '$SCREENSHOTS_TYPE'? [Yn]"
 
   read -r
 
@@ -50,4 +70,20 @@ else
   exit 51
 fi
 
-bundle exec fastlane screenshots
+echo -e "\nPlease launch the emulator to take screenshots for '$SCREENSHOTS_TYPE'. Then press Enter."
+read -r
+
+case $SCREENSHOTS_TYPE in
+  phone)
+    echo "Producing screenshots for 'phone'."
+    bundle exec fastlane screenshots
+    ;;
+  sevenInch)
+    echo "Producing screenshots for 'sevenInch'."
+    bundle exec fastlane screenshots_sevenInch
+    ;;
+  *)
+    echo "Screenshot type invalid or not specified."
+    exit 53
+    ;;
+esac

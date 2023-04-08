@@ -67,44 +67,46 @@ read -r
 git tag -d "$VER"
 git commit -a -m "release $VER"
 
+for screenshot_type in phone sevenInch; do
+  ret=0
+  "$SCRIPT_DIR/screenshots.sh" --ask --type=$screenshot_type || ret=$?
 
-ret=0
-"$SCRIPT_DIR/screenshots.sh" ask || ret=$?
+  if [ $ret -eq 0 ]; then
+    echo "Screenshots created successfully."
+  elif [ $ret -eq 51 ]; then
+    echo "Screenshots could NOT be created. To retry launch
+    $SCRIPT_DIR/screenshots.sh
 
-if [ $ret -eq 0 ]; then
-  echo "Screenshots created successfully."
-elif [ $ret -eq 51 ]; then
-  echo "Screenshots could NOT be created. To retry launch
-   $SCRIPT_DIR/screenshots.sh
+  Then press enter here."
+    read -r
+  elif [ $ret -eq 52 ]; then
+    echo "Continuing without screenshots"
+  else
+    echo "==========================
+  Screenshots may not be created or fully created. Check, otherwise, relaunch:
+    $SCRIPT_DIR/screenshots.sh --ask --type=$screenshot_type
 
-Then press enter here."
-  read -r
-elif [ $ret -eq 52 ]; then
-  echo "Continuing without screenshots"
-else
-  echo "==========================
-Screenshots may not be created or fully created. Check, otherwise, relaunch:
-   $SCRIPT_DIR/screenshots.sh
+  To not update screenshots with this release, please run this before continuing here:
 
-To not update screenshots with this release, please run this before continuing here:
+    git checkout HEAD fastlane/metadata/android/**/images/phoneScreenshots/*
+    git checkout HEAD fastlane/metadata/android/**/images/sevenInchScreenshots/*
+    git checkout fastlane/metadata/android/screenshots.html
 
-   git checkout HEAD fastlane/metadata/android/**/images/phoneScreenshots/*
-   git checkout fastlane/metadata/android/screenshots.html
+  Then check again that no screenshots will be changed
 
-Then check again that no screenshots will be changed
+    git status
 
-   git status
+  To stop this process here and rollback to last commit, run:
 
-To stop this process here and rollback to last commit, run:
+    git reset --soft HEAD^
+    git restore --staged app/build.gradle version_last_tag.txt
+    git checkout fastlane app/build.gradle version_last_tag.txt
+    git status
 
-   git reset --soft HEAD^
-   git restore --staged app/build.gradle version_last_tag.txt
-   git checkout fastlane app/build.gradle version_last_tag.txt
-   git status
-
-Then press enter here."
-  read -r
-fi
+  Then press enter here."
+    read -r
+  fi
+done
 
 # To update version_last_tag.txt
 git tag -a -m "release $VER" "$VER"
