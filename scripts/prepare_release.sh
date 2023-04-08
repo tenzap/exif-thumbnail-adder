@@ -41,14 +41,13 @@ echo -n "Creating tag for version $VER..."
 git tag -a -m "release $VER" "$VER"
 echo " Done."
 
-echo
-echo "Sync gradle in Android Studio, then press Enter"
-read -r
+echo "Sync-ing gradle"
+./gradlew tasks > /dev/null
 
 VerCode="$(cut -d'+' -f2 < version_last_tag.txt)"
 
 echo
-echo "Set this versions in build.gradle: $((VerCode+1)) (no need to sync gradle), then press Enter"
+echo "Change build.gradle: use manual versionCode and versionName and set versionCode to $((VerCode+1)), then press Enter"
 read -r
 
 echo
@@ -111,8 +110,9 @@ done
 # To update version_last_tag.txt
 git tag -a -m "release $VER" "$VER"
 echo
-echo "Sync gradle in Android Studio, then press Enter"
-read -r
+echo "Sync-ing gradle"
+./gradlew tasks > /dev/null
+
 git tag -d "$VER"
 
 git add fastlane/metadata/**
@@ -124,8 +124,11 @@ git tag -a -m "release $VER" "$VER"
 git reflog expire --expire=90.days.ago --expire-unreachable=now --all
 
 echo
-echo "Change build.gradle: revert to automatic versionCode and versionName, sync gradle, then press Enter"
+echo "Change build.gradle: revert to automatic versionCode and versionName, then press Enter"
 read -r
+
+echo "Sync-ing gradle"
+./gradlew tasks > /dev/null
 
 git add app/build.gradle
 git commit -m "revert to automatic versionCode and versionName"
