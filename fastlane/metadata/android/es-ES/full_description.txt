@@ -1,4 +1,4 @@
-Esta aplicación para dispositivos android busca imágenes (JPEG) en tu dispositivo y <b>añade una miniatura</b> si aún no tienen una. Las miniaturas se añaden a la estructura de metadatos EXIF.
+Esta aplicación para dispositivos Android busca imágenes (JPEG) en tu dispositivo y <b>añade una miniatura</b> si aún no tienen una. Las miniaturas se añaden a la estructura de metadatos EXIF.
 
 Está diseñado para trabajar de android Oreo (android 8, SDK 26).
 
