@@ -35,3 +35,9 @@
 
 # Fix Pending exception java.lang.NoSuchFieldError: no "Z" field "enableLog" in class "Lcom/exifthumbnailadder/app/MainApplication;" or its superclasses
 -keep public class com.exifthumbnailadder.app.MainApplication { public static boolean enableLog; }
+
+# This was added from a file generated automatically by the Android Gradle plugin.
+-dontwarn java.beans.BeanInfo
+-dontwarn java.beans.IntrospectionException
+-dontwarn java.beans.Introspector
+-dontwarn java.beans.PropertyDescriptor
