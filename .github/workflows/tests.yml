@@ -21,7 +21,7 @@ env:
 jobs:
 
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v3
@@ -120,20 +120,20 @@ jobs:
         id: cache-ndk
         with:
           path: |
-            /Users/runner/Library/Android/sdk/ndk/${{ env.NDK_VERSION }}/
+            $ANDROID_HOME/ndk/${{ env.NDK_VERSION }}/
           key: build-macos-localNdk-${{ github.run_id }}
       - uses: actions/cache/save@v3
         if: ${{ env.ANDROID_CMAKE_IS_LOCAL_DOWNLOAD == 1 }}
         id: cache-cmake
         with:
           path: |
-            /Users/runner/Library/Android/sdk/cmake/${{ env.CMAKE_VERSION }}/
+            $ANDROID_HOME/cmake/${{ env.CMAKE_VERSION }}/
           key: build-macos-localCmake-${{ github.run_id }}
 
       - uses: actions/upload-artifact@v3
         if: always()
         with:
-          name: build-outputs-macos-run${{ github.run_attempt }}
+          name: build-outputs-linux-run${{ github.run_attempt }}
           path: |
             version_last_tag.txt
             app/build/outputs/
@@ -187,7 +187,7 @@ jobs:
     #continue-on-error: true
     env:
       with_avd_cache: false
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     needs: build
     strategy:
       fail-fast: false
@@ -283,14 +283,14 @@ jobs:
         id: cache-ndk
         with:
           path: |
-            /Users/runner/Library/Android/sdk/ndk/${{ env.NDK_VERSION }}/
+            $ANDROID_HOME/ndk/${{ env.NDK_VERSION }}/
           key: build-macos-localNdk-${{ github.run_id }}
       - uses: actions/cache/restore@v3
         if: ${{ env.ANDROID_CMAKE_IS_LOCAL_DOWNLOAD == 1 }}
         id: cache-cmake
         with:
           path: |
-            /Users/runner/Library/Android/sdk/cmake/${{ env.CMAKE_VERSION }}/
+            $ANDROID_HOME/cmake/${{ env.CMAKE_VERSION }}/
           key: build-macos-localCmake-${{ github.run_id }}
 
       - name: AVD cache
@@ -302,6 +302,12 @@ jobs:
             ~/.android/avd/*
             ~/.android/adb*
           key: avd-${{ matrix.api-level }}-${{ matrix.target }}-${{ matrix.arch }}
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
 
       - name: create AVD and generate snapshot for caching (${{ matrix.api-level }}, ${{ matrix.target }}, ${{ matrix.arch }})
         if: ${{ env.with_avd_cache == 'true' &&  steps.avd-cache.outputs.cache-hit != 'true' }}
@@ -402,58 +408,7 @@ jobs:
           #set
           #echo HOME=$HOME
 
-          brew install exiv2
-          brew install exiftool
-          brew install imagemagick@6
-
-          # gnu-sed is also needed
-          brew install gnu-sed
-
-          # Dependencies for findimagedupes
-          # Graphics::Magick is provided by graphicsmagick
-          brew install graphicsmagick
-
-          # Install PerlMagick from GraphicsMagick to have Graphics::Magick
-          wget https://netcologne.dl.sourceforge.net/project/graphicsmagick/graphicsmagick/1.3.40/GraphicsMagick-1.3.40.tar.xz
-          tar -xf GraphicsMagick-1.3.40.tar.xz
-          cd GraphicsMagick-1.3.40
-
-          # Configure with the same configure arguments as homebrew, but with "--with-perl=yes"
-          ./configure \
-            --prefix=/usr/local \
-            --disable-dependency-tracking \
-            --disable-openmp \
-            --disable-static \
-            --enable-shared \
-            --with-modules \
-            --with-quantum-depth=16 \
-            --without-lzma \
-            --without-x \
-            --without-gslib \
-            --with-gs-font-dir=/usr/local/share/ghostscript/fonts \
-            --without-wmf \
-            --with-jxl \
-            --with-perl=yes
-          cd PerlMagick
-          perl Makefile.PL
-          make
-          sudo make install
-
-          sudo perl -MCPAN -e 'CPAN::Shell->rematein("notest", "install", "File::MimeInfo")'
-          sudo perl -MCPAN -e 'CPAN::Shell->rematein("notest", "install", "File::MimeInfo::Magic")'
-          sudo perl -MCPAN -e 'CPAN::Shell->rematein("notest", "install", "Inline")'
-          sudo perl -MCPAN -e 'CPAN::Shell->rematein("notest", "install", "Inline::C")'
-
-          # Install findimagedupes
-          wget https://raw.githubusercontent.com/jhnc/findimagedupes/2.20.1/findimagedupes
-          chmod +x findimagedupes
-          gsed -i 's#usr/bin/perl#usr/bin/env perl#' findimagedupes
-          gsed -i 's#'\''/usr/local/lib/findimagedupes'\''#$ENV{"HOME"}#' findimagedupes
-          sudo mv findimagedupes /usr/local/bin
-
-          # Run findimagedupes (check it works)
-          findimagedupes
-
+          sudo apt-get -y install exiv2 exiftool imagemagick findimagedupes
 
       - name: Run bash tests
         if: always() && steps.install_test_tools.outcome == 'success'
