@@ -85,7 +85,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
 
       - name: Build app with Gradle
         uses: gradle/gradle-build-action@v2
@@ -149,7 +149,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - name: Setup and execute Gradle 'assembleRelease -PusePrebuiltLib=true' task
         uses: gradle/gradle-build-action@v2
         with:
@@ -172,7 +172,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - name: Setup and execute Gradle 'assembleDebug' task
         uses: gradle/gradle-build-action@v2
         with:
@@ -211,6 +211,10 @@ jobs:
             arch: x86_64
             ram-size: 3072M
           - api-level: 33
+            target: google_apis
+            arch: x86_64
+            ram-size: 3072M
+          - api-level: 34
             target: google_apis
             arch: x86_64
             ram-size: 3072M
@@ -258,7 +262,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
 
       - name: Gradle cache
         uses: gradle/gradle-build-action@v2
