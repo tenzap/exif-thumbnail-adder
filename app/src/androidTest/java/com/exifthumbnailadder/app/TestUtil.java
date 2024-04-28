@@ -30,6 +30,7 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 
 import static org.hamcrest.Matchers.allOf;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -650,13 +651,20 @@ public class TestUtil {
 
         switch (action) {
             case "allow":
-                res_suffix = ":id/permission_allow_button";
+                if ((permission.equals(Manifest.permission.READ_MEDIA_IMAGES) ||
+                        permission.equals(Manifest.permission.ACCESS_MEDIA_LOCATION)) &&
+                        Build.VERSION.SDK_INT >= 34) {
+                    // https://cs.android.com/android/platform/superproject/main/+/main:packages/modules/Permission/PermissionController/res/layout/grant_permissions.xml?q=grant_dialog_button_allow_all&ss=android%2Fplatform%2Fsuperproject%2Fmain:packages%2Fmodules%2FPermission%2FPermissionController%2F
+                    res_suffix = ":id/permission_allow_all_button";
+                } else {
+                    res_suffix = ":id/permission_allow_button";
+                }
                 break;
             case "deny":
                 res_suffix = ":id/permission_deny_button";
                 break;
             case "deny_dont_ask_again":
-                res_suffix = ":id/permission_deny_dont_ask_again_button";
+                res_suffix = ":id/permission_deny_and_dont_ask_again_button";
                 break;
             default:
                 throw new UnsupportedOperationException("action '" + action + "' not supported in clickPermissionButton().");
