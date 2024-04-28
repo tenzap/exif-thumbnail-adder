@@ -56,8 +56,6 @@ platform :android do
         "compileStandardReleaseUnitTestSources",
         "compileDebugUnitTestSources",
         "compileReleaseUnitTestSources",
-        "bundleLibResDebug",
-        "bundleLibResRelease",
         "bundleLibRuntimeToJarDebug",
         "bundleLibRuntimeToJarRelease",
               ],
