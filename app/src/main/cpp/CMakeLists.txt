@@ -91,7 +91,8 @@ add_library(exifThumbnailAdderHelpers
         ${SOURCES_timestamp}
         tests.c
         )
-
+# Required as long as exiv2 is not c++17 ready
+set_property(TARGET exifThumbnailAdderHelpers PROPERTY CXX_STANDARD 11)
 target_include_directories(exifThumbnailAdderHelpers PRIVATE .)
 #target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 

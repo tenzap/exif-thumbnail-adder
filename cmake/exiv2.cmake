@@ -18,6 +18,7 @@ ExternalProject_Add(exiv2_external
             -DEXIV2_ENABLE_PNG=OFF
             -DEXIV2_BUILD_SAMPLES=OFF
             -DEXIV2_BUILD_EXIV2_COMMAND=OFF
+            -DCMAKE_CXX_STANDARD=11
             #-DCMAKE_INSTALL_LIBDIR=${CMAKE_LIBRARY_OUTPUT_DIRECTORY} #Test
 
         DEPENDS expat_external

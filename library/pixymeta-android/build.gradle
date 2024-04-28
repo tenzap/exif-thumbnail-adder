@@ -8,8 +8,7 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdk 30
     defaultConfig {
         minSdkVersion 26
         targetSdkVersion 30
@@ -21,4 +20,5 @@ android {
             res.srcDirs = ['src']
         }
     }
+    namespace "pixy.meta"
 }
