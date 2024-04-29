@@ -1,6 +1,6 @@
 include(ExternalProject)
 
-set (EXPAT_VERSION 2.3.0)
+set (EXPAT_VERSION 2.6.2)
 set (EXPAT_VERSION_PREBUILT 2.3.0)
 set (EXPAT_DIR expat-${EXPAT_VERSION})
 
