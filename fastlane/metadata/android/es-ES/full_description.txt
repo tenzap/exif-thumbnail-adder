@@ -1,50 +1,50 @@
-This application for android devices searches for pictures (JPEG) on your device and <b>adds a thumbnail</b> if they don't have one yet. Thumbnails are added to the EXIF metadata structure.
+Esta aplicación para dispositivos Android busca imágenes (JPEG) en tu dispositivo y <b>añade una miniatura</b> si aún no tienen una. Las miniaturas se añaden a la estructura de metadatos EXIF.
 
-It is designed to work from android Oreo (android 8, SDK 26).
+Está diseñado para trabajar de android Oreo (android 8, SDK 26).
 
-Please report issues here: <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnail-adder/issues</a>
+Por favor, informe de problemas aquí: <a href="https://github.com/tenzap/exif-thumbnail-adder/issues">https://github.com/tenzap/exif-thumbnailnail-adder/issues</a>
 
-For more information, some known facts and how you may contribute, refer to the [project homepage][1].
+Para obtener más información, algunos hechos conocidos y cómo puede contribuir, consulte la [página principal del proyecto][1].
 
-<b>Rationale</b>
+<b>Racionalidad</b>
 
-On some smartphones, when wanting to import pictures to Windows (or any device/operating system supporting MTP or PTP protocols), I noticed the pictures may not display a thumbnail in the import wizard (whether through the Photos app, or through the Windows Explorer import feature).
+En algunos smartphones, cuando se desea importar imágenes a Windows (o cualquier dispositivo/sistema operativo que soporte protocolos MTP o PTP), Me he dado cuenta de que las imágenes no pueden mostrar una miniatura en el asistente de importación (ya sea a través de la aplicación Photos o a través de la función de importación del Explorador de Windows).
 
-There are two possible reasons for that behaviour. First, the thumbnail is not present in the picture, usually because the app that created the picture didn't add a thumbnail. Second, there is a thumbnail but it is ignored because some EXIF tags are missing.
+Hay dos posibles razones para ese comportamiento. Primero, la miniatura no está presente en la imagen, normalmente porque la aplicación que creó la imagen no agregó una miniatura. En segundo lugar, hay una miniatura, pero se ignora porque faltan algunas etiquetas EXIF.
 
 
-<b>Features</b>
+<b>Características</b>
 
-- Add thumbnail to pictures (JPEG) that don't yet have one
-- Lanczos algorithm to downsample picture thanks to [FFmpeg's swscale library][2] for best results.
-- Select one or more folders to scan from any storage (internal, SDCard...). For example DCIM, Pictures...
-- Exclude one subdirectory from selected directories
-- Preserve timestamps of the pictures
-- Processing log
-- Synchronize deleted files in the source directory to the backup and working directory (so that you don't keep in the backup folder pictures you don't have anymore in the source folder)
-- Conservative default options (backup pictures, skip corrupt files)
-- Install app on internal storage or external storage
-- Default EXIF library: [Exiv2][3].
-- Alternative libraries: Android-Exif-Extended, libexif, pixymeta-android. See known facts on project page to learn more on benefits and drawbacks of each library.
-- Settings: 
-&emsp;- Rotate the thumbnail
-&emsp;- Replace existing thumbnail
-&emsp;- Backup of original pictures (backup is never overwritten by the app once created if you choose to add the thumbnail to the input file in its initial location)
-&emsp;- Skip pictures having malformed metadata (this can be disabled to process also files having corrupt tags)
-&emsp;- Replace picture in place or write new picture to another directory
+- Agregar miniatura a imágenes (JPEG) que aún no tienen una
+- Algoritmo de Lanczos para mostrar abajo una imagen gracias a la [biblioteca de swscale de FFmpeg][2] para obtener mejores resultados.
+- Seleccione una o más carpetas para escanear desde cualquier almacenamiento (interno, SDCard...). Por ejemplo DCIM, Pictures...
+- Excluir un subdirectorio de directorios seleccionados
+- Conservar las marcas de tiempo de las imágenes
+- Procesamiento de registro
+- Sincronizar archivos borrados en el directorio de origen al directorio de copia de seguridad y trabajo (para que no se mantenga en las imágenes de la carpeta de copia de seguridad que ya no tiene en la carpeta de origen)
+- Opciones por defecto conservativas (imágenes de copia de seguridad, omitir archivos corrupto)
+- Instalar la aplicación en almacenamiento interno o externo
+- Biblioteca EXIF predeterminada: [Exiv2][3].
+- Bibliotecas alternativas: Android-Exif-Extended, libexif, pixymeta-android. Vea los hechos conocidos en la página del proyecto para obtener más información sobre los beneficios y desventajas de cada biblioteca.
+Ajustes: 
+&emsp;- Rotar la miniatura
+&emsp;- Reemplazar miniatura existente
+&emsp;- Copia de seguridad de las imágenes originales (la copia de seguridad nunca se sobrescribe por la aplicación una vez creada si elige añadir la miniatura al archivo de entrada en su ubicación inicial)
+&emsp;- Omitir imágenes con metadatos mal formados (esto puede ser desactivado para procesar también archivos con etiquetas corruptas)
+&emsp;- Reemplazar la imagen en el lugar o escribir una nueva imagen en otro directorio
 
-<b>Requested permissions</b>
+<b>Permisos solicitados</b>
 
 - <i>WRITE_EXTERNAL_STORAGE</i>, <i>READ_EXTERNAL_STORAGE</i>, <i>READ_MEDIA_IMAGES</i>
 - <i>MANAGE_EXTERNAL_STORAGE</i>
 - <i>ACCESS_MEDIA_LOCATION</i>
-- <i>POST_NOTIFICATIONS</i>
-- get more details on the project homepage
+- <i>POST_NOTIFICACIONES</i>
+- obtener más detalles en la página principal del proyecto
 
-<b>Installation</b>
+<b>Instalar</b>
 
-- Prerequisites: minimum android Oreo (android 8, SDK 26). App was tested up to Android 11.
-- Download it through F-Droid app [here][4]
+- Prerrequisitos: mínimo android Oreo (android 8, SDK 26). La aplicación fue probada hasta Android 11.
+- Descargarlo a través de la aplicación F-Droid [here][4]
 - Download the APK from the [release page][5]
 
 <b>License</b>
