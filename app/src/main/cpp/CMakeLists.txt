@@ -41,11 +41,11 @@ set(HEADERS_Exiv2Helper
         )
 
 set (SOURCES_exiv2
-        ${EXIV2_SOURCE_DIR}/src/exiv2.cpp
-        ${EXIV2_SOURCE_DIR}/src/exiv2app.hpp
-        ${EXIV2_SOURCE_DIR}/src/actions.cpp ${EXIV2_SOURCE_DIR}/src/actions.hpp
-        ${EXIV2_SOURCE_DIR}/src/getopt.cpp ${EXIV2_SOURCE_DIR}/src/getopt.hpp
-        ${EXIV2_SOURCE_DIR}/src/utils.cpp ${EXIV2_SOURCE_DIR}/src/utils.hpp
+        ${EXIV2_SOURCE_DIR}/app/exiv2.cpp
+        ${EXIV2_SOURCE_DIR}/app/exiv2app.hpp
+        ${EXIV2_SOURCE_DIR}/app/actions.cpp ${EXIV2_SOURCE_DIR}/app/actions.hpp
+        ${EXIV2_SOURCE_DIR}/app/getopt.cpp ${EXIV2_SOURCE_DIR}/app/getopt.hpp
+        ${EXIV2_SOURCE_DIR}/app/app_utils.cpp ${EXIV2_SOURCE_DIR}/app/app_utils.hpp
         )
 
 set (SOURCES_ffmpeg
@@ -91,8 +91,7 @@ add_library(exifThumbnailAdderHelpers
         ${SOURCES_timestamp}
         tests.c
         )
-# Required as long as exiv2 is not c++17 ready
-set_property(TARGET exifThumbnailAdderHelpers PROPERTY CXX_STANDARD 11)
+
 target_include_directories(exifThumbnailAdderHelpers PRIVATE .)
 #target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -112,6 +111,7 @@ if (USE_PREBUILT_LIB)
     target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/exiv2-${EXIV2_VERSION_PREBUILT}/include)
     target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/exiv2-${EXIV2_VERSION_PREBUILT}/include/exiv2)
 else()
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${EXIV2_SOURCE_DIR}/src) #for includes of ${EXIV2_SOURCE_DIR}/app/*
     target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include)
     target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include/exiv2)
 endif()

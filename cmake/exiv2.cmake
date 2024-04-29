@@ -1,13 +1,11 @@
 include(ExternalProject)
 
-set (EXIV2_VERSION 0.27.5)
+set (EXIV2_VERSION 0.28.2)
 set (EXIV2_VERSION_PREBUILT 0.27.5)
 set (EXIV2_DIR exiv2-${EXIV2_VERSION})
-set (EXIV2_SOURCE_DIRNAME ${EXIV2_DIR}-Source)
+set (EXIV2_SOURCE_DIRNAME ${EXIV2_DIR})
 
 if(NOT USE_PREBUILT_LIB)
-#set(CMAKE_CXX_STANDARD 11)             # Uncommenting this line leads to "no stop on breakpoints in C++ code in Android Studio"
-#set(CMAKE_CXX_FLAGS -Wno-deprecated)   # Uncommenting this line leads to "no stop on breakpoints in C++ code in Android Studio"
 ExternalProject_Add(exiv2_external
         URL ${CMAKE_CURRENT_SOURCE_DIR}/library/${EXIV2_SOURCE_DIRNAME}
         CMAKE_ARGS
@@ -15,10 +13,11 @@ ExternalProject_Add(exiv2_external
             -DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR} # Sets dir where cmake will install the files of the package
             -DCMAKE_FIND_ROOT_PATH=${CMAKE_CURRENT_BINARY_DIR} # So that cmake's find_package finds EXPAT
             -DEXIV2_BUILD_SAMPLES=OFF
+            -DEXIV2_ENABLE_BROTLI=OFF
+            -DEXIV2_ENABLE_INIH=OFF
             -DEXIV2_ENABLE_PNG=OFF
             -DEXIV2_BUILD_SAMPLES=OFF
             -DEXIV2_BUILD_EXIV2_COMMAND=OFF
-            -DCMAKE_CXX_STANDARD=11
             #-DCMAKE_INSTALL_LIBDIR=${CMAKE_LIBRARY_OUTPUT_DIRECTORY} #Test
 
         DEPENDS expat_external

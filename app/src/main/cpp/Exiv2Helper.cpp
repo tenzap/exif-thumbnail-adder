@@ -33,14 +33,14 @@ int Exiv2Helper::insertThumbnail(
         Exiv2::URational yres,
         uint16_t unit) const {
     try {
-        if (!Exiv2::fileExists(thumbPath, true)) {
-            throw Exiv2::Error(Exiv2::kerErrorMessage, "exiv2: Failed to open the file: " + thumbPath);
+        if (!Exiv2::fileExists(thumbPath)) {
+            throw Exiv2::Error(Exiv2::ErrorCode::kerErrorMessage, "exiv2: Failed to open the file: " + thumbPath);
         }
-        if (!Exiv2::fileExists(path, true)) {
-            throw Exiv2::Error(Exiv2::kerErrorMessage, "exiv2: Failed to open the file: " + path);
+        if (!Exiv2::fileExists(path)) {
+            throw Exiv2::Error(Exiv2::ErrorCode::kerErrorMessage, "exiv2: Failed to open the file: " + path);
         }
 
-        Exiv2::Image::AutoPtr image = Exiv2::ImageFactory::open(path);
+        Exiv2::Image::UniquePtr image = Exiv2::ImageFactory::open(path);
         assert(image.get() != 0);
         image->readMetadata();
 
@@ -49,7 +49,7 @@ int Exiv2Helper::insertThumbnail(
             // This permits to create the ExifIFD without which some programs may not find the
             // EXIF tags/thumbnail (eg. Android ExifInterface, identify -verbose from imageMagick...)
             Exiv2::ExifKey key = Exiv2::ExifKey("Exif.Photo.ExifVersion");
-            Exiv2::Value::AutoPtr exifVersion = Exiv2::Value::create(Exiv2::undefined);
+            Exiv2::Value::UniquePtr exifVersion = Exiv2::Value::create(Exiv2::undefined);
             exifVersion->read("48 50 50 48"); // 0220 -> 2.20
             Exiv2::ExifData::iterator pos = image->exifData().findKey(key);
             if (pos == image->exifData().end()) // Tag not found
@@ -57,7 +57,7 @@ int Exiv2Helper::insertThumbnail(
                 image->exifData().add(Exiv2::ExifKey("Exif.Photo.ExifVersion"), exifVersion.get());
 
             key = Exiv2::ExifKey("Exif.Photo.ComponentsConfiguration");
-            Exiv2::Value::AutoPtr componentsConfiguration = Exiv2::Value::create(Exiv2::undefined);
+            Exiv2::Value::UniquePtr componentsConfiguration = Exiv2::Value::create(Exiv2::undefined);
             componentsConfiguration->read("1 2 3 0"); // 1 2 3 0 -> YCbCr
             pos = image->exifData().findKey(key);
             if (pos == image->exifData().end()) // Tag not found
@@ -65,7 +65,7 @@ int Exiv2Helper::insertThumbnail(
                 image->exifData().add(Exiv2::ExifKey("Exif.Photo.ComponentsConfiguration"), componentsConfiguration.get());
 
             key = Exiv2::ExifKey("Exif.Photo.FlashpixVersion");
-            Exiv2::Value::AutoPtr flashpixVersion = Exiv2::Value::create(Exiv2::undefined);
+            Exiv2::Value::UniquePtr flashpixVersion = Exiv2::Value::create(Exiv2::undefined);
             flashpixVersion->read("48 49 48 48"); // 0100 -> 1.00
             pos = image->exifData().findKey(key);
             if (pos == image->exifData().end()) // Tag not found
@@ -102,7 +102,7 @@ int Exiv2Helper::insertThumbnail(
 
         // If there was at least 1 error in the process, throw exception that we will catch later in Java.
         if (!errorMsg.empty())
-            throw Exiv2::Error(Exiv2::kerErrorMessage, "exiv2: " + errorMsg);
+            throw Exiv2::Error(Exiv2::ErrorCode::kerErrorMessage, "exiv2: " + errorMsg);
 
     } catch (const std::exception& exc) {
         throw;
