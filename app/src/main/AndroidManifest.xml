@@ -19,7 +19,7 @@
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_TYPE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
         android:name=".MainApplication"
@@ -34,13 +34,13 @@
             android:name=".SyncService"
             android:enabled="true"
             android:foregroundServiceType="dataSync"
-            android:permission="android.permission.FOREGROUND_SERVICE_TYPE_DATA_SYNC"
+            android:permission="android.permission.FOREGROUND_SERVICE_DATA_SYNC"
             android:exported="false" />
         <service
             android:name=".AddThumbsService"
             android:enabled="true"
             android:foregroundServiceType="dataSync"
-            android:permission="android.permission.FOREGROUND_SERVICE_TYPE_DATA_SYNC"
+            android:permission="android.permission.FOREGROUND_SERVICE_DATA_SYNC"
             android:exported="false" />
         <service
             android:name=".FfmpegSwscaleService"

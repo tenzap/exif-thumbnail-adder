@@ -25,6 +25,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 
+import androidx.core.app.ServiceCompat;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.preference.PreferenceManager;
@@ -131,11 +132,7 @@ public class AddThumbsService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Notification ID cannot be 0.
-        if (Build.VERSION.SDK_INT <= 28) {
-            startForeground(NOTIFICATION_ID, getMyActivityNotification(""));
-        } else {
-            startForeground(NOTIFICATION_ID, getMyActivityNotification(""), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
-        }
+        ServiceCompat.startForeground(this, NOTIFICATION_ID, getMyActivityNotification(""), ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
 
         LastServiceLiveData.get().setLastService(this.getClass().getName());
 
