@@ -226,6 +226,8 @@ jobs:
 #          - api-level: 30
 #            target: default
 #            arch: x86_64
+          - api-level: 30
+            arch: x86_64
           - api-level: 31
             arch: x86_64
           - api-level: 32
