@@ -110,6 +110,7 @@ if (USE_PREBUILT_LIB)
     target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/expat-${EXPAT_VERSION_PREBUILT}/include)
     target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/exiv2-${EXIV2_VERSION_PREBUILT}/include)
     target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/exiv2-${EXIV2_VERSION_PREBUILT}/include/exiv2)
+    target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_SOURCE_DIR}/libs.prebuilt/exiv2-${EXIV2_VERSION_PREBUILT}/include/exiv2_for_app)
 else()
     target_include_directories(exifThumbnailAdderHelpers PRIVATE ${EXIV2_SOURCE_DIR}/src) #for includes of ${EXIV2_SOURCE_DIR}/app/*
     target_include_directories(exifThumbnailAdderHelpers PRIVATE ${CMAKE_BINARY_DIR}/include)
