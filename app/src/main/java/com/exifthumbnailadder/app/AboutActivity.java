@@ -70,6 +70,7 @@ public class AboutActivity extends AppCompatActivity {
         text.append("<u><strong>" + getString(R.string.about_translations) + "</strong></u>");
         text.append("<br>⋅ " + new Locale("de").getDisplayName() + ": franconian (@crowdin)");
         text.append("<br>⋅ " + new Locale("en").getDisplayName() + ": tenzap (@github)");
+        text.append("<br>⋅ " + new Locale("es").getDisplayName() + ": jose-454, l.a.r.monteon1989 (@crowdin)");
         text.append("<br>⋅ " + new Locale("fr").getDisplayName() + ": tenzap (@github)");
         text.append("<br>⋅ " + new Locale("pt", "BR").getDisplayName() + ": jonasferraz (@crowdin)");
         text.append("<br>⋅ " + new Locale("tr").getDisplayName() + ": dirt3009, TolDYuThad (@crowdin)");
