@@ -81,7 +81,14 @@ public class DocUIStrings {
             save = resources.getString(resId);
 
             resId = resources.getIdentifier("menu_advanced_show", "string", documentsUiPackageName);
-            showInternalStorage = resources.getString(resId);
+            if (!(resId == 0 && Build.VERSION.SDK_INT == Build.VERSION_CODES.UPSIDE_DOWN_CAKE)) {
+                // On emulator 34;default (version 4) system image, resId is 0 making tests fail.
+                // However, this resource should exist because it is in the code of android.
+                // Because resources.getString would return an exception.
+                // So set showInternalStorage only if resId != 0 & not on API34.
+                // TODO: remove this in case this is fixed in a newer version of the 34;default image
+                showInternalStorage = resources.getString(resId);
+            }
 
             resId = resources.getIdentifier("action_menu_overflow_description", "string", "android");
             moreOptions = resources.getString(resId);
