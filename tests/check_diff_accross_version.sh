@@ -33,5 +33,7 @@ relpath_new="$(sed -e "s#/#_#g" <<< "$NEW")"
 rm -f "old_vs_new/$relpath_old=$relpath_new.diff"
 for file in $FILES; do
   mkdir -p "output/old_vs_new"
-  diff -Naur "$OLD/$file" "$NEW/$file" >> "output/old_vs_new/$relpath_old=$relpath_new.diff"
+  #diff -Naur "$OLD/$file" "$NEW/$file" >> "output/old_vs_new/$relpath_old=$relpath_new.diff"
+  # Remove the counter of processed files from the logs.
+  diff -Naur <(sed -e "s|\[.*\]|[./.]|" "$OLD/$file") <(sed -e "s|\[.*\]|[./.]|" "$NEW/$file") >> "output/old_vs_new/$relpath_old=$relpath_new.diff"
 done
