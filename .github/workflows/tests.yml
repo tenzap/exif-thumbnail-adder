@@ -216,9 +216,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [26, 27, 28, 29, 30, 31]
+        api-level: [26, 27, 28, 29, 30, 31, 32, 33, 34]
         #target: [default, google_apis] #Keep only 1 target until https://github.com/ReactiveCircus/android-emulator-runner/issues/278 is fixed
         target: [google_apis]
+        exclude:
+          # Will be useful when we enable again both [default, google_apis] targets.
+          # This is because api33;google_apis is flaky.
+          - api-level: 33
+            target: google_apis
         include:
           - arch: x86
           - ram-size: 3072M
@@ -231,17 +236,12 @@ jobs:
           - api-level: 31
             arch: x86_64
           - api-level: 32
-            target: google_apis
             arch: x86_64
-            ram-size: 3072M
           - api-level: 33
-            target: google_apis
             arch: x86_64
-            ram-size: 3072M
+            target: default
           - api-level: 34
-            target: google_apis
             arch: x86_64
-            ram-size: 3072M
 
     steps:
       - name: checkout
