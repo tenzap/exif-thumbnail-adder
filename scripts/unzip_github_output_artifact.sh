@@ -24,6 +24,13 @@ else
     exit 1;
 fi
 
+if [ -z "$1" ]; then
+    echo "Usage:"
+    echo "  ./scripts/unzip_github_output_artifact.sh artifact.zip"
+    echo
+    exit 1
+fi
+
 ETA_REPO_PATH="$PWD"
 
 unzip -q -c "$1" | tar -C "$ETA_REPO_PATH/tests/output/" --strip-components=2 -xvf -
