@@ -41,6 +41,7 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
   - Android 10: `WRITE_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`
   - Android 11-12L: `READ_EXTERNAL_STORAGE`, `ACCESS_MEDIA_LOCATION`, (optionally `MANAGE_EXTERNAL_STORAGE`)
   - Android 13: `READ_MEDIA_IMAGES`, `ACCESS_MEDIA_LOCATION`, `POST_NOTIFICATIONS`, (optionally `MANAGE_EXTERNAL_STORAGE`)
+  - Android 14: `READ_MEDIA_IMAGES`, `ACCESS_MEDIA_LOCATION`, `POST_NOTIFICATIONS`, `FOREGROUND_SERVICE_DATA_SYNC` (optionally `MANAGE_EXTERNAL_STORAGE`)
 
 - `WRITE_EXTERNAL_STORAGE`, `READ_EXTERNAL_STORAGE` or `READ_MEDIA_IMAGES`
   - to keep the timestamp of the pictures and for file processing
@@ -50,7 +51,8 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
   - to keep location (GPS) metadata when processing files
 - `POST_NOTIFICATIONS`
   - to show progress of processing in notification drawer
-
+- `FOREGROUND_SERVICE_DATA_SYNC`
+  - this is a technical requirement to specify which kind of data the foreground service processes.
 
 ## Privacy notice
 - This application doesn't collect and doesn't send any information on you or your usage.
@@ -86,6 +88,7 @@ GPL-3.0 (see "COPYING" file on project homepage)
 
 ## Known facts
 - Performance may be slower on SDCards, that may be related to the speed of your SDCard.
+- With the AOSP images for the emulator (eg. `system-images;android-33;default;x86_64`), the GPS information in the pictures gets lost. This doesn't happen with the images that have the google apps (eg. `system-images;android-33;google_apis;x86_64`). This could happen also on real AOSP-only devices, or devices with alternative Android-like OS's like LineageOS.
 
 ### Android-Exif-Extended
 - all the existing EXIF structure is kept and a new APP1 structure containing the thumbnail is added to the existing APP1.
@@ -137,7 +140,7 @@ Please note that this is about the timestamps of the files (not the ones in the 
 ## Development / Building from source
 This project has been developed in "Android Studio", you may use that to build the app yourself.
 
-Version 0.9.18 requires Android Studio Dolphin (2021.3) or above.
+Version 0.9.20 requires Android Studio Dolphin (2023.2) or above.
 
 In addition to Android Studio you need these SDK components which will be installed by Android Studio's SDK Manager:
 
