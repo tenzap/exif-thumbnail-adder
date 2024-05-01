@@ -696,9 +696,9 @@ public class TestUtil {
         // Also wait until the description of the perm is gone.
         // For some reason, on API33 images this can (under some circumstances) trigger
         // the exception raised by waitUntilGone. To avoid this, we skip the check.
-        if (! (Build.VERSION.SDK_INT == 33 && action.equals("allow"))) {
-            waitUntilGone(device, permGroupDescSelector, "Perm description: " + permGroupDesc);
-        }
+        //if (! (Build.VERSION.SDK_INT == 33 && action.equals("allow"))) {
+        waitUntilGone(device, permGroupDescSelector, "Perm description: " + permGroupDesc);
+        //}
     }
 
     public static void clickPermissionAllowButton(String permission) throws Exception {
