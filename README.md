@@ -59,7 +59,7 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
 
 
 ## Installation
-- Prerequisites: minimum android Oreo (android 8, SDK 26). App was tested up to Android 13.
+- Prerequisites: minimum android Oreo (android 8, SDK 26). App was tested up to Android 14.
 - Download it through F-Droid app [here](https://f-droid.org/packages/com.exifthumbnailadder.app)
 - Download it through Google Play [here](https://play.google.com/store/apps/details?id=com.exifthumbnailadder.app)
 - Download it through Amazon Appstore [here](https://www.amazon.com/dp/B09CZ7684J/)
@@ -140,7 +140,7 @@ Please note that this is about the timestamps of the files (not the ones in the 
 ## Development / Building from source
 This project has been developed in "Android Studio", you may use that to build the app yourself.
 
-Version 0.9.20 requires Android Studio Dolphin (2023.2) or above.
+Version 1.0.0 was made with Android Studio Dolphin (2023.2).
 
 In addition to Android Studio you need these SDK components which will be installed by Android Studio's SDK Manager:
 
