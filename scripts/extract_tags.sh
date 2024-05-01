@@ -109,7 +109,7 @@ while read -r file; do
 
     identify -format '%[EXIF:*]' "$file" 2> "${output_filename_identify_format}.err" > "${output_filename_identify_format}" || echo "Processing error..." > "${output_filename_identify_format}.failed"
 
-    ./${SCRIPT_DIR}/exiv2_for_diff.sh "$file" 2> "${output_filename_exiv2}.err" > "${output_filename_exiv2}" || echo "Processing error..." > "${output_filename_exiv2}.failed"
+    ${SCRIPT_DIR}/exiv2_for_diff.sh "$file" 2> "${output_filename_exiv2}.err" > "${output_filename_exiv2}" || echo "Processing error..." > "${output_filename_exiv2}.failed"
   fi
   unset lib
 done < <(find "$merged/test_"* -type f)
