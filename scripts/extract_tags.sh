@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# SPDX-FileCopyrightText: 2024 Fab Stz <fabstz-it@yahoo.fr>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 #
 # This requires to be able to mount and unmount with sudo.
 # You may need to add these commands to sudo config file
@@ -10,6 +15,13 @@
 # Invoke with:
 #
 #   ./extract_tags.sh "github_artifact.zip"
+
+# To create a zip suitable as input for this script:
+#  tar -cvf artifact.tar tests/output/test_output tests/output/test_pics/
+#  zip artifact.zip artifact.tar
+# or single command:
+#  tar -cf - tests/output/test_output tests/output/test_pics/ | zip artifact.zip -
+#
 
 set -e
 
