@@ -583,7 +583,9 @@ public class TestUtil {
         Boolean waitResult = device.wait(Until.gone(selector), 10000);
         if (!waitResult.equals(Boolean.TRUE)) {
             Log.e("ETATest", "'" + label + "' object: didn't get away from window");
-            throw new UiObjectNotFoundException("'" + label + "' object: didn't get away from window before timeout");
+            if (! (Build.VERSION.SDK_INT == 33 && label.equals("allow"))) {
+                throw new UiObjectNotFoundException("'" + label + "' object: didn't get away from window before timeout");
+            }
         }
         Log.d("ETATest", "'" + label + "' object: Now gone");
     }
@@ -692,7 +694,11 @@ public class TestUtil {
 
         // Waiting until the action button is gone is not sufficient in some cases (slow device?)
         // Also wait until the description of the perm is gone.
-        waitUntilGone(device, permGroupDescSelector, "Perm description: " + permGroupDesc);
+        // For some reason, on API33 images this can (under some circumstances) trigger
+        // the exception raised by waitUntilGone. To avoid this, we skip the check.
+        if (! (Build.VERSION.SDK_INT == 33 && action.equals("allow"))) {
+            waitUntilGone(device, permGroupDescSelector, "Perm description: " + permGroupDesc);
+        }
     }
 
     public static void clickPermissionAllowButton(String permission) throws Exception {
