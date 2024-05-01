@@ -4,6 +4,8 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+set -e
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 if [ "$PWD/scripts" = "$SCRIPT_DIR" ]; then
@@ -66,10 +68,17 @@ for regex in "${IGNORE_MATCHING_LINES[@]}"; do
 done
 
 mydiff() {
+  set +e
   diff \
     "${DIFF_IGNORE_ARGS[@]}" \
     -x '*.err' \
     "$@"
+  RET=$?
+  set -e
+  if [ "$RET" -gt 1 ]; then
+    echo "failure. Diff exited with $RET"
+    exit $RET
+  fi
 }
 
 for lib in "${LIBS[@]}"; do
@@ -121,3 +130,5 @@ for lib in "${LIBS[@]}"; do
     done
   done
 done
+
+echo "Done."
