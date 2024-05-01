@@ -305,7 +305,7 @@ platform :android do
 
   # To run only for a single flavor, run:
   # bundle exec fastlane connectedCheck_with_screenrecord task:connectedStandardDebugAndroidTest
-  desc "Run all the instrumented tests except screenshots and save screenrecords"
+  desc "Run all the instrumented tests except screenshots and save test_output & screenrecords"
   lane :connectedCheck_with_screenrecord do |options|
 
     adb(

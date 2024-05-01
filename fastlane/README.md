@@ -173,7 +173,7 @@ Run all the instrumented tests except screenshots
 [bundle exec] fastlane android connectedCheck_with_screenrecord
 ```
 
-Run all the instrumented tests except screenshots and save screenrecords
+Run all the instrumented tests except screenshots and save test_output & screenrecords
 
 ### android wait_for_idle
 
