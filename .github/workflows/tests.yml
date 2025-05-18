@@ -432,8 +432,10 @@ jobs:
 
           # The findimagedupes package in ubuntu-jammy show warnings. So use the one from ppa:bastif/findimagedupes
           #  'Use of uninitialized value in concatenation (.) or string at /usr/lib/x86_64-linux-gnu/perl5/5.34/findimagedupes/C.pm line 4.'
-          sudo add-apt-repository ppa:bastif/findimagedupes
-          sudo apt update
+          if [ $(lsb_release -cs) = "jammy" ]; then
+            sudo add-apt-repository ppa:bastif/findimagedupes
+            sudo apt update
+          fi
 
           sudo apt-get -y install exiv2 exiftool imagemagick findimagedupes
 
