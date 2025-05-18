@@ -6,6 +6,9 @@
 // Define to 1 if you want to use libcurl in httpIO.
 /* #undef EXV_USE_CURL */
 
+// Define to 1 if you want to enable filesystem access
+#define EXV_ENABLE_FILESYSTEM
+
 // Define if you require webready support.
 /* #undef EXV_ENABLE_WEBREADY */
 
@@ -58,14 +61,14 @@
 #define EXV_PACKAGE_NAME "exiv2"
 
 /* Define to the full name and version of this package. */
-#define EXV_PACKAGE_STRING "exiv2 0.28.2"
+#define EXV_PACKAGE_STRING "exiv2 0.28.5"
 
 /* Define to the version of this package. */
-#define EXV_PACKAGE_VERSION "0.28.2"
+#define EXV_PACKAGE_VERSION "0.28.5"
 
 #define EXIV2_MAJOR_VERSION (0U)
 #define EXIV2_MINOR_VERSION (28U)
-#define EXIV2_PATCH_VERSION (2U)
+#define EXIV2_PATCH_VERSION (5U)
 #define EXIV2_TWEAK_VERSION (U)
 
 // Definition to enable translation of Nikon lens names.
