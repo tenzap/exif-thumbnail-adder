@@ -32,9 +32,9 @@ android {
         if (project.hasProperty("noVersionInArchivesBaseName") && noVersionInArchivesBaseName == "true") {
             // APK name used in screengrab to build screenshots with fastlane is hardcoded
             // so we don't want the version no in the apk file
-            setProperty("archivesBaseName", "exifthumbnailadder")
+            base.archivesName = "exifthumbnailadder"
         } else {
-            setProperty("archivesBaseName", "exifthumbnailadder-$versionName")
+            base.archivesName = "exifthumbnailadder-$versionName"
         }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
