@@ -44,18 +44,6 @@ set(SOURCES
         libexif/exif-utils.c
         )
 
-set(HEADERS_APPLE
-        libexif/apple/exif-mnote-data-apple.h
-        libexif/apple/mnote-apple-entry.h
-        libexif/apple/mnote-apple-tag.h
-        )
-
-set(SOURCES_APPLE
-        libexif/apple/exif-mnote-data-apple.c
-        libexif/apple/mnote-apple-entry.c
-        libexif/apple/mnote-apple-tag.c
-        )
-
 set(HEADERS_CANON
         libexif/canon/exif-mnote-data-canon.h
         libexif/canon/mnote-canon-entry.h
@@ -133,11 +121,12 @@ check_function_exists(dcgettext HAVE_DCGETTEXT)
 check_function_exists(gettext HAVE_GETTEXT)
 check_function_exists(iconv HAVE_ICONV)
 check_function_exists(localtime_r HAVE_LOCALTIME_R)
+check_function_exists(localtime_s HAVE_LOCALTIME_S)
 
 check_include_file(dlfcn.h HAVE_DLFCN_H)
 check_include_file(inttypes.h HAVE_INTTYPES_H)
-check_include_file(memory.h HAVE_MEMORY_H)
 check_include_file(stdint.h HAVE_STDINT_H)
+check_include_file(stdio.h HAVE_STDIO_H)
 check_include_file(stdlib.h HAVE_STDLIB_H)
 check_include_file(strings.h HAVE_STRINGS_H)
 check_include_file(string.h HAVE_STRING_H)
@@ -156,7 +145,6 @@ install(
 )
 
 install(FILES ${HEADERS}         DESTINATION include/libexif)
-install(FILES ${HEADERS_APPLE}   DESTINATION include/libexif/apple)
 install(FILES ${HEADERS_CANON}   DESTINATION include/libexif/canon)
 install(FILES ${HEADERS_FUJI}    DESTINATION include/libexif/fuji)
 install(FILES ${HEADERS_OLYMPUS} DESTINATION include/libexif/olympus)

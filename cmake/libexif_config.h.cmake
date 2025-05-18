@@ -31,11 +31,14 @@ the CoreFoundation framework. */
 /* Define to 1 if you have the `localtime_r' function. */
 #cmakedefine HAVE_LOCALTIME_R
 
-/* Define to 1 if you have the <memory.h> header file. */
-#cmakedefine HAVE_MEMORY_H
+/* Define to 1 if you have localtime_s() */
+#cmakedefine HAVE_LOCALTIME_S
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #cmakedefine HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#cmakedefine HAVE_STDIO_H
 
 /* Define to 1 if you have the <stdlib.h> header file. */
 #cmakedefine HAVE_STDLIB_H
