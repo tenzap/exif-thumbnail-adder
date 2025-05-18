@@ -240,7 +240,7 @@ package pixy.util;// Temporarily put in this package
 
 
             for( int i = GAP; i != 0; i = ( i + GAP ) % NUMS )
-                H.put( i, new Integer(i) );
+                H.put( i, Integer.valueOf(i) );
             for( int i = 1; i < NUMS; i+= 2 )
                 H.remove( i );
 
