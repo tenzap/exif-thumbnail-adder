@@ -1,7 +1,7 @@
 include(ExternalProject)
 
 set (EXPAT_VERSION 2.7.1)
-set (EXPAT_VERSION_PREBUILT 2.6.2)
+set (EXPAT_VERSION_PREBUILT 2.7.1)
 set (EXPAT_DIR expat-${EXPAT_VERSION})
 
 if(NOT USE_PREBUILT_LIB)
