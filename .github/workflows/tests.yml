@@ -216,7 +216,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api-level: [26, 27, 28, 29, 30, 31, 32, 33, 34]
+        api-level: [26, 27, 28, 29, 30, 31, 32, 33, 34, 35]
         #target: [default, google_apis] #Keep only 1 target until https://github.com/ReactiveCircus/android-emulator-runner/issues/278 is fixed
         target: [google_apis]
         include:
@@ -235,6 +235,8 @@ jobs:
           - api-level: 33
             arch: x86_64
           - api-level: 34
+            arch: x86_64
+          - api-level: 35
             arch: x86_64
 
     steps:
