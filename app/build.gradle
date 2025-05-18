@@ -67,6 +67,10 @@ android {
                 if (project.hasProperty('usePrebuiltLib') && usePrebuiltLib == "true") {
                     arguments "-DUSE_PREBUILT_LIB=TRUE"
                 }
+
+                // Enable support for 16kb page size with NDK r27
+                // https://developer.android.com/guide/practices/page-sizes#compile-r27
+                arguments "-DANDROID_SUPPORT_FLEXIBLE_PAGE_SIZES=ON"
             }
         }
     }
