@@ -1,6 +1,6 @@
 include(ExternalProject)
 
-set (LIBEXIF_VERSION 0.6.24)
+set (LIBEXIF_VERSION 0.6.25)
 set (LIBEXIF_VERSION_PREBUILT 0.6.24)
 set (LIBEXIF_DIR libexif-${LIBEXIF_VERSION})
 
