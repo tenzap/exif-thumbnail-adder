@@ -102,6 +102,9 @@ the CoreFoundation framework. */
 /* Define for large files, on AIX-style hosts. */
 #cmakedefine _LARGE_FILES
 
+/* Number of bits in time_t, on hosts where this is settable. */
+#cmakedefine _TIME_BITS @_TIME_BITS@
+
 /* Define to empty if `const' does not conform to ANSI C. */
 #cmakedefine const
 

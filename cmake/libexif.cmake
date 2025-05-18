@@ -10,6 +10,7 @@ ExternalProject_Add(libexif_external
 
         PATCH_COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/libexif_CMakeLists.cmake ${CMAKE_CURRENT_BINARY_DIR}/libexif_external-prefix/src/libexif_external/CMakeLists.txt
         COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/libexif_config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/libexif_external-prefix/src/libexif_external/config.h.cmake
+        COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/cmake/time2038.c ${CMAKE_CURRENT_BINARY_DIR}/libexif_external-prefix/src/libexif_external/time2038.c
 
         CMAKE_ARGS
             ${CL_ARGS}
