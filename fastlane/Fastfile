@@ -344,6 +344,15 @@ platform :android do
     end
 
     enable_virtual_keyboards
+    if ENV["CI"] == "true"
+      # There are problems in gitlab actions with API 35 where get_output_of_tests continuously crashes (adb pull -a ...)
+      # This tries to manage this.
+      if ENV["API_LEVEL"].to_i >= 35
+        puts "Detected API_LEVEL >= 35. Current API_LEVEL value: " + ENV["API_LEVEL"].to_s
+        retry_adb_command('reboot')
+      end
+      wait_for_idle
+    end
     get_output_of_tests
 
     if test_failed == true
