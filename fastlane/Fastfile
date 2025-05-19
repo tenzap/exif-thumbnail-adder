@@ -29,15 +29,16 @@ def retry_adb_command(adb_command)
           command: adb_command
         )
       rescue => ex
-        sleep pause
         adb_success = false
         UI.error(ex)
+        puts "Retrying in " + pause.to_s + " seconds..."
+        sleep pause
       else
         adb_success = true
       end
     end
     if adb_success == false
-      UI.shell_error! "Problem with adb command."
+      UI.shell_error! "Encountered a problem with adb command. It was retried " + (max_duration/pause).to_s + " times."
     end
     return res
 end
