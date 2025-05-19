@@ -20,7 +20,7 @@ else
     exit 1;
 fi
 
-APIS="26 27 28 29 30 31 32 33 34"
+APIS="26 27 28 29 30 31 32 33 34 35"
 
 for REF in $APIS; do
   for API in $APIS; do
