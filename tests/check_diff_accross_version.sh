@@ -22,8 +22,8 @@ if [ -z "$1" ] || [ -z "$2" ]; then
   exit 1
 fi
 
-OLD="$(realpath "$1")"
-NEW="$(realpath "$2")"
+OLD="$(realpath -s "$1")"
+NEW="$(realpath -s "$2")"
 
 FILES="$(cd "$2" && find . -name log.txt -or -name sync_log.txt | sort)"
 
