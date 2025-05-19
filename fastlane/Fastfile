@@ -249,6 +249,7 @@ platform :android do
 
     require 'fileutils'
     FileUtils.mkdir_p('../tests/output')
+    FileUtils.touch('../tests/output/get_output_of_tests-started-not-completed')
 
     retry_adb_command('shell mkdir -p /data/local/tmp/screenrecords/')
     retry_adb_command('shell mkdir -p /data/local/tmp/test_output/')
@@ -257,6 +258,8 @@ platform :android do
     retry_adb_command('pull -a /data/local/tmp/screenrecords/ tests/output/')
     retry_adb_command('pull -a /data/local/tmp/test_output/ tests/output/')
     retry_adb_command('pull -a /storage/emulated/0/DCIM/test_pics/ tests/output/')
+
+    FileUtils.rm('../tests/output/get_output_of_tests-started-not-completed')
   end
 
   desc "Disable Virtual Keyboards"

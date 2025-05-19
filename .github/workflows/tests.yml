@@ -398,7 +398,8 @@ jobs:
           echo "Outcome of 'test_with_cache' ${{ steps.test_with_cache.outcome }}"
           echo "Outcome of 'test_without_cache' ${{ steps.test_without_cache.outcome }}"
 
-          if [ ! -d tests/output ]; then
+          if [ ! -d tests/output ] || [ -f tests/output/get_output_of_tests-started-not-completed ]; then
+            sync
             fastlane get_output_of_tests
             adb shell logcat -d > tests/output/screenrecords/0_final_logcat.txt
           else
