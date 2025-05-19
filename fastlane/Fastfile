@@ -206,6 +206,12 @@ platform :android do
 
   desc "Prepare device for tests"
   lane :prepare_device_for_tests do
+
+    # print adb version
+    adb(
+      command: 'version'
+    )
+
     disable_animation
     disable_virtual_keyboards
 
