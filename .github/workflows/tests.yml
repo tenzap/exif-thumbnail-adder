@@ -400,6 +400,8 @@ jobs:
 
           if [ ! -d tests/output ] || [ -f tests/output/get_output_of_tests-started-not-completed ]; then
             sync
+            /usr/bin/sh -c \/usr/local/lib/android/sdk/emulator/emulator -port 5554 -avd test -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim &
+            fastlane wait_for_idle
             fastlane get_output_of_tests
             adb shell logcat -d > tests/output/screenrecords/0_final_logcat.txt
           else
