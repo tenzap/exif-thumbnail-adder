@@ -356,8 +356,11 @@ platform :android do
     start_time = Time.now
     load_threshold = 0.9
     puts "Start waiting until device is idle (" + Time.now.to_s + ")"
-    command = 'shell uptime | cut -d , -f 3 | cut -f 2 -d :'
-    load = retry_adb_command(command).strip.to_f
+    command = 'shell uptime'
+    output = retry_adb_command(command)
+    load = `#{"echo '" + output + "' | cut -d , -f 3 | cut -f 2 -d :"}`
+    load = load.strip.to_f
+    puts "load: " + load.to_s
     end_time = start_time + 1800
     while load > load_threshold && Time.now < end_time do
       if load < 4
@@ -388,7 +391,10 @@ platform :android do
         end
       end
       sleep 15
-      load = retry_adb_command(command).strip.to_f
+      output = retry_adb_command(command)
+      load = `#{"echo '" + output + "' | cut -d , -f 3 | cut -f 2 -d :"}`
+      load = load.strip.to_f
+      puts "load: " + load.to_s
     end
     if load > load_threshold
       puts "Reached timeout before device is idle."  
