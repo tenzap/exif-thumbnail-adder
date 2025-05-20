@@ -275,17 +275,17 @@ platform :android do
   desc "Disable Virtual Keyboards"
   lane :disable_virtual_keyboards do
     # Disable virtual keyboards
-    #retry_adb_command('shell pm disable-user com.google.android.googlequicksearchbox || echo')
-    #retry_adb_command('shell pm disable-user com.google.android.inputmethod.latin || echo')
-    retry_adb_command('shell settings put secure show_ime_with_hard_keyboard 0 || echo')
+    #retry_adb_command('shell pm disable-user com.google.android.googlequicksearchbox || :')
+    #retry_adb_command('shell pm disable-user com.google.android.inputmethod.latin || :')
+    retry_adb_command('shell settings put secure show_ime_with_hard_keyboard 0 || :')
   end
 
   desc "Enable Virtual Keyboards"
   lane :enable_virtual_keyboards do
     # Re-enable virtual keyboards
-    #retry_adb_command('shell pm enable com.google.android.googlequicksearchbox || echo')
-    #retry_adb_command('shell pm enable com.google.android.inputmethod.latin || echo')
-    retry_adb_command('shell settings put secure show_ime_with_hard_keyboard 1 || echo')
+    #retry_adb_command('shell pm enable com.google.android.googlequicksearchbox || :')
+    #retry_adb_command('shell pm enable com.google.android.inputmethod.latin || :')
+    retry_adb_command('shell settings put secure show_ime_with_hard_keyboard 1 || :')
   end
 
   desc "Run all the instrumented tests except screenshots"
@@ -388,7 +388,7 @@ platform :android do
     while load > load_threshold && Time.now < end_time do
       if load < 4
         adb_output = adb(
-          command: 'shell dumpsys window | grep -E "mCurrentFocus.*Application Not Responding" || true',
+          command: 'shell dumpsys window | grep -E "mCurrentFocus.*Application Not Responding" || :',
           step_name: 'get anr_package if exists'
         )
         anr_package = `#{"echo '" + adb_output + "' | cut -f 2 -d : | sed -e 's/}//' -e 's/^ *//' "}`.strip
@@ -408,7 +408,7 @@ platform :android do
               UI.error(ex)
               # Fallback to click if kill didn't work. This location is for a 1080x1920 screen
               adb(
-                command: 'shell input tap 540 935 || echo',
+                command: 'shell input tap 540 935 || :',
                 step_name: 'Click/tap on screen'
               )
             end
@@ -416,14 +416,14 @@ platform :android do
             # Starting Service
             if anr_package == "com.android.systemui"
               adb(
-                command: 'shell am start-service -n com.android.systemui/.SystemUIService || echo',
+                command: 'shell am start-service -n com.android.systemui/.SystemUIService || :',
                 step_name: 'Restart service com.android.systemui'
               )
             end
             #cmd = 'shell pm dump ' + anr_package + ' | grep Services: -A1 | tail -n 1 | sed -e "s/.*{.* .* \(.*\)}.*/\1/"'
             #anr_package_service1 = adb(command: cmd).strip
             #adb(
-            #  command: 'shell am start-service -a ' + anr_package_service1 + ' || echo',
+            #  command: 'shell am start-service -a ' + anr_package_service1 + ' || :',
             #  step_name: 'Restart service ' + anr_package_service1
             #)
         end
