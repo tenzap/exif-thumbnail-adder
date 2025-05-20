@@ -376,6 +376,14 @@ platform :android do
 
   desc "Wait until device is considered idle"
   lane :wait_for_idle do
+    retry_adb_command('wait-for-device')
+
+    shell_command = "while true; do getprop sys.boot_completed | grep -m 1 '1' && exit; done"
+    adb(
+      command: "shell '" + shell_command + "'",
+      step_name: 'adb "loop until boot_completed"'
+    )
+
     start_time = Time.now
     load_threshold = 0.9
     puts "Start waiting until device is idle (" + Time.now.to_s + ")"
