@@ -17,7 +17,10 @@ opt_out_usage
 
 default_platform(:android)
 
-def retry_adb_command(adb_command)
+def retry_adb_command(adb_command, step_name: nil)
+    if !step_name
+      step_name = "adb: " + adb_command
+    end
     adb_success = false
     iter = 0
     pause = 4
@@ -26,7 +29,8 @@ def retry_adb_command(adb_command)
       begin
         iter = iter + 1
         res = adb(
-          command: adb_command
+          command: adb_command,
+          step_name: step_name
         )
       rescue => ex
         adb_success = false
@@ -226,9 +230,9 @@ platform :android do
     # This would make the github job fail. Catch the failure and retry.
     retry_adb_command('shell mkdir -p /storage/emulated/0/DCIM/test_pics')
 
-    retry_adb_command('push tests/data/exif-samples/jpg/* /storage/emulated/0/DCIM/test_pics')
+    retry_adb_command('push tests/data/exif-samples/jpg/* /storage/emulated/0/DCIM/test_pics', step_name: "push test_pics/ part1")
 
-    retry_adb_command('push tests/data/empty_file tests/data/*.jpg tests/data/text_file.txt /storage/emulated/0/DCIM/test_pics')
+    retry_adb_command('push tests/data/empty_file tests/data/*.jpg tests/data/text_file.txt /storage/emulated/0/DCIM/test_pics', step_name: "push test_pics/ part2")
 
     # Uninstall the app so as to reset the MANAGE_EXTERNAL_STORAGE permission.
     # I haven't found another way to remove this permission once it's granted
@@ -255,9 +259,9 @@ platform :android do
     retry_adb_command('shell mkdir -p /data/local/tmp/test_output/')
     retry_adb_command('shell mkdir -p /storage/emulated/0/DCIM/test_pics/')
 
-    retry_adb_command('pull -a /data/local/tmp/screenrecords/ tests/output/')
-    retry_adb_command('pull -a /data/local/tmp/test_output/ tests/output/')
-    retry_adb_command('pull -a /storage/emulated/0/DCIM/test_pics/ tests/output/')
+    retry_adb_command('pull -a /data/local/tmp/screenrecords/ tests/output/', step_name: "pull screenrecords/")
+    retry_adb_command('pull -a /data/local/tmp/test_output/ tests/output/', step_name: "pull test_output/")
+    retry_adb_command('pull -a /storage/emulated/0/DCIM/test_pics/ tests/output/', step_name: "pull test_pics/")
 
     FileUtils.rm('../tests/output/get_output_of_tests-started-not-completed')
   end
