@@ -373,8 +373,8 @@ platform :android do
     end_time = start_time + 1800
     while load > load_threshold && Time.now < end_time do
       if load < 4
-        adb(command: 'shell dumpsys window | grep -E "mCurrentFocus.*Application Not Responding" || echo ')
-        anr_package = adb(command: 'shell dumpsys window | grep -E "mCurrentFocus.*Application Not Responding" | cut -f 2 -d : | sed -e "s/}//" -e "s/^ *//" ').strip
+        adb_output = adb(command: 'shell dumpsys window | grep -E "mCurrentFocus.*Application Not Responding" || true')
+        anr_package = `#{"echo '" + adb_output + "' | cut -f 2 -d : | sed -e 's/}//' -e 's/^ *//' "}`.strip
         if anr_package != ""
             puts "ANR on screen for: " + anr_package + ". Restarting it."
             # Some suggest that restarting the service with 'am startservice' should restart it,
