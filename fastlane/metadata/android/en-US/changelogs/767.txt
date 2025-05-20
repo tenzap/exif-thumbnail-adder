@@ -1,0 +1,6 @@
+1.0.1
+- Add support for Android 15 (& set targetSdk to 35) & update toolchain
+- exiv2: update to 0.28.5 & expat to 2.7.1
+- libexif: update to 0.6.25
+- update all gradle dependencies to latest version (except ExifInterface)
+- Note: if you run on AOSP or on devices without Google apps, you may loose the GPS information inside your files (at least on emulator image for Android 13). See project homepage for more information.
