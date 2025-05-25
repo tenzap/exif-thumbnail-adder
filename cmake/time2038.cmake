@@ -1,3 +1,5 @@
+# Copyright (C) 2025 SciVision, Inc.
+# SPDX-License-Identifier: MIT
 # Adapted from: https://gist.github.com/scivision/f582e5c24a3efbf414a7557dfe99a2fb
 
 cmake_minimum_required(VERSION 3.20)
