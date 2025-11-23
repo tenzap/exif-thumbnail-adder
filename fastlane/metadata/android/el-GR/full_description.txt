@@ -39,6 +39,7 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
 - <i>MANAGE_EXTERNAL_STORAGE</i>
 - <i>ACCESS_MEDIA_LOCATION</i>
 - <i>POST_NOTIFICATIONS</i>
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i>
 - get more details on the project homepage
 
 <b>Installation</b>

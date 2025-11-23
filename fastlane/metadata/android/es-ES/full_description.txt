@@ -39,6 +39,7 @@ Ajustes:
 - <i>MANAGE_EXTERNAL_STORAGE</i>
 - <i>ACCESS_MEDIA_LOCATION</i>
 - <i>POST_NOTIFICACIONES</i>
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i>
 - obtener más detalles en la página principal del proyecto
 
 <b>Instalar</b>

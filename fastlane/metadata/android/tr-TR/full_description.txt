@@ -39,6 +39,7 @@ Bu davranışın iki olası nedeni var. İlk olarak, genellikle resmi oluşturan
 - <i>MANAGE_EXTERNAL_STORAGE</i>
 - <i>ACCESS_MEDIA_LOCATION</i>
 - <i>POST_NOTIFICATIONS</i>
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i>
 - proje ana sayfasından daha fazla bilgi alın
 
 <b>Gerekçe</b>

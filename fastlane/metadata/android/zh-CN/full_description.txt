@@ -39,6 +39,7 @@
 <i>MANAGE_EXTERNAL_STORAGE</i>
 - <i>ACCESS_MEDIA_LOCATION</i>
 - <i>POST_NOTIFICATIONS</i>
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i>
 - 在项目主页获取更多详细信息
 
 <b>安装</b>

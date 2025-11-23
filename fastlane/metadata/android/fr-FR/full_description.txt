@@ -39,6 +39,7 @@ Deux raisons peuvent expliquer ce comportement. Premièrement, la miniature n'es
 - <i>MANAGE_EXTERNAL_STORAGE</i>
 - <i>ACCESS_MEDIA_LOCATION</i>
 - <i>POST_NOTIFICATIONS</i>
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i>
 - obtenez plus de détails sur la page du projet
 
 <b>Installation</b>

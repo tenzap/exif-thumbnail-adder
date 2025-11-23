@@ -39,6 +39,7 @@ Es gibt zwei mögliche Gründe für dieses Verhalten. Erstens, die Miniaturansic
 - <i>MANAGE_EXTERNAL_STORAGE</i>
 - <i>ACCESS_MEDIA_LOCATION</i>
 - <i>POST_NOTIFICATIONS</i>
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i>
 - Weitere Einzelheiten dazu auf der Homepage des Projekts
 
 <b>Installation</b>

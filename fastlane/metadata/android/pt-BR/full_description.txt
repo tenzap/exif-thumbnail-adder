@@ -39,6 +39,7 @@ Existem dois motivos possíveis para esse comportamento. Primeiro, a miniatura n
 - <i>MANAGE_EXTERNAL_STORAGE</i>
 - <i>ACCESS_MEDIA_LOCATION</i>
 - <i>POST_NOTIFICATIONS</i>
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i>
 - get more details on the project homepage
 
 <b>Instalação</b>
