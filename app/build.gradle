@@ -12,8 +12,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
 
-    compileSdk = 35
-    buildToolsVersion = "35.0.1"
+    compileSdk = 36.1
+    buildToolsVersion = "36.1"
     ndkVersion NDK_VERSION
 
     defaultConfig {
