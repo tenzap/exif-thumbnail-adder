@@ -39,11 +39,12 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
 - <i>MANAGE_EXTERNAL_STORAGE</i>
 - <i>ACCESS_MEDIA_LOCATION</i>
 - <i>POST_NOTIFICATIONS</i>
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i>
 - lấy thêm chi tiết trên trang chủ dự án
 
 <b>Cài đặt</b>
 
-- Điều kiện cần: tối thiểu Android Oreo (Android 8, SDK 26). Ứng dụng đã được thử nghiệm tối đa đến Android 11.
+- Điều kiện cần: tối thiểu Android Oreo (Android 8, SDK 26).
 - Tải xuống qua ứng dụng F-Droid [ở đây][4]
 - Tải APK xuống từ [trang bản phát hành][5]
 
