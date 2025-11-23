@@ -343,7 +343,7 @@ jobs:
           ram-size: ${{ matrix.ram-size }}
           profile: pixel_2
           heap-size: 512M
-          disk-size: 8G
+          disk-size: 6G
           sdcard-path-or-size: 200M
           enable-hw-keyboard: true
           emulator-boot-timeout: 900
@@ -364,7 +364,7 @@ jobs:
           ram-size: ${{ matrix.ram-size }}
           profile: pixel_2
           heap-size: 512M
-          disk-size: 8G
+          disk-size: 6G
           sdcard-path-or-size: 200M
           enable-hw-keyboard: true
           emulator-boot-timeout: 900
@@ -385,7 +385,7 @@ jobs:
           ram-size: ${{ matrix.ram-size }}
           profile: pixel_2
           heap-size: 512M
-          disk-size: 8G
+          disk-size: 6G
           sdcard-path-or-size: 200M
           enable-hw-keyboard: true
           emulator-boot-timeout: 900
