@@ -39,11 +39,12 @@ Deux raisons peuvent expliquer ce comportement. Premièrement, la miniature n'es
 - <i>MANAGE_EXTERNAL_STORAGE</i>
 - <i>ACCESS_MEDIA_LOCATION</i>
 - <i>POST_NOTIFICATIONS</i>
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i>
 - obtenez plus de détails sur la page du projet
 
 <b>Installation</b>
 
-- Prérequis: minimum android Oreo (android 8, SDK 26). App testée jusqu'à Android 11.
+- Prérequis: minimum android Oreo (android 8, SDK 26).
 - Télécharger via l'app F-Droid [ici][4]
 - Télécharger le fichier APK depuis la [page des 'releases'][5]
 
