@@ -43,7 +43,7 @@
 
 <b>安装</b>
 
-- 前提：最低运行 android Oreo (android 8, SDK 26) 测试过本应用的系统的最高版本是 Android 11
+- 前提：最低运行 android Oreo (android 8, SDK 26)
 - 通过 F-Droid 应用程序下载 [here][4]
 - 从 [发行页面] 下载 APK[5]
 

@@ -43,7 +43,7 @@ Existem dois motivos possíveis para esse comportamento. Primeiro, a miniatura n
 
 <b>Instalação</b>
 
-- Pré-requisitos: Android 8 (Oreo, SDK 26) ou superior. O app foi testado até o Android 11.
+- Pré-requisitos: Android 8 (Oreo, SDK 26) ou superior.
 - Baixar a partir do aplicativo F-Droid [here][4]
 - Baixar o APK da [página de lançamento][5]
 

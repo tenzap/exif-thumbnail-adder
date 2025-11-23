@@ -43,7 +43,7 @@ Deux raisons peuvent expliquer ce comportement. Premièrement, la miniature n'es
 
 <b>Installation</b>
 
-- Prérequis: minimum android Oreo (android 8, SDK 26). App testée jusqu'à Android 11.
+- Prérequis: minimum android Oreo (android 8, SDK 26).
 - Télécharger via l'app F-Droid [ici][4]
 - Télécharger le fichier APK depuis la [page des 'releases'][5]
 

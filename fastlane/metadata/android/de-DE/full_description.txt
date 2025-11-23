@@ -43,7 +43,7 @@ Es gibt zwei mögliche Gründe für dieses Verhalten. Erstens, die Miniaturansic
 
 <b>Installation</b>
 
-- Voraussetzungen: mindestens Android Oreo (android 8, SDK 26). Die App wurde bis Android 11 getestet.
+- Voraussetzungen: mindestens Android Oreo (android 8, SDK 26).
 - Download über die F-Droid-App [here][4]
 - APK-Download von der [release page][5]
 

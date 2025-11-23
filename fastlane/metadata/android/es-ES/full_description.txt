@@ -43,7 +43,7 @@ Ajustes:
 
 <b>Instalar</b>
 
-- Prerrequisitos: mínimo android Oreo (android 8, SDK 26). La aplicación fue probada hasta Android 11.
+- Prerrequisitos: mínimo android Oreo (android 8, SDK 26).
 - Descargarlo a través de la aplicación F-Droid [here][4]
 - Download the APK from the [release page][5]
 

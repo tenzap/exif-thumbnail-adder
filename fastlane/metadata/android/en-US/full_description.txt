@@ -43,7 +43,7 @@ There are two possible reasons for that behaviour. First, the thumbnail is not p
 
 <b>Installation</b>
 
-- Prerequisites: minimum android Oreo (android 8, SDK 26). App was tested up to Android 11.
+- Prerequisites: minimum android Oreo (android 8, SDK 26).
 - Download it through F-Droid app [here][4]
 - Download the APK from the [release page][5]
 

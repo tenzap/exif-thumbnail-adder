@@ -43,7 +43,7 @@ Bu davranışın iki olası nedeni var. İlk olarak, genellikle resmi oluşturan
 
 <b>Gerekçe</b>
 
-- Ön gereksinimler: minimum android Oreo (android 8, SDK 26). Uygulama Android 11'e kadar test edildi.
+- Ön gereksinimler: minimum android Oreo (android 8, SDK 26).
 - F-Droid uygulaması aracılığıyla [buradan][4] indirin
 - APK'yı [sürüm sayfasından][5] indirin
 
