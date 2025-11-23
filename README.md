@@ -140,7 +140,7 @@ Please note that this is about the timestamps of the files (not the ones in the 
 ## Development / Building from source
 This project has been developed in "Android Studio", you may use that to build the app yourself.
 
-Present version of the project/sources is edited with Android Studio (2024.3).
+Present version of the project/sources is edited with Android Studio (2025.1).
 
 In addition to Android Studio you need these SDK components which will be installed by Android Studio's SDK Manager:
 
